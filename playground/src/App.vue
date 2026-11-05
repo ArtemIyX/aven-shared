@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { AvenText } from '@aven/shared'
+import { AvenText } from '@wellsaik/aven-shared'
 
 const userName = ref('Avery')
 </script>

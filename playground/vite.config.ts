@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      '@aven/shared': fileURLToPath(new URL('../src/index.ts', import.meta.url)),
+      '@wellsaik/aven-shared': fileURLToPath(new URL('../src/index.ts', import.meta.url)),
     },
   },
   server: {

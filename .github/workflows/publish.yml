@@ -1,4 +1,4 @@
-name: Publish @aven/shared
+name: Publish @wellsaik/aven-shared
 
 on:
   push:
@@ -136,7 +136,7 @@ jobs:
         run: |
           mkdir -p .release-artifacts
 
-          if ! npm view '@aven/shared' version --json > .release-artifacts/package-view.log 2>&1; then
+          if ! npm view '@wellsaik/aven-shared' version --json > .release-artifacts/package-view.log 2>&1; then
             if grep -Eq 'E404|404 Not Found' .release-artifacts/package-view.log; then
               echo '::error::The package is not on npm yet. Complete the documented one-time public 0.1.0 bootstrap before enabling automated releases.'
             else
@@ -146,7 +146,7 @@ jobs:
             exit 1
           fi
 
-          if npm view "@aven/shared@$VERSION" version --json > .release-artifacts/version-view.log 2>&1; then
+          if npm view "@wellsaik/aven-shared@$VERSION" version --json > .release-artifacts/version-view.log 2>&1; then
             if [[ "$BUMP" == "current" ]]; then
               echo 'publish=false' >> "$GITHUB_OUTPUT"
               echo "Version $VERSION is already published; skipping the duplicate publish." >> "$GITHUB_STEP_SUMMARY"
@@ -172,7 +172,7 @@ jobs:
           npm pack --json --pack-destination .release-artifacts > pack-result.json 2>> release-diagnostics.log
           filename="$(node -p "JSON.parse(require('node:fs').readFileSync('pack-result.json', 'utf8'))[0].filename")"
           echo "file=.release-artifacts/$filename" >> "$GITHUB_OUTPUT"
-          echo "Prepared @aven/shared@$VERSION as .release-artifacts/$filename" >> "$GITHUB_STEP_SUMMARY"
+          echo "Prepared @wellsaik/aven-shared@$VERSION as .release-artifacts/$filename" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Commit version bump to main
         if: needs.validate.outputs.bump != 'current' && steps.registry.outputs.publish == 'true'

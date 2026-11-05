@@ -12,7 +12,7 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "baseUrl": ".",
     "paths": {
-      "@aven/shared": ["src/index.ts"]
+      "@wellsaik/aven-shared": ["src/index.ts"]
     },
     "skipLibCheck": true,
     "noEmit": true
