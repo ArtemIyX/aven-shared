@@ -1,31 +1,23 @@
 import { pathToFileURL } from 'node:url'
 
-const manualModes = new Set(['patch', 'minor', 'major', 'current'])
+const releaseEvents = new Set(['push', 'workflow_dispatch'])
 
-export function resolveReleaseMode(eventName, manualMode, ref) {
+export function resolveReleaseMode(eventName, ref) {
   if (ref !== 'refs/heads/main') {
     throw new Error(`Releases are allowed only from main; received ${ref || '(no ref)'}.`)
   }
 
-  if (eventName === 'push') {
-    return 'patch'
-  }
-
-  if (eventName !== 'workflow_dispatch') {
+  if (!releaseEvents.has(eventName)) {
     throw new Error(`Unsupported release event: ${eventName || '(none)'}.`)
   }
 
-  if (!manualModes.has(manualMode)) {
-    throw new Error(`Invalid release mode: ${manualMode || '(empty)'}.`)
-  }
-
-  return manualMode
+  return 'publish'
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   try {
-    const [, , eventName, manualMode, ref] = process.argv
-    process.stdout.write(`${resolveReleaseMode(eventName, manualMode, ref)}\n`)
+    const [, , eventName, ref] = process.argv
+    process.stdout.write(`${resolveReleaseMode(eventName, ref)}\n`)
   } catch (error) {
     process.stderr.write(`${error.message}\n`)
     process.exitCode = 1

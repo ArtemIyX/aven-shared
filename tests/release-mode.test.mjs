@@ -8,31 +8,25 @@ import { resolveReleaseMode } from '../scripts/release-mode.mjs'
 
 const mainRef = 'refs/heads/main'
 
-test('pushes to main always select a patch release', () => {
-  assert.equal(resolveReleaseMode('push', '', mainRef), 'patch')
+test('pushes to main publish the merged package version', () => {
+  assert.equal(resolveReleaseMode('push', mainRef), 'publish')
 })
 
-test('manual release accepts each supported mode', () => {
-  for (const mode of ['patch', 'minor', 'major', 'current']) {
-    assert.equal(resolveReleaseMode('workflow_dispatch', mode, mainRef), mode)
-  }
+test('manual runs on main publish the merged package version', () => {
+  assert.equal(resolveReleaseMode('workflow_dispatch', mainRef), 'publish')
 })
 
 test('rejects manual releases from refs other than main', () => {
   assert.throws(
-    () => resolveReleaseMode('workflow_dispatch', 'patch', 'refs/heads/CI-2'),
+    () => resolveReleaseMode('workflow_dispatch', 'refs/heads/CI-3'),
     /only from main/,
   )
 })
 
-test('rejects unsupported events and manual modes', () => {
+test('rejects unsupported events', () => {
   assert.throws(
-    () => resolveReleaseMode('pull_request', '', mainRef),
+    () => resolveReleaseMode('pull_request', mainRef),
     /Unsupported release event/,
-  )
-  assert.throws(
-    () => resolveReleaseMode('workflow_dispatch', 'premajor', mainRef),
-    /Invalid release mode/,
   )
 })
 

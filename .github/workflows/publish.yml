@@ -5,17 +5,6 @@ on:
     branches:
       - main
   workflow_dispatch:
-    inputs:
-      bump:
-        description: Version change to publish
-        required: true
-        type: choice
-        default: patch
-        options:
-          - patch
-          - minor
-          - major
-          - current
 
 permissions:
   contents: read
@@ -24,27 +13,22 @@ jobs:
   validate:
     name: Validate release
     runs-on: ubuntu-latest
-    outputs:
-      bump: ${{ steps.resolve.outputs.bump }}
     steps:
       - name: Check out release source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
 
-      - name: Verify main ref and resolve release mode
-        id: resolve
+      - name: Verify release is running from main
         env:
           RELEASE_EVENT: ${{ github.event_name }}
-          REQUESTED_BUMP: ${{ inputs.bump }}
           RELEASE_REF: ${{ github.ref }}
         run: |
-          bump="$(node scripts/release-mode.mjs "$RELEASE_EVENT" "$REQUESTED_BUMP" "$RELEASE_REF")"
-          echo "bump=$bump" >> "$GITHUB_OUTPUT"
+          node scripts/release-mode.mjs "$RELEASE_EVENT" "$RELEASE_REF"
 
       - name: Install dependencies
         run: npm ci 2>&1 | tee -a validation-diagnostics.log
@@ -66,7 +50,7 @@ jobs:
 
       - name: Upload validation logs and build outputs
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: release-validation-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
@@ -77,20 +61,20 @@ jobs:
           retention-days: 14
 
   release:
-    name: Bump version and publish
+    name: Publish merged version
     runs-on: ubuntu-latest
     needs: validate
     permissions:
-      contents: write
+      contents: read
       id-token: write
     steps:
       - name: Check out validated source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.sha }}
 
       - name: Set up Node.js and npm registry
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 24
           registry-url: https://registry.npmjs.org
@@ -103,7 +87,7 @@ jobs:
         run: npm ci 2>&1 | tee -a release-diagnostics.log
 
       - name: Download validated build outputs
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: release-validation-${{ github.run_id }}-${{ github.run_attempt }}
           path: .
@@ -117,21 +101,15 @@ jobs:
             exit 1
           fi
 
-      - name: Bump version when requested
+      - name: Read merged package version
         id: version
-        env:
-          BUMP: ${{ needs.validate.outputs.bump }}
         run: |
-          if [[ "$BUMP" != "current" ]]; then
-            npm version "$BUMP" --no-git-tag-version 2>&1 | tee -a release-diagnostics.log
-          fi
           version="$(node -p "JSON.parse(require('node:fs').readFileSync('package.json', 'utf8')).version")"
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Check package and version on npm
         id: registry
         env:
-          BUMP: ${{ needs.validate.outputs.bump }}
           VERSION: ${{ steps.version.outputs.version }}
         run: |
           mkdir -p .release-artifacts
@@ -147,13 +125,8 @@ jobs:
           fi
 
           if npm view "@wellsaik/aven-shared@$VERSION" version --json > .release-artifacts/version-view.log 2>&1; then
-            if [[ "$BUMP" == "current" ]]; then
-              echo 'publish=false' >> "$GITHUB_OUTPUT"
-              echo "Version $VERSION is already published; skipping the duplicate publish." >> "$GITHUB_STEP_SUMMARY"
-            else
-              echo "::error::Version $VERSION is already published. No version commit was pushed; select current to confirm it or choose a new release after reconciling package.json."
-              exit 1
-            fi
+            echo 'publish=false' >> "$GITHUB_OUTPUT"
+            echo "Version $VERSION is already published; skipping the duplicate publish." >> "$GITHUB_STEP_SUMMARY"
           elif grep -Eq 'E404|404 Not Found' .release-artifacts/version-view.log; then
             echo 'publish=true' >> "$GITHUB_OUTPUT"
           else
@@ -174,17 +147,6 @@ jobs:
           echo "file=.release-artifacts/$filename" >> "$GITHUB_OUTPUT"
           echo "Prepared @wellsaik/aven-shared@$VERSION as .release-artifacts/$filename" >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Commit version bump to main
-        if: needs.validate.outputs.bump != 'current' && steps.registry.outputs.publish == 'true'
-        env:
-          VERSION: ${{ steps.version.outputs.version }}
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add package.json package-lock.json
-          git commit -m "chore: release v$VERSION"
-          git push origin HEAD:main
-
       - name: Publish public package with npm OIDC
         if: steps.registry.outputs.publish == 'true'
         env:
@@ -193,7 +155,7 @@ jobs:
 
       - name: Upload release diagnostics and package
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: release-output-${{ github.run_id }}-${{ github.run_attempt }}
           path: |

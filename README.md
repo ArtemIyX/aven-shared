@@ -98,46 +98,40 @@ npm pack
 Then, in the consuming application's directory, install the generated tarball by its path:
 
 ```sh
-npm install ../aven-shared/wellsaik-aven-shared-0.1.0.tgz
+npm install ../aven-shared/wellsaik-aven-shared-0.1.1.tgz
 ```
 
 The tarball contains the compiled JavaScript, generated TypeScript declarations, README, and CSS files addressed by the package exports. This local tarball workflow does not publish anything.
 
 ## Release workflow
 
-The first public version is a one-time manual setup. The package currently starts at `0.1.0`.
+The first public version (`0.1.0`) is a one-time manual setup. After that, put every version bump in a pull request so the required checks run before the version reaches `main`.
 
-1. Sign in to npm with the `wellsaik` account and two-factor authentication enabled. This package uses your user scope, `@wellsaik`.
-2. From the repository, install and validate the package:
+### Prepare a release PR
 
-   ```sh
-   npm ci
-   npm run typecheck
-   npm run build
-   npm run build:playground
-   npm test
-   npm run pack:check
-   ```
+Create a release branch and bump the version there. For example, after `0.1.1` has shipped, a patch release would be:
 
-3. Publish the initial public version once:
+```sh
+git switch -c release/v0.1.2
+npm version patch --no-git-tag-version
+git add package.json package-lock.json
+git commit -m "chore: release v0.1.2"
+git push -u origin release/v0.1.2
+```
 
-   ```sh
-   npm login
-   npm publish --access public
-   ```
+For a minor or major release, use `npm version minor --no-git-tag-version` or `npm version major --no-git-tag-version`, and name the branch and commit for the resulting version. Open a PR to `main`, let the required checks pass, and merge it.
 
-4. After the package exists and the `publish.yml` workflow is on the GitHub repository, open the npm package settings and add a GitHub Actions trusted publisher for `ArtemIyX/aven-shared`, using the workflow filename `publish.yml`. Explicitly allow direct `npm publish`. Configure this shortly before merging the workflow so the first trusted publish can validate the configuration.
-5. Merge the workflow to `main`. The merge push will run the first automated patch release.
+When that version reaches `main`, `publish.yml` validates the package and publishes the version from `package.json` if it is not already on npm. The workflow does not edit or push to `main`. Normal pushes with an already-published version are validated and then skipped.
 
-After setup, every push to `main`, including documentation-only changes, runs validation, increments the patch version, commits the updated `package.json` and lockfile, and publishes that version to npm. The version commit uses GitHub's workflow token and does not start another push workflow.
+### Retry a publish
 
-To release manually, open **Actions → Publish @wellsaik/aven-shared → Run workflow**, select `main`, and choose `patch`, `minor`, `major`, or `current`. The first three choices bump and commit a version before publishing. `current` retries the version already in `package.json`; if npm already has it, the run reports that and skips publishing. The manual button is available after this workflow is merged into the default branch.
+If publishing failed after the version PR was merged, open **Actions → Publish @wellsaik/aven-shared → Run workflow**, select `main`, and run it again. The workflow retries the current `package.json` version if npm does not have it yet; it skips the version if it is already published. The manual button is available after this workflow is merged into the default branch.
 
-Build, test, or package-check failures stop before the version commit and publish. If npm publishing fails after the version commit, use the manual `current` option to retry. The workflow saves logs and available package outputs for 14 days.
+Type-check, build, test, or package-check failures stop before publishing. The workflow saves logs and available package outputs for 14 days.
 
-Trusted publishing uses GitHub's short-lived OIDC identity instead of a stored npm write token. GitHub Actions needs `contents: write` to commit version bumps and `id-token: write` to publish. Repository settings and branch rules must allow the workflow to push to `main`.
+Trusted publishing uses GitHub's short-lived OIDC identity instead of a stored npm write token. The release workflow needs `id-token: write` to publish. Configure npm's trusted publisher for `ArtemIyX/aven-shared` and workflow filename `publish.yml`; the package must already exist on npm for trusted publishing to work.
 
-These publishing instructions describe the release workflow; publishing was not run as part of local development.
+The initial `0.1.0` publication and npm trusted-publisher setup are one-time manual steps. Subsequent releases use the PR, merge, and publish flow above.
 
 ## License
 
