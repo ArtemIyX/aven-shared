@@ -34,7 +34,7 @@ import '@wellsaik/aven-shared/style.css'
 .banner { background-color: var(--aven-gradient-surface-workspace-fallback); background-image: var(--aven-gradient-surface-workspace-image); }
 ```
 
-The document root defaults to light. Set `data-aven-theme="light"`, `"dark"`, or `"system"` on the root or a subtree; system follows the OS preference. An ordinary descendant or invalid theme value inherits its parent. Set `data-aven-contrast="more"` for the provided enhanced mappings, and `data-aven-output="print"` for a white canvas and dark text. Enhanced contrast is inherited; a nested theme boundary reapplies the enhanced mapping for that theme. In a solid selected row, use `--aven-color-selection-text` with `--aven-color-selection-fill` and preserve financial meaning with a sign or label. Print uses monochrome stops and chart marks; add patterns or line styles to distinguish categories. Forced colors takes precedence over print. These mappings are not a substitute for testing each component. Gradient images are disabled in enhanced contrast, forced colors and print; use their solid fallback.
+The document root defaults to light. Dark mode uses neutral charcoal and gray surfaces while retaining semantic accent and financial colors. Set `data-aven-theme="light"`, `"dark"`, or `"system"` on the root or a subtree; system follows the OS preference. An ordinary descendant or invalid theme value inherits its parent. Set `data-aven-contrast="more"` for the provided enhanced mappings, and `data-aven-output="print"` for a white canvas and dark text. Enhanced contrast is inherited; a nested theme boundary reapplies the enhanced mapping for that theme. In a solid selected row, use `--aven-color-selection-text` with `--aven-color-selection-fill` and preserve financial meaning with a sign or label. Print uses monochrome stops and chart marks; add patterns or line styles to distinguish categories. Forced colors takes precedence over print. These mappings are not a substitute for testing each component. Gradient images are disabled in enhanced contrast, forced colors and print; use their solid fallback.
 
 Each theme boundary redeclares its aliases. Semantic overrides work on their declaration scope; overriding a primitive on an arbitrary descendant does not recompute inherited semantic aliases. For coordinated primitive customization, redeclare the semantic aliases at a theme boundary. Later consumer rules and the established `--aven-color-text`, `--aven-color-text-muted`, `--aven-color-surface`, `--aven-color-border`, `--aven-color-accent`, `--aven-color-accent-strong` and `--aven-text-color` hooks remain available. The new palette intentionally changes default hex values. Do not assume an action fill has sufficient contrast for link text.
 
@@ -47,6 +47,8 @@ Keep a chart and its legend, axes and tooltip in the same theme scope. Portaled 
 ```
 
 No library script or storage is required.
+
+The gradient module contains 149 recipes, including 100 family variants: wash and veil for primary text, plus decorative vivid, deep and radial glow options. Browse and filter them in the playground’s color review gallery.
 
 Scale stops are ordered colors, not thresholds. Missing values need a separate treatment; labels on opaque scale cells should use whichever of `#020617` or `#FFFFFF` gives greater calculated contrast. Gradients marked `none` for foreground are decorative or data-only. Preserve signs, labels, line styles and patterns alongside color.
 

@@ -105,3 +105,5 @@ body {
 .inverse-sample { color:var(--aven-color-text-inverse); background:var(--aven-color-surface-inverse); padding:.5rem; }
 .range-cell { outline:2px solid var(--aven-color-focus-ring); outline-offset:-2px; background:var(--aven-color-surface-selected); }
 .gallery-panel .selected:focus-visible { outline:3px solid var(--aven-color-selection-text); outline-offset:-3px; }
+.gradient-filters { margin-block:1rem; }
+.gradient-filters label { display:grid; gap:.35rem; }

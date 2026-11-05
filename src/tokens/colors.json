@@ -2382,7 +2382,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#F1F5F9",
-      "dark": "#090F1B",
+      "dark": "#101010",
       "purpose": "Outside and behind the main window",
       "source": "Surfaces",
       "contrastMode": "mapped core roles or inherited fallback"
@@ -2392,7 +2392,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#F8FAFC",
-      "dark": "#0F1724",
+      "dark": "#181818",
       "purpose": "Main application background",
       "source": "Surfaces",
       "contrastMode": "mapped core roles or inherited fallback"
@@ -2402,7 +2402,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#FFFFFF",
-      "dark": "#131E2D",
+      "dark": "#1F1F1F",
       "purpose": "Content panels, numeric tables and inputs",
       "source": "Surfaces",
       "contrastMode": "mapped core roles or inherited fallback"
@@ -2412,7 +2412,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#F1F5F9",
-      "dark": "#0B1220",
+      "dark": "#141414",
       "purpose": "Inset work areas",
       "source": "Surfaces",
       "contrastMode": "mapped core roles or inherited fallback"
@@ -2422,7 +2422,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#FFFFFF",
-      "dark": "#1B283A",
+      "dark": "#272727",
       "purpose": "Cards and grouped content",
       "source": "Surfaces",
       "contrastMode": "mapped core roles or inherited fallback"
@@ -2432,7 +2432,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#FFFFFF",
-      "dark": "#223147",
+      "dark": "#303030",
       "purpose": "Menus and popovers",
       "source": "Surfaces",
       "contrastMode": "mapped core roles or inherited fallback"
@@ -2442,7 +2442,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#F1F5F9",
-      "dark": "#243247",
+      "dark": "#333333",
       "purpose": "Neutral interactive hover",
       "source": "Surfaces",
       "contrastMode": "mapped core roles or inherited fallback"
@@ -2452,7 +2452,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#E2E8F0",
-      "dark": "#304158",
+      "dark": "#414141",
       "purpose": "Neutral pressed state",
       "source": "Surfaces",
       "contrastMode": "mapped core roles or inherited fallback"
@@ -2462,7 +2462,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#F1F5F9",
-      "dark": "#182333",
+      "dark": "#242424",
       "purpose": "Inactive controls only",
       "source": "Surfaces",
       "contrastMode": "mapped core roles or inherited fallback",
@@ -2473,7 +2473,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#E8F0FC",
-      "dark": "#233B59",
+      "dark": "#383838",
       "purpose": "Selection background; use selected border too",
       "source": "Surfaces",
       "contrastMode": "mapped core roles or inherited fallback"
@@ -2483,7 +2483,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#DCE9FA",
-      "dark": "#294566",
+      "dark": "#414141",
       "purpose": "Hovered selected item",
       "source": "Surfaces",
       "contrastMode": "mapped core roles or inherited fallback"
@@ -2493,7 +2493,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#CDDEF5",
-      "dark": "#304F74",
+      "dark": "#494949",
       "purpose": "Pressed selected item",
       "source": "Surfaces",
       "contrastMode": "mapped core roles or inherited fallback"
@@ -2503,7 +2503,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#E2E8F0",
-      "dark": "#293649",
+      "dark": "#373737",
       "purpose": "Selection in an unfocused pane",
       "source": "Surfaces",
       "contrastMode": "mapped core roles or inherited fallback"
@@ -2513,7 +2513,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#172337",
-      "dark": "#E2E8F0",
+      "dark": "#E5E5E5",
       "purpose": "Inverse content; pair with text-inverse",
       "source": "Surfaces",
       "contrastMode": "mapped core roles or inherited fallback"
@@ -2523,7 +2523,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#FFFFFF",
-      "dark": "#0B1220",
+      "dark": "#141414",
       "purpose": "Plot and diagram canvas",
       "source": "Surfaces",
       "contrastMode": "mapped core roles or inherited fallback"
@@ -2911,7 +2911,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#182536",
-      "dark": "#E5EDF7",
+      "dark": "#EDEDED",
       "purpose": "Body copy and numbers",
       "source": "Foreground and boundaries",
       "contrastMode": "mapped core roles or inherited fallback"
@@ -2921,7 +2921,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#45556C",
-      "dark": "#B4C3D6",
+      "dark": "#C5C5C5",
       "purpose": "Supporting labels and units",
       "source": "Foreground and boundaries",
       "contrastMode": "mapped core roles or inherited fallback"
@@ -2931,7 +2931,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#526278",
-      "dark": "#B0C1D7",
+      "dark": "#BFBFBF",
       "purpose": "Quiet readable labels",
       "source": "Foreground and boundaries",
       "contrastMode": "mapped core roles or inherited fallback"
@@ -2941,7 +2941,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#8492A5",
-      "dark": "#60738A",
+      "dark": "#777777",
       "purpose": "Disabled controls; never use for important data",
       "source": "Foreground and boundaries",
       "contrastMode": "mapped core roles or inherited fallback",
@@ -2952,7 +2952,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#F8FAFC",
-      "dark": "#182536",
+      "dark": "#191919",
       "purpose": "Only on surface-inverse",
       "source": "Foreground and boundaries",
       "contrastMode": "mapped core roles or inherited fallback",
@@ -2973,7 +2973,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#E2E8F0",
-      "dark": "#253449",
+      "dark": "#363636",
       "purpose": "Decorative dividers and chart grids",
       "source": "Foreground and boundaries",
       "contrastMode": "mapped core roles or inherited fallback",
@@ -2984,7 +2984,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#CBD5E1",
-      "dark": "#3B4D65",
+      "dark": "#505050",
       "purpose": "Panel outlines; not sole control boundary",
       "source": "Foreground and boundaries",
       "contrastMode": "mapped core roles or inherited fallback"
@@ -2994,7 +2994,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#64748B",
-      "dark": "#8A9FB9",
+      "dark": "#A3A3A3",
       "purpose": "Meaningful control outlines and resize handles",
       "source": "Foreground and boundaries",
       "contrastMode": "mapped core roles or inherited fallback"
@@ -3014,7 +3014,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#FFFFFF",
-      "dark": "#0B1220",
+      "dark": "#141414",
       "purpose": "Contrast gap between ring and colored control",
       "source": "Foreground and boundaries",
       "contrastMode": "mapped core roles or inherited fallback"
@@ -3135,7 +3135,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#FFFFFFCC",
-      "dark": "#0B1220CC",
+      "dark": "#141414CC",
       "purpose": "Loading overlay; hide obscured content from interaction",
       "source": "Foreground and boundaries",
       "contrastMode": "mapped core roles or inherited fallback"
@@ -3525,7 +3525,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#1E293B",
-      "dark": "#E2E8F0",
+      "dark": "#E5E5E5",
       "purpose": "Small text and icons on base, window or matching subtle fill",
       "source": "Semantic palettes",
       "contrastMode": "mapped core roles or inherited fallback"
@@ -3535,7 +3535,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#F8FAFC",
-      "dark": "#020617",
+      "dark": "#101010",
       "purpose": "Subtle semantic surface",
       "source": "Semantic palettes",
       "contrastMode": "mapped core roles or inherited fallback"
@@ -3545,7 +3545,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#F1F5F9",
-      "dark": "#0F172A",
+      "dark": "#1C1C1C",
       "purpose": "Stronger semantic tint",
       "source": "Semantic palettes",
       "contrastMode": "mapped core roles or inherited fallback"
@@ -3555,7 +3555,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#475569",
-      "dark": "#94A3B8",
+      "dark": "#A3A3A3",
       "purpose": "Meaningful semantic outline",
       "source": "Semantic palettes",
       "contrastMode": "mapped core roles or inherited fallback"
@@ -3565,7 +3565,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#334155",
-      "dark": "#CBD5E1",
+      "dark": "#D4D4D4",
       "purpose": "Solid semantic badge or action",
       "source": "Semantic palettes",
       "contrastMode": "mapped core roles or inherited fallback"
@@ -3575,7 +3575,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#1E293B",
-      "dark": "#E2E8F0",
+      "dark": "#E5E5E5",
       "purpose": "Hovered solid action",
       "source": "Semantic palettes",
       "contrastMode": "mapped core roles or inherited fallback"
@@ -3585,7 +3585,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#0F172A",
-      "dark": "#F1F5F9",
+      "dark": "#F5F5F5",
       "purpose": "Pressed solid action",
       "source": "Semantic palettes",
       "contrastMode": "mapped core roles or inherited fallback"
@@ -3595,7 +3595,7 @@
       "kind": "semantic",
       "module": "core",
       "light": "#FFFFFF",
-      "dark": "#020617",
+      "dark": "#171717",
       "purpose": "Text/icon on solid, hover or pressed",
       "source": "Semantic palettes",
       "contrastMode": "mapped core roles or inherited fallback"
@@ -17024,7 +17024,7 @@
       "kind": "scale stop",
       "module": "charts",
       "light": "#F1F5F9",
-      "dark": "#182536",
+      "dark": "#252525",
       "purpose": "Loss → no change → gain; midpoint is zero",
       "source": "Continuous and discrete data scales",
       "contrastMode": "system colors and monochrome output"
@@ -17074,7 +17074,7 @@
       "kind": "scale stop",
       "module": "charts",
       "light": "#F1F5F9",
-      "dark": "#182536",
+      "dark": "#252525",
       "purpose": "Negative → reference → positive; neutral technical comparison",
       "source": "Continuous and discrete data scales",
       "contrastMode": "system colors and monochrome output"
@@ -17124,7 +17124,7 @@
       "kind": "scale stop",
       "module": "charts",
       "light": "#F1F5F9",
-      "dark": "#182536",
+      "dark": "#252525",
       "purpose": "Negative correlation → zero → positive correlation",
       "source": "Continuous and discrete data scales",
       "contrastMode": "system colors and monochrome output"
@@ -17391,7 +17391,7 @@
       "kind": "gradient stop",
       "module": "gradients",
       "light": "#F8FAFC",
-      "dark": "#0F1724",
+      "dark": "#181818",
       "purpose": "Optional subtle chrome",
       "source": "Gradient recipes",
       "contrastMode": "solid fallback; image disabled"
@@ -17401,7 +17401,7 @@
       "kind": "gradient stop",
       "module": "gradients",
       "light": "#F1F5F9",
-      "dark": "#0B1220",
+      "dark": "#141414",
       "purpose": "Optional subtle chrome",
       "source": "Gradient recipes",
       "contrastMode": "solid fallback; image disabled"
@@ -17411,7 +17411,7 @@
       "kind": "gradient fallback",
       "module": "gradients",
       "light": "#F8FAFC",
-      "dark": "#0F1724",
+      "dark": "#181818",
       "purpose": "Optional subtle chrome",
       "source": "Gradient recipes",
       "contrastMode": "solid fallback; image disabled"
@@ -17421,7 +17421,7 @@
       "kind": "gradient stop",
       "module": "gradients",
       "light": "#FFFFFF",
-      "dark": "#223147",
+      "dark": "#303030",
       "purpose": "Raised panel",
       "source": "Gradient recipes",
       "contrastMode": "solid fallback; image disabled"
@@ -17431,7 +17431,7 @@
       "kind": "gradient stop",
       "module": "gradients",
       "light": "#F8FAFC",
-      "dark": "#1B283A",
+      "dark": "#272727",
       "purpose": "Raised panel",
       "source": "Gradient recipes",
       "contrastMode": "solid fallback; image disabled"
@@ -17441,7 +17441,7 @@
       "kind": "gradient fallback",
       "module": "gradients",
       "light": "#FFFFFF",
-      "dark": "#1B283A",
+      "dark": "#272727",
       "purpose": "Raised panel",
       "source": "Gradient recipes",
       "contrastMode": "solid fallback; image disabled"
@@ -17451,7 +17451,7 @@
       "kind": "gradient stop",
       "module": "gradients",
       "light": "#172337",
-      "dark": "#E2E8F0",
+      "dark": "#E5E5E5",
       "purpose": "Inverse panel",
       "source": "Gradient recipes",
       "contrastMode": "solid fallback; image disabled"
@@ -17461,7 +17461,7 @@
       "kind": "gradient stop",
       "module": "gradients",
       "light": "#0F172A",
-      "dark": "#F8FAFC",
+      "dark": "#F5F5F5",
       "purpose": "Inverse panel",
       "source": "Gradient recipes",
       "contrastMode": "solid fallback; image disabled"
@@ -17471,7 +17471,7 @@
       "kind": "gradient fallback",
       "module": "gradients",
       "light": "#172337",
-      "dark": "#E2E8F0",
+      "dark": "#E5E5E5",
       "purpose": "Inverse panel",
       "source": "Gradient recipes",
       "contrastMode": "solid fallback; image disabled"
@@ -18725,7 +18725,7 @@
       "kind": "gradient stop",
       "module": "gradients",
       "light": "#F1F5F9",
-      "dark": "#182536",
+      "dark": "#252525",
       "purpose": "Signed return legend; center means zero",
       "source": "Gradient recipes",
       "contrastMode": "solid fallback; image disabled"
@@ -18745,7 +18745,7 @@
       "kind": "gradient fallback",
       "module": "gradients",
       "light": "#F1F5F9",
-      "dark": "#182536",
+      "dark": "#252525",
       "purpose": "Signed return legend; center means zero",
       "source": "Gradient recipes",
       "contrastMode": "solid fallback; image disabled"
@@ -18875,7 +18875,7 @@
       "kind": "gradient stop",
       "module": "gradients",
       "light": "#FFFFFF00",
-      "dark": "#131E2D00",
+      "dark": "#1F1F1F00",
       "purpose": "90deg; base-surface edge/scroll fade; do not place text on fade",
       "source": "Gradient recipes",
       "contrastMode": "solid fallback; image disabled",
@@ -18886,7 +18886,7 @@
       "kind": "gradient stop",
       "module": "gradients",
       "light": "#FFFFFF",
-      "dark": "#131E2D",
+      "dark": "#1F1F1F",
       "purpose": "90deg; base-surface edge/scroll fade; do not place text on fade",
       "source": "Gradient recipes",
       "contrastMode": "solid fallback; image disabled",
@@ -18897,7 +18897,7 @@
       "kind": "gradient fallback",
       "module": "gradients",
       "light": "#FFFFFF",
-      "dark": "#131E2D",
+      "dark": "#1F1F1F",
       "purpose": "90deg; base-surface edge/scroll fade; do not place text on fade",
       "source": "Gradient recipes",
       "contrastMode": "solid fallback; image disabled",
@@ -19667,6 +19667,4106 @@
       "restrictions": "Use only the named foreground",
       "contrastMode": "none in increased contrast, forced colors and print",
       "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-gray-wash-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FAFAFA",
+      "dark": "#171717",
+      "purpose": "gray quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-gray-wash-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#F5F5F5",
+      "dark": "#242424",
+      "purpose": "gray quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-gray-wash-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#FAFAFA",
+      "dark": "#171717",
+      "purpose": "gray quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-gray-wash-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-gray-wash",
+      "purpose": "gray quiet surface wash; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-gray-veil-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#F5F5F5",
+      "dark": "#242424",
+      "purpose": "gray soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-gray-veil-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#E5E5E5",
+      "dark": "#383838",
+      "purpose": "gray soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-gray-veil-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#F5F5F5",
+      "dark": "#242424",
+      "purpose": "gray soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-gray-veil-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-gray-veil",
+      "purpose": "gray soft panel veil; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-gray-vivid-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#A3A3A3",
+      "dark": "#D4D4D4",
+      "purpose": "gray vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-gray-vivid-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#525252",
+      "dark": "#737373",
+      "purpose": "gray vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-gray-vivid-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#A3A3A3",
+      "dark": "#D4D4D4",
+      "purpose": "gray vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-gray-vivid-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-gray-vivid",
+      "purpose": "gray vivid decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-gray-deep-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#404040",
+      "dark": "#737373",
+      "purpose": "gray deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-gray-deep-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#171717",
+      "dark": "#404040",
+      "purpose": "gray deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-gray-deep-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#404040",
+      "dark": "#737373",
+      "purpose": "gray deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-gray-deep-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-gray-deep",
+      "purpose": "gray deep decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-gray-glow-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#73737326",
+      "dark": "#A3A3A333",
+      "purpose": "gray radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-gray-glow-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#73737300",
+      "dark": "#A3A3A300",
+      "purpose": "gray radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-gray-glow-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#FAFAFA",
+      "dark": "#171717",
+      "purpose": "gray radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-gray-glow-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-gray-glow",
+      "purpose": "gray radial decorative glow; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-slate-wash-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#F8FAFC",
+      "dark": "#020617",
+      "purpose": "slate quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-slate-wash-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#F1F5F9",
+      "dark": "#0F172A",
+      "purpose": "slate quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-slate-wash-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#F8FAFC",
+      "dark": "#020617",
+      "purpose": "slate quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-slate-wash-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-slate-wash",
+      "purpose": "slate quiet surface wash; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-slate-veil-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#F1F5F9",
+      "dark": "#0F172A",
+      "purpose": "slate soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-slate-veil-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#E2E8F0",
+      "dark": "#1E293B",
+      "purpose": "slate soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-slate-veil-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#F1F5F9",
+      "dark": "#0F172A",
+      "purpose": "slate soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-slate-veil-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-slate-veil",
+      "purpose": "slate soft panel veil; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-slate-vivid-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#94A3B8",
+      "dark": "#CBD5E1",
+      "purpose": "slate vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-slate-vivid-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#475569",
+      "dark": "#64748B",
+      "purpose": "slate vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-slate-vivid-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#94A3B8",
+      "dark": "#CBD5E1",
+      "purpose": "slate vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-slate-vivid-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-slate-vivid",
+      "purpose": "slate vivid decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-slate-deep-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#334155",
+      "dark": "#64748B",
+      "purpose": "slate deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-slate-deep-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#0F172A",
+      "dark": "#334155",
+      "purpose": "slate deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-slate-deep-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#334155",
+      "dark": "#64748B",
+      "purpose": "slate deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-slate-deep-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-slate-deep",
+      "purpose": "slate deep decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-slate-glow-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#64748B26",
+      "dark": "#94A3B833",
+      "purpose": "slate radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-slate-glow-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#64748B00",
+      "dark": "#94A3B800",
+      "purpose": "slate radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-slate-glow-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#F8FAFC",
+      "dark": "#020617",
+      "purpose": "slate radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-slate-glow-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-slate-glow",
+      "purpose": "slate radial decorative glow; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-stone-wash-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FAFAF9",
+      "dark": "#0C0A09",
+      "purpose": "stone quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-stone-wash-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#F5F5F4",
+      "dark": "#1C1917",
+      "purpose": "stone quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-stone-wash-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#FAFAF9",
+      "dark": "#0C0A09",
+      "purpose": "stone quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-stone-wash-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-stone-wash",
+      "purpose": "stone quiet surface wash; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-stone-veil-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#F5F5F4",
+      "dark": "#1C1917",
+      "purpose": "stone soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-stone-veil-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#E7E5E4",
+      "dark": "#292524",
+      "purpose": "stone soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-stone-veil-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#F5F5F4",
+      "dark": "#1C1917",
+      "purpose": "stone soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-stone-veil-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-stone-veil",
+      "purpose": "stone soft panel veil; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-stone-vivid-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#A8A29E",
+      "dark": "#D6D3D1",
+      "purpose": "stone vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-stone-vivid-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#57534E",
+      "dark": "#78716C",
+      "purpose": "stone vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-stone-vivid-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#A8A29E",
+      "dark": "#D6D3D1",
+      "purpose": "stone vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-stone-vivid-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-stone-vivid",
+      "purpose": "stone vivid decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-stone-deep-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#44403C",
+      "dark": "#78716C",
+      "purpose": "stone deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-stone-deep-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#1C1917",
+      "dark": "#44403C",
+      "purpose": "stone deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-stone-deep-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#44403C",
+      "dark": "#78716C",
+      "purpose": "stone deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-stone-deep-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-stone-deep",
+      "purpose": "stone deep decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-stone-glow-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#78716C26",
+      "dark": "#A8A29E33",
+      "purpose": "stone radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-stone-glow-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#78716C00",
+      "dark": "#A8A29E00",
+      "purpose": "stone radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-stone-glow-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#FAFAF9",
+      "dark": "#0C0A09",
+      "purpose": "stone radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-stone-glow-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-stone-glow",
+      "purpose": "stone radial decorative glow; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-blue-wash-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#EFF6FF",
+      "dark": "#172554",
+      "purpose": "blue quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-blue-wash-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#DBEAFE",
+      "dark": "#1E3A8A",
+      "purpose": "blue quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-blue-wash-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#EFF6FF",
+      "dark": "#172554",
+      "purpose": "blue quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-blue-wash-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-blue-wash",
+      "purpose": "blue quiet surface wash; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-blue-veil-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#DBEAFE",
+      "dark": "#1E3A8A",
+      "purpose": "blue soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-blue-veil-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#BFDBFE",
+      "dark": "#1E40AF",
+      "purpose": "blue soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-blue-veil-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#DBEAFE",
+      "dark": "#1E3A8A",
+      "purpose": "blue soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-blue-veil-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-blue-veil",
+      "purpose": "blue soft panel veil; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-blue-vivid-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#60A5FA",
+      "dark": "#93C5FD",
+      "purpose": "blue vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-blue-vivid-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#2563EB",
+      "dark": "#3B82F6",
+      "purpose": "blue vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-blue-vivid-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#60A5FA",
+      "dark": "#93C5FD",
+      "purpose": "blue vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-blue-vivid-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-blue-vivid",
+      "purpose": "blue vivid decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-blue-deep-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#1D4ED8",
+      "dark": "#3B82F6",
+      "purpose": "blue deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-blue-deep-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#1E3A8A",
+      "dark": "#1D4ED8",
+      "purpose": "blue deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-blue-deep-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#1D4ED8",
+      "dark": "#3B82F6",
+      "purpose": "blue deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-blue-deep-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-blue-deep",
+      "purpose": "blue deep decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-blue-glow-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#3B82F626",
+      "dark": "#60A5FA33",
+      "purpose": "blue radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-blue-glow-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#3B82F600",
+      "dark": "#60A5FA00",
+      "purpose": "blue radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-blue-glow-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#EFF6FF",
+      "dark": "#172554",
+      "purpose": "blue radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-blue-glow-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-blue-glow",
+      "purpose": "blue radial decorative glow; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-azure-wash-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#F0F9FF",
+      "dark": "#082F49",
+      "purpose": "azure quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-azure-wash-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#E0F2FE",
+      "dark": "#0C4A6E",
+      "purpose": "azure quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-azure-wash-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#F0F9FF",
+      "dark": "#082F49",
+      "purpose": "azure quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-azure-wash-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-azure-wash",
+      "purpose": "azure quiet surface wash; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-azure-veil-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#E0F2FE",
+      "dark": "#0C4A6E",
+      "purpose": "azure soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-azure-veil-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#BAE6FD",
+      "dark": "#075985",
+      "purpose": "azure soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-azure-veil-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#E0F2FE",
+      "dark": "#0C4A6E",
+      "purpose": "azure soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-azure-veil-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-azure-veil",
+      "purpose": "azure soft panel veil; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-azure-vivid-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#38BDF8",
+      "dark": "#7DD3FC",
+      "purpose": "azure vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-azure-vivid-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#0284C7",
+      "dark": "#0EA5E9",
+      "purpose": "azure vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-azure-vivid-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#38BDF8",
+      "dark": "#7DD3FC",
+      "purpose": "azure vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-azure-vivid-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-azure-vivid",
+      "purpose": "azure vivid decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-azure-deep-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#0369A1",
+      "dark": "#0EA5E9",
+      "purpose": "azure deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-azure-deep-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#0C4A6E",
+      "dark": "#0369A1",
+      "purpose": "azure deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-azure-deep-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#0369A1",
+      "dark": "#0EA5E9",
+      "purpose": "azure deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-azure-deep-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-azure-deep",
+      "purpose": "azure deep decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-azure-glow-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#0EA5E926",
+      "dark": "#38BDF833",
+      "purpose": "azure radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-azure-glow-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#0EA5E900",
+      "dark": "#38BDF800",
+      "purpose": "azure radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-azure-glow-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#F0F9FF",
+      "dark": "#082F49",
+      "purpose": "azure radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-azure-glow-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-azure-glow",
+      "purpose": "azure radial decorative glow; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-cyan-wash-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#ECFEFF",
+      "dark": "#083344",
+      "purpose": "cyan quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-cyan-wash-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#CFFAFE",
+      "dark": "#164E63",
+      "purpose": "cyan quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-cyan-wash-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#ECFEFF",
+      "dark": "#083344",
+      "purpose": "cyan quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-cyan-wash-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-cyan-wash",
+      "purpose": "cyan quiet surface wash; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-cyan-veil-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#CFFAFE",
+      "dark": "#164E63",
+      "purpose": "cyan soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-cyan-veil-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#A5F3FC",
+      "dark": "#155E75",
+      "purpose": "cyan soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-cyan-veil-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#CFFAFE",
+      "dark": "#164E63",
+      "purpose": "cyan soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-cyan-veil-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-cyan-veil",
+      "purpose": "cyan soft panel veil; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-cyan-vivid-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#22D3EE",
+      "dark": "#67E8F9",
+      "purpose": "cyan vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-cyan-vivid-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#0891B2",
+      "dark": "#06B6D4",
+      "purpose": "cyan vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-cyan-vivid-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#22D3EE",
+      "dark": "#67E8F9",
+      "purpose": "cyan vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-cyan-vivid-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-cyan-vivid",
+      "purpose": "cyan vivid decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-cyan-deep-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#0E7490",
+      "dark": "#06B6D4",
+      "purpose": "cyan deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-cyan-deep-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#164E63",
+      "dark": "#0E7490",
+      "purpose": "cyan deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-cyan-deep-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#0E7490",
+      "dark": "#06B6D4",
+      "purpose": "cyan deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-cyan-deep-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-cyan-deep",
+      "purpose": "cyan deep decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-cyan-glow-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#06B6D426",
+      "dark": "#22D3EE33",
+      "purpose": "cyan radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-cyan-glow-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#06B6D400",
+      "dark": "#22D3EE00",
+      "purpose": "cyan radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-cyan-glow-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#ECFEFF",
+      "dark": "#083344",
+      "purpose": "cyan radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-cyan-glow-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-cyan-glow",
+      "purpose": "cyan radial decorative glow; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-teal-wash-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#F0FDFA",
+      "dark": "#042F2E",
+      "purpose": "teal quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-teal-wash-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#CCFBF1",
+      "dark": "#134E4A",
+      "purpose": "teal quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-teal-wash-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#F0FDFA",
+      "dark": "#042F2E",
+      "purpose": "teal quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-teal-wash-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-teal-wash",
+      "purpose": "teal quiet surface wash; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-teal-veil-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#CCFBF1",
+      "dark": "#134E4A",
+      "purpose": "teal soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-teal-veil-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#99F6E4",
+      "dark": "#115E59",
+      "purpose": "teal soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-teal-veil-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#CCFBF1",
+      "dark": "#134E4A",
+      "purpose": "teal soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-teal-veil-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-teal-veil",
+      "purpose": "teal soft panel veil; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-teal-vivid-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#2DD4BF",
+      "dark": "#5EEAD4",
+      "purpose": "teal vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-teal-vivid-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#0D9488",
+      "dark": "#14B8A6",
+      "purpose": "teal vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-teal-vivid-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#2DD4BF",
+      "dark": "#5EEAD4",
+      "purpose": "teal vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-teal-vivid-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-teal-vivid",
+      "purpose": "teal vivid decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-teal-deep-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#0F766E",
+      "dark": "#14B8A6",
+      "purpose": "teal deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-teal-deep-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#134E4A",
+      "dark": "#0F766E",
+      "purpose": "teal deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-teal-deep-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#0F766E",
+      "dark": "#14B8A6",
+      "purpose": "teal deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-teal-deep-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-teal-deep",
+      "purpose": "teal deep decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-teal-glow-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#14B8A626",
+      "dark": "#2DD4BF33",
+      "purpose": "teal radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-teal-glow-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#14B8A600",
+      "dark": "#2DD4BF00",
+      "purpose": "teal radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-teal-glow-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#F0FDFA",
+      "dark": "#042F2E",
+      "purpose": "teal radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-teal-glow-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-teal-glow",
+      "purpose": "teal radial decorative glow; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-emerald-wash-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#ECFDF5",
+      "dark": "#022C22",
+      "purpose": "emerald quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-emerald-wash-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#D1FAE5",
+      "dark": "#064E3B",
+      "purpose": "emerald quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-emerald-wash-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#ECFDF5",
+      "dark": "#022C22",
+      "purpose": "emerald quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-emerald-wash-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-emerald-wash",
+      "purpose": "emerald quiet surface wash; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-emerald-veil-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#D1FAE5",
+      "dark": "#064E3B",
+      "purpose": "emerald soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-emerald-veil-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#A7F3D0",
+      "dark": "#065F46",
+      "purpose": "emerald soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-emerald-veil-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#D1FAE5",
+      "dark": "#064E3B",
+      "purpose": "emerald soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-emerald-veil-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-emerald-veil",
+      "purpose": "emerald soft panel veil; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-emerald-vivid-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#34D399",
+      "dark": "#6EE7B7",
+      "purpose": "emerald vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-emerald-vivid-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#059669",
+      "dark": "#10B981",
+      "purpose": "emerald vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-emerald-vivid-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#34D399",
+      "dark": "#6EE7B7",
+      "purpose": "emerald vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-emerald-vivid-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-emerald-vivid",
+      "purpose": "emerald vivid decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-emerald-deep-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#047857",
+      "dark": "#10B981",
+      "purpose": "emerald deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-emerald-deep-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#064E3B",
+      "dark": "#047857",
+      "purpose": "emerald deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-emerald-deep-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#047857",
+      "dark": "#10B981",
+      "purpose": "emerald deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-emerald-deep-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-emerald-deep",
+      "purpose": "emerald deep decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-emerald-glow-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#10B98126",
+      "dark": "#34D39933",
+      "purpose": "emerald radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-emerald-glow-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#10B98100",
+      "dark": "#34D39900",
+      "purpose": "emerald radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-emerald-glow-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#ECFDF5",
+      "dark": "#022C22",
+      "purpose": "emerald radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-emerald-glow-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-emerald-glow",
+      "purpose": "emerald radial decorative glow; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-green-wash-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#F0FDF4",
+      "dark": "#052E16",
+      "purpose": "green quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-green-wash-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#DCFCE7",
+      "dark": "#14532D",
+      "purpose": "green quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-green-wash-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#F0FDF4",
+      "dark": "#052E16",
+      "purpose": "green quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-green-wash-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-green-wash",
+      "purpose": "green quiet surface wash; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-green-veil-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#DCFCE7",
+      "dark": "#14532D",
+      "purpose": "green soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-green-veil-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#BBF7D0",
+      "dark": "#166534",
+      "purpose": "green soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-green-veil-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#DCFCE7",
+      "dark": "#14532D",
+      "purpose": "green soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-green-veil-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-green-veil",
+      "purpose": "green soft panel veil; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-green-vivid-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#4ADE80",
+      "dark": "#86EFAC",
+      "purpose": "green vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-green-vivid-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#16A34A",
+      "dark": "#22C55E",
+      "purpose": "green vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-green-vivid-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#4ADE80",
+      "dark": "#86EFAC",
+      "purpose": "green vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-green-vivid-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-green-vivid",
+      "purpose": "green vivid decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-green-deep-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#15803D",
+      "dark": "#22C55E",
+      "purpose": "green deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-green-deep-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#14532D",
+      "dark": "#15803D",
+      "purpose": "green deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-green-deep-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#15803D",
+      "dark": "#22C55E",
+      "purpose": "green deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-green-deep-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-green-deep",
+      "purpose": "green deep decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-green-glow-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#22C55E26",
+      "dark": "#4ADE8033",
+      "purpose": "green radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-green-glow-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#22C55E00",
+      "dark": "#4ADE8000",
+      "purpose": "green radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-green-glow-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#F0FDF4",
+      "dark": "#052E16",
+      "purpose": "green radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-green-glow-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-green-glow",
+      "purpose": "green radial decorative glow; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-lime-wash-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#F7FEE7",
+      "dark": "#1A2E05",
+      "purpose": "lime quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-lime-wash-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#ECFCCB",
+      "dark": "#365314",
+      "purpose": "lime quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-lime-wash-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#F7FEE7",
+      "dark": "#1A2E05",
+      "purpose": "lime quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-lime-wash-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-lime-wash",
+      "purpose": "lime quiet surface wash; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-lime-veil-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#ECFCCB",
+      "dark": "#365314",
+      "purpose": "lime soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-lime-veil-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#D9F99D",
+      "dark": "#3F6212",
+      "purpose": "lime soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-lime-veil-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#ECFCCB",
+      "dark": "#365314",
+      "purpose": "lime soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-lime-veil-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-lime-veil",
+      "purpose": "lime soft panel veil; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-lime-vivid-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#A3E635",
+      "dark": "#BEF264",
+      "purpose": "lime vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-lime-vivid-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#65A30D",
+      "dark": "#84CC16",
+      "purpose": "lime vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-lime-vivid-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#A3E635",
+      "dark": "#BEF264",
+      "purpose": "lime vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-lime-vivid-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-lime-vivid",
+      "purpose": "lime vivid decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-lime-deep-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#4D7C0F",
+      "dark": "#84CC16",
+      "purpose": "lime deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-lime-deep-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#365314",
+      "dark": "#4D7C0F",
+      "purpose": "lime deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-lime-deep-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#4D7C0F",
+      "dark": "#84CC16",
+      "purpose": "lime deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-lime-deep-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-lime-deep",
+      "purpose": "lime deep decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-lime-glow-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#84CC1626",
+      "dark": "#A3E63533",
+      "purpose": "lime radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-lime-glow-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#84CC1600",
+      "dark": "#A3E63500",
+      "purpose": "lime radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-lime-glow-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#F7FEE7",
+      "dark": "#1A2E05",
+      "purpose": "lime radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-lime-glow-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-lime-glow",
+      "purpose": "lime radial decorative glow; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-amber-wash-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FFFBEB",
+      "dark": "#451A03",
+      "purpose": "amber quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-amber-wash-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FEF3C7",
+      "dark": "#78350F",
+      "purpose": "amber quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-amber-wash-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#FFFBEB",
+      "dark": "#451A03",
+      "purpose": "amber quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-amber-wash-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-amber-wash",
+      "purpose": "amber quiet surface wash; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-amber-veil-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FEF3C7",
+      "dark": "#78350F",
+      "purpose": "amber soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-amber-veil-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FDE68A",
+      "dark": "#92400E",
+      "purpose": "amber soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-amber-veil-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#FEF3C7",
+      "dark": "#78350F",
+      "purpose": "amber soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-amber-veil-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-amber-veil",
+      "purpose": "amber soft panel veil; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-amber-vivid-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FBBF24",
+      "dark": "#FCD34D",
+      "purpose": "amber vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-amber-vivid-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#D97706",
+      "dark": "#F59E0B",
+      "purpose": "amber vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-amber-vivid-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#FBBF24",
+      "dark": "#FCD34D",
+      "purpose": "amber vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-amber-vivid-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-amber-vivid",
+      "purpose": "amber vivid decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-amber-deep-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#B45309",
+      "dark": "#F59E0B",
+      "purpose": "amber deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-amber-deep-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#78350F",
+      "dark": "#B45309",
+      "purpose": "amber deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-amber-deep-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#B45309",
+      "dark": "#F59E0B",
+      "purpose": "amber deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-amber-deep-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-amber-deep",
+      "purpose": "amber deep decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-amber-glow-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#F59E0B26",
+      "dark": "#FBBF2433",
+      "purpose": "amber radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-amber-glow-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#F59E0B00",
+      "dark": "#FBBF2400",
+      "purpose": "amber radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-amber-glow-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#FFFBEB",
+      "dark": "#451A03",
+      "purpose": "amber radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-amber-glow-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-amber-glow",
+      "purpose": "amber radial decorative glow; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-orange-wash-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FFF7ED",
+      "dark": "#431407",
+      "purpose": "orange quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-orange-wash-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FFEDD5",
+      "dark": "#7C2D12",
+      "purpose": "orange quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-orange-wash-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#FFF7ED",
+      "dark": "#431407",
+      "purpose": "orange quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-orange-wash-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-orange-wash",
+      "purpose": "orange quiet surface wash; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-orange-veil-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FFEDD5",
+      "dark": "#7C2D12",
+      "purpose": "orange soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-orange-veil-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FED7AA",
+      "dark": "#9A3412",
+      "purpose": "orange soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-orange-veil-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#FFEDD5",
+      "dark": "#7C2D12",
+      "purpose": "orange soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-orange-veil-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-orange-veil",
+      "purpose": "orange soft panel veil; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-orange-vivid-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FB923C",
+      "dark": "#FDBA74",
+      "purpose": "orange vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-orange-vivid-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#EA580C",
+      "dark": "#F97316",
+      "purpose": "orange vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-orange-vivid-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#FB923C",
+      "dark": "#FDBA74",
+      "purpose": "orange vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-orange-vivid-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-orange-vivid",
+      "purpose": "orange vivid decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-orange-deep-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#C2410C",
+      "dark": "#F97316",
+      "purpose": "orange deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-orange-deep-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#7C2D12",
+      "dark": "#C2410C",
+      "purpose": "orange deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-orange-deep-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#C2410C",
+      "dark": "#F97316",
+      "purpose": "orange deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-orange-deep-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-orange-deep",
+      "purpose": "orange deep decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-orange-glow-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#F9731626",
+      "dark": "#FB923C33",
+      "purpose": "orange radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-orange-glow-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#F9731600",
+      "dark": "#FB923C00",
+      "purpose": "orange radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-orange-glow-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#FFF7ED",
+      "dark": "#431407",
+      "purpose": "orange radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-orange-glow-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-orange-glow",
+      "purpose": "orange radial decorative glow; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-coral-wash-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FFF5F2",
+      "dark": "#40130C",
+      "purpose": "coral quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-coral-wash-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FFE6DE",
+      "dark": "#72291D",
+      "purpose": "coral quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-coral-wash-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#FFF5F2",
+      "dark": "#40130C",
+      "purpose": "coral quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-coral-wash-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-coral-wash",
+      "purpose": "coral quiet surface wash; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-coral-veil-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FFE6DE",
+      "dark": "#72291D",
+      "purpose": "coral soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-coral-veil-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FFCCBC",
+      "dark": "#8D2D1D",
+      "purpose": "coral soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-coral-veil-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#FFE6DE",
+      "dark": "#72291D",
+      "purpose": "coral soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-coral-veil-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-coral-veil",
+      "purpose": "coral soft panel veil; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-coral-vivid-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FA8064",
+      "dark": "#FFA58C",
+      "purpose": "coral vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-coral-vivid-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#D6452B",
+      "dark": "#EF6348",
+      "purpose": "coral vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-coral-vivid-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#FA8064",
+      "dark": "#FFA58C",
+      "purpose": "coral vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-coral-vivid-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-coral-vivid",
+      "purpose": "coral vivid decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-coral-deep-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#AE351F",
+      "dark": "#EF6348",
+      "purpose": "coral deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-coral-deep-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#72291D",
+      "dark": "#AE351F",
+      "purpose": "coral deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-coral-deep-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#AE351F",
+      "dark": "#EF6348",
+      "purpose": "coral deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-coral-deep-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-coral-deep",
+      "purpose": "coral deep decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-coral-glow-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#EF634826",
+      "dark": "#FA806433",
+      "purpose": "coral radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-coral-glow-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#EF634800",
+      "dark": "#FA806400",
+      "purpose": "coral radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-coral-glow-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#FFF5F2",
+      "dark": "#40130C",
+      "purpose": "coral radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-coral-glow-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-coral-glow",
+      "purpose": "coral radial decorative glow; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-red-wash-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FEF2F2",
+      "dark": "#450A0A",
+      "purpose": "red quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-red-wash-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FEE2E2",
+      "dark": "#7F1D1D",
+      "purpose": "red quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-red-wash-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#FEF2F2",
+      "dark": "#450A0A",
+      "purpose": "red quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-red-wash-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-red-wash",
+      "purpose": "red quiet surface wash; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-red-veil-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FEE2E2",
+      "dark": "#7F1D1D",
+      "purpose": "red soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-red-veil-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FECACA",
+      "dark": "#991B1B",
+      "purpose": "red soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-red-veil-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#FEE2E2",
+      "dark": "#7F1D1D",
+      "purpose": "red soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-red-veil-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-red-veil",
+      "purpose": "red soft panel veil; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-red-vivid-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#F87171",
+      "dark": "#FCA5A5",
+      "purpose": "red vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-red-vivid-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#DC2626",
+      "dark": "#EF4444",
+      "purpose": "red vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-red-vivid-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#F87171",
+      "dark": "#FCA5A5",
+      "purpose": "red vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-red-vivid-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-red-vivid",
+      "purpose": "red vivid decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-red-deep-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#B91C1C",
+      "dark": "#EF4444",
+      "purpose": "red deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-red-deep-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#7F1D1D",
+      "dark": "#B91C1C",
+      "purpose": "red deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-red-deep-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#B91C1C",
+      "dark": "#EF4444",
+      "purpose": "red deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-red-deep-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-red-deep",
+      "purpose": "red deep decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-red-glow-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#EF444426",
+      "dark": "#F8717133",
+      "purpose": "red radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-red-glow-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#EF444400",
+      "dark": "#F8717100",
+      "purpose": "red radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-red-glow-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#FEF2F2",
+      "dark": "#450A0A",
+      "purpose": "red radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-red-glow-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-red-glow",
+      "purpose": "red radial decorative glow; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-rose-wash-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FFF1F2",
+      "dark": "#4C0519",
+      "purpose": "rose quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-rose-wash-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FFE4E6",
+      "dark": "#881337",
+      "purpose": "rose quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-rose-wash-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#FFF1F2",
+      "dark": "#4C0519",
+      "purpose": "rose quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-rose-wash-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-rose-wash",
+      "purpose": "rose quiet surface wash; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-rose-veil-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FFE4E6",
+      "dark": "#881337",
+      "purpose": "rose soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-rose-veil-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FECDD3",
+      "dark": "#9F1239",
+      "purpose": "rose soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-rose-veil-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#FFE4E6",
+      "dark": "#881337",
+      "purpose": "rose soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-rose-veil-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-rose-veil",
+      "purpose": "rose soft panel veil; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-rose-vivid-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FB7185",
+      "dark": "#FDA4AF",
+      "purpose": "rose vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-rose-vivid-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#E11D48",
+      "dark": "#F43F5E",
+      "purpose": "rose vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-rose-vivid-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#FB7185",
+      "dark": "#FDA4AF",
+      "purpose": "rose vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-rose-vivid-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-rose-vivid",
+      "purpose": "rose vivid decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-rose-deep-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#BE123C",
+      "dark": "#F43F5E",
+      "purpose": "rose deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-rose-deep-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#881337",
+      "dark": "#BE123C",
+      "purpose": "rose deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-rose-deep-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#BE123C",
+      "dark": "#F43F5E",
+      "purpose": "rose deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-rose-deep-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-rose-deep",
+      "purpose": "rose deep decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-rose-glow-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#F43F5E26",
+      "dark": "#FB718533",
+      "purpose": "rose radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-rose-glow-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#F43F5E00",
+      "dark": "#FB718500",
+      "purpose": "rose radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-rose-glow-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#FFF1F2",
+      "dark": "#4C0519",
+      "purpose": "rose radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-rose-glow-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-rose-glow",
+      "purpose": "rose radial decorative glow; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-indigo-wash-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#EEF2FF",
+      "dark": "#1E1B4B",
+      "purpose": "indigo quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-indigo-wash-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#E0E7FF",
+      "dark": "#312E81",
+      "purpose": "indigo quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-indigo-wash-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#EEF2FF",
+      "dark": "#1E1B4B",
+      "purpose": "indigo quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-indigo-wash-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-indigo-wash",
+      "purpose": "indigo quiet surface wash; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-indigo-veil-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#E0E7FF",
+      "dark": "#312E81",
+      "purpose": "indigo soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-indigo-veil-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#C7D2FE",
+      "dark": "#3730A3",
+      "purpose": "indigo soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-indigo-veil-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#E0E7FF",
+      "dark": "#312E81",
+      "purpose": "indigo soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-indigo-veil-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-indigo-veil",
+      "purpose": "indigo soft panel veil; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-indigo-vivid-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#818CF8",
+      "dark": "#A5B4FC",
+      "purpose": "indigo vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-indigo-vivid-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#4F46E5",
+      "dark": "#6366F1",
+      "purpose": "indigo vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-indigo-vivid-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#818CF8",
+      "dark": "#A5B4FC",
+      "purpose": "indigo vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-indigo-vivid-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-indigo-vivid",
+      "purpose": "indigo vivid decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-indigo-deep-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#4338CA",
+      "dark": "#6366F1",
+      "purpose": "indigo deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-indigo-deep-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#312E81",
+      "dark": "#4338CA",
+      "purpose": "indigo deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-indigo-deep-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#4338CA",
+      "dark": "#6366F1",
+      "purpose": "indigo deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-indigo-deep-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-indigo-deep",
+      "purpose": "indigo deep decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-indigo-glow-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#6366F126",
+      "dark": "#818CF833",
+      "purpose": "indigo radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-indigo-glow-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#6366F100",
+      "dark": "#818CF800",
+      "purpose": "indigo radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-indigo-glow-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#EEF2FF",
+      "dark": "#1E1B4B",
+      "purpose": "indigo radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-indigo-glow-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-indigo-glow",
+      "purpose": "indigo radial decorative glow; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-violet-wash-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#F5F3FF",
+      "dark": "#2E1065",
+      "purpose": "violet quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-violet-wash-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#EDE9FE",
+      "dark": "#4C1D95",
+      "purpose": "violet quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-violet-wash-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#F5F3FF",
+      "dark": "#2E1065",
+      "purpose": "violet quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-violet-wash-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-violet-wash",
+      "purpose": "violet quiet surface wash; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-violet-veil-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#EDE9FE",
+      "dark": "#4C1D95",
+      "purpose": "violet soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-violet-veil-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#DDD6FE",
+      "dark": "#5B21B6",
+      "purpose": "violet soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-violet-veil-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#EDE9FE",
+      "dark": "#4C1D95",
+      "purpose": "violet soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-violet-veil-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-violet-veil",
+      "purpose": "violet soft panel veil; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-violet-vivid-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#A78BFA",
+      "dark": "#C4B5FD",
+      "purpose": "violet vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-violet-vivid-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#7C3AED",
+      "dark": "#8B5CF6",
+      "purpose": "violet vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-violet-vivid-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#A78BFA",
+      "dark": "#C4B5FD",
+      "purpose": "violet vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-violet-vivid-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-violet-vivid",
+      "purpose": "violet vivid decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-violet-deep-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#6D28D9",
+      "dark": "#8B5CF6",
+      "purpose": "violet deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-violet-deep-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#4C1D95",
+      "dark": "#6D28D9",
+      "purpose": "violet deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-violet-deep-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#6D28D9",
+      "dark": "#8B5CF6",
+      "purpose": "violet deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-violet-deep-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-violet-deep",
+      "purpose": "violet deep decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-violet-glow-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#8B5CF626",
+      "dark": "#A78BFA33",
+      "purpose": "violet radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-violet-glow-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#8B5CF600",
+      "dark": "#A78BFA00",
+      "purpose": "violet radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-violet-glow-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#F5F3FF",
+      "dark": "#2E1065",
+      "purpose": "violet radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-violet-glow-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-violet-glow",
+      "purpose": "violet radial decorative glow; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-purple-wash-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FAF5FF",
+      "dark": "#3B0764",
+      "purpose": "purple quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-purple-wash-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#F3E8FF",
+      "dark": "#581C87",
+      "purpose": "purple quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-purple-wash-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#FAF5FF",
+      "dark": "#3B0764",
+      "purpose": "purple quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-purple-wash-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-purple-wash",
+      "purpose": "purple quiet surface wash; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-purple-veil-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#F3E8FF",
+      "dark": "#581C87",
+      "purpose": "purple soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-purple-veil-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#E9D5FF",
+      "dark": "#6B21A8",
+      "purpose": "purple soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-purple-veil-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#F3E8FF",
+      "dark": "#581C87",
+      "purpose": "purple soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-purple-veil-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-purple-veil",
+      "purpose": "purple soft panel veil; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-purple-vivid-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#C084FC",
+      "dark": "#D8B4FE",
+      "purpose": "purple vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-purple-vivid-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#9333EA",
+      "dark": "#A855F7",
+      "purpose": "purple vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-purple-vivid-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#C084FC",
+      "dark": "#D8B4FE",
+      "purpose": "purple vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-purple-vivid-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-purple-vivid",
+      "purpose": "purple vivid decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-purple-deep-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#7E22CE",
+      "dark": "#A855F7",
+      "purpose": "purple deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-purple-deep-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#581C87",
+      "dark": "#7E22CE",
+      "purpose": "purple deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-purple-deep-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#7E22CE",
+      "dark": "#A855F7",
+      "purpose": "purple deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-purple-deep-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-purple-deep",
+      "purpose": "purple deep decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-purple-glow-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#A855F726",
+      "dark": "#C084FC33",
+      "purpose": "purple radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-purple-glow-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#A855F700",
+      "dark": "#C084FC00",
+      "purpose": "purple radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-purple-glow-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#FAF5FF",
+      "dark": "#3B0764",
+      "purpose": "purple radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-purple-glow-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-purple-glow",
+      "purpose": "purple radial decorative glow; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-magenta-wash-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FDF4FF",
+      "dark": "#4A044E",
+      "purpose": "magenta quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-magenta-wash-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FAE8FF",
+      "dark": "#701A75",
+      "purpose": "magenta quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-magenta-wash-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#FDF4FF",
+      "dark": "#4A044E",
+      "purpose": "magenta quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-magenta-wash-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-magenta-wash",
+      "purpose": "magenta quiet surface wash; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-magenta-veil-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FAE8FF",
+      "dark": "#701A75",
+      "purpose": "magenta soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-magenta-veil-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#F5D0FE",
+      "dark": "#86198F",
+      "purpose": "magenta soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-magenta-veil-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#FAE8FF",
+      "dark": "#701A75",
+      "purpose": "magenta soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-magenta-veil-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-magenta-veil",
+      "purpose": "magenta soft panel veil; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-magenta-vivid-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#E879F9",
+      "dark": "#F0ABFC",
+      "purpose": "magenta vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-magenta-vivid-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#C026D3",
+      "dark": "#D946EF",
+      "purpose": "magenta vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-magenta-vivid-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#E879F9",
+      "dark": "#F0ABFC",
+      "purpose": "magenta vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-magenta-vivid-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-magenta-vivid",
+      "purpose": "magenta vivid decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-magenta-deep-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#A21CAF",
+      "dark": "#D946EF",
+      "purpose": "magenta deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-magenta-deep-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#701A75",
+      "dark": "#A21CAF",
+      "purpose": "magenta deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-magenta-deep-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#A21CAF",
+      "dark": "#D946EF",
+      "purpose": "magenta deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-magenta-deep-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-magenta-deep",
+      "purpose": "magenta deep decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-magenta-glow-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#D946EF26",
+      "dark": "#E879F933",
+      "purpose": "magenta radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-magenta-glow-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#D946EF00",
+      "dark": "#E879F900",
+      "purpose": "magenta radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-magenta-glow-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#FDF4FF",
+      "dark": "#4A044E",
+      "purpose": "magenta radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-magenta-glow-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-magenta-glow",
+      "purpose": "magenta radial decorative glow; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-bronze-wash-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#FCF8F1",
+      "dark": "#2C1C0F",
+      "purpose": "bronze quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-bronze-wash-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#F5EAD7",
+      "dark": "#4C321D",
+      "purpose": "bronze quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-bronze-wash-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#FCF8F1",
+      "dark": "#2C1C0F",
+      "purpose": "bronze quiet surface wash; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-bronze-wash-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-bronze-wash",
+      "purpose": "bronze quiet surface wash; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-bronze-veil-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#F5EAD7",
+      "dark": "#4C321D",
+      "purpose": "bronze soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-bronze-veil-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#EAD4AF",
+      "dark": "#5C3C20",
+      "purpose": "bronze soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-bronze-veil-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#F5EAD7",
+      "dark": "#4C321D",
+      "purpose": "bronze soft panel veil; pair with primary text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-bronze-veil-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-bronze-veil",
+      "purpose": "bronze soft panel veil; pair with primary text",
+      "pairing": "text-primary",
+      "restrictions": "Use only the named foreground",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-bronze-vivid-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#C79653",
+      "dark": "#D9B57E",
+      "purpose": "bronze vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-bronze-vivid-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#8D5D2A",
+      "dark": "#AD7838",
+      "purpose": "bronze vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-bronze-vivid-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#C79653",
+      "dark": "#D9B57E",
+      "purpose": "bronze vivid decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-bronze-vivid-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-bronze-vivid",
+      "purpose": "bronze vivid decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-bronze-deep-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#714923",
+      "dark": "#AD7838",
+      "purpose": "bronze deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-bronze-deep-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#4C321D",
+      "dark": "#714923",
+      "purpose": "bronze deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-bronze-deep-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#714923",
+      "dark": "#AD7838",
+      "purpose": "bronze deep decorative accent; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-bronze-deep-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-bronze-deep",
+      "purpose": "bronze deep decorative accent; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
+    },
+    {
+      "name": "--aven-gradient-family-bronze-glow-stop-01",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#AD783826",
+      "dark": "#C7965333",
+      "purpose": "bronze radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-bronze-glow-stop-02",
+      "kind": "gradient stop",
+      "module": "gradients",
+      "light": "#AD783800",
+      "dark": "#C7965300",
+      "purpose": "bronze radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-bronze-glow-fallback",
+      "kind": "gradient fallback",
+      "module": "gradients",
+      "light": "#FCF8F1",
+      "dark": "#2C1C0F",
+      "purpose": "bronze radial decorative glow; no text",
+      "source": "Gradient recipes",
+      "contrastMode": "solid fallback; image disabled"
+    },
+    {
+      "name": "--aven-gradient-family-bronze-glow-image",
+      "kind": "gradient image",
+      "module": "gradients",
+      "recipe": "family-bronze-glow",
+      "purpose": "bronze radial decorative glow; no text",
+      "pairing": "none",
+      "restrictions": "No text on gradient",
+      "contrastMode": "none in increased contrast, forced colors and print",
+      "source": "Gradient recipes"
     }
   ],
   "scales": [
@@ -20174,6 +24274,706 @@
       "foreground": "accent-on-solid",
       "purpose": "Optional multi-stop product panel",
       "count": 3
+    },
+    {
+      "name": "family-gray-wash",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "gray quiet surface wash; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-gray-veil",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "gray soft panel veil; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-gray-vivid",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "gray vivid decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-gray-deep",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "gray deep decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-gray-glow",
+      "geometry": "radial",
+      "foreground": "none",
+      "purpose": "gray radial decorative glow; no text",
+      "count": 2
+    },
+    {
+      "name": "family-slate-wash",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "slate quiet surface wash; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-slate-veil",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "slate soft panel veil; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-slate-vivid",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "slate vivid decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-slate-deep",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "slate deep decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-slate-glow",
+      "geometry": "radial",
+      "foreground": "none",
+      "purpose": "slate radial decorative glow; no text",
+      "count": 2
+    },
+    {
+      "name": "family-stone-wash",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "stone quiet surface wash; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-stone-veil",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "stone soft panel veil; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-stone-vivid",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "stone vivid decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-stone-deep",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "stone deep decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-stone-glow",
+      "geometry": "radial",
+      "foreground": "none",
+      "purpose": "stone radial decorative glow; no text",
+      "count": 2
+    },
+    {
+      "name": "family-blue-wash",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "blue quiet surface wash; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-blue-veil",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "blue soft panel veil; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-blue-vivid",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "blue vivid decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-blue-deep",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "blue deep decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-blue-glow",
+      "geometry": "radial",
+      "foreground": "none",
+      "purpose": "blue radial decorative glow; no text",
+      "count": 2
+    },
+    {
+      "name": "family-azure-wash",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "azure quiet surface wash; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-azure-veil",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "azure soft panel veil; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-azure-vivid",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "azure vivid decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-azure-deep",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "azure deep decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-azure-glow",
+      "geometry": "radial",
+      "foreground": "none",
+      "purpose": "azure radial decorative glow; no text",
+      "count": 2
+    },
+    {
+      "name": "family-cyan-wash",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "cyan quiet surface wash; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-cyan-veil",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "cyan soft panel veil; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-cyan-vivid",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "cyan vivid decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-cyan-deep",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "cyan deep decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-cyan-glow",
+      "geometry": "radial",
+      "foreground": "none",
+      "purpose": "cyan radial decorative glow; no text",
+      "count": 2
+    },
+    {
+      "name": "family-teal-wash",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "teal quiet surface wash; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-teal-veil",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "teal soft panel veil; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-teal-vivid",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "teal vivid decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-teal-deep",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "teal deep decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-teal-glow",
+      "geometry": "radial",
+      "foreground": "none",
+      "purpose": "teal radial decorative glow; no text",
+      "count": 2
+    },
+    {
+      "name": "family-emerald-wash",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "emerald quiet surface wash; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-emerald-veil",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "emerald soft panel veil; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-emerald-vivid",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "emerald vivid decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-emerald-deep",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "emerald deep decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-emerald-glow",
+      "geometry": "radial",
+      "foreground": "none",
+      "purpose": "emerald radial decorative glow; no text",
+      "count": 2
+    },
+    {
+      "name": "family-green-wash",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "green quiet surface wash; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-green-veil",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "green soft panel veil; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-green-vivid",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "green vivid decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-green-deep",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "green deep decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-green-glow",
+      "geometry": "radial",
+      "foreground": "none",
+      "purpose": "green radial decorative glow; no text",
+      "count": 2
+    },
+    {
+      "name": "family-lime-wash",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "lime quiet surface wash; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-lime-veil",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "lime soft panel veil; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-lime-vivid",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "lime vivid decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-lime-deep",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "lime deep decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-lime-glow",
+      "geometry": "radial",
+      "foreground": "none",
+      "purpose": "lime radial decorative glow; no text",
+      "count": 2
+    },
+    {
+      "name": "family-amber-wash",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "amber quiet surface wash; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-amber-veil",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "amber soft panel veil; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-amber-vivid",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "amber vivid decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-amber-deep",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "amber deep decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-amber-glow",
+      "geometry": "radial",
+      "foreground": "none",
+      "purpose": "amber radial decorative glow; no text",
+      "count": 2
+    },
+    {
+      "name": "family-orange-wash",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "orange quiet surface wash; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-orange-veil",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "orange soft panel veil; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-orange-vivid",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "orange vivid decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-orange-deep",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "orange deep decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-orange-glow",
+      "geometry": "radial",
+      "foreground": "none",
+      "purpose": "orange radial decorative glow; no text",
+      "count": 2
+    },
+    {
+      "name": "family-coral-wash",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "coral quiet surface wash; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-coral-veil",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "coral soft panel veil; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-coral-vivid",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "coral vivid decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-coral-deep",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "coral deep decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-coral-glow",
+      "geometry": "radial",
+      "foreground": "none",
+      "purpose": "coral radial decorative glow; no text",
+      "count": 2
+    },
+    {
+      "name": "family-red-wash",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "red quiet surface wash; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-red-veil",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "red soft panel veil; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-red-vivid",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "red vivid decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-red-deep",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "red deep decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-red-glow",
+      "geometry": "radial",
+      "foreground": "none",
+      "purpose": "red radial decorative glow; no text",
+      "count": 2
+    },
+    {
+      "name": "family-rose-wash",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "rose quiet surface wash; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-rose-veil",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "rose soft panel veil; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-rose-vivid",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "rose vivid decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-rose-deep",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "rose deep decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-rose-glow",
+      "geometry": "radial",
+      "foreground": "none",
+      "purpose": "rose radial decorative glow; no text",
+      "count": 2
+    },
+    {
+      "name": "family-indigo-wash",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "indigo quiet surface wash; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-indigo-veil",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "indigo soft panel veil; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-indigo-vivid",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "indigo vivid decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-indigo-deep",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "indigo deep decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-indigo-glow",
+      "geometry": "radial",
+      "foreground": "none",
+      "purpose": "indigo radial decorative glow; no text",
+      "count": 2
+    },
+    {
+      "name": "family-violet-wash",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "violet quiet surface wash; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-violet-veil",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "violet soft panel veil; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-violet-vivid",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "violet vivid decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-violet-deep",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "violet deep decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-violet-glow",
+      "geometry": "radial",
+      "foreground": "none",
+      "purpose": "violet radial decorative glow; no text",
+      "count": 2
+    },
+    {
+      "name": "family-purple-wash",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "purple quiet surface wash; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-purple-veil",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "purple soft panel veil; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-purple-vivid",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "purple vivid decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-purple-deep",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "purple deep decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-purple-glow",
+      "geometry": "radial",
+      "foreground": "none",
+      "purpose": "purple radial decorative glow; no text",
+      "count": 2
+    },
+    {
+      "name": "family-magenta-wash",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "magenta quiet surface wash; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-magenta-veil",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "magenta soft panel veil; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-magenta-vivid",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "magenta vivid decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-magenta-deep",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "magenta deep decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-magenta-glow",
+      "geometry": "radial",
+      "foreground": "none",
+      "purpose": "magenta radial decorative glow; no text",
+      "count": 2
+    },
+    {
+      "name": "family-bronze-wash",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "bronze quiet surface wash; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-bronze-veil",
+      "geometry": "135deg",
+      "foreground": "text-primary",
+      "purpose": "bronze soft panel veil; pair with primary text",
+      "count": 2
+    },
+    {
+      "name": "family-bronze-vivid",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "bronze vivid decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-bronze-deep",
+      "geometry": "135deg",
+      "foreground": "none",
+      "purpose": "bronze deep decorative accent; no text",
+      "count": 2
+    },
+    {
+      "name": "family-bronze-glow",
+      "geometry": "radial",
+      "foreground": "none",
+      "purpose": "bronze radial decorative glow; no text",
+      "count": 2
     }
   ],
   "contrast": {

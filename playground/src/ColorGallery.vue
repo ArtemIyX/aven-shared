@@ -1,8 +1,15 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import colors from './colors-gallery.json'
 const theme = ref('light')
 const contrast = ref('normal')
+const gradientQuery = ref('')
+const gradientUse = ref('all')
+const visibleGradients = computed(() => colors.gradients.filter(g => {
+  const query = gradientQuery.value.trim().toLowerCase()
+  return (!query || `${g.name} ${g.purpose}`.toLowerCase().includes(query)) &&
+    (gradientUse.value === 'all' || (gradientUse.value === 'text' ? g.foreground !== 'none' : g.foreground === 'none'))
+}))
 const primitives = colors.primitives
 const semantics = colors.semantics
 </script>
@@ -31,6 +38,6 @@ const semantics = colors.semantics
     <details><summary>Primitive ramps ({{ primitives.length }})</summary><div class="swatch-grid"><div v-for="t in primitives" :key="t.name"><span class="swatch" :style="{backgroundColor:`var(${t.name})`}"></span><code>{{ t.name }}</code><small>{{ t.value }}</small></div></div></details>
     <details><summary>Semantic roles ({{ semantics.length }})</summary><div class="swatch-grid"><div v-for="t in semantics" :key="t.name"><span class="swatch" :style="{backgroundColor:`var(${t.name})`}"></span><code>{{ t.name }}</code><small>{{ t.light }} / {{ t.dark }}</small></div></div></details>
     <details><summary>Scales ({{ colors.scales.length }})</summary><div v-for="s in colors.scales" :key="s.name"><p>{{ s.name }} — {{ s.direction }}</p><div class="scale"><span v-for="n in s.count" :key="n" :style="{backgroundColor:`var(--aven-scale-${s.name}-${String(n).padStart(2, '0')})`}"></span></div></div></details>
-    <details><summary>Gradients and solid fallbacks ({{ colors.gradients.length }})</summary><div class="gallery-grid"><div v-for="g in colors.gradients" :key="g.name"><p>{{ g.name }} · foreground: {{ g.foreground }}</p><div class="gradient" :style="{backgroundColor:`var(--aven-gradient-${g.name}-fallback)`, backgroundImage:`var(--aven-gradient-${g.name}-image)`}"></div><div class="fallback" :style="{backgroundColor:`var(--aven-gradient-${g.name}-fallback)`}"></div><small>{{ g.purpose }}</small></div></div></details>
+    <details><summary>Gradients and solid fallbacks ({{ colors.gradients.length }})</summary><div class="gallery-controls gradient-filters"><label>Find a gradient <input v-model="gradientQuery" type="search" placeholder="Name or purpose" /></label><label>Allowed use <select v-model="gradientUse"><option value="all">All gradients</option><option value="text">Supports text</option><option value="decorative">No text</option></select></label></div><p>Showing {{ visibleGradients.length }} of {{ colors.gradients.length }} gradients.</p><div class="gallery-grid"><div v-for="g in visibleGradients" :key="g.name"><p>{{ g.name }} · foreground: {{ g.foreground }}</p><div class="gradient" :style="{backgroundColor:`var(--aven-gradient-${g.name}-fallback)`, backgroundImage:`var(--aven-gradient-${g.name}-image)`}"></div><div class="fallback" :style="{backgroundColor:`var(--aven-gradient-${g.name}-fallback)`}"></div><small>{{ g.purpose }}</small></div></div></details>
   </section>
 </template>
