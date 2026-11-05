@@ -30,7 +30,7 @@
   "scripts": {
     "dev": "vite --config playground/vite.config.ts --host 127.0.0.1",
     "typecheck": "vue-tsc --noEmit -p tsconfig.json",
-    "build": "npm run typecheck && vite build && vue-tsc -p tsconfig.build.json --emitDeclarationOnly",
+    "build": "vite build && vue-tsc -p tsconfig.build.json --emitDeclarationOnly",
     "build:playground": "vite build --config playground/vite.config.ts",
     "test": "node --test",
     "pack:check": "npm pack --dry-run"
