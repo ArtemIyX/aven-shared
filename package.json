@@ -21,7 +21,12 @@
     "dist",
     "src/styles",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "docs/color-palette.md",
+    "docs/color-usage-guide.md",
+    "docs/color-css-implementation-prompt.md",
+    "docs/color-token-inventory.md",
+    "src/tokens/colors.json"
   ],
   "sideEffects": [
     "**/*.css"
@@ -37,7 +42,12 @@
     },
     "./tokens.css": "./src/styles/tokens.css",
     "./base.css": "./src/styles/base.css",
-    "./style.css": "./src/styles/style.css"
+    "./style.css": "./src/styles/style.css",
+    "./colors.css": "./src/styles/colors.css",
+    "./finance.css": "./src/styles/finance.css",
+    "./charts.css": "./src/styles/charts.css",
+    "./diagrams.css": "./src/styles/diagrams.css",
+    "./gradients.css": "./src/styles/gradients.css"
   },
   "peerDependencies": {
     "vue": "^3.3.0"
@@ -48,7 +58,11 @@
     "build": "vite build && vue-tsc -p tsconfig.build.json --emitDeclarationOnly",
     "build:playground": "vite build --config playground/vite.config.ts",
     "test": "node --test",
-    "pack:check": "npm pack --dry-run"
+    "pack:check": "npm pack --dry-run",
+    "colors:generate": "node scripts/generate-colors.mjs",
+    "colors:check": "node scripts/generate-colors.mjs --check && node scripts/check-color-reference.mjs",
+    "colors:browser": "node scripts/browser-colors.mjs",
+    "colors:pack-browser": "node scripts/check-packed-colors.mjs"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.0",

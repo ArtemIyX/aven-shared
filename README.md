@@ -20,6 +20,39 @@ import '@wellsaik/aven-shared/style.css'
 
 `tokens.css` declares defaults on `:root`. Import application overrides after the package styles, or define the same `--aven-*` properties on an application subtree. The component does not import CSS automatically, so applications choose the CSS files they need.
 
+## Color system
+
+`tokens.css` includes theme-independent palette ramps, core semantic roles, legacy aliases and non-color tokens. Import `colors.css` for all domains, or import `finance.css`, `charts.css`, `diagrams.css` or `gradients.css` separately. Each optional entry includes core; diagrams also includes charts. The existing `base.css` and `style.css` remain separate and opt-in.
+
+```css
+@import '@wellsaik/aven-shared/colors.css';
+@import '@wellsaik/aven-shared/base.css';
+@import '@wellsaik/aven-shared/style.css';
+.value { color: var(--aven-color-finance-gain-text); }
+.action { color: var(--aven-color-accent-on-solid); background: var(--aven-color-accent-solid); }
+.panel { color: var(--aven-color-text-primary); background: var(--aven-color-surface-base); }
+.banner { background-color: var(--aven-gradient-surface-workspace-fallback); background-image: var(--aven-gradient-surface-workspace-image); }
+```
+
+The document root defaults to light. Set `data-aven-theme="light"`, `"dark"`, or `"system"` on the root or a subtree; system follows the OS preference. An ordinary descendant or invalid theme value inherits its parent. Set `data-aven-contrast="more"` for the provided enhanced mappings, and `data-aven-output="print"` for a white canvas and dark text. Enhanced contrast is inherited; a nested theme boundary reapplies the enhanced mapping for that theme. In a solid selected row, use `--aven-color-selection-text` with `--aven-color-selection-fill` and preserve financial meaning with a sign or label. Print uses monochrome stops and chart marks; add patterns or line styles to distinguish categories. Forced colors takes precedence over print. These mappings are not a substitute for testing each component. Gradient images are disabled in enhanced contrast, forced colors and print; use their solid fallback.
+
+Each theme boundary redeclares its aliases. Semantic overrides work on their declaration scope; overriding a primitive on an arbitrary descendant does not recompute inherited semantic aliases. For coordinated primitive customization, redeclare the semantic aliases at a theme boundary. Later consumer rules and the established `--aven-color-text`, `--aven-color-text-muted`, `--aven-color-surface`, `--aven-color-border`, `--aven-color-accent`, `--aven-color-accent-strong` and `--aven-text-color` hooks remain available. The new palette intentionally changes default hex values. Do not assume an action fill has sufficient contrast for link text.
+
+Keep a chart and its legend, axes and tooltip in the same theme scope. Portaled content must carry the resolved theme or mount inside the scope. Canvas charts must read computed values from the themed element and redraw after relevant theme changes. Application code owns stable series assignment, data normalization and persistence. To avoid a flash when an application persists a preference, it can set the attribute early in its own document head, before styles and rendering:
+
+```html
+<script>
+  document.documentElement.dataset.avenTheme = localStorage.getItem('aven-theme') || 'light'
+</script>
+```
+
+No library script or storage is required.
+
+Scale stops are ordered colors, not thresholds. Missing values need a separate treatment; labels on opaque scale cells should use whichever of `#020617` or `#FFFFFF` gives greater calculated contrast. Gradients marked `none` for foreground are decorative or data-only. Preserve signs, labels, line styles and patterns alongside color.
+
+The manifest at `src/tokens/colors.json` is the implementation source. Run `npm run colors:generate` after editing it and `npm run colors:check` to check generated files. See [palette](docs/color-palette.md), [usage guide](docs/color-usage-guide.md), and [implementation brief](docs/color-css-implementation-prompt.md) for values and restrictions.
+
+
 ## AvenText
 
 ```vue
@@ -76,7 +109,7 @@ npm install
 npm run dev
 ```
 
-The playground aliases `@wellsaik/aven-shared` to the local source and demonstrates every text type, slot markup, semantic element overrides, classes, inline styles, and a scoped theme. The package checks are:
+The playground aliases `@wellsaik/aven-shared` to the local source and demonstrates text customization, theme scopes, controls, a portfolio table, chart and diagram fixtures, and palette swatches. The package checks are:
 
 ```sh
 npm run typecheck

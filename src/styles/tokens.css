@@ -1,36 +1,4 @@
-:root {
-  --aven-color-text: #252b33;
-  --aven-color-text-muted: #657181;
-  --aven-color-surface: #ffffff;
-  --aven-color-surface-raised: #f4f6f8;
-  --aven-color-border: #d8dee6;
-  --aven-color-accent: #315f91;
-  --aven-color-accent-strong: #244a73;
-
-  --aven-font-family-sans: "Inter", "Segoe UI", sans-serif;
-  --aven-font-family-serif: Georgia, "Times New Roman", serif;
-  --aven-font-family-mono: "SFMono-Regular", Consolas, monospace;
-
-  --aven-font-size-xs: 0.75rem;
-  --aven-font-size-sm: 0.875rem;
-  --aven-font-size-md: 1rem;
-  --aven-font-size-lg: 1.125rem;
-  --aven-font-size-xl: 1.375rem;
-  --aven-font-size-2xl: 1.75rem;
-  --aven-font-size-3xl: 2.25rem;
-
-  --aven-line-height-tight: 1.2;
-  --aven-line-height-normal: 1.5;
-  --aven-line-height-relaxed: 1.7;
-
-  --aven-space-1: 0.25rem;
-  --aven-space-2: 0.5rem;
-  --aven-space-3: 0.75rem;
-  --aven-space-4: 1rem;
-  --aven-space-6: 1.5rem;
-  --aven-space-8: 2rem;
-
-  --aven-radius-sm: 0.25rem;
-  --aven-radius-md: 0.5rem;
-  --aven-radius-lg: 0.875rem;
-}
+@import "./non-color-tokens.css";
+@import "./colors/primitives.css";
+@import "./colors/core.css";
+@import "./colors/contrast.css";
