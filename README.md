@@ -138,3 +138,7 @@ Build, test, or package-check failures stop before the version commit and publis
 Trusted publishing uses GitHub's short-lived OIDC identity instead of a stored npm write token. GitHub Actions needs `contents: write` to commit version bumps and `id-token: write` to publish. Repository settings and branch rules must allow the workflow to push to `main`.
 
 These publishing instructions describe the release workflow; publishing was not run as part of local development.
+
+## License
+
+This package is distributed under the MIT License. See [LICENSE](./LICENSE).
