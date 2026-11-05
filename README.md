@@ -1,4 +1,4 @@
-# @aven/shared
+# @wellsaik/aven-shared
 
 A small shared design system for Aven applications. It provides semantic CSS tokens, optional application defaults, and one Vue 3 text component.
 
@@ -7,15 +7,15 @@ A small shared design system for Aven applications. It provides semantic CSS tok
 Install the package in a Vue 3 application:
 
 ```sh
-npm install @aven/shared
+npm install @wellsaik/aven-shared
 ```
 
 Import the CSS once from the application entry point, in this order:
 
 ```ts
-import '@aven/shared/tokens.css'
-import '@aven/shared/base.css' // Optional; opt in by adding .aven-app to an application root.
-import '@aven/shared/style.css'
+import '@wellsaik/aven-shared/tokens.css'
+import '@wellsaik/aven-shared/base.css' // Optional; opt in by adding .aven-app to an application root.
+import '@wellsaik/aven-shared/style.css'
 ```
 
 `tokens.css` declares defaults on `:root`. Import application overrides after the package styles, or define the same `--aven-*` properties on an application subtree. The component does not import CSS automatically, so applications choose the CSS files they need.
@@ -24,7 +24,7 @@ import '@aven/shared/style.css'
 
 ```vue
 <script setup lang="ts">
-import { AvenText } from '@aven/shared'
+import { AvenText } from '@wellsaik/aven-shared'
 </script>
 
 <template>
@@ -47,7 +47,7 @@ import { AvenText } from '@aven/shared'
 
 The optional `as` prop accepts a standard HTML element name and changes the rendered element without changing its visual type. Choose heading levels based on the document structure, not only the appearance you want. The component forwards normal attributes and listeners to its single root and renders its default slot as Vue content. Slot content must be valid inside the selected element (for example, do not put a paragraph inside a `span`).
 
-The component is also available from `@aven/shared/AvenText`.
+The component is also available from `@wellsaik/aven-shared/AvenText`.
 
 ## Customization
 
@@ -76,7 +76,7 @@ npm install
 npm run dev
 ```
 
-The playground aliases `@aven/shared` to the local source and demonstrates every text type, slot markup, semantic element overrides, classes, inline styles, and a scoped theme. The package checks are:
+The playground aliases `@wellsaik/aven-shared` to the local source and demonstrates every text type, slot markup, semantic element overrides, classes, inline styles, and a scoped theme. The package checks are:
 
 ```sh
 npm run typecheck
@@ -98,21 +98,47 @@ npm pack
 Then, in the consuming application's directory, install the generated tarball by its path:
 
 ```sh
-npm install ../aven-shared/aven-shared-0.1.0.tgz
+npm install ../aven-shared/wellsaik-aven-shared-0.1.0.tgz
 ```
 
 The tarball contains the compiled JavaScript, generated TypeScript declarations, README, and CSS files addressed by the package exports. This local tarball workflow does not publish anything.
 
-## Future release workflow
+## Release workflow
 
-After a version is ready, build and review the package, update the package version, publish that version to the npm registry, then upgrade the consuming application to the new version. The following are future examples and require a published package and registry access:
+The first public version is a one-time manual setup. The package currently starts at `0.1.0`.
 
-```sh
-# In @aven/shared, after choosing the next version:
-npm version patch
-npm run build
-npm publish --access public
+1. Sign in to npm with the `wellsaik` account and two-factor authentication enabled. This package uses your user scope, `@wellsaik`.
+2. From the repository, install and validate the package:
 
-# In a consuming application:
-npm install @aven/shared@latest
-```
+   ```sh
+   npm ci
+   npm run typecheck
+   npm run build
+   npm run build:playground
+   npm test
+   npm run pack:check
+   ```
+
+3. Publish the initial public version once:
+
+   ```sh
+   npm login
+   npm publish --access public
+   ```
+
+4. After the package exists and the `publish.yml` workflow is on the GitHub repository, open the npm package settings and add a GitHub Actions trusted publisher for `ArtemIyX/aven-shared`, using the workflow filename `publish.yml`. Explicitly allow direct `npm publish`. Configure this shortly before merging the workflow so the first trusted publish can validate the configuration.
+5. Merge the workflow to `main`. The merge push will run the first automated patch release.
+
+After setup, every push to `main`, including documentation-only changes, runs validation, increments the patch version, commits the updated `package.json` and lockfile, and publishes that version to npm. The version commit uses GitHub's workflow token and does not start another push workflow.
+
+To release manually, open **Actions → Publish @wellsaik/aven-shared → Run workflow**, select `main`, and choose `patch`, `minor`, `major`, or `current`. The first three choices bump and commit a version before publishing. `current` retries the version already in `package.json`; if npm already has it, the run reports that and skips publishing. The manual button is available after this workflow is merged into the default branch.
+
+Build, test, or package-check failures stop before the version commit and publish. If npm publishing fails after the version commit, use the manual `current` option to retry. The workflow saves logs and available package outputs for 14 days.
+
+Trusted publishing uses GitHub's short-lived OIDC identity instead of a stored npm write token. GitHub Actions needs `contents: write` to commit version bumps and `id-token: write` to publish. Repository settings and branch rules must allow the workflow to push to `main`.
+
+These publishing instructions describe the release workflow; publishing was not run as part of local development.
+
+## License
+
+This package is distributed under the MIT License. See [LICENSE](./LICENSE).

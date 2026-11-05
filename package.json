@@ -1,12 +1,27 @@
 {
-  "name": "@aven/shared",
+  "name": "@wellsaik/aven-shared",
   "version": "0.1.0",
   "description": "Shared CSS tokens and Vue components for Aven applications",
+  "keywords": [
+    "vue",
+    "vue3",
+    "typescript",
+    "design-system",
+    "design-tokens",
+    "css",
+    "component-library"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ArtemIyX/aven-shared.git"
+  },
   "type": "module",
   "files": [
     "dist",
     "src/styles",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "sideEffects": [
     "**/*.css"
