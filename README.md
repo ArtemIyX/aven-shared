@@ -103,16 +103,38 @@ npm install ../aven-shared/aven-shared-0.1.0.tgz
 
 The tarball contains the compiled JavaScript, generated TypeScript declarations, README, and CSS files addressed by the package exports. This local tarball workflow does not publish anything.
 
-## Future release workflow
+## Release workflow
 
-After a version is ready, build and review the package, update the package version, publish that version to the npm registry, then upgrade the consuming application to the new version. The following are future examples and require a published package and registry access:
+The first public version is a one-time manual setup. The package currently starts at `0.1.0`.
 
-```sh
-# In @aven/shared, after choosing the next version:
-npm version patch
-npm run build
-npm publish --access public
+1. Sign in to npm with an account that can publish under the `@aven` scope and has two-factor authentication enabled.
+2. From the repository, install and validate the package:
 
-# In a consuming application:
-npm install @aven/shared@latest
-```
+   ```sh
+   npm ci
+   npm run typecheck
+   npm run build
+   npm run build:playground
+   npm test
+   npm run pack:check
+   ```
+
+3. Publish the initial public version once:
+
+   ```sh
+   npm login
+   npm publish --access public
+   ```
+
+4. After the package exists and the `publish.yml` workflow is on the GitHub repository, open the npm package settings and add a GitHub Actions trusted publisher for `ArtemIyX/aven-shared`, using the workflow filename `publish.yml`. Explicitly allow direct `npm publish`. Configure this shortly before merging the workflow so the first trusted publish can validate the configuration.
+5. Merge the workflow to `main`. The merge push will run the first automated patch release.
+
+After setup, every push to `main`, including documentation-only changes, runs validation, increments the patch version, commits the updated `package.json` and lockfile, and publishes that version to npm. The version commit uses GitHub's workflow token and does not start another push workflow.
+
+To release manually, open **Actions → Publish @aven/shared → Run workflow**, select `main`, and choose `patch`, `minor`, `major`, or `current`. The first three choices bump and commit a version before publishing. `current` retries the version already in `package.json`; if npm already has it, the run reports that and skips publishing. The manual button is available after this workflow is merged into the default branch.
+
+Build, test, or package-check failures stop before the version commit and publish. If npm publishing fails after the version commit, use the manual `current` option to retry. The workflow saves logs and available package outputs for 14 days.
+
+Trusted publishing uses GitHub's short-lived OIDC identity instead of a stored npm write token. GitHub Actions needs `contents: write` to commit version bumps and `id-token: write` to publish. Repository settings and branch rules must allow the workflow to push to `main`.
+
+These publishing instructions describe the release workflow; publishing was not run as part of local development.

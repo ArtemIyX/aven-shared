@@ -2,6 +2,10 @@
   "name": "@aven/shared",
   "version": "0.1.0",
   "description": "Shared CSS tokens and Vue components for Aven applications",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ArtemIyX/aven-shared.git"
+  },
   "type": "module",
   "files": [
     "dist",
