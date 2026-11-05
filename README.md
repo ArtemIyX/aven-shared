@@ -81,10 +81,12 @@ The playground aliases `@aven/shared` to the local source and demonstrates every
 ```sh
 npm run typecheck
 npm run build
-npm pack --dry-run
+npm run build:playground
+npm test
+npm run pack:check
 ```
 
-These local commands work against this repository; they do not require a published package.
+`npm test` runs after the build because it checks the compiled component. These local commands work against this repository; they do not require a published package.
 
 To test the actual packed package from another local application, first build and create the tarball:
 
