@@ -1,0 +1,79 @@
+body {
+  margin: 0;
+  background: var(--aven-color-surface-raised);
+}
+
+.playground-shell {
+  box-sizing: border-box;
+  display: grid;
+  gap: var(--aven-space-6);
+  max-width: 56rem;
+  margin-inline: auto;
+  padding: var(--aven-space-8) var(--aven-space-4);
+}
+
+.playground-intro,
+.playground-card {
+  display: grid;
+  gap: var(--aven-space-3);
+}
+
+.playground-card {
+  padding: var(--aven-space-6);
+  border: 1px solid var(--aven-color-border);
+  border-radius: var(--aven-radius-lg);
+  background: var(--aven-color-surface);
+}
+
+.intro-copy {
+  max-width: 42rem;
+  color: var(--aven-color-text-muted);
+}
+
+.example-list {
+  display: grid;
+  gap: var(--aven-space-4);
+}
+
+.example-row {
+  display: grid;
+  gap: var(--aven-space-2);
+}
+
+.example-label {
+  font-family: var(--aven-font-family-mono);
+}
+
+.custom-class-example {
+  --aven-text-color: #704c12;
+  --aven-text-font-size: var(--aven-font-size-lg);
+}
+
+.playground-theme {
+  --aven-color-text: #263b32;
+  --aven-color-text-muted: #587264;
+  --aven-color-surface: #eff6f0;
+  --aven-color-border: #bdcfbf;
+  --aven-color-accent: #327051;
+  --aven-font-size-md: 1.0625rem;
+  --aven-radius-lg: 1.25rem;
+}
+
+.playground-theme code {
+  padding: 0.1em 0.3em;
+  border-radius: var(--aven-radius-sm);
+  background: var(--aven-color-surface-raised);
+  font-family: var(--aven-font-family-mono);
+  font-size: 0.9em;
+}
+
+.playground-theme > .aven-text + .aven-text {
+  margin-block-start: var(--aven-space-2);
+}
+
+@media (min-width: 40rem) {
+  .example-row {
+    grid-template-columns: 12rem minmax(0, 1fr);
+    align-items: baseline;
+  }
+}

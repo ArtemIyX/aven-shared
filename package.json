@@ -1,0 +1,43 @@
+{
+  "name": "@aven/shared",
+  "version": "0.1.0",
+  "description": "Shared CSS tokens and Vue components for Aven applications",
+  "type": "module",
+  "files": [
+    "dist",
+    "src/styles",
+    "README.md"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./AvenText": {
+      "types": "./dist/AvenText.d.ts",
+      "import": "./dist/AvenText.js"
+    },
+    "./tokens.css": "./src/styles/tokens.css",
+    "./base.css": "./src/styles/base.css",
+    "./style.css": "./src/styles/style.css"
+  },
+  "peerDependencies": {
+    "vue": "^3.3.0"
+  },
+  "scripts": {
+    "dev": "vite --config playground/vite.config.ts --host 127.0.0.1",
+    "typecheck": "vue-tsc --noEmit -p tsconfig.json",
+    "build": "npm run typecheck && vite build && vue-tsc -p tsconfig.build.json --emitDeclarationOnly",
+    "pack:check": "npm pack --dry-run"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.0",
+    "typescript": "^5.7.0",
+    "vite": "^6.0.0",
+    "vue": "^3.5.0",
+    "vue-tsc": "^2.2.0"
+  }
+}

@@ -1,0 +1,8 @@
+.aven-app {
+  min-height: 100vh;
+  color: var(--aven-color-text);
+  background-color: var(--aven-color-surface);
+  font-family: var(--aven-font-family-sans);
+  font-size: var(--aven-font-size-md);
+  line-height: var(--aven-line-height-normal);
+}
