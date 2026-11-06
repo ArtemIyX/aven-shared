@@ -1,5 +1,5 @@
 {
-  "extends": "./tsconfig.json",
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "noEmit": false,
     "declaration": true,
@@ -8,5 +8,9 @@
     "rootDir": "./src",
     "outDir": "./dist"
   },
-  "include": ["src/**/*.ts", "src/**/*.vue", "env.d.ts"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.vue",
+    "../../env.d.ts"
+  ]
 }

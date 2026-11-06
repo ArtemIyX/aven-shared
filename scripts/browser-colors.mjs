@@ -6,8 +6,8 @@ import { pathToFileURL } from 'node:url';
 import assert from 'node:assert/strict';
 const chrome=process.env.AVEN_BROWSER || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
 const dir=await mkdtemp(path.join(tmpdir(),'aven-color-browser-'));
-const styles=path.resolve(process.env.AVEN_CSS_DIR || 'src/styles');
-const html=`<!doctype html><link rel="stylesheet" href="${pathToFileURL(path.join(styles,'colors.css'))}"><link rel="stylesheet" href="${pathToFileURL(path.join(styles,'style.css'))}">
+const styles=path.resolve(process.env.AVEN_CSS_DIR || 'packages/shared/src/styles');
+const html=`<!doctype html><link rel="stylesheet" href="${pathToFileURL(path.join(styles,'colors.css'))}"><link rel="stylesheet" href="${pathToFileURL(path.resolve(process.env.AVEN_VUE_CSS || 'packages/vue/src/style.css'))}">
 <style>:root {--aven-color-accent: #123456} #legacy {--aven-color-text: #123456;--aven-color-text-muted:#345678} #hook {--aven-text-color: #654321} .loss {color:var(--aven-color-finance-loss-text)} .focus:focus {outline:3px solid var(--aven-color-focus-ring)}</style>
 <div id="gradient" style="background-color:var(--aven-gradient-accent-solid-fallback);background-image:var(--aven-gradient-accent-solid-image)"></div><div id="default"><span class="aven-text" id="text">text</span><div id="legacy"><span class="aven-text" id="legacy-text">legacy</span><span class="aven-text aven-text--caption" id="caption">caption</span><blockquote class="aven-text aven-text--quote" id="quote">quote</blockquote><span class="aven-text aven-text--caption" id="caption-hook" style="--aven-text-color:#654321">caption hook</span></div><span class="aven-text" id="hook">hook</span></div>
 <section data-aven-theme="dark" id="dark"><div data-aven-theme="light" id="light-island"><div data-aven-theme="system" id="system-in-light"></div></div></section>
@@ -26,7 +26,7 @@ let socket;try {
  const value=(id,n)=>evaluate(`getComputedStyle(document.getElementById(${JSON.stringify(id)})).getPropertyValue(${JSON.stringify(n)}).trim()`);
  const check=async(id,n,expected)=>assert.equal(await value(id,n),expected,`${id} ${n}`);
  for(const [entry,property,expected] of [['tokens','--aven-color-text','#182536'],['finance','--aven-color-finance-gain-text','#115E59'],['charts','--aven-color-series-01-stroke','#1D4ED8'],['diagrams','--aven-color-diagram-canvas','#FFFFFF'],['gradients','--aven-gradient-accent-solid-fallback','#1D4ED8'],['colors','--aven-color-finance-gain-text','#115E59'],['base','min-height','100vh'],['style','margin-block-start','0px']]){
-  const href=pathToFileURL(path.join(styles,entry+'.css')).href;
+  const href=pathToFileURL(entry === 'style' ? path.resolve(process.env.AVEN_VUE_CSS || 'packages/vue/src/style.css') : path.join(styles,entry+'.css')).href;
   const result=await evaluate(`new Promise((resolve,reject)=>{const frame=document.createElement('iframe');document.body.appendChild(frame);const doc=frame.contentDocument;const el=doc.createElement('div');el.className=${JSON.stringify(entry==='base'?'aven-app':entry==='style'?'aven-text':'')};doc.body.appendChild(el);const link=doc.createElement('link');link.rel='stylesheet';link.onload=()=>{const result=frame.contentWindow.getComputedStyle(el).getPropertyValue(${JSON.stringify(property)}).trim();frame.remove();resolve(result)};link.onerror=()=>reject(new Error('Failed stylesheet '+${JSON.stringify(href)}));link.href=${JSON.stringify(href)};doc.head.appendChild(link)})`);
   if(entry==='base')assert.notEqual(result,'0px','base stylesheet loaded');else assert.equal(result,expected,entry+' standalone stylesheet');
  }
@@ -39,7 +39,7 @@ let socket;try {
  if(gallery){
   await send('Emulation.setEmulatedMedia',{features:[]});let available=false;for(let i=0;i<100;i++){try{if((await fetch('http://127.0.0.1:4179/')).ok){available=true;break}}catch{}await new Promise(r=>setTimeout(r,100))}assert(available,'Playground server unavailable');
   await send('Page.navigate',{url:'http://127.0.0.1:4179/'});for(let i=0;i<100;i++){try{if(await evaluate("!!document.querySelector('.color-gallery select')"))break}catch{}await new Promise(r=>setTimeout(r,100))}
-  const folder=path.resolve('gallery-review');await import('node:fs/promises').then(fs=>fs.mkdir(folder,{recursive:true}));
+  const folder=path.join(dir,'gallery-review');await import('node:fs/promises').then(fs=>fs.mkdir(folder,{recursive:true}));
   for(const [name,width,height,theme] of [['light',1200,900,'light'],['dark',1200,900,'dark'],['narrow',390,844,'light']]){
    await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
    await evaluate(`(()=>{const s=document.querySelector('.color-gallery select');s.value=${JSON.stringify(theme)};s.dispatchEvent(new Event('change',{bubbles:true}));document.querySelector('.color-gallery').scrollIntoView()})()`);await new Promise(r=>setTimeout(r,200));

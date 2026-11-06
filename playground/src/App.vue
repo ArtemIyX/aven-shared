@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import ColorGallery from './ColorGallery.vue'
-import { AvenText } from '@wellsaik/aven-shared'
+import { AvenText } from '@wellsaik/aven-vue'
 
 const userName = ref('Avery')
 </script>

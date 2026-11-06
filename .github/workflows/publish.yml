@@ -1,4 +1,4 @@
-name: Publish @wellsaik/aven-shared
+name: Publish Aven packages
 
 on:
   push:
@@ -45,6 +45,12 @@ jobs:
       - name: Run tests
         run: npm test 2>&1 | tee -a validation-diagnostics.log
 
+      - name: Check colors
+        run: npm run colors:check
+
+      - name: Validate packed consumer
+        run: npm run pack:consumer
+
       - name: Validate package contents
         run: npm run pack:check 2>&1 | tee -a validation-diagnostics.log
 
@@ -55,7 +61,8 @@ jobs:
           name: release-validation-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             validation-diagnostics.log
-            dist/
+            packages/shared/dist/
+            packages/vue/dist/
             playground/dist/
           if-no-files-found: warn
           retention-days: 14
@@ -101,57 +108,45 @@ jobs:
             exit 1
           fi
 
-      - name: Read merged package version
-        id: version
-        run: |
-          version="$(node -p "JSON.parse(require('node:fs').readFileSync('package.json', 'utf8')).version")"
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-
-      - name: Check package and version on npm
-        id: registry
-        env:
-          VERSION: ${{ steps.version.outputs.version }}
+      - name: Check both packages and versions on npm
         run: |
           mkdir -p .release-artifacts
-
-          if ! npm view '@wellsaik/aven-shared' version --json > .release-artifacts/package-view.log 2>&1; then
-            if grep -Eq 'E404|404 Not Found' .release-artifacts/package-view.log; then
-              echo '::error::The package is not on npm yet. Complete the documented one-time public 0.1.0 bootstrap before enabling automated releases.'
-            else
-              cat .release-artifacts/package-view.log
-              echo '::error::Could not verify the package on npm.'
+          for workspace in shared vue; do
+            name="$(node -p "require('./packages/$workspace/package.json').name")"
+            version="$(node -p "require('./packages/$workspace/package.json').version")"
+            if ! npm view "$name" version --json > ".release-artifacts/$workspace-package-view.log" 2>&1; then
+              cat ".release-artifacts/$workspace-package-view.log"
+              echo "::error::Cannot verify $name. Bootstrap new packages and configure trusted publishing before automated release."
+              exit 1
             fi
-            exit 1
-          fi
+            if npm view "$name@$version" version --json > ".release-artifacts/$workspace-version-view.log" 2>&1; then
+              echo skip > ".release-artifacts/$workspace-action"
+              echo "$name@$version already exists; skipping." >> "$GITHUB_STEP_SUMMARY"
+            elif grep -Eq 'E404|404 Not Found' ".release-artifacts/$workspace-version-view.log"; then
+              echo publish > ".release-artifacts/$workspace-action"
+            else
+              cat ".release-artifacts/$workspace-version-view.log"
+              echo "::error::Could not verify $name@$version on npm."
+              exit 1
+            fi
+          done
 
-          if npm view "@wellsaik/aven-shared@$VERSION" version --json > .release-artifacts/version-view.log 2>&1; then
-            echo 'publish=false' >> "$GITHUB_OUTPUT"
-            echo "Version $VERSION is already published; skipping the duplicate publish." >> "$GITHUB_STEP_SUMMARY"
-          elif grep -Eq 'E404|404 Not Found' .release-artifacts/version-view.log; then
-            echo 'publish=true' >> "$GITHUB_OUTPUT"
-          else
-            cat .release-artifacts/version-view.log
-            echo '::error::Could not verify the requested version on npm.'
-            exit 1
-          fi
-
-      - name: Validate and pack release tarball
-        if: steps.registry.outputs.publish == 'true'
-        id: pack
-        env:
-          VERSION: ${{ steps.version.outputs.version }}
+      - name: Pack and publish in dependency order
         run: |
-          npm run pack:check 2>&1 | tee -a release-diagnostics.log
-          npm pack --json --pack-destination .release-artifacts > pack-result.json 2>> release-diagnostics.log
-          filename="$(node -p "JSON.parse(require('node:fs').readFileSync('pack-result.json', 'utf8'))[0].filename")"
-          echo "file=.release-artifacts/$filename" >> "$GITHUB_OUTPUT"
-          echo "Prepared @wellsaik/aven-shared@$VERSION as .release-artifacts/$filename" >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Publish public package with npm OIDC
-        if: steps.registry.outputs.publish == 'true'
-        env:
-          PACKAGE_FILE: ${{ steps.pack.outputs.file }}
-        run: npm publish "$PACKAGE_FILE" --access public 2>&1 | tee -a release-diagnostics.log
+          for workspace in shared vue; do
+            if [[ "$(cat ".release-artifacts/$workspace-action")" == skip ]]; then continue; fi
+            if [[ "$workspace" == vue ]]; then
+              range="$(node -p "require('./packages/vue/package.json').dependencies['@wellsaik/aven-shared']")"
+              if ! npm view "@wellsaik/aven-shared@$range" version --json > .release-artifacts/shared-dependency-view.log 2>&1; then
+                cat .release-artifacts/shared-dependency-view.log
+                echo "::error::Vue's shared dependency is not available on npm; aborting Vue publication."
+                exit 1
+              fi
+            fi
+            npm pack --json --workspace "packages/$workspace" --pack-destination .release-artifacts > ".release-artifacts/$workspace-pack.json"
+            filename="$(node -p "require('./.release-artifacts/$workspace-pack.json')[0].filename")"
+            npm publish ".release-artifacts/$filename" --access public 2>&1 | tee -a release-diagnostics.log
+          done
 
       - name: Upload release diagnostics and package
         if: always()

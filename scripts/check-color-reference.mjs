@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { validateColors } from './colors-contract.mjs';
-const manifest=JSON.parse(readFileSync('src/tokens/colors.json','utf8')),by=validateColors(manifest);let section='';const counts={ramps:0,semantic:0,scales:0,gradients:0};
+const manifest=JSON.parse(readFileSync('packages/shared/src/tokens/colors.json','utf8')),by=validateColors(manifest);let section='';const counts={ramps:0,semantic:0,scales:0,gradients:0};
 const sections=new Set(['Surfaces','Foreground and boundaries','Semantic palettes','Status mappings','Controls','Tables and trees','Finance roles','Categorical series','Chart infrastructure','Candlesticks and depth','Diagrams']);
 function resolve(name,mode){const token=by.get(name);assert(token,`Missing documented token ${name}`);const value=token[mode]??token.value;return typeof value==='string'?value:resolve(value.ref,mode)}
 const hex=s=>s.match(/#[0-9A-Fa-f]{6}(?:[0-9A-Fa-f]{2})?/g)||[];
