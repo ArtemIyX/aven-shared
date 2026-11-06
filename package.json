@@ -1,54 +1,20 @@
 {
-  "name": "@wellsaik/aven-shared",
-  "version": "0.1.1",
-  "description": "Shared CSS tokens and Vue components for Aven applications",
-  "keywords": [
-    "vue",
-    "vue3",
-    "typescript",
-    "design-system",
-    "design-tokens",
-    "css",
-    "component-library"
-  ],
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ArtemIyX/aven-shared.git"
-  },
+  "name": "aven-workspace",
+  "version": "0.0.0",
   "type": "module",
-  "files": [
-    "dist",
-    "src/styles",
-    "README.md",
-    "LICENSE"
-  ],
-  "sideEffects": [
-    "**/*.css"
-  ],
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./AvenText": {
-      "types": "./dist/AvenText.d.ts",
-      "import": "./dist/AvenText.js"
-    },
-    "./tokens.css": "./src/styles/tokens.css",
-    "./base.css": "./src/styles/base.css",
-    "./style.css": "./src/styles/style.css"
-  },
-  "peerDependencies": {
-    "vue": "^3.3.0"
-  },
   "scripts": {
     "dev": "vite --config playground/vite.config.ts --host 127.0.0.1",
     "typecheck": "vue-tsc --noEmit -p tsconfig.json",
-    "build": "vite build && vue-tsc -p tsconfig.build.json --emitDeclarationOnly",
+    "build": "npm run build -w @wellsaik/aven-shared && npm run build -w @wellsaik/aven-vue",
     "build:playground": "vite build --config playground/vite.config.ts",
     "test": "node --test",
-    "pack:check": "npm pack --dry-run"
+    "pack:check": "npm pack --dry-run -w @wellsaik/aven-shared && npm pack --dry-run -w @wellsaik/aven-vue",
+    "colors:generate": "node scripts/generate-colors.mjs",
+    "colors:check": "node scripts/generate-colors.mjs --check && node scripts/check-color-reference.mjs",
+    "colors:browser": "node scripts/browser-colors.mjs",
+    "colors:pack-browser": "node scripts/check-packed-colors.mjs",
+    "pack:consumer": "node scripts/check-packed-consumer.mjs",
+    "predev": "npm run build"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.0",
@@ -57,5 +23,9 @@
     "vite": "^6.0.0",
     "vue": "^3.5.0",
     "vue-tsc": "^2.2.0"
-  }
+  },
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ]
 }

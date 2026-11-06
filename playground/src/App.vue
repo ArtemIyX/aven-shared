@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { AvenText } from '@wellsaik/aven-shared'
+import ColorGallery from './ColorGallery.vue'
+import { AvenText } from '@wellsaik/aven-vue'
 
 const userName = ref('Avery')
 </script>
@@ -84,5 +85,7 @@ const userName = ref('Avery')
       </AvenText>
       <AvenText type="header2">A local application theme</AvenText>
     </section>
+    <ColorGallery />
   </main>
 </template>
+

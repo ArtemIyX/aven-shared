@@ -48,7 +48,8 @@ jobs:
           name: build-output-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             build-diagnostics.log
-            dist/
+            packages/shared/dist/
+            packages/vue/dist/
             playground/dist/
           if-no-files-found: warn
           retention-days: 14
@@ -81,6 +82,12 @@ jobs:
 
       - name: Run tests
         run: npm test 2>&1 | tee -a checks-diagnostics.log
+
+      - name: Check colors
+        run: npm run colors:check
+
+      - name: Validate packed consumer
+        run: npm run pack:consumer
 
       - name: Check packed package contents
         run: npm run pack:check 2>&1 | tee -a checks-diagnostics.log

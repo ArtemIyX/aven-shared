@@ -9,13 +9,19 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "esModuleInterop": true,
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "baseUrl": ".",
-    "paths": {
-      "@wellsaik/aven-shared": ["src/index.ts"]
-    },
     "skipLibCheck": true,
     "noEmit": true
   },
-  "include": ["src/**/*.ts", "playground/src/**/*.ts", "playground/src/**/*.vue", "env.d.ts"]
+  "include": [
+    "packages/vue/src/**/*.ts",
+    "playground/src/**/*.ts",
+    "playground/src/**/*.vue",
+    "env.d.ts"
+  ]
 }

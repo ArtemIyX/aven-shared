@@ -1,0 +1,40 @@
+{
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ArtemIyX/aven-shared.git",
+    "directory": "packages/shared"
+  },
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "name": "@wellsaik/aven-shared",
+  "version": "0.2.0",
+  "description": "Framework-independent Aven tokens and styles",
+  "files": [
+    "dist",
+    "src",
+    "LICENSE",
+    "README.md"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./tokens.css": "./src/styles/tokens.css",
+    "./base.css": "./src/styles/base.css",
+    "./colors.css": "./src/styles/colors.css",
+    "./finance.css": "./src/styles/finance.css",
+    "./charts.css": "./src/styles/charts.css",
+    "./diagrams.css": "./src/styles/diagrams.css",
+    "./gradients.css": "./src/styles/gradients.css"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json"
+  }
+}

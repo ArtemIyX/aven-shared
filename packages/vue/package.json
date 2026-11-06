@@ -1,0 +1,44 @@
+{
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ArtemIyX/aven-shared.git",
+    "directory": "packages/vue"
+  },
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "name": "@wellsaik/aven-vue",
+  "version": "0.1.0",
+  "description": "Vue components for Aven",
+  "files": [
+    "dist",
+    "src/style.css",
+    "LICENSE",
+    "README.md"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./AvenText": {
+      "types": "./dist/AvenText.d.ts",
+      "import": "./dist/AvenText.js"
+    },
+    "./style.css": "./src/style.css"
+  },
+  "dependencies": {
+    "@wellsaik/aven-shared": "^0.2.0"
+  },
+  "peerDependencies": {
+    "vue": "^3.3.0"
+  },
+  "scripts": {
+    "build": "vite build --config ../../vite.config.ts && vue-tsc -p tsconfig.build.json --emitDeclarationOnly"
+  }
+}

@@ -5,11 +5,6 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   root: fileURLToPath(new URL('.', import.meta.url)),
   plugins: [vue()],
-  resolve: {
-    alias: {
-      '@wellsaik/aven-shared': fileURLToPath(new URL('../src/index.ts', import.meta.url)),
-    },
-  },
   server: {
     fs: {
       allow: [fileURLToPath(new URL('..', import.meta.url))],

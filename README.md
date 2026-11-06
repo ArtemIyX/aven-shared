@@ -4,10 +4,10 @@ A small shared design system for Aven applications. It provides semantic CSS tok
 
 ## Install and import styles
 
-Install the package in a Vue 3 application:
+Install both packages in a Vue 3 application (CSS-only consumers can install `@wellsaik/aven-shared` alone):
 
 ```sh
-npm install @wellsaik/aven-shared
+npm install @wellsaik/aven-shared @wellsaik/aven-vue vue
 ```
 
 Import the CSS once from the application entry point, in this order:
@@ -15,16 +15,51 @@ Import the CSS once from the application entry point, in this order:
 ```ts
 import '@wellsaik/aven-shared/tokens.css'
 import '@wellsaik/aven-shared/base.css' // Optional; opt in by adding .aven-app to an application root.
-import '@wellsaik/aven-shared/style.css'
+import '@wellsaik/aven-vue/style.css'
 ```
 
 `tokens.css` declares defaults on `:root`. Import application overrides after the package styles, or define the same `--aven-*` properties on an application subtree. The component does not import CSS automatically, so applications choose the CSS files they need.
+
+## Color system
+
+`tokens.css` includes theme-independent palette ramps, core semantic roles, legacy aliases and non-color tokens. Import `colors.css` for all domains, or import `finance.css`, `charts.css`, `diagrams.css` or `gradients.css` separately. Each optional entry includes core; diagrams also includes charts. The shared `base.css` and Vue `style.css` remain separate and opt-in.
+
+```css
+@import '@wellsaik/aven-shared/colors.css';
+@import '@wellsaik/aven-shared/base.css';
+@import '@wellsaik/aven-vue/style.css';
+.value { color: var(--aven-color-finance-gain-text); }
+.action { color: var(--aven-color-accent-on-solid); background: var(--aven-color-accent-solid); }
+.panel { color: var(--aven-color-text-primary); background: var(--aven-color-surface-base); }
+.banner { background-color: var(--aven-gradient-surface-workspace-fallback); background-image: var(--aven-gradient-surface-workspace-image); }
+```
+
+The document root defaults to light. Dark mode uses neutral charcoal and gray surfaces while retaining semantic accent and financial colors. Set `data-aven-theme="light"`, `"dark"`, or `"system"` on the root or a subtree; system follows the OS preference. An ordinary descendant or invalid theme value inherits its parent. Set `data-aven-contrast="more"` for the provided enhanced mappings, and `data-aven-output="print"` for a white canvas and dark text. Enhanced contrast is inherited; a nested theme boundary reapplies the enhanced mapping for that theme. In a solid selected row, use `--aven-color-selection-text` with `--aven-color-selection-fill` and preserve financial meaning with a sign or label. Print uses monochrome stops and chart marks; add patterns or line styles to distinguish categories. Forced colors takes precedence over print. These mappings are not a substitute for testing each component. Gradient images are disabled in enhanced contrast, forced colors and print; use their solid fallback.
+
+Each theme boundary redeclares its aliases. Semantic overrides work on their declaration scope; overriding a primitive on an arbitrary descendant does not recompute inherited semantic aliases. For coordinated primitive customization, redeclare the semantic aliases at a theme boundary. Later consumer rules and the established `--aven-color-text`, `--aven-color-text-muted`, `--aven-color-surface`, `--aven-color-border`, `--aven-color-accent`, `--aven-color-accent-strong` and `--aven-text-color` hooks remain available. The new palette intentionally changes default hex values. Do not assume an action fill has sufficient contrast for link text.
+
+Keep a chart and its legend, axes and tooltip in the same theme scope. Portaled content must carry the resolved theme or mount inside the scope. Canvas charts must read computed values from the themed element and redraw after relevant theme changes. Application code owns stable series assignment, data normalization and persistence. To avoid a flash when an application persists a preference, it can set the attribute early in its own document head, before styles and rendering:
+
+```html
+<script>
+  document.documentElement.dataset.avenTheme = localStorage.getItem('aven-theme') || 'light'
+</script>
+```
+
+No library script or storage is required.
+
+The gradient module contains 149 recipes, including 100 family variants: wash and veil for primary text, plus decorative vivid, deep and radial glow options. Browse and filter them in the playground’s color review gallery.
+
+Scale stops are ordered colors, not thresholds. Missing values need a separate treatment; labels on opaque scale cells should use whichever of `#020617` or `#FFFFFF` gives greater calculated contrast. Gradients marked `none` for foreground are decorative or data-only. Preserve signs, labels, line styles and patterns alongside color.
+
+The manifest at `packages/shared/src/tokens/colors.json` is the implementation source. Run `npm run colors:generate` after editing it and `npm run colors:check` to check generated files. See the [palette reference](docs/color-palette.md) and [theme reference](docs/component-theme-reference.md) for values and restrictions.
+
 
 ## AvenText
 
 ```vue
 <script setup lang="ts">
-import { AvenText } from '@wellsaik/aven-shared'
+import { AvenText } from '@wellsaik/aven-vue'
 </script>
 
 <template>
@@ -47,7 +82,7 @@ import { AvenText } from '@wellsaik/aven-shared'
 
 The optional `as` prop accepts a standard HTML element name and changes the rendered element without changing its visual type. Choose heading levels based on the document structure, not only the appearance you want. The component forwards normal attributes and listeners to its single root and renders its default slot as Vue content. Slot content must be valid inside the selected element (for example, do not put a paragraph inside a `span`).
 
-The component is also available from `@wellsaik/aven-shared/AvenText`.
+The component is also available from `@wellsaik/aven-vue/AvenText`.
 
 ## Customization
 
@@ -76,7 +111,7 @@ npm install
 npm run dev
 ```
 
-The playground aliases `@wellsaik/aven-shared` to the local source and demonstrates every text type, slot markup, semantic element overrides, classes, inline styles, and a scoped theme. The package checks are:
+The playground resolves both packages by their public names from npm workspaces and demonstrates text customization, theme scopes, controls, a portfolio table, chart and diagram fixtures, and palette swatches. The package checks are:
 
 ```sh
 npm run typecheck
@@ -88,50 +123,15 @@ npm run pack:check
 
 `npm test` runs after the build because it checks the compiled component. These local commands work against this repository; they do not require a published package.
 
-To test the actual packed package from another local application, first build and create the tarball:
+## Migration from 0.1.1
 
-```sh
-npm run build
-npm pack
-```
+This is a breaking split: move JavaScript and type imports from `@wellsaik/aven-shared` (including `/AvenText`) to `@wellsaik/aven-vue`. Replace `@wellsaik/aven-shared/style.css` with `@wellsaik/aven-vue/style.css`; it contains the same AvenText classes and custom properties. The shared token, base, color and domain CSS subpaths remain unchanged. Import CSS explicitly; neither package loads styles from JavaScript. Props, rendering and hooks remain the same.
 
-Then, in the consuming application's directory, install the generated tarball by its path:
-
-```sh
-npm install ../aven-shared/wellsaik-aven-shared-0.1.1.tgz
-```
-
-The tarball contains the compiled JavaScript, generated TypeScript declarations, README, and CSS files addressed by the package exports. This local tarball workflow does not publish anything.
+The next shared version is 0.2.0 because the combined 0.1.1 API is broken; Vue starts at 0.1.0 and depends on shared ^0.2.0. Install both packed tarballs together for local consumer testing. `npm run pack:consumer` builds an isolated consumer using real tarballs and checks types, CSS resolution and a Vite build. Run `npm run build` first.
 
 ## Release workflow
 
-The first public version (`0.1.0`) is a one-time manual setup. After that, put every version bump in a pull request so the required checks run before the version reaches `main`.
-
-### Prepare a release PR
-
-Create a release branch and bump the version there. For example, after `0.1.1` has shipped, a patch release would be:
-
-```sh
-git switch -c release/v0.1.2
-npm version patch --no-git-tag-version
-git add package.json package-lock.json
-git commit -m "chore: release v0.1.2"
-git push -u origin release/v0.1.2
-```
-
-For a minor or major release, use `npm version minor --no-git-tag-version` or `npm version major --no-git-tag-version`, and name the branch and commit for the resulting version. Open a PR to `main`, let the required checks pass, and merge it.
-
-When that version reaches `main`, `publish.yml` validates the package and publishes the version from `package.json` if it is not already on npm. The workflow does not edit or push to `main`. Normal pushes with an already-published version are validated and then skipped.
-
-### Retry a publish
-
-If publishing failed after the version PR was merged, open **Actions → Publish @wellsaik/aven-shared → Run workflow**, select `main`, and run it again. The workflow retries the current `package.json` version if npm does not have it yet; it skips the version if it is already published. The manual button is available after this workflow is merged into the default branch.
-
-Type-check, build, test, or package-check failures stop before publishing. The workflow saves logs and available package outputs for 14 days.
-
-Trusted publishing uses GitHub's short-lived OIDC identity instead of a stored npm write token. The release workflow needs `id-token: write` to publish. Configure npm's trusted publisher for `ArtemIyX/aven-shared` and workflow filename `publish.yml`; the package must already exist on npm for trusted publishing to work.
-
-The initial `0.1.0` publication and npm trusted-publisher setup are one-time manual steps. Subsequent releases use the PR, merge, and publish flow above.
+Bump each workspace version in a reviewed PR with `npm version <version> --workspace <package-name> --no-git-tag-version`. Update the Vue dependency range when needed, and commit the root lockfile. On main, the workflow validates both workspaces, verifies main has not advanced, skips already published versions, then publishes shared before Vue using npm trusted publishing. Each package must already exist on npm and have its own trusted publisher configured for this repository and `publish.yml`; bootstrap a new package manually before enabling its automated release. Registry lookup errors stop publishing. Manual retries are restricted to main. No workflow modifies main.
 
 ## License
 

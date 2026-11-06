@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { createRenderer, createSSRApp, h } from 'vue'
 import { renderToString } from '@vue/server-renderer'
-import { AvenText } from '../dist/AvenText.js'
+import { AvenText } from '../packages/vue/dist/AvenText.js'
 
 async function renderAvenText(props = {}, slot = 'Example') {
   const app = createSSRApp({

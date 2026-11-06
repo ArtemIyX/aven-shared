@@ -1,12 +1,4 @@
 :root {
-  --aven-color-text: #252b33;
-  --aven-color-text-muted: #657181;
-  --aven-color-surface: #ffffff;
-  --aven-color-surface-raised: #f4f6f8;
-  --aven-color-border: #d8dee6;
-  --aven-color-accent: #315f91;
-  --aven-color-accent-strong: #244a73;
-
   --aven-font-family-sans: "Inter", "Segoe UI", sans-serif;
   --aven-font-family-serif: Georgia, "Times New Roman", serif;
   --aven-font-family-mono: "SFMono-Regular", Consolas, monospace;
