@@ -14,6 +14,13 @@ export type {
   AvenListboxEvents,
   AvenListboxItemSlot,
   AvenListboxSlots,
+  AvenSliderMark,
+  AvenSliderProps,
+  AvenSliderEvents,
+  AvenSliderSlots,
+  AvenRangeSliderProps,
+  AvenRangeSliderEvents,
+  AvenRangeSliderSlots,
   AvenCommand,
   AvenSearchFieldProps,
   AvenInputProps,
@@ -93,6 +100,8 @@ export { default as AvenTooltip } from './AvenTooltip.vue'
 export { default as AvenPopover } from './AvenPopover.vue'
 export { default as AvenSelect } from './AvenSelect.vue'
 export { default as AvenListbox } from './AvenListbox.vue'
+export { default as AvenSlider } from './AvenSlider.vue'
+export { default as AvenRangeSlider } from './AvenRangeSlider.vue'
 export { default as AvenRadioGroup } from './AvenRadioGroup.vue'
 export { default as AvenRadio } from './AvenRadio.vue'
 export { default as AvenToggleButton } from './AvenToggleButton.vue'

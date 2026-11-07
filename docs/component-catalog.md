@@ -191,7 +191,7 @@ Slot notation `item{item,key,...}` means a scoped named slot. A slot without bra
 ### 22. AvenSlider / AvenRangeSlider — P2
 
 - **Styles:** horizontal/vertical, solid track, marks, labeled ticks, optional value bubble; two-thumb range.
-- **Props:** modelValue number or `[number,number]`, min=0/max=100/step=1, `orientation='horizontal'`, `marks?:{value,label?}[]`, `minGap=0`, `formatValue?`, `label` or per-thumb labels, `inverted=false`.
+- **Props:** single `modelValue:number` or range `[number,number]`; `min=0`, `max=100`, `step=1`, `orientation='horizontal'`, `marks?:{value,label?}[]`, range `minGap=0`, `formatValue?`, slider `label` or range `label` with per-thumb `startLabel/endLabel`, `inverted=false`.
 - **Events:** update:modelValue during key/drag changes, change at pointer release or key commitment, `dragStart({thumb,value})`, `dragEnd({thumb,value})`.
 - **Slots:** thumb{index,value,active}, mark{value,label}, value{value,index}, leading/trailing.
 - **Hooks/behavior:** track/filled-track/thumb-size/tick-color; arrows/PageUp/PageDown/Home/End, proper min/max/value text per thumb, pointer capture/cancel handling and RTL direction. Thumbs cannot cross unless explicitly designed later.

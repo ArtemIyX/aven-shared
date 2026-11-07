@@ -56,6 +56,59 @@ export type AvenListboxSlots<T extends string | number = string | number> = {
   footer?: () => unknown
   separator?: () => unknown
 }
+export type AvenSliderMark = { value: number; label?: string }
+export type AvenSliderProps = {
+  modelValue?: number
+  defaultValue?: number
+  min?: number
+  max?: number
+  step?: number
+  orientation?: 'horizontal' | 'vertical'
+  marks?: AvenSliderMark[]
+  label?: string
+  formatValue?: (value: number) => string
+  inverted?: boolean
+  disabled?: boolean
+  readonly?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'track' | 'input' | 'mark'>
+}
+export type AvenSliderEvents = {
+  'update:modelValue': [value: number]
+  change: [value: number]
+  dragStart: [payload: { thumb: 0; value: number }]
+  dragEnd: [payload: { thumb: 0; value: number }]
+}
+export type AvenSliderSlots = {
+  leading?: () => unknown
+  trailing?: () => unknown
+  mark?: (scope: AvenSliderMark) => unknown
+  value?: (scope: { value: number; index: 0 }) => unknown
+}
+export type AvenRangeSliderProps = Omit<
+  AvenSliderProps,
+  'modelValue' | 'defaultValue' | 'formatValue' | 'ui'
+> & {
+  modelValue?: [number, number]
+  defaultValue?: [number, number]
+  minGap?: number
+  startLabel?: string
+  endLabel?: string
+  formatValue?: (value: number, index: 0 | 1) => string
+  ui?: AvenUi<'root' | 'track' | 'input' | 'mark' | 'thumb'>
+}
+export type AvenRangeSliderEvents = {
+  'update:modelValue': [value: [number, number]]
+  change: [value: [number, number]]
+  dragStart: [payload: { thumb: 0 | 1; value: [number, number] }]
+  dragEnd: [payload: { thumb: 0 | 1; value: [number, number] }]
+}
+export type AvenRangeSliderSlots = {
+  leading?: () => unknown
+  trailing?: () => unknown
+  mark?: (scope: AvenSliderMark) => unknown
+  value?: (scope: { value: number; index: 0 | 1 }) => unknown
+}
 export type AvenCommand<Key extends string | number = string | number> = {
   key: Key
   label: string

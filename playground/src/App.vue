@@ -10,6 +10,8 @@ import {
   AvenIcon,
   AvenLink,
   AvenListbox,
+  AvenSlider,
+  AvenRangeSlider,
   AvenCollapsible,
   AvenContainer,
   AvenFormattedValue,
@@ -41,6 +43,8 @@ const quietMode = ref(false)
 const textFormat = ref<string[]>(['bold'])
 const listboxValue = ref<string | null>('design')
 const highlightedTeam = ref('')
+const volume = ref(42)
+const priceRange = ref<[number, number]>([20, 80])
 const lastSplitAction = ref('')
 const buttonClicks = ref(0)
 const openSection = ref<string | null>('account')
@@ -413,6 +417,40 @@ const buttonTones = [
         :default-value="['design']"
         label="Multiple teams"
       />
+    </section>
+    <section class="playground-card" aria-labelledby="slider-examples">
+      <AvenText id="slider-examples" type="header1">Slider controls</AvenText>
+      <label for="volume-control">Volume: {{ volume }}%</label>
+      <AvenSlider
+        id="volume-control"
+        v-model="volume"
+        label="Volume"
+        :marks="[
+          { value: 0, label: 'Mute' },
+          { value: 50, label: 'Half' },
+          { value: 100, label: 'Full' },
+        ]"
+        @change="volume = $event"
+      >
+        <template #value="{ value }"
+          ><output>{{ value }}%</output></template
+        >
+      </AvenSlider>
+      <AvenRangeSlider
+        v-model="priceRange"
+        :min-gap="5"
+        start-label="Minimum price"
+        end-label="Maximum price"
+        :marks="[
+          { value: 0, label: '$0' },
+          { value: 100, label: '$100' },
+        ]"
+      >
+        <template #value="{ value, index }"
+          ><output>{{ index === 0 ? 'From' : 'To' }} ${{ value }}</output></template
+        >
+      </AvenRangeSlider>
+      <p>Price range: ${{ priceRange[0] }}–${{ priceRange[1] }}</p>
     </section>
     <section class="playground-card" aria-labelledby="toggle-examples">
       <AvenText id="toggle-examples" type="header1">Toggle controls</AvenText>

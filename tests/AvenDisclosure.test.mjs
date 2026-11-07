@@ -12,6 +12,8 @@ import {
   AvenField,
   AvenFieldset,
   AvenListbox,
+  AvenSlider,
+  AvenRangeSlider,
   AvenLink,
   AvenCollapsible,
   AvenFormattedValue,
@@ -652,6 +654,123 @@ test('listbox keyboard movement skips disabled options and commits once', async 
   dispatchHandler(list.props.onKeydown, { key: 'ArrowUp', preventDefault() {} })
   await nextTick()
   assert.equal(list.props['aria-activedescendant']?.endsWith('-option-0'), true)
+})
+
+test('sliders render named native range controls, marks, and thumb-specific values', async () => {
+  const html = await render({
+    render: () =>
+      h('div', [
+        h(AvenSlider, {
+          id: 'volume',
+          label: 'Volume',
+          modelValue: 25,
+          min: 0,
+          max: 100,
+          marks: [{ value: 25, label: 'Quarter' }],
+        }),
+        h(AvenRangeSlider, {
+          id: 'price',
+          label: 'Price range',
+          modelValue: [20, 80],
+          startLabel: 'Minimum price',
+          endLabel: 'Maximum price',
+        }),
+      ]),
+  })
+  assert.match(html, /type="range"[^>]*aria-label="Volume"/)
+  assert.match(html, /Quarter/)
+  assert.match(html, /role="group" aria-label="Price range"/)
+  assert.match(html, /id="price-start"[^>]*aria-label="Minimum price"/)
+  assert.match(html, /id="price-end"[^>]*aria-label="Maximum price"/)
+  assert.equal((html.match(/type="range"/g) ?? []).length, 3)
+})
+
+test('slider clamps native values and range slider preserves thumb gap', async () => {
+  const { renderer, root, find } = makeRenderer()
+  const singleUpdates = []
+  const rangeUpdates = []
+  const singleChanges = []
+  const rangeChanges = []
+  renderer
+    .createApp({
+      render: () =>
+        h('div', [
+          h(AvenSlider, {
+            defaultValue: 40,
+            min: 0,
+            max: 100,
+            'onUpdate:modelValue': (value) => singleUpdates.push(value),
+            onChange: (value) => singleChanges.push(value),
+          }),
+          h(AvenRangeSlider, {
+            defaultValue: [20, 80],
+            min: 0,
+            max: 100,
+            minGap: 10,
+            'onUpdate:modelValue': (value) => rangeUpdates.push(value),
+            onChange: (value) => rangeChanges.push(value),
+          }),
+        ]),
+    })
+    .mount(root)
+  const ranges = []
+  const collect = (node) => {
+    if (node.type === 'input' && node.props.type === 'range') ranges.push(node)
+    for (const child of node.children ?? []) collect(child)
+  }
+  collect(root)
+  dispatchHandler(ranges[0].props.onInput, { target: { value: '140' } })
+  dispatchHandler(ranges[1].props.onInput, { target: { value: '90' } })
+  dispatchHandler(ranges[0].props.onChange, { target: { value: '100' } })
+  dispatchHandler(ranges[1].props.onChange, { target: { value: '70' } })
+  assert.deepEqual(singleUpdates, [100])
+  assert.deepEqual(singleChanges, [100])
+  assert.deepEqual(rangeUpdates, [[70, 80]])
+  assert.deepEqual(rangeChanges, [[70, 80]])
+})
+
+test('uncontrolled sliders restore defaults on native form reset and respect canceled reset', async () => {
+  const { renderer, root, find } = makeRenderer()
+  renderer
+    .createApp({
+      render: () =>
+        h('form', [
+          h(AvenSlider, { name: 'volume', defaultValue: 30 }),
+          h(AvenRangeSlider, { name: 'range', defaultValue: [15, 85] }),
+        ]),
+    })
+    .mount(root)
+  const form = find(root, (node) => node.type === 'form')
+  const ranges = []
+  const collect = (node) => {
+    if (node.type === 'input' && node.props.type === 'range') ranges.push(node)
+    for (const child of node.children ?? []) collect(child)
+  }
+  collect(form)
+  dispatchHandler(ranges[0].props.onInput, { target: { value: '70' } })
+  dispatchHandler(ranges[2].props.onInput, { target: { value: '25' } })
+  await nextTick()
+  assert.equal(ranges[0].props.value, 70)
+  assert.equal(ranges[2].props.value, 25)
+  form.dispatchEvent({ type: 'reset', defaultPrevented: false })
+  await new Promise((resolve) => setImmediate(resolve))
+  await nextTick()
+  assert.equal(ranges[0].props.value, 30)
+  assert.equal(ranges[1].props.value, 15)
+  assert.equal(ranges[2].props.value, 85)
+  form.addEventListener('reset', (event) => event.preventDefault())
+  dispatchHandler(ranges[0].props.onInput, { target: { value: '60' } })
+  await nextTick()
+  form.dispatchEvent({
+    type: 'reset',
+    defaultPrevented: false,
+    preventDefault() {
+      this.defaultPrevented = true
+    },
+  })
+  await new Promise((resolve) => setImmediate(resolve))
+  await nextTick()
+  assert.equal(ranges[0].props.value, 60)
 })
 
 test('search waits for IME composition, debounces once, and submits without a duplicate search', async () => {
