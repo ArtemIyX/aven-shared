@@ -38,6 +38,8 @@ import {
   AvenList,
   AvenListItem,
   AvenVirtualList,
+  AvenTable,
+  AvenDataTable,
   AvenAvatar,
   AvenAvatarGroup,
   AvenChip,
@@ -2628,4 +2630,94 @@ test('virtual list exposes semantic windows, inclusive visible ranges, and one e
   viewport.props.onScroll({ currentTarget: viewport })
   assert.deepEqual(ends, [{ lastKey: 'row-19' }, { lastKey: 'row-19' }])
   assert.equal(scrolls.length, 5)
+})
+
+test('data table keeps native table semantics and emits controlled sort, select, expand, and row requests once', async () => {
+  const rows = [
+    { id: 'b', name: 'Beta', amount: 20 },
+    { id: 'a', name: 'Alpha', amount: 10 },
+  ]
+  const columns = [
+    { key: 'name', header: 'Name', accessor: (row) => row.name, sortable: true },
+    {
+      key: 'amount',
+      header: 'Amount',
+      accessor: (row) => row.amount,
+      align: 'end',
+      sortable: true,
+    },
+  ]
+  const html = await render({
+    render: () =>
+      h(AvenDataTable, {
+        rows,
+        columns,
+        rowKey: (row) => row.id,
+        sort: [{ key: 'name', direction: 'asc' }],
+        selectable: true,
+        expandable: true,
+        rowClickable: true,
+        label: 'Transactions',
+      }),
+  })
+  assert.match(html, /<caption[^>]*>[\s\S]*Transactions[\s\S]*<\/caption>/)
+  assert.match(html, /<table/)
+  assert.match(html, /aria-sort="ascending"/)
+  assert.ok(html.indexOf('Alpha') < html.indexOf('Beta'))
+  const primitiveHtml = await render({
+    render: () => h(AvenTable, { caption: 'Simple report' }, { default: () => h('tbody') }),
+  })
+  assert.match(
+    primitiveHtml,
+    /<table[^>]*><caption[^>]*>[\s\S]*Simple report[\s\S]*<\/caption>[\s\S]*<tbody/,
+  )
+
+  const mounted = makeRenderer()
+  const sortUpdates = []
+  const selectedUpdates = []
+  const expandedUpdates = []
+  const rowClicks = []
+  mounted.renderer
+    .createApp({
+      render: () =>
+        h(AvenDataTable, {
+          rows,
+          columns,
+          rowKey: (row) => row.id,
+          sort: [],
+          selectedKeys: [],
+          expandedKeys: [],
+          selectable: true,
+          expandable: true,
+          rowClickable: true,
+          'onUpdate:sort': (value) => sortUpdates.push(value),
+          'onUpdate:selectedKeys': (value) => selectedUpdates.push(value),
+          'onUpdate:expandedKeys': (value) => expandedUpdates.push(value),
+          onRowClick: (value) => rowClicks.push(value),
+        }),
+    })
+    .mount(mounted.root)
+  const buttons = []
+  const inputs = []
+  const rowsRendered = []
+  const collect = (node) => {
+    if (node.type === 'button') buttons.push(node)
+    if (node.type === 'input') inputs.push(node)
+    if (node.type === 'tr' && node.props.onClick) rowsRendered.push(node)
+    for (const child of node.children ?? []) collect(child)
+  }
+  collect(mounted.root)
+  buttons[0].props.onClick({ shiftKey: false })
+  inputs[1].props.onChange({ type: 'change' })
+  const expandButton = buttons.find((button) =>
+    String(button.props['aria-label']).startsWith('Expand row'),
+  )
+  expandButton.props.onClick({ type: 'click' })
+  rowsRendered[0].props.onClick({ target: {}, type: 'click' })
+  assert.deepEqual(sortUpdates, [[{ key: 'name', direction: 'asc' }]])
+  assert.deepEqual(selectedUpdates, [['b']])
+  assert.deepEqual(expandedUpdates, [['b']])
+  assert.deepEqual(rowClicks, [
+    { row: rows[0], key: 'b', originalEvent: { target: {}, type: 'click' } },
+  ])
 })

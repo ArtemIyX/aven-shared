@@ -420,6 +420,111 @@ export type AvenVirtualListSlots<T, Key extends string | number = string | numbe
   loading?: () => unknown
   empty?: () => unknown
 }
+export type AvenTableProps = {
+  caption?: string
+  label?: string
+  density?: 'comfortable' | 'compact'
+  bordered?: boolean
+  striped?: boolean
+  stickyHeader?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'table' | 'caption'>
+}
+export type AvenTableSlots = {
+  caption?: () => unknown
+  default?: () => unknown
+}
+export type AvenTableColumn<T, ColumnKey extends string | number = string | number> = {
+  key: ColumnKey
+  header: string
+  accessor: (row: T, index: number) => unknown
+  align?: 'start' | 'center' | 'end'
+  width?: string | number
+  minWidth?: number
+  maxWidth?: number
+  sortable?: boolean
+  format?: (value: unknown, row: T, index: number) => string | number
+}
+export type AvenTableSort<ColumnKey extends string | number = string | number> = {
+  key: ColumnKey
+  direction: 'asc' | 'desc'
+}
+export type AvenDataTableProps<
+  T,
+  Key extends string | number = string | number,
+  ColumnKey extends string | number = string | number,
+> = {
+  rows: T[]
+  columns: AvenTableColumn<T, ColumnKey>[]
+  rowKey: (row: T, index: number) => Key
+  sort?: AvenTableSort<ColumnKey>[]
+  defaultSort?: AvenTableSort<ColumnKey>[]
+  selectedKeys?: Key[]
+  defaultSelectedKeys?: Key[]
+  expandedKeys?: Key[]
+  defaultExpandedKeys?: Key[]
+  loading?: boolean
+  error?: boolean
+  rowCount?: number
+  stickyHeader?: boolean
+  manualSort?: boolean
+  selectable?: boolean
+  expandable?: boolean
+  rowClickable?: boolean
+  resizable?: boolean
+  reorderable?: boolean
+  multiSort?: boolean
+  density?: 'comfortable' | 'compact'
+  bordered?: boolean
+  striped?: boolean
+  label?: string
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'table' | 'header' | 'row' | 'cell' | 'selection' | 'expansion'>
+}
+export type AvenDataTableEvents<
+  T,
+  Key extends string | number = string | number,
+  ColumnKey extends string | number = string | number,
+> = {
+  'update:sort': [sort: AvenTableSort<ColumnKey>[]]
+  'update:selectedKeys': [keys: Key[]]
+  'update:expandedKeys': [keys: Key[]]
+  rowClick: [payload: { row: T; key: Key; originalEvent: MouseEvent }]
+  rowAction: [payload: { row: T; key: Key; action: string; originalEvent: MouseEvent }]
+  columnResize: [payload: { key: ColumnKey; width: number }]
+  columnReorder: [payload: { keys: ColumnKey[] }]
+}
+export type AvenDataTableSlots<
+  T,
+  Key extends string | number = string | number,
+  ColumnKey extends string | number = string | number,
+> = {
+  caption?: () => unknown
+  header?: (scope: {
+    column: AvenTableColumn<T, ColumnKey>
+    sort: AvenTableSort<ColumnKey> | undefined
+  }) => unknown
+  cell?: (scope: {
+    row: T
+    rowKey: Key
+    column: AvenTableColumn<T, ColumnKey>
+    value: unknown
+    index: number
+  }) => unknown
+  rowLeading?: (scope: { row: T; rowKey: Key; selected: boolean }) => unknown
+  rowTrailing?: (scope: {
+    row: T
+    rowKey: Key
+    emitAction: (action: string, event: MouseEvent) => void
+  }) => unknown
+  expanded?: (scope: { row: T; key: Key }) => unknown
+  footer?: () => unknown
+  toolbar?: (scope: { selectedKeys: Key[] }) => unknown
+  empty?: () => unknown
+  loading?: () => unknown
+  error?: () => unknown
+  pagination?: (scope: { rowCount: number }) => unknown
+}
 export type AvenListboxProps<T extends string | number = string | number> = {
   modelValue?: T | T[] | null
   defaultValue?: T | T[] | null

@@ -10,6 +10,8 @@ import {
   AvenList,
   AvenListItem,
   AvenVirtualList,
+  AvenTable,
+  AvenDataTable,
   AvenBadge,
   AvenButton,
   AvenButtonGroup,
@@ -62,6 +64,7 @@ import {
   AvenToggleGroup,
   AvenToolbar,
   type AvenToastItem,
+  type AvenTableColumn,
 } from '@wellsaik/aven-vue'
 
 const userName = ref('Avery')
@@ -117,6 +120,28 @@ const virtualItems = Array.from({ length: 250 }, (_, index) => ({
   detail: `Virtual row ${index + 1} retains its measured height.`,
 }))
 const virtualRange = ref('Scroll to inspect rendered ranges.')
+const tableSort = ref([])
+const tableSelected = ref<string[]>(['tx-2'])
+const tableExpanded = ref<string[]>([])
+const tableActivity = ref('Use the table controls to sort, select, resize, reorder or expand rows.')
+const transactions = [
+  { id: 'tx-1', name: 'Workshop invoice', owner: 'Mika', amount: 480 },
+  { id: 'tx-2', name: 'Design subscription', owner: 'Ava', amount: 29 },
+  { id: 'tx-3', name: 'Research materials', owner: 'Noah', amount: 115 },
+]
+type Transaction = (typeof transactions)[number]
+const transactionColumns: AvenTableColumn<Transaction, 'name' | 'owner' | 'amount'>[] = [
+  { key: 'name', header: 'Transaction', accessor: (row) => row.name, sortable: true },
+  { key: 'owner', header: 'Owner', accessor: (row) => row.owner, sortable: true },
+  {
+    key: 'amount',
+    header: 'Amount',
+    accessor: (row) => row.amount,
+    align: 'end' as const,
+    sortable: true,
+    format: (value) => `€${Number(value).toFixed(2)}`,
+  },
+]
 const stepperItems = [
   { key: 'profile', label: 'Profile', description: 'Contact details', status: 'complete' as const },
   { key: 'preferences', label: 'Preferences', description: 'Choose updates' },
@@ -972,6 +997,80 @@ const buttonTones = [
         </template>
       </AvenVirtualList>
       <p aria-live="polite">{{ virtualRange }}</p>
+    </section>
+    <section class="playground-card" aria-labelledby="table-examples">
+      <AvenText id="table-examples" type="header1">Data tables</AvenText>
+      <AvenDataTable
+        v-model:sort="tableSort"
+        v-model:selected-keys="tableSelected"
+        v-model:expanded-keys="tableExpanded"
+        :rows="transactions"
+        :columns="transactionColumns"
+        :row-key="(row) => row.id"
+        selectable
+        expandable
+        row-clickable
+        resizable
+        reorderable
+        sticky-header
+        striped
+        bordered
+        label="Recent transactions"
+        :row-count="18"
+        @row-click="({ row }) => (tableActivity = `Opened ${row.name}`)"
+        @row-action="({ row, action }) => (tableActivity = `${action}: ${row.name}`)"
+        @column-resize="
+          ({ key, width }) =>
+            (tableActivity = `${key} column resized to ${Math.round(width)} pixels`)
+        "
+        @column-reorder="({ keys }) => (tableActivity = `Columns: ${keys.join(', ')}`)"
+      >
+        <template #caption>Recent transactions, sorted and selectable</template>
+        <template #toolbar="{ selectedKeys }">
+          <p>
+            {{ selectedKeys.length }} selected transaction{{ selectedKeys.length === 1 ? '' : 's' }}
+          </p>
+        </template>
+        <template #header="{ column, sort }">
+          {{ column.header }} <small>{{ sort?.direction ?? 'unsorted' }}</small>
+        </template>
+        <template #cell="{ row, column }">
+          {{
+            column.key === 'amount'
+              ? `€${row.amount.toFixed(2)}`
+              : column.key === 'name'
+                ? row.name
+                : row.owner
+          }}
+        </template>
+        <template #rowTrailing="{ row, emitAction }">
+          <AvenButton size="sm" variant="ghost" @click="emitAction('inspect', $event)"
+            >Inspect {{ row.id }}</AvenButton
+          >
+        </template>
+        <template #expanded="{ row }">
+          <p>
+            {{ row.name }} belongs to {{ row.owner }}. Application-specific details stay in this
+            slot.
+          </p>
+        </template>
+        <template #pagination="{ rowCount }">Showing 1–3 of {{ rowCount }} transactions</template>
+      </AvenDataTable>
+      <p aria-live="polite">{{ tableActivity }}</p>
+      <AvenTable caption="Compact summary" density="compact" striped>
+        <thead>
+          <tr>
+            <th scope="col">Queue</th>
+            <th scope="col">Pending</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Approvals</th>
+            <td>4</td>
+          </tr>
+        </tbody>
+      </AvenTable>
     </section>
     <section class="playground-card" aria-labelledby="toggle-examples">
       <AvenText id="toggle-examples" type="header1">Toggle controls</AvenText>

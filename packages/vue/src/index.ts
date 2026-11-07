@@ -111,6 +111,13 @@ export type {
   AvenVirtualListProps,
   AvenVirtualListEvents,
   AvenVirtualListSlots,
+  AvenTableProps,
+  AvenTableSlots,
+  AvenTableColumn,
+  AvenTableSort,
+  AvenDataTableProps,
+  AvenDataTableEvents,
+  AvenDataTableSlots,
   AvenAlertDialogProps,
   AvenAlertDialogEvents,
   AvenAlertDialogSlots,
@@ -200,6 +207,8 @@ export { default as AvenSplitPane } from './AvenSplitPane.vue'
 export { default as AvenList } from './AvenList.vue'
 export { default as AvenListItem } from './AvenListItem.vue'
 export { default as AvenVirtualList } from './AvenVirtualList.vue'
+export { default as AvenTable } from './AvenTable.vue'
+export { default as AvenDataTable } from './AvenDataTable.vue'
 export { default as AvenCard } from './AvenCard.vue'
 export { default as AvenPropertyRow } from './AvenPropertyRow.vue'
 export type { AvenTextProps } from './AvenText.js'
