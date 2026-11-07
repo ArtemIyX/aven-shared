@@ -69,6 +69,13 @@ export type {
   AvenResultStateProps,
   AvenResultStateEvents,
   AvenResultStateSlots,
+  AvenToolbarProps,
+  AvenToolbarGroup,
+  AvenToolbarEvents,
+  AvenToolbarSlots,
+  AvenActionBarProps,
+  AvenActionBarEvents,
+  AvenActionBarSlots,
   AvenAlertDialogProps,
   AvenAlertDialogEvents,
   AvenAlertDialogSlots,
@@ -147,6 +154,8 @@ export { default as AvenFieldset } from './AvenFieldset.vue'
 export { default as AvenSkeleton } from './AvenSkeleton.vue'
 export { default as AvenEmptyState } from './AvenEmptyState.vue'
 export { default as AvenResultState } from './AvenResultState.vue'
+export { default as AvenToolbar } from './AvenToolbar.vue'
+export { default as AvenActionBar } from './AvenActionBar.vue'
 export { default as AvenCard } from './AvenCard.vue'
 export { default as AvenPropertyRow } from './AvenPropertyRow.vue'
 export type { AvenTextProps } from './AvenText.js'

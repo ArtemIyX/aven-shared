@@ -4,6 +4,7 @@ import { createRenderer, createSSRApp, defineComponent, h, nextTick, ref } from 
 import { renderToString } from '@vue/server-renderer'
 import {
   AvenAccordion,
+  AvenActionBar,
   AvenBadge,
   AvenButton,
   AvenButtonGroup,
@@ -40,6 +41,7 @@ import {
   AvenRadioGroup,
   AvenToggleButton,
   AvenToggleGroup,
+  AvenToolbar,
   AvenProvider,
   useAvenConfig,
   AvenSearchField,
@@ -529,6 +531,43 @@ function makeRenderer() {
           .map((child) => (predicate(child) ? child : child.querySelector?.(selector)))
           .find(Boolean)
       },
+      querySelectorAll() {
+        const matches = (node) =>
+          Boolean(
+            node.props &&
+            (node.type === 'button' ||
+              (node.type === 'a' && node.props.href !== undefined) ||
+              (node.type === 'input' && node.props.type !== 'hidden') ||
+              node.type === 'select' ||
+              node.type === 'textarea' ||
+              node.props.tabindex !== undefined),
+          )
+        const result = []
+        const visit = (parent) => {
+          for (const child of parent.children ?? []) {
+            if (matches(child)) result.push(child)
+            if (child.children) visit(child)
+          }
+        }
+        visit(this)
+        return result
+      },
+      hasAttribute(name) {
+        return this.props[name] !== undefined && this.props[name] !== false
+      },
+      getAttribute(name) {
+        const value = this.props[name]
+        return value === undefined || value === false ? null : String(value)
+      },
+      setAttribute(name, value) {
+        this.props[name] = String(value)
+      },
+      removeAttribute(name) {
+        delete this.props[name]
+      },
+      get hidden() {
+        return Boolean(this.props.hidden)
+      },
       closest(selector) {
         let current = this
         while (current) {
@@ -554,6 +593,7 @@ function makeRenderer() {
       },
       focus() {
         this.focused = true
+        if (globalThis.document) globalThis.document.activeElement = this
         this.props.onFocus?.({ target: this })
       },
       blur() {
@@ -2020,4 +2060,85 @@ test('empty and result states keep loading and retry behavior explicit', async (
   dispatchHandler(retry.props.onClick, originalEvent)
   assert.equal(requests.length, 1)
   assert.equal(requests[0].originalEvent, originalEvent)
+})
+
+test('toolbar keeps group defaults and restores roving tabindex after arrow navigation', async () => {
+  const previousDocument = globalThis.document
+  const previousGetComputedStyle = globalThis.getComputedStyle
+  globalThis.document = { activeElement: null }
+  globalThis.getComputedStyle = () => ({ direction: 'ltr' })
+  try {
+    const mounted = makeRenderer()
+    const app = mounted.renderer.createApp({
+      render: () =>
+        h(AvenToolbar, { label: 'Actions', keyboardNavigation: true }, () => [
+          h('button', { tabindex: '5' }, 'First'),
+          h('button', {}, 'Second'),
+        ]),
+    })
+    app.mount(mounted.root)
+    const toolbar = mounted.find(mounted.root, (node) => node.type === 'div')
+    const buttons = []
+    const visit = (node) => {
+      if (node.type === 'button') buttons.push(node)
+      for (const child of node.children ?? []) if (child.props) visit(child)
+    }
+    visit(mounted.root)
+    assert.equal(toolbar.props.role, 'toolbar')
+    assert.equal(buttons[0].props.tabindex, '0')
+    assert.equal(buttons[1].props.tabindex, '-1')
+    let prevented = false
+    dispatchHandler(toolbar.props.onKeydown, {
+      key: 'ArrowRight',
+      preventDefault() {
+        prevented = true
+      },
+    })
+    assert.equal(prevented, true)
+    assert.equal(buttons[1].focused, true)
+    assert.equal(buttons[0].props.tabindex, '-1')
+    assert.equal(buttons[1].props.tabindex, '0')
+    app.unmount()
+    assert.equal(buttons[0].props.tabindex, '5')
+    assert.equal(buttons[1].props.tabindex, undefined)
+  } finally {
+    if (previousDocument === undefined) delete globalThis.document
+    else globalThis.document = previousDocument
+    if (previousGetComputedStyle === undefined) delete globalThis.getComputedStyle
+    else globalThis.getComputedStyle = previousGetComputedStyle
+  }
+
+  const html = await render({ render: () => h(AvenToolbar, { label: 'Actions' }) })
+  assert.match(html, /role="group" aria-label="Actions"/)
+})
+
+test('action bar hides without selection and emits a single clear request', () => {
+  const hidden = ref(null)
+  const htmlRoot = makeRenderer()
+  htmlRoot.renderer
+    .createApp({ render: () => h(AvenActionBar, { selectionCount: 0 }) })
+    .mount(htmlRoot.root)
+  assert.equal(
+    htmlRoot.find(htmlRoot.root, (node) => node.props?.role === 'group'),
+    undefined,
+  )
+  assert.equal(hidden.value, null)
+
+  const mounted = makeRenderer()
+  const clearRequests = []
+  mounted.renderer
+    .createApp({
+      render: () =>
+        h(AvenActionBar, {
+          selectionCount: 2,
+          clearable: true,
+          onClearSelection: (payload) => clearRequests.push(payload),
+        }),
+    })
+    .mount(mounted.root)
+  const clear = mounted.find(mounted.root, (node) => node.type === 'button')
+  const originalEvent = { type: 'click' }
+  dispatchHandler(clear.props.onClick, originalEvent)
+  assert.equal(clearRequests.length, 1)
+  assert.equal(clearRequests[0].originalEvent, originalEvent)
 })

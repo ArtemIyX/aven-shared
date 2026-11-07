@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import ColorGallery from './ColorGallery.vue'
 import {
   AvenAccordion,
+  AvenActionBar,
   AvenBadge,
   AvenButton,
   AvenButtonGroup,
@@ -49,6 +50,7 @@ import {
   AvenText,
   AvenToggleButton,
   AvenToggleGroup,
+  AvenToolbar,
 } from '@wellsaik/aven-vue'
 
 const userName = ref('Avery')
@@ -75,6 +77,7 @@ const sheetOpen = ref(false)
 const bannerVisible = ref(true)
 const chipRemovals = ref(0)
 const retries = ref(0)
+const selectedRows = ref(3)
 const people = [
   { id: 'ava', name: 'Ava Chen', initials: 'AC', tone: 'accent' },
   { id: 'noah', name: 'Noah Reed', initials: 'NR', tone: 'success' },
@@ -694,6 +697,23 @@ const buttonTones = [
         @retry="retries++"
       />
       <p>{{ retries }} retry request{{ retries === 1 ? '' : 's' }}.</p>
+    </section>
+    <section class="playground-card" aria-labelledby="toolbar-examples">
+      <AvenText id="toolbar-examples" type="header1">Toolbars and selection actions</AvenText>
+      <AvenToolbar label="Document actions" keyboard-navigation>
+        <template #start><AvenButton variant="outline">New</AvenButton></template>
+        <template #center><AvenButton variant="ghost">Preview</AvenButton></template>
+        <template #end><AvenButton>Publish</AvenButton></template>
+      </AvenToolbar>
+      <AvenActionBar :selection-count="selectedRows" clearable @clear-selection="selectedRows = 0">
+        <template #actions>
+          <AvenButton variant="outline">Archive selected</AvenButton>
+          <AvenButton tone="danger">Delete selected</AvenButton>
+        </template>
+      </AvenActionBar>
+      <AvenButton variant="outline" @click="selectedRows = selectedRows ? 0 : 3">
+        {{ selectedRows ? 'Hide' : 'Show' }} action bar
+      </AvenButton>
     </section>
     <section class="playground-card" aria-labelledby="toggle-examples">
       <AvenText id="toggle-examples" type="header1">Toggle controls</AvenText>

@@ -126,6 +126,40 @@ export type AvenResultStateProps = AvenEmptyStateProps & {
 }
 export type AvenResultStateEvents = AvenEmptyStateEvents
 export type AvenResultStateSlots = AvenEmptyStateSlots
+export type AvenToolbarGroup = { key: string | number; label?: string }
+export type AvenToolbarProps = {
+  orientation?: 'horizontal' | 'vertical'
+  label: string
+  density?: 'compact' | 'comfortable'
+  wrap?: boolean
+  keyboardNavigation?: boolean
+  overflowItems?: unknown[]
+  groups?: AvenToolbarGroup[]
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'start' | 'center' | 'end' | 'group' | 'overflow'>
+}
+export type AvenToolbarEvents = Record<never, never>
+export type AvenToolbarSlots = {
+  default?: () => unknown
+  start?: () => unknown
+  center?: () => unknown
+  end?: () => unknown
+  group?: (scope: { group: AvenToolbarGroup; key: string | number }) => unknown
+  overflow?: (scope: { items: unknown[] }) => unknown
+}
+export type AvenActionBarProps = Omit<AvenToolbarProps, 'label'> & {
+  label?: string
+  selectionCount?: number
+  clearable?: boolean
+  clearLabel?: string
+}
+export type AvenActionBarEvents = {
+  clearSelection: [payload: { originalEvent: MouseEvent }]
+}
+export type AvenActionBarSlots = Omit<AvenToolbarSlots, 'selection'> & {
+  selection?: (scope: { count: number }) => unknown
+  actions?: () => unknown
+}
 export type AvenListboxProps<T extends string | number = string | number> = {
   modelValue?: T | T[] | null
   defaultValue?: T | T[] | null
