@@ -31,6 +31,7 @@ import {
   AvenToast,
   AvenToaster,
   AvenTextarea,
+  AvenScrollArea,
   AvenAvatar,
   AvenAvatarGroup,
   AvenChip,
@@ -2296,4 +2297,52 @@ test('textarea restores defaults on accepted native reset and respects canceled 
   await new Promise((resolve) => queueMicrotask(resolve))
   await nextTick()
   assert.equal(textarea.props.value, 'Keep this edit')
+})
+
+test('scroll area is focusable, labeled, and reports each end arrival once', async () => {
+  const html = await render({
+    render: () => h(AvenScrollArea, { label: 'Activity', orientation: 'vertical' }),
+  })
+  assert.match(html, /role="region" aria-label="Activity" tabindex="0"/)
+
+  const previousGetComputedStyle = globalThis.getComputedStyle
+  globalThis.getComputedStyle = () => ({ direction: 'ltr' })
+  try {
+    const mounted = makeRenderer()
+    const scrollEvents = []
+    const endEvents = []
+    mounted.renderer
+      .createApp({
+        render: () =>
+          h(AvenScrollArea, {
+            label: 'Activity',
+            orientation: 'vertical',
+            notifyEnd: true,
+            endThreshold: 4,
+            onScroll: (event) => scrollEvents.push(event),
+            onEndReached: (payload) => endEvents.push(payload),
+          }),
+      })
+      .mount(mounted.root)
+    const area = mounted.find(
+      mounted.root,
+      (node) => node.type === 'div' && node.props?.tabindex === 0,
+    )
+    area.scrollHeight = 100
+    area.clientHeight = 50
+    area.scrollTop = 48
+    const firstEvent = { type: 'scroll' }
+    dispatchHandler(area.props.onScroll, firstEvent)
+    dispatchHandler(area.props.onScroll, { type: 'scroll' })
+    assert.deepEqual(scrollEvents, [firstEvent, { type: 'scroll' }])
+    assert.deepEqual(endEvents, [{ axis: 'vertical' }])
+    area.scrollTop = 0
+    dispatchHandler(area.props.onScroll, { type: 'scroll' })
+    area.scrollTop = 48
+    dispatchHandler(area.props.onScroll, { type: 'scroll' })
+    assert.deepEqual(endEvents, [{ axis: 'vertical' }, { axis: 'vertical' }])
+  } finally {
+    if (previousGetComputedStyle === undefined) delete globalThis.getComputedStyle
+    else globalThis.getComputedStyle = previousGetComputedStyle
+  }
 })

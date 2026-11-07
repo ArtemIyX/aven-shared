@@ -241,6 +241,23 @@ export type AvenTextareaSlots = {
   footer?: (scope: { length: number; maxlength?: number }) => unknown
   count?: (scope: { length: number; maxlength?: number }) => unknown
 }
+export type AvenScrollAreaProps = {
+  type?: 'auto' | 'always' | 'hover'
+  orientation?: 'both' | 'horizontal' | 'vertical'
+  label?: string
+  notifyEnd?: boolean
+  endThreshold?: number
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'corner'>
+}
+export type AvenScrollAreaEvents = {
+  scroll: [event: Event]
+  endReached: [payload: { axis: 'horizontal' | 'vertical' }]
+}
+export type AvenScrollAreaSlots = {
+  default?: () => unknown
+  corner?: () => unknown
+}
 export type AvenListboxProps<T extends string | number = string | number> = {
   modelValue?: T | T[] | null
   defaultValue?: T | T[] | null

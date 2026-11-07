@@ -42,6 +42,7 @@ import {
   AvenRadio,
   AvenRadioGroup,
   AvenResultState,
+  AvenScrollArea,
   AvenSearchField,
   AvenStatusDot,
   AvenStack,
@@ -94,6 +95,7 @@ const toastItems = ref<AvenToastItem<string>[]>([
 let nextToastId = 1
 const toastActivity = ref('')
 const projectNote = ref('')
+const scrollPosition = ref('Scroll the release notes.')
 function dismissToast(id: string) {
   toastItems.value = toastItems.value.filter((item) => item.id !== id)
 }
@@ -774,6 +776,29 @@ const buttonTones = [
         </template>
       </AvenToaster>
       <p aria-live="polite">{{ toastActivity }}</p>
+    </section>
+    <section class="playground-card" aria-labelledby="scroll-area-examples">
+      <AvenText id="scroll-area-examples" type="header1">Scrollable content</AvenText>
+      <AvenScrollArea
+        label="Release notes"
+        orientation="vertical"
+        type="always"
+        notify-end
+        style="
+          max-block-size: 9rem;
+          border: 1px solid var(--aven-color-border-subtle);
+          border-radius: var(--aven-radius-md);
+        "
+        @scroll="scrollPosition = 'Release notes are scrollable.'"
+        @end-reached="scrollPosition = 'Reached the end of release notes.'"
+      >
+        <ol>
+          <li v-for="version in 12" :key="version">
+            Version {{ version }} · accessibility improvements and bug fixes.
+          </li>
+        </ol>
+      </AvenScrollArea>
+      <p>{{ scrollPosition }}</p>
     </section>
     <section class="playground-card" aria-labelledby="toggle-examples">
       <AvenText id="toggle-examples" type="header1">Toggle controls</AvenText>

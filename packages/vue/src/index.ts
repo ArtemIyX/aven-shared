@@ -88,6 +88,9 @@ export type {
   AvenTextareaProps,
   AvenTextareaEvents,
   AvenTextareaSlots,
+  AvenScrollAreaProps,
+  AvenScrollAreaEvents,
+  AvenScrollAreaSlots,
   AvenAlertDialogProps,
   AvenAlertDialogEvents,
   AvenAlertDialogSlots,
@@ -170,6 +173,7 @@ export { default as AvenToolbar } from './AvenToolbar.vue'
 export { default as AvenActionBar } from './AvenActionBar.vue'
 export { default as AvenToast } from './AvenToast.vue'
 export { default as AvenToaster } from './AvenToaster.vue'
+export { default as AvenScrollArea } from './AvenScrollArea.vue'
 export { default as AvenCard } from './AvenCard.vue'
 export { default as AvenPropertyRow } from './AvenPropertyRow.vue'
 export type { AvenTextProps } from './AvenText.js'
