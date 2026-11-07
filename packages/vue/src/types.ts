@@ -1288,6 +1288,100 @@ export type AvenCodeBlockSlots = {
   actions?: () => unknown
   line?: (scope: { line: string; index: number }) => unknown
 }
+export type AvenTreeNode<Key extends string | number = string | number> = {
+  key: Key
+  label: string
+  children?: AvenTreeNode<Key>[]
+  disabled?: boolean
+  leaf?: boolean
+  description?: string
+}
+export type AvenTreeProps<Key extends string | number = string | number> = {
+  nodes: AvenTreeNode<Key>[]
+  id?: string
+  selectedKeys?: Key[]
+  defaultSelectedKeys?: Key[]
+  expandedKeys?: Key[]
+  defaultExpandedKeys?: Key[]
+  checkedKeys?: Key[]
+  defaultCheckedKeys?: Key[]
+  loadingKeys?: Key[]
+  multiple?: boolean
+  checkable?: boolean
+  lazy?: boolean
+  cascadeChecks?: boolean
+  loop?: boolean
+  typeahead?: boolean
+  label?: string
+  emptyLabel?: string
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'item' | 'label' | 'toggle' | 'checkbox' | 'icon' | 'actions' | 'empty'>
+}
+export type AvenTreeSlots<Key extends string | number = string | number> = {
+  item?: (scope: {
+    node: AvenTreeNode<Key>
+    key: Key
+    level: number
+    expanded: boolean
+    selected: boolean
+    checked: boolean
+    indeterminate: boolean
+    loading: boolean
+  }) => unknown
+  toggle?: (scope: { expanded: boolean }) => unknown
+  icon?: (scope: { node: AvenTreeNode<Key> }) => unknown
+  actions?: (scope: { node: AvenTreeNode<Key> }) => unknown
+  empty?: () => unknown
+}
+export type AvenTreeEvents<Key extends string | number = string | number> = {
+  'update:selectedKeys': [keys: Key[]]
+  'update:expandedKeys': [keys: Key[]]
+  'update:checkedKeys': [keys: Key[]]
+  loadChildren: [payload: { key: Key; node: AvenTreeNode<Key> }]
+  activate: [payload: { key: Key; node: AvenTreeNode<Key>; originalEvent: Event }]
+}
+export type AvenTreeItemProps<Key extends string | number = string | number> = {
+  node: AvenTreeNode<Key>
+  treeId: string
+  level: number
+  position: number
+  setSize: number
+  index: number
+  indexByKey: Map<Key, number>
+  selectedKeys: Key[]
+  expandedKeys: Key[]
+  checkedKeys: Key[]
+  loadingKeys: Key[]
+  activeIndex: number
+  multiple?: boolean
+  checkable?: boolean
+  lazy?: boolean
+  cascadeChecks?: boolean
+  unstyled?: boolean
+  ui?: AvenTreeProps<Key>['ui']
+}
+export type AvenTreeItemEvents<Key extends string | number = string | number> = {
+  toggle: [payload: { key: Key; expanded: boolean }]
+  select: [payload: { key: Key; originalEvent: Event }]
+  activate: [payload: { key: Key; node: AvenTreeNode<Key>; originalEvent: Event }]
+  check: [payload: { key: Key; checked: boolean }]
+  focusIndex: [index: number]
+}
+export type AvenTreeItemSlots<Key extends string | number = string | number> = {
+  default?: (scope: {
+    node: AvenTreeNode<Key>
+    key: Key
+    level: number
+    expanded: boolean
+    selected: boolean
+    checked: boolean
+    indeterminate: boolean
+    loading: boolean
+  }) => unknown
+  toggle?: (scope: { expanded: boolean }) => unknown
+  icon?: (scope: { node: AvenTreeNode<Key> }) => unknown
+  actions?: (scope: { node: AvenTreeNode<Key> }) => unknown
+}
 export type AvenDialogProps = {
   open?: boolean
   defaultOpen?: boolean

@@ -66,6 +66,8 @@ try {
       assert(paths.includes('dist/AvenMenuItem.js'))
       assert(paths.includes('dist/AvenMenuGroup.js'))
       assert(paths.includes('dist/AvenCodeBlock.js'))
+      assert(paths.includes('dist/AvenTree.js'))
+      assert(paths.includes('dist/AvenTreeItem.js'))
       assert(paths.includes('dist/AvenCard.js'))
       assert(paths.includes('dist/AvenPanel.js'))
       assert(paths.includes('dist/AvenPropertyRow.js'))
@@ -160,6 +162,10 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
     `import { h } from 'vue'\nimport { AvenCodeBlock, type AvenCodeBlockProps, type AvenCodeBlockEvents, type AvenCodeBlockSlots } from '@wellsaik/aven-vue'\nconst props: AvenCodeBlockProps = { code: 'const answer = 42', language: 'typescript', showLineNumbers: true, copyable: true }\nconst copied: AvenCodeBlockEvents['copy'][0] = { success: false, error: new Error('blocked') }\nconst slots: AvenCodeBlockSlots = { line: ({ line, index }) => index ? line : line }\nvoid copied; void slots; h(AvenCodeBlock, props)\n`,
   )
   await writeFile(
+    path.join(directory, 'tree-consumer.ts'),
+    `import { h } from 'vue'\nimport { AvenTree, AvenTreeItem, type AvenTreeNode, type AvenTreeProps, type AvenTreeEvents, type AvenTreeSlots } from '@wellsaik/aven-vue'\ntype Key = 'src' | 'app'\nconst nodes: AvenTreeNode<Key>[] = [{ key: 'src', label: 'src', children: [{ key: 'app', label: 'App.vue' }] }]\nconst props: AvenTreeProps<Key> = { nodes, defaultExpandedKeys: ['src'], multiple: true, checkable: true }\nconst activate: AvenTreeEvents<Key>['activate'][0] = { key: 'app', node: nodes[0]!.children![0]!, originalEvent: new Event('keydown') }\nconst slots: AvenTreeSlots<Key> = { item: ({ key, level }) => String(key) + level }\nvoid activate; void slots; h(AvenTree, props); h(AvenTreeItem, { treeId: 'files', node: nodes[0]!, level: 1, position: 1, setSize: 1, index: 0, indexByKey: new Map([['src', 0]]), selectedKeys: [], expandedKeys: [], checkedKeys: [], loadingKeys: [], activeIndex: 0 })\n`,
+  )
+  await writeFile(
     path.join(directory, 'tsconfig.json'),
     JSON.stringify({
       compilerOptions: {
@@ -181,6 +187,7 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
         'menu-consumer.ts',
         'surface-consumer.ts',
         'code-consumer.ts',
+        'tree-consumer.ts',
       ],
     }),
   )
@@ -207,6 +214,7 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
         'menu-consumer.ts',
         'surface-consumer.ts',
         'code-consumer.ts',
+        'tree-consumer.ts',
       ],
     }),
   )

@@ -56,6 +56,8 @@ import {
   AvenPanel,
   AvenPropertyRow,
   AvenCodeBlock,
+  AvenTree,
+  AvenTreeItem,
   AvenDatePicker,
   AvenDateRangePicker,
   AvenTimePicker,
@@ -3245,4 +3247,118 @@ test('code block keeps code as text, numbers stable lines, and reports visible c
     if (originalNavigator) Object.defineProperty(globalThis, 'navigator', originalNavigator)
     else delete globalThis.navigator
   }
+})
+
+test('tree exposes nested tree semantics, cascade checks, keyboard navigation, and lazy load requests', async () => {
+  const nodes = [
+    {
+      key: 'folder',
+      label: 'Folder',
+      children: [
+        { key: 'file', label: 'File' },
+        { key: 'locked', label: 'Locked', disabled: true },
+      ],
+    },
+  ]
+  const html = await render({
+    render: () =>
+      h(AvenTree, {
+        nodes,
+        label: 'Project files',
+        defaultExpandedKeys: ['folder'],
+        defaultSelectedKeys: ['file'],
+        checkable: true,
+        cascadeChecks: true,
+      }),
+  })
+  assert.match(html, /role="tree" aria-label="Project files"/)
+  assert.match(html, /role="treeitem"[^>]*aria-level="2"[^>]*aria-selected="true"/)
+  assert.match(html, /role="group"/)
+  assert.match(html, /aria-disabled="true"/)
+
+  const { renderer, root, find } = makeRenderer()
+  const checked = [],
+    selected = [],
+    activated = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenTree, {
+          nodes,
+          defaultExpandedKeys: ['folder'],
+          checkable: true,
+          cascadeChecks: true,
+          onUpdate: (value) => value,
+          'onUpdate:checkedKeys': (keys) => checked.push(keys),
+          'onUpdate:selectedKeys': (keys) => selected.push(keys),
+          onActivate: (payload) => activated.push(payload),
+        }),
+    })
+    .mount(root)
+  const tree = find(root, (node) => node.props?.role === 'tree')
+  const folder = find(
+    root,
+    (node) => node.props?.role === 'treeitem' && node.props.id?.endsWith('folder'),
+  )
+  const keydown = (key, index = 0) =>
+    tree.props.onKeydown({
+      key,
+      target: { dataset: { treeIndex: String(index) } },
+      preventDefault() {},
+    })
+  keydown(' ')
+  assert.deepEqual(checked, [['folder', 'file']])
+  keydown('ArrowDown')
+  await nextTick()
+  const active = find(root, (node) => node.props?.role === 'treeitem' && node.props.tabindex === 0)
+  assert.equal(active.props.id.endsWith('file'), true)
+  keydown('Enter', 1)
+  assert.equal(activated.length, 1)
+  assert.equal(activated[0].key, 'file')
+  find(
+    root,
+    (node) => node.props?.role === 'treeitem' && node.props.id?.endsWith('file'),
+  ).props.onClick(new Event('click'))
+  assert.deepEqual(selected, [['file']])
+  assert.equal(folder.props['aria-expanded'], true)
+
+  const lazyRequests = []
+  const lazyRoot = { type: 'root', children: [] }
+  const lazyRenderer = makeRenderer()
+  lazyRenderer.renderer
+    .createApp({
+      render: () =>
+        h(AvenTree, {
+          nodes: [{ key: 'lazy', label: 'Lazy folder' }],
+          lazy: true,
+          onLoadChildren: (payload) => lazyRequests.push(payload),
+        }),
+    })
+    .mount(lazyRoot)
+  find(lazyRoot, (node) => node.props?.['aria-label'] === 'Expand Lazy folder').props.onClick(
+    new Event('click'),
+  )
+  await nextTick()
+  assert.equal(lazyRequests.length, 1)
+  assert.equal(lazyRequests[0].key, 'lazy')
+  assert.equal(
+    find(lazyRoot, (node) => node.props?.role === 'treeitem').props['aria-expanded'],
+    true,
+  )
+  const itemHtml = await render({
+    render: () =>
+      h(AvenTreeItem, {
+        treeId: 'standalone',
+        node: { key: 'alone', label: 'Standalone' },
+        level: 1,
+        index: 0,
+        indexByKey: new Map([['alone', 0]]),
+        selectedKeys: [],
+        expandedKeys: [],
+        checkedKeys: [],
+        loadingKeys: [],
+        activeIndex: 0,
+      }),
+  })
+  assert.match(itemHtml, /role="treeitem"/)
 })

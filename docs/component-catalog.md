@@ -445,8 +445,8 @@ Slot notation `item{item,key,...}` means a scoped named slot. A slot without bra
 ### 53. AvenTree / AvenTreeItem — P2
 
 - **Styles:** indented rows, connectors optional, folder/file icons, selected and partial-check states.
-- **Props:** nodes:TreeNode[], nodeKey, childrenKey, selectedKeys, expandedKeys, checkedKeys?, multiple=false, checkable=false, loadingKeys:Key[], lazy=false, cascadeChecks=false.
-- **Events:** update:selectedKeys/expandedKeys/checkedKeys, `loadChildren({key,node})`, `activate({key,node,originalEvent})`, `reorder({key,parentKey,index})` only with explicitly enabled tree drag behavior.
+- **Props:** `nodes:AvenTreeNode<Key>[]` with stable `{key,label,children?,disabled?,leaf?}`; selectedKeys, expandedKeys, checkedKeys?, multiple=false, checkable=false, loadingKeys:Key[], lazy=false, cascadeChecks=false. Apps with other source shapes map at their data boundary.
+- **Events:** update:selectedKeys/expandedKeys/checkedKeys, `loadChildren({key,node})`, `activate({key,node,originalEvent})`; reorder is not part of the base tree and belongs to an explicitly integrated drag adapter.
 - **Slots:** item{node,key,level,expanded,selected,checked,indeterminate,loading}, toggle{expanded}, icon{node}, actions{node}, empty.
 - **Hooks/behavior:** indent/connector/item-bg/selected-bg; tree/treeitem levels and expansion, arrows/Home/End/typeahead, focus retention when parents collapse. Lazy loading does not imply the component fetches data.
 

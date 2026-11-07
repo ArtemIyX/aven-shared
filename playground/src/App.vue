@@ -62,6 +62,7 @@ import {
   AvenCard,
   AvenPropertyRow,
   AvenCodeBlock,
+  AvenTree,
   AvenPasswordField,
   AvenRadio,
   AvenRadioGroup,
@@ -86,6 +87,17 @@ import {
 
 const userName = ref('Avery')
 const sampleCode = 'const answer = 42\nconsole.log(answer)'
+const fileTree = [
+  {
+    key: 'src',
+    label: 'src',
+    children: [
+      { key: 'app', label: 'App.vue' },
+      { key: 'tokens', label: 'tokens.css' },
+    ],
+  },
+  { key: 'readme', label: 'README.md' },
+]
 const searchQuery = ref('')
 const contactEmail = ref('')
 const lastSearch = ref('')
@@ -625,6 +637,22 @@ const buttonTones = [
           <span :data-line="index + 1">{{ line }}</span>
         </template>
       </AvenCodeBlock>
+    </section>
+    <section class="playground-card" aria-labelledby="tree-example">
+      <AvenText id="tree-example" type="header1">Tree navigation and checks</AvenText>
+      <AvenTree
+        :nodes="fileTree"
+        label="Example project files"
+        :default-expanded-keys="['src']"
+        :default-selected-keys="['app']"
+        checkable
+        cascade-checks
+      >
+        <template #icon="{ node }">{{ node.children?.length ? '▰' : '▤' }}</template>
+        <template #actions="{ node }"
+          ><span v-if="node.key === 'app'">Vue component</span></template
+        >
+      </AvenTree>
     </section>
     <section class="playground-card" aria-labelledby="surface-examples">
       <AvenText id="surface-examples" type="header1">Panels and disclosure</AvenText>

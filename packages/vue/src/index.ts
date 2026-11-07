@@ -180,6 +180,13 @@ export type {
   AvenCodeBlockProps,
   AvenCodeBlockEvents,
   AvenCodeBlockSlots,
+  AvenTreeNode,
+  AvenTreeProps,
+  AvenTreeEvents,
+  AvenTreeSlots,
+  AvenTreeItemProps,
+  AvenTreeItemEvents,
+  AvenTreeItemSlots,
   AvenSearchFieldProps,
   AvenInputProps,
   AvenInputEvents,
@@ -273,6 +280,8 @@ export { default as AvenDatePicker } from './AvenDatePicker.vue'
 export { default as AvenDateRangePicker } from './AvenDateRangePicker.vue'
 export { default as AvenTimePicker } from './AvenTimePicker.vue'
 export { default as AvenCodeBlock } from './AvenCodeBlock.vue'
+export { default as AvenTree } from './AvenTree.vue'
+export { default as AvenTreeItem } from './AvenTreeItem.vue'
 export { default as AvenCard } from './AvenCard.vue'
 export { default as AvenPropertyRow } from './AvenPropertyRow.vue'
 export type { AvenTextProps } from './AvenText.js'

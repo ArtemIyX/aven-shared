@@ -113,6 +113,10 @@ export default defineConfig({
         AvenCodeBlock: fileURLToPath(
           new URL('./packages/vue/src/AvenCodeBlock.vue', import.meta.url),
         ),
+        AvenTree: fileURLToPath(new URL('./packages/vue/src/AvenTree.vue', import.meta.url)),
+        AvenTreeItem: fileURLToPath(
+          new URL('./packages/vue/src/AvenTreeItem.vue', import.meta.url),
+        ),
         AvenCard: fileURLToPath(new URL('./packages/vue/src/AvenCard.vue', import.meta.url)),
         AvenPropertyRow: fileURLToPath(
           new URL('./packages/vue/src/AvenPropertyRow.vue', import.meta.url),
