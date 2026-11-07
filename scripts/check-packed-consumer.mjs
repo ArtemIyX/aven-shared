@@ -73,6 +73,8 @@ try {
       assert(paths.includes('dist/AvenSearchBar.js'))
       assert(paths.includes('dist/AvenFilterBuilder.js'))
       assert(paths.includes('dist/AvenSortControl.js'))
+      assert(paths.includes('dist/AvenBoard.js'))
+      assert(paths.includes('dist/AvenBoardColumn.js'))
       assert(paths.includes('dist/AvenCard.js'))
       assert(paths.includes('dist/AvenPanel.js'))
       assert(paths.includes('dist/AvenPropertyRow.js'))
@@ -179,6 +181,10 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
     `import { h } from 'vue'\nimport { AvenFilterBuilder, AvenSortControl, type AvenFilterDefinition, type AvenFilterCondition, type AvenFilterGroup, type AvenFilterBuilderProps, type AvenFilterBuilderEvents, type AvenSortField, type AvenSortItem } from '@wellsaik/aven-vue'\ntype Field = 'status' | 'created'\nconst definitions: AvenFilterDefinition[] = [{ key: 'status', label: 'Status', valueType: 'select', operators: ['is'], options: [{ value: 'open', label: 'Open' }] }, { key: 'created', label: 'Created', valueType: 'date', operators: ['after', 'before'] }]\nconst condition: AvenFilterCondition<Field> = { id: 'open', field: 'status', operator: 'is', value: 'open' }\nconst group: AvenFilterGroup<Field> = { id: 'root', operator: 'and', children: [condition] }\nconst props: AvenFilterBuilderProps<Field> = { modelValue: group, definitions, maxDepth: 3, allowGroups: true }\nconst change: AvenFilterBuilderEvents<Field>['change'][0] = group\nconst fields: AvenSortField<Field>[] = [{ key: 'created', label: 'Created' }, { key: 'status', label: 'Status' }]\nconst sort: AvenSortItem<Field>[] = [{ key: 'created', direction: 'desc' }]\nvoid change; h(AvenFilterBuilder<Field>, props); h(AvenSortControl<Field>, { fields, modelValue: sort, multiple: true })\n`,
   )
   await writeFile(
+    path.join(directory, 'board-consumer.ts'),
+    `import { h } from 'vue'\nimport { AvenBoard, AvenBoardColumn, type AvenBoardColumnData, type AvenBoardProps, type AvenBoardEvents, type AvenBoardColumnProps } from '@wellsaik/aven-vue'\ntype ItemKey = 'task'\ntype ColumnKey = 'todo' | 'done'\ntype Item = { title: string; owner: string }\nconst columns: AvenBoardColumnData<ColumnKey, ItemKey>[] = [{ key: 'todo', label: 'To do', itemKeys: ['task'] }, { key: 'done', label: 'Done', itemKeys: [] }]\nconst itemsByKey = new Map<ItemKey, Item>([['task', { title: 'Release', owner: 'Ava' }]])\nconst props: AvenBoardProps<Item, ItemKey, ColumnKey> = { columns, itemsByKey, draggable: true, canMove: request => request.toColumn === 'done' }\nconst move: AvenBoardEvents<Item, ItemKey, ColumnKey>['moveRequest'][0] = { itemKey: 'task', fromColumn: 'todo', toColumn: 'done', fromIndex: 0, toIndex: 0, originalEvent: new Event('drop') }\nconst column: AvenBoardColumnProps<Item, ItemKey, ColumnKey> = { column: columns[0]!, entries: [{ key: 'task', item: { title: 'Release', owner: 'Ava' }, index: 0, loading: false }] }\nvoid move; h(AvenBoard<Item, ItemKey, ColumnKey>, props); h(AvenBoardColumn<Item, ItemKey, ColumnKey>, column)\n`,
+  )
+  await writeFile(
     path.join(directory, 'tsconfig.json'),
     JSON.stringify({
       compilerOptions: {
@@ -203,6 +209,7 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
         'tree-consumer.ts',
         'search-consumer.ts',
         'filter-builder-consumer.ts',
+        'board-consumer.ts',
       ],
     }),
   )
@@ -232,6 +239,7 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
         'tree-consumer.ts',
         'search-consumer.ts',
         'filter-builder-consumer.ts',
+        'board-consumer.ts',
       ],
     }),
   )

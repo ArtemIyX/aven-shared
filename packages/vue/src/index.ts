@@ -210,6 +210,16 @@ export type {
   AvenSortControlProps,
   AvenSortControlEvents,
   AvenSortControlSlots,
+  AvenBoardColumnData,
+  AvenBoardMoveRequest,
+  AvenBoardEntry,
+  AvenBoardProps,
+  AvenBoardEvents,
+  AvenBoardSlots,
+  AvenBoardColumnEntry,
+  AvenBoardColumnProps,
+  AvenBoardColumnEvents,
+  AvenBoardColumnSlots,
   AvenSearchFieldProps,
   AvenInputProps,
   AvenInputEvents,
@@ -310,6 +320,8 @@ export { default as AvenFilterBar } from './AvenFilterBar.vue'
 export { default as AvenSearchBar } from './AvenSearchBar.vue'
 export { default as AvenFilterBuilder } from './AvenFilterBuilder.vue'
 export { default as AvenSortControl } from './AvenSortControl.vue'
+export { default as AvenBoard } from './AvenBoard.vue'
+export { default as AvenBoardColumn } from './AvenBoardColumn.vue'
 export { default as AvenCard } from './AvenCard.vue'
 export { default as AvenPropertyRow } from './AvenPropertyRow.vue'
 export type { AvenTextProps } from './AvenText.js'

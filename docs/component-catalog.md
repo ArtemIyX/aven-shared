@@ -485,10 +485,10 @@ Slot notation `item{item,key,...}` means a scoped named slot. A slot without bra
 ### 58. AvenBoard / AvenBoardColumn — P3 optional integration
 
 - **Styles:** horizontal scroll columns, compact cards, count headers, empty drop surface, dragging indicator.
-- **Props:** columns:{key,label,itemKeys}[], itemsByKey, disabled=false, draggable=false, loadingKeys=[], cardKey; app supplies allowed moves via canMove callback.
+- **Props:** columns:{key,label,itemKeys}[], itemsByKey (Map or keyed record), disabled=false, draggable=false, loadingKeys=[]; app can reject a proposed move through canMove.
 - **Events:** `moveRequest({itemKey,fromColumn,toColumn,fromIndex,toIndex,originalEvent})`, `select({key,item})`, `add({columnKey})`; app accepts/rejects and updates arrays.
 - **Slots:** column-header/footer, card{item,key,index,column}, drag-preview{item}, empty-column{column}, add-card.
-- **Hooks/behavior:** column-bg/width/gap/drop-indicator; keyboard-accessible Move action plus pointer drag. Business workflow transitions and persistence are outside the board. Consider separate entry/dependency for drag engine.
+- **Hooks/behavior:** column-bg/width/gap/drop-indicator; keyboard-accessible Move action plus native pointer drag, with move requests only and no local array mutation. Stable item keys come from itemKeys. Business workflow transitions and persistence are outside the board; no drag engine dependency is needed.
 
 ### 59. AvenChartFrame / AvenChartLegend / AvenChartTooltip — P3 optional integration
 

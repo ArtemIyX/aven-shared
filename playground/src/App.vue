@@ -68,6 +68,7 @@ import {
   AvenFilterChip,
   AvenFilterBuilder,
   AvenSortControl,
+  AvenBoard,
   AvenPasswordField,
   AvenRadio,
   AvenRadioGroup,
@@ -139,6 +140,17 @@ const sortOrder = ref<AvenSortItem<'updated' | 'name' | 'status'>[]>([
   { key: 'updated', direction: 'desc' },
 ])
 const lastSortChange = ref('')
+const boardColumns = [
+  { key: 'backlog', label: 'Backlog', itemKeys: ['task-design', 'task-build'] },
+  { key: 'active', label: 'In progress', itemKeys: ['task-test'] },
+  { key: 'done', label: 'Done', itemKeys: [] },
+]
+const boardItems: Record<string, { title: string; owner: string }> = {
+  'task-design': { title: 'Review the design', owner: 'Avery' },
+  'task-build': { title: 'Build the component', owner: 'Morgan' },
+  'task-test': { title: 'Verify keyboard behavior', owner: 'Sam' },
+}
+const lastBoardRequest = ref('')
 const lastFilterApply = ref('')
 function updateFilterValue(setValue: (value: AvenFilterValue['value']) => void, event: Event) {
   setValue((event.target as HTMLInputElement).value)
@@ -773,6 +785,42 @@ const buttonTones = [
         </template>
       </AvenSortControl>
       <p v-if="lastSortChange" aria-live="polite">Sort: {{ lastSortChange }}</p>
+    </section>
+    <section class="playground-card" aria-labelledby="board-example">
+      <AvenText id="board-example" type="header1">Board move adapter</AvenText>
+      <p>Move requests are emitted for the application to accept and apply.</p>
+      <AvenBoard
+        :columns="boardColumns"
+        :items-by-key="boardItems"
+        draggable
+        label="Project workflow board"
+        @move-request="
+          lastBoardRequest = `${$event.itemKey}: ${$event.fromColumn} → ${$event.toColumn}`
+        "
+        @select="lastBoardRequest = `Selected ${$event.item.title}`"
+        @add="lastBoardRequest = `Add to ${$event.columnKey}`"
+      >
+        <template #column-header="{ column, count, titleId }">
+          <h2 :id="titleId">
+            {{ column.label }} <span>({{ count }})</span>
+          </h2>
+        </template>
+        <template #card="{ item, key, select, loading }">
+          <button type="button" :disabled="loading" @click="select">
+            {{ item.title }} <small>· {{ item.owner }} · {{ key }}</small>
+          </button>
+        </template>
+        <template #drag-preview="{ item }">{{ item.title }}</template>
+        <template #empty-column="{ column }"
+          >No cards in {{ column.label }}. Drop here or add a card.</template
+        >
+        <template #add-card="{ column, add, disabled }">
+          <AvenButton :disabled="disabled" variant="outline" @click="add"
+            >Add to {{ column.label }}</AvenButton
+          >
+        </template>
+      </AvenBoard>
+      <p v-if="lastBoardRequest" aria-live="polite">{{ lastBoardRequest }}</p>
     </section>
     <section class="playground-card" aria-labelledby="surface-examples">
       <AvenText id="surface-examples" type="header1">Panels and disclosure</AvenText>

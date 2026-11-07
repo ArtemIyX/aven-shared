@@ -63,6 +63,8 @@ import {
   AvenFilterChip,
   AvenFilterBuilder,
   AvenSortControl,
+  AvenBoard,
+  AvenBoardColumn,
   AvenDatePicker,
   AvenDateRangePicker,
   AvenTimePicker,
@@ -3696,4 +3698,106 @@ test('sort control preserves generic keys, keyboard-operable order, and one comm
   ).props.onClick()
   assert.deepEqual(removes, [{ key: 'created', index: 0 }])
   assert.equal(model[0].direction, 'asc')
+})
+
+test('board keeps list semantics and requests one pointer or keyboard move without mutating application columns', async () => {
+  const columns = [
+    { key: 'todo', label: 'To do', itemKeys: ['task-1'] },
+    { key: 'done', label: 'Done', itemKeys: [] },
+  ]
+  const itemsByKey = new Map([['task-1', { title: 'Prepare release' }]])
+  const html = await render({
+    render: () => h(AvenBoard, { columns, itemsByKey, draggable: true, label: 'Project board' }),
+  })
+  assert.match(html, /role="region" aria-label="Project board"/)
+  assert.match(html, /<h2[^>]*>To do<\/h2>/)
+  assert.match(html, /aria-label="To do items"/)
+  assert.match(html, /Prepare release/)
+  assert.match(html, /Move item/)
+  const columnHtml = await render({
+    render: () =>
+      h(AvenBoardColumn, {
+        column: { key: 'ready', label: 'Ready', itemKeys: ['task-1'] },
+        entries: [{ key: 'task-1', item: 'Task', index: 0, loading: false }],
+      }),
+  })
+  assert.match(columnHtml, /aria-label="Ready items"/)
+  assert.match(columnHtml, /<span[^>]*>task-1<\/span>/)
+
+  const { renderer, root, find } = makeRenderer()
+  const moves = [],
+    selected = [],
+    adds = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenBoard, {
+          columns,
+          itemsByKey,
+          draggable: true,
+          onMoveRequest: (request) => moves.push(request),
+          onSelect: (payload) => selected.push(payload),
+          onAdd: (payload) => adds.push(payload),
+        }),
+    })
+    .mount(root)
+  find(root, (node) => node.type === 'button' && node.props.class === 'card-select').props.onClick(
+    new Event('click'),
+  )
+  assert.deepEqual(selected, [{ key: 'task-1', item: { title: 'Prepare release' } }])
+  find(
+    root,
+    (node) => node.type === 'button' && node.props['data-move-key'] === 'task-1',
+  ).props.onClick(new Event('click'))
+  await nextTick()
+  find(
+    root,
+    (node) => node.type === 'button' && node.props.class === 'board-move-commit',
+  ).props.onClick(new Event('click'))
+  assert.equal(moves.length, 1)
+  assert.deepEqual(
+    {
+      itemKey: moves[0].itemKey,
+      fromColumn: moves[0].fromColumn,
+      toColumn: moves[0].toColumn,
+      fromIndex: moves[0].fromIndex,
+      toIndex: moves[0].toIndex,
+    },
+    { itemKey: 'task-1', fromColumn: 'todo', toColumn: 'done', fromIndex: 0, toIndex: 0 },
+  )
+  assert.equal(moves[0].originalEvent instanceof Event, true)
+  assert.equal(columns[0].itemKeys[0], 'task-1')
+  find(
+    root,
+    (node) => node.type === 'button' && node.props.class === 'board-add-item',
+  ).props.onClick()
+  assert.deepEqual(adds, [{ columnKey: 'todo' }])
+
+  const dragMount = makeRenderer()
+  const dragMoves = []
+  dragMount.renderer
+    .createApp({
+      render: () =>
+        h(AvenBoard, {
+          columns,
+          itemsByKey,
+          draggable: true,
+          onMoveRequest: (request) => dragMoves.push(request),
+        }),
+    })
+    .mount(dragMount.root)
+  const dragRow = find(
+    dragMount.root,
+    (node) => node.type === 'li' && node.props.draggable === true,
+  )
+  const dataTransfer = { effectAllowed: '', setDragImage() {} }
+  dragRow.props.onDragstart(Object.assign(new Event('dragstart'), { dataTransfer }))
+  const targetList = find(
+    dragMount.root,
+    (node) => node.type === 'ol' && node.props['aria-label'] === 'Done items',
+  )
+  targetList.props.onDrop(new Event('drop'))
+  assert.equal(dragMoves.length, 1)
+  assert.equal(dragMoves[0].originalEvent instanceof Object, true)
+  assert.deepEqual(columns[0].itemKeys, ['task-1'])
 })

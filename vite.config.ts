@@ -132,6 +132,10 @@ export default defineConfig({
         AvenSortControl: fileURLToPath(
           new URL('./packages/vue/src/AvenSortControl.vue', import.meta.url),
         ),
+        AvenBoard: fileURLToPath(new URL('./packages/vue/src/AvenBoard.vue', import.meta.url)),
+        AvenBoardColumn: fileURLToPath(
+          new URL('./packages/vue/src/AvenBoardColumn.vue', import.meta.url),
+        ),
         AvenCard: fileURLToPath(new URL('./packages/vue/src/AvenCard.vue', import.meta.url)),
         AvenPropertyRow: fileURLToPath(
           new URL('./packages/vue/src/AvenPropertyRow.vue', import.meta.url),

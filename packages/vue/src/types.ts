@@ -1613,6 +1613,135 @@ export type AvenSortControlSlots<Key extends string = string> = {
   'add-action'?: (scope: { add: () => void; disabled: boolean }) => unknown
   empty?: () => unknown
 }
+export type AvenBoardColumnData<
+  ColumnKey extends string | number = string,
+  ItemKey extends string | number = string,
+> = {
+  key: ColumnKey
+  label: string
+  itemKeys: ItemKey[]
+}
+export type AvenBoardMoveRequest<
+  ItemKey extends string | number = string,
+  ColumnKey extends string | number = string,
+> = {
+  itemKey: ItemKey
+  fromColumn: ColumnKey
+  toColumn: ColumnKey
+  fromIndex: number
+  toIndex: number
+  originalEvent: Event
+}
+export type AvenBoardEntry<
+  Item,
+  ItemKey extends string | number = string,
+  ColumnKey extends string | number = string,
+> = {
+  key: ItemKey
+  item: Item
+  index: number
+  column: AvenBoardColumnData<ColumnKey, ItemKey>
+  loading: boolean
+}
+export type AvenBoardProps<
+  Item,
+  ItemKey extends string | number = string,
+  ColumnKey extends string | number = string,
+> = {
+  id?: string
+  columns: AvenBoardColumnData<ColumnKey, ItemKey>[]
+  itemsByKey: ReadonlyMap<ItemKey, Item> | Partial<Record<ItemKey, Item>>
+  disabled?: boolean
+  draggable?: boolean
+  loadingKeys?: ItemKey[]
+  canMove?: (request: Omit<AvenBoardMoveRequest<ItemKey, ColumnKey>, 'originalEvent'>) => boolean
+  label?: string
+  addLabel?: string
+  moveLabel?: string
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'column' | 'card' | 'card-content' | 'actions' | 'move' | 'drop-indicator'>
+}
+export type AvenBoardEvents<
+  Item,
+  ItemKey extends string | number = string,
+  ColumnKey extends string | number = string,
+> = {
+  moveRequest: [request: AvenBoardMoveRequest<ItemKey, ColumnKey>]
+  select: [payload: { key: ItemKey; item: Item }]
+  add: [payload: { columnKey: ColumnKey }]
+}
+export type AvenBoardSlots<
+  Item,
+  ItemKey extends string | number = string,
+  ColumnKey extends string | number = string,
+> = {
+  'column-header'?: (scope: {
+    column: AvenBoardColumnData<ColumnKey, ItemKey>
+    count: number
+    titleId: string
+  }) => unknown
+  'column-footer'?: (scope: {
+    column: AvenBoardColumnData<ColumnKey, ItemKey>
+    add: () => void
+  }) => unknown
+  card?: (
+    scope: AvenBoardEntry<Item, ItemKey, ColumnKey> & { select: () => void; moving: boolean },
+  ) => unknown
+  'drag-preview'?: (scope: { item: Item; key: ItemKey }) => unknown
+  'empty-column'?: (scope: { column: AvenBoardColumnData<ColumnKey, ItemKey> }) => unknown
+  'add-card'?: (scope: {
+    column: AvenBoardColumnData<ColumnKey, ItemKey>
+    add: () => void
+    disabled: boolean
+  }) => unknown
+}
+export type AvenBoardColumnEntry<Item, ItemKey extends string | number = string> = {
+  key: ItemKey
+  item: Item
+  index: number
+  loading: boolean
+}
+export type AvenBoardColumnProps<
+  Item,
+  ItemKey extends string | number = string,
+  ColumnKey extends string | number = string,
+> = {
+  id?: string
+  column: AvenBoardColumnData<ColumnKey, ItemKey>
+  entries: AvenBoardColumnEntry<Item, ItemKey>[]
+  disabled?: boolean
+  draggable?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'header' | 'title' | 'count' | 'list' | 'card' | 'empty' | 'footer'>
+}
+export type AvenBoardColumnEvents<
+  ItemKey extends string | number = string,
+  ColumnKey extends string | number = string,
+> = {
+  dragStart: [
+    payload: { key: ItemKey; index: number; columnKey: ColumnKey; originalEvent: DragEvent },
+  ]
+  dragEnd: [payload: { key: ItemKey; index: number; columnKey: ColumnKey }]
+  drop: [payload: { index: number; columnKey: ColumnKey; originalEvent: DragEvent }]
+  add: [payload: { columnKey: ColumnKey }]
+}
+export type AvenBoardColumnSlots<
+  Item,
+  ItemKey extends string | number = string,
+  ColumnKey extends string | number = string,
+> = {
+  default?: (scope: {
+    entry: AvenBoardColumnEntry<Item, ItemKey>
+    column: AvenBoardColumnData<ColumnKey, ItemKey>
+  }) => unknown
+  header?: (scope: {
+    column: AvenBoardColumnData<ColumnKey, ItemKey>
+    count: number
+    titleId: string
+  }) => unknown
+  empty?: (scope: { column: AvenBoardColumnData<ColumnKey, ItemKey> }) => unknown
+  footer?: (scope: { column: AvenBoardColumnData<ColumnKey, ItemKey>; add: () => void }) => unknown
+}
 export type AvenDialogProps = {
   open?: boolean
   defaultOpen?: boolean
