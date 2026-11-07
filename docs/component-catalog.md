@@ -1,8 +1,8 @@
 # Detailed common component catalog
 
-Future Vue components described here belong in `packages/vue` (`@wellsaik/aven-vue`); shared tokens and themes remain in `packages/shared`. The catalog is a plan, not an implementation.
+Vue components described here belong in `packages/vue` (`@wellsaik/aven-vue`); framework-independent tokens and themes remain in `packages/shared` (`@wellsaik/aven-shared`).
 
-Proposed API, 2026-11-05. Only AvenText currently exists. All other names, props, events, slots and hooks below are planned. See [shared contracts](component-library-plan.md) before implementing individual entries and [research](app-component-research.md) for the 16-app evidence.
+Proposed API, 2026-11-05. This catalog describes intended behavior and does not itself establish implementation status. See the [implementation status checklist](component-implementation-status.md) for the audited current state, [shared contracts](component-library-plan.md), and [research](app-component-research.md) for the 16-app evidence.
 
 ## How to read the contracts
 
@@ -514,15 +514,15 @@ Optional `AvenConfig` types should permit only documented defaults and translati
 
 ## Component coverage and acceptance matrix
 
-| Family | Required state/edge cases |
-| --- | --- |
-| All visible components | Light, dark, system, nested theme, contrast/forced colors, narrow width, long labels, RTL, custom tokens, unstyled replacement skin |
-| Actions | Default/hover/active/focus-visible/disabled/loading, native form type, click once, icon accessible name |
-| Fields | Empty/filled/readonly/disabled/invalid/required, native submit/reset, help/error IDs, autofill, IME, clear, focus retention |
-| Choices | No selection/single/multiple/partial, disabled options, missing selected option data, typeahead, refresh by stable key |
-| Overlays | Every placement, viewport clipping, zoom, scrolling ancestor, nested modal/menu, outside press, Escape, focus return, theme changes while open |
-| Data | Loading/empty/no-results/error/partial/stale, pagination, reordered rows, selection across pages, slow async updates, virtualization focus |
-| Dates/numbers | Locale formatting, invalid drafts, boundary values, empty/null/zero distinction, timezone-free date storage, app timezone adapter |
-| Slots/parts | Each named slot replaced in a real example; semantics and keyboard behavior retained; ui hooks target documented parts |
+| Family                 | Required state/edge cases                                                                                                                      |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| All visible components | Light, dark, system, nested theme, contrast/forced colors, narrow width, long labels, RTL, custom tokens, unstyled replacement skin            |
+| Actions                | Default/hover/active/focus-visible/disabled/loading, native form type, click once, icon accessible name                                        |
+| Fields                 | Empty/filled/readonly/disabled/invalid/required, native submit/reset, help/error IDs, autofill, IME, clear, focus retention                    |
+| Choices                | No selection/single/multiple/partial, disabled options, missing selected option data, typeahead, refresh by stable key                         |
+| Overlays               | Every placement, viewport clipping, zoom, scrolling ancestor, nested modal/menu, outside press, Escape, focus return, theme changes while open |
+| Data                   | Loading/empty/no-results/error/partial/stale, pagination, reordered rows, selection across pages, slow async updates, virtualization focus     |
+| Dates/numbers          | Locale formatting, invalid drafts, boundary values, empty/null/zero distinction, timezone-free date storage, app timezone adapter              |
+| Slots/parts            | Each named slot replaced in a real example; semantics and keyboard behavior retained; ui hooks target documented parts                         |
 
 For each component's first implementation, turn the relevant rows into focused tests and playground examples. Do not claim the whole catalog implemented merely because shared types or visual mockups exist.

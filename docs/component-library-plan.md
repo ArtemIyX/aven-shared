@@ -2,7 +2,7 @@
 
 Research date: 2026-11-05. Target: `@wellsaik/aven-vue` for future Vue components, including browser and Tauri applications.
 
-Status: proposed design and implementation backlog. This document does not mean these components already exist.
+Status: design contract and implementation backlog. Check [component implementation status](component-implementation-status.md) for source, exports, examples, and verification; do not infer completion from a catalog entry.
 
 ## Reading map
 
@@ -12,7 +12,7 @@ Status: proposed design and implementation backlog. This document does not mean 
 
 ## 1. Repository baseline
 
-`@wellsaik/aven-vue` owns AvenText and future components in `packages/vue/src`, with Vue `^3.3.0` as a peer. Component CSS is explicitly imported from `@wellsaik/aven-vue/style.css`. The framework-independent `@wellsaik/aven-shared` owns tokens and themes; the Vue package depends on it.
+`@wellsaik/aven-vue` owns AvenText and Vue components in `packages/vue/src`, with Vue `^3.3.0` as a peer. Component CSS is explicitly imported from `@wellsaik/aven-vue/style.css`. The framework-independent `@wellsaik/aven-shared` owns tokens and themes; the Vue package depends on its public package exports.
 
 `packages/shared/src/tokens/colors.json` is the color source of truth. Generated CSS supports light, dark, system, enhanced contrast, forced colors and print. Optional finance, chart, diagram and gradient entries remain shared. Preserve AvenText behavior and customization hooks.
 
@@ -34,20 +34,20 @@ All components support `id`, `class`, `style`, `data-*`, and applicable `aria-*`
 
 Common props are opt-in by component category:
 
-| Contract | Type / default | Applies to |
-| --- | --- | --- |
-| `size` | `'xs'\|'sm'\|'md'\|'lg'`, default `md` | Controls, badges, avatars; only documented sizes per component |
-| `density` | `'compact'\|'comfortable'\|'spacious'`, default `comfortable` | Lists, menus, tables and shells |
-| `tone` | `'neutral'\|'accent'\|'secondary'\|'info'\|'success'\|'warning'\|'danger'\|'critical'` | Components with semantic coloring; default neutral except primary action |
-| `variant` | Component-specific union | Button solid/soft/outline/ghost/link, field outline/filled/underline, etc. |
-| `disabled` | `boolean=false` | Action and form controls, not arbitrary content containers |
-| `readonly` | `boolean=false` | Value fields; remains focusable and participates in form submission |
-| `loading` | `boolean=false` | Controls or surfaces waiting for app-owned work |
-| `invalid` | `boolean=false` | Fields; sets `aria-invalid`, linked error text and invalid boundary |
-| `unstyled` | `boolean=false` | Removes visual skin while retaining semantics, interaction, essential positioning and visually hidden helpers |
-| `ui` | Typed map of part name to `{class?, style?, attrs?}` | Public parts such as label, control, content, indicator, item |
-| `dir` | `'ltr'\|'rtl'`, inherited by default | Logical layout; provider default with local override |
-| `locale` | BCP 47 string, inherited; deterministic configured fallback | Formatting and translated labels |
+| Contract   | Type / default                                                                         | Applies to                                                                                                    |
+| ---------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `size`     | `'xs'\|'sm'\|'md'\|'lg'`, default `md`                                                 | Controls, badges, avatars; only documented sizes per component                                                |
+| `density`  | `'compact'\|'comfortable'\|'spacious'`, default `comfortable`                          | Lists, menus, tables and shells                                                                               |
+| `tone`     | `'neutral'\|'accent'\|'secondary'\|'info'\|'success'\|'warning'\|'danger'\|'critical'` | Components with semantic coloring; default neutral except primary action                                      |
+| `variant`  | Component-specific union                                                               | Button solid/soft/outline/ghost/link, field outline/filled/underline, etc.                                    |
+| `disabled` | `boolean=false`                                                                        | Action and form controls, not arbitrary content containers                                                    |
+| `readonly` | `boolean=false`                                                                        | Value fields; remains focusable and participates in form submission                                           |
+| `loading`  | `boolean=false`                                                                        | Controls or surfaces waiting for app-owned work                                                               |
+| `invalid`  | `boolean=false`                                                                        | Fields; sets `aria-invalid`, linked error text and invalid boundary                                           |
+| `unstyled` | `boolean=false`                                                                        | Removes visual skin while retaining semantics, interaction, essential positioning and visually hidden helpers |
+| `ui`       | Typed map of part name to `{class?, style?, attrs?}`                                   | Public parts such as label, control, content, indicator, item                                                 |
+| `dir`      | `'ltr'\|'rtl'`, inherited by default                                                   | Logical layout; provider default with local override                                                          |
+| `locale`   | BCP 47 string, inherited; deterministic configured fallback                            | Formatting and translated labels                                                                              |
 
 Use `type` for native button/input types; avoid overloading it for appearance. Preserve the existing AvenText `type` API. Avoid arbitrary `as` on controls: button and link semantics require separate supported render modes. A router-link integration is an optional adapter or scoped link slot, with no hard Vue Router dependency.
 
@@ -114,7 +114,9 @@ A proposed consumption example (not currently exported):
 </AvenButton>
 
 <style scoped>
-.project-save { --aven-button-radius: var(--aven-radius-lg); }
+.project-save {
+  --aven-button-radius: var(--aven-radius-lg);
+}
 </style>
 ```
 
@@ -124,22 +126,22 @@ Keep AvenText's existing TS entry and CSS hooks compatible; converting it to SFC
 
 Use [the exact palette reference](component-theme-reference.md). Light is a slate/white system; dark uses neutral charcoal/gray surfaces with pastel semantic fills and dark on-solid text. Do not tint all dark surfaces blue or keep white text on dark-mode accent fills.
 
-| Recipe | Base | Hover / pressed | Foreground and boundaries |
-| --- | --- | --- | --- |
-| Solid action / badge | `tone-solid` | `tone-hover` / `tone-pressed` | `tone-on-solid`; match foreground to fill |
-| Soft action / status | `tone-subtle` | `tone-soft`; pressed also soft plus inset/outline cue | `tone-text`; optional `tone-border` |
-| Outline action | `surface-base` or transparent | `tone-subtle` / `tone-soft` | `tone-text`, `tone-border` |
-| Ghost action | transparent | `surface-hover` / `surface-pressed` | text-primary or tone-text |
-| Link action | transparent | underline + link-hover / link-pressed | link-default; visited only for real navigation |
-| Field | `surface-base` | border-interactive on hover | text-primary, text-placeholder, border-interactive; invalid uses border-invalid |
-| Filled field | `surface-recessed` | `surface-hover` | Same label and error contract as outlined field |
-| Selected list row / tab | `surface-selected` | selected-hover / selected-pressed | text-primary plus selected marker and border-selected |
-| Strong text selection | `selection-fill` | n/a | `selection-text`; use together |
-| Floating panel | surface-popover/dropdown/context-menu | row hover inside | text-primary, border-default; ambient/contact shadows |
-| Card / dialog / sidebar | matching surface-card/dialog/sidebar alias | component-specific | text-primary, border-subtle; controls remain identifiable |
-| Disabled control | surface-disabled | no action response | text-disabled, icon-disabled; no whole-control opacity multiplication |
-| Invalid field | normal field background | retains focus styling | danger-text message + border-invalid + error icon/text |
-| Loading | preserve previous surface/content | blocks duplicate action when specified | aria-busy, spinner or skeleton; veil-loading only when needed |
+| Recipe                  | Base                                       | Hover / pressed                                       | Foreground and boundaries                                                       |
+| ----------------------- | ------------------------------------------ | ----------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Solid action / badge    | `tone-solid`                               | `tone-hover` / `tone-pressed`                         | `tone-on-solid`; match foreground to fill                                       |
+| Soft action / status    | `tone-subtle`                              | `tone-soft`; pressed also soft plus inset/outline cue | `tone-text`; optional `tone-border`                                             |
+| Outline action          | `surface-base` or transparent              | `tone-subtle` / `tone-soft`                           | `tone-text`, `tone-border`                                                      |
+| Ghost action            | transparent                                | `surface-hover` / `surface-pressed`                   | text-primary or tone-text                                                       |
+| Link action             | transparent                                | underline + link-hover / link-pressed                 | link-default; visited only for real navigation                                  |
+| Field                   | `surface-base`                             | border-interactive on hover                           | text-primary, text-placeholder, border-interactive; invalid uses border-invalid |
+| Filled field            | `surface-recessed`                         | `surface-hover`                                       | Same label and error contract as outlined field                                 |
+| Selected list row / tab | `surface-selected`                         | selected-hover / selected-pressed                     | text-primary plus selected marker and border-selected                           |
+| Strong text selection   | `selection-fill`                           | n/a                                                   | `selection-text`; use together                                                  |
+| Floating panel          | surface-popover/dropdown/context-menu      | row hover inside                                      | text-primary, border-default; ambient/contact shadows                           |
+| Card / dialog / sidebar | matching surface-card/dialog/sidebar alias | component-specific                                    | text-primary, border-subtle; controls remain identifiable                       |
+| Disabled control        | surface-disabled                           | no action response                                    | text-disabled, icon-disabled; no whole-control opacity multiplication           |
+| Invalid field           | normal field background                    | retains focus styling                                 | danger-text message + border-invalid + error icon/text                          |
+| Loading                 | preserve previous surface/content          | blocks duplicate action when specified                | aria-busy, spinner or skeleton; veil-loading only when needed                   |
 
 The recipe table abbreviates `--aven-color-`. Tone tokens exist for the listed semantic families. Financial buy/sell/gain/loss roles are optional domain additions, not aliases for generic success/danger actions. Chart/category colors never become arbitrary action colors.
 
@@ -177,14 +179,14 @@ Target WCAG 2.2 AA: test actual rendered pairings for text contrast, control bou
 
 ## 7. Implementation slices and dependencies
 
-| Phase | Deliverable | Exit evidence |
-| --- | --- | --- |
-| 0 | Shared types, provider, field/ID contract, component CSS packaging, demo conventions | Import contract approved; both theme previews; no AvenText regressions |
-| 1 | Icon, Button/IconButton/ButtonGroup, Link, Badge, Text, Field, Input/Textarea, Checkbox/Radio/Switch | Native form submit/reset, keyboard, invalid/disabled/loading states, slot customization |
-| 2 | Overlay infrastructure, Tooltip, Popover, Dialog/Drawer, Menu/Dropdown/ContextMenu, Select/Combobox | Nested overlay focus, Escape, collision handling, themed portals and async choices |
-| 3 | Tabs, SegmentedControl, Breadcrumb, Pagination, NavList/Sidebar, Toolbar, Card/Panel, Accordion | Controlled/uncontrolled parity, RTL, responsive navigation |
-| 4 | Table and list composition, search/filter controls, tree, virtualization, dates/numbers/files | Stable key behavior, large list navigation, locale/timezone and upload boundaries |
-| 5 | Optional chart, timeline, board, rich-editor integration packages | Dependency budgets measured; app adapters demonstrate reuse |
+| Phase | Deliverable                                                                                          | Exit evidence                                                                           |
+| ----- | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| 0     | Shared types, provider, field/ID contract, component CSS packaging, demo conventions                 | Import contract approved; both theme previews; no AvenText regressions                  |
+| 1     | Icon, Button/IconButton/ButtonGroup, Link, Badge, Text, Field, Input/Textarea, Checkbox/Radio/Switch | Native form submit/reset, keyboard, invalid/disabled/loading states, slot customization |
+| 2     | Overlay infrastructure, Tooltip, Popover, Dialog/Drawer, Menu/Dropdown/ContextMenu, Select/Combobox  | Nested overlay focus, Escape, collision handling, themed portals and async choices      |
+| 3     | Tabs, SegmentedControl, Breadcrumb, Pagination, NavList/Sidebar, Toolbar, Card/Panel, Accordion      | Controlled/uncontrolled parity, RTL, responsive navigation                              |
+| 4     | Table and list composition, search/filter controls, tree, virtualization, dates/numbers/files        | Stable key behavior, large list navigation, locale/timezone and upload boundaries       |
+| 5     | Optional chart, timeline, board, rich-editor integration packages                                    | Dependency budgets measured; app adapters demonstrate reuse                             |
 
 Within a phase build dependencies first: Button → trigger; Field + Input + Popover + Listbox → Combobox; Menu primitives + overlay → Dropdown/ContextMenu; table primitives + checkbox/sort/filter/pagination → DataTable. A data grid is an additional keyboard model and should not be advertised by a basic HTML table.
 
