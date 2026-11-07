@@ -343,6 +343,61 @@ export type AvenSplitPaneSlots = {
   pane?: (scope: { index: number; sizes: number[] }) => unknown
   handle?: (scope: { index: number; sizes: number[] }) => unknown
 }
+export type AvenListItemProps = {
+  selected?: boolean
+  disabled?: boolean
+  dense?: boolean
+  divided?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'leading' | 'content' | 'trailing' | 'separator'>
+}
+export type AvenListItemSlots = {
+  leading?: () => unknown
+  default?: () => unknown
+  trailing?: () => unknown
+  separator?: () => unknown
+}
+export type AvenListProps<T, Key extends string | number = string | number> = {
+  items: T[]
+  itemKey: (item: T, index: number) => Key
+  getLabel?: (item: T, index: number) => string
+  itemDisabled?: (item: T, index: number) => boolean
+  loading?: boolean
+  error?: boolean
+  selectable?: boolean
+  selectedKeys?: Key[]
+  defaultSelectedKeys?: Key[]
+  orientation?: 'vertical' | 'horizontal'
+  label?: string
+  divided?: boolean
+  dense?: boolean
+  endThreshold?: number
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'list' | 'item' | 'leading' | 'content' | 'trailing'>
+}
+export type AvenListEvents<T, Key extends string | number = string | number> = {
+  'update:selectedKeys': [keys: Key[]]
+  select: [payload: { key: Key; item: T; originalEvent: MouseEvent }]
+  endReached: [payload: { lastKey: Key | undefined }]
+  scroll: [event: Event]
+}
+export type AvenListItemSlot<T, Key extends string | number = string | number> = {
+  item: T
+  key: Key
+  index: number
+  selected: boolean
+}
+export type AvenListSlots<T, Key extends string | number = string | number> = {
+  item?: (scope: AvenListItemSlot<T, Key>) => unknown
+  leading?: (scope: AvenListItemSlot<T, Key>) => unknown
+  trailing?: (scope: AvenListItemSlot<T, Key>) => unknown
+  separator?: (scope: AvenListItemSlot<T, Key>) => unknown
+  header?: () => unknown
+  footer?: () => unknown
+  loading?: () => unknown
+  empty?: () => unknown
+  error?: () => unknown
+}
 export type AvenListboxProps<T extends string | number = string | number> = {
   modelValue?: T | T[] | null
   defaultValue?: T | T[] | null

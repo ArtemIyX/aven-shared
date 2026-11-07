@@ -102,6 +102,12 @@ export type {
   AvenSplitPaneProps,
   AvenSplitPaneEvents,
   AvenSplitPaneSlots,
+  AvenListItemProps,
+  AvenListItemSlots,
+  AvenListProps,
+  AvenListEvents,
+  AvenListItemSlot,
+  AvenListSlots,
   AvenAlertDialogProps,
   AvenAlertDialogEvents,
   AvenAlertDialogSlots,
@@ -188,6 +194,8 @@ export { default as AvenScrollArea } from './AvenScrollArea.vue'
 export { default as AvenAppShell } from './AvenAppShell.vue'
 export { default as AvenStepper } from './AvenStepper.vue'
 export { default as AvenSplitPane } from './AvenSplitPane.vue'
+export { default as AvenList } from './AvenList.vue'
+export { default as AvenListItem } from './AvenListItem.vue'
 export { default as AvenCard } from './AvenCard.vue'
 export { default as AvenPropertyRow } from './AvenPropertyRow.vue'
 export type { AvenTextProps } from './AvenText.js'

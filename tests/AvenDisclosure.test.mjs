@@ -35,6 +35,8 @@ import {
   AvenAppShell,
   AvenStepper,
   AvenSplitPane,
+  AvenList,
+  AvenListItem,
   AvenAvatar,
   AvenAvatarGroup,
   AvenChip,
@@ -2473,4 +2475,100 @@ test('split pane exposes separator values and keyboard resize requests once', as
     [36, 64],
     [20, 80],
   ])
+})
+
+test('list keeps list semantics, selectable rows emit once, and end notifications reset after scrolling away', async () => {
+  const items = [
+    { id: 'ava', label: 'Ava Chen', disabled: false },
+    { id: 'noah', label: 'Noah Patel', disabled: true },
+    { id: 'mika', label: 'Mika Ortiz', disabled: false },
+  ]
+  const html = await render({
+    render: () =>
+      h(AvenList, {
+        items,
+        itemKey: (item) => item.id,
+        label: 'Team',
+        selectable: true,
+        selectedKeys: ['ava'],
+      }),
+  })
+  assert.match(html, /role="region" aria-label="Team"/)
+  assert.match(html, /<ul/)
+  assert.match(html, /aria-pressed="true"/)
+  assert.match(html, /Ava Chen/)
+  const itemHtml = await render({ render: () => h(AvenListItem, {}, () => 'Standalone row') })
+  assert.match(itemHtml, /<li[^>]*>.*Standalone row.*<\/li>/)
+
+  const selectable = makeRenderer()
+  const selectedUpdates = []
+  const selections = []
+  selectable.renderer
+    .createApp({
+      render: () =>
+        h(AvenList, {
+          items,
+          itemKey: (item) => item.id,
+          selectable: true,
+          selectedKeys: ['ava'],
+          'onUpdate:selectedKeys': (value) => selectedUpdates.push(value),
+          onSelect: (value) => selections.push(value),
+        }),
+    })
+    .mount(selectable.root)
+  const rowActions = []
+  const collectActions = (node) => {
+    if (node.type === 'button') rowActions.push(node)
+    for (const child of node.children ?? []) collectActions(child)
+  }
+  collectActions(selectable.root)
+  const originalEvent = { type: 'click' }
+  rowActions[0].props.onClick(originalEvent)
+  rowActions[1].props.onClick({ type: 'click' })
+  assert.deepEqual(selectedUpdates, [[]])
+  assert.deepEqual(selections, [{ key: 'ava', item: items[0], originalEvent }])
+  const focused = []
+  rowActions.forEach((button, index) => {
+    button.disabled = Boolean(button.props.disabled)
+    button.focus = () => focused.push(index)
+  })
+  selectable.root.children[0].querySelectorAll = () => rowActions
+  let prevented = false
+  rowActions[0].props.onKeydown({
+    key: 'ArrowDown',
+    currentTarget: rowActions[0],
+    preventDefault: () => (prevented = true),
+  })
+  assert.equal(prevented, true)
+  assert.deepEqual(focused, [2])
+
+  const scroll = makeRenderer()
+  const endEvents = []
+  const scrollEvents = []
+  scroll.renderer
+    .createApp({
+      render: () =>
+        h(
+          AvenList,
+          {
+            items,
+            itemKey: (item) => item.id,
+            label: 'Events',
+            onEndReached: (value) => endEvents.push(value),
+            onScroll: (event) => scrollEvents.push(event),
+          },
+          { item: ({ item }) => item.label },
+        ),
+    })
+    .mount(scroll.root)
+  const region = scroll.root.children[0]
+  Object.assign(region, { scrollTop: 80, clientHeight: 20, scrollHeight: 100 })
+  region.props.onScroll({ currentTarget: region })
+  region.props.onScroll({ currentTarget: region })
+  region.scrollTop = 20
+  region.props.onScroll({ currentTarget: region })
+  region.scrollTop = 80
+  region.props.onScroll({ currentTarget: region })
+  assert.deepEqual(endEvents, [{ lastKey: 'mika' }, { lastKey: 'mika' }])
+  assert.equal(scrollEvents.length, 4)
 })

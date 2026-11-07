@@ -69,6 +69,10 @@ export default defineConfig({
         AvenSplitPane: fileURLToPath(
           new URL('./packages/vue/src/AvenSplitPane.vue', import.meta.url),
         ),
+        AvenList: fileURLToPath(new URL('./packages/vue/src/AvenList.vue', import.meta.url)),
+        AvenListItem: fileURLToPath(
+          new URL('./packages/vue/src/AvenListItem.vue', import.meta.url),
+        ),
         AvenCard: fileURLToPath(new URL('./packages/vue/src/AvenCard.vue', import.meta.url)),
         AvenPropertyRow: fileURLToPath(
           new URL('./packages/vue/src/AvenPropertyRow.vue', import.meta.url),

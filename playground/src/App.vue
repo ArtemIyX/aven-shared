@@ -7,6 +7,8 @@ import {
   AvenAppShell,
   AvenStepper,
   AvenSplitPane,
+  AvenList,
+  AvenListItem,
   AvenBadge,
   AvenButton,
   AvenButtonGroup,
@@ -102,6 +104,12 @@ const scrollPosition = ref('Scroll the release notes.')
 const shellState = ref('Navigation expanded; inspector closed.')
 const currentStep = ref('profile')
 const splitSizes = ref([35, 65])
+const selectedPeople = ref<string[]>(['ava'])
+const teamMembers = [
+  { id: 'ava', label: 'Ava Chen', role: 'Design', disabled: false },
+  { id: 'mika', label: 'Mika Ortiz', role: 'Engineering', disabled: false },
+  { id: 'noah', label: 'Noah Patel', role: 'Research', disabled: true },
+]
 const stepperItems = [
   { key: 'profile', label: 'Profile', description: 'Contact details', status: 'complete' as const },
   { key: 'preferences', label: 'Preferences', description: 'Choose updates' },
@@ -903,6 +911,35 @@ const buttonTones = [
           <div style="padding: 1rem">Vertical section {{ index + 1 }}</div>
         </template>
       </AvenSplitPane>
+    </section>
+    <section class="playground-card" aria-labelledby="list-examples">
+      <AvenText id="list-examples" type="header1">Semantic lists</AvenText>
+      <AvenList
+        v-model:selected-keys="selectedPeople"
+        :items="teamMembers"
+        :item-key="(person) => person.id"
+        :item-disabled="(person) => person.disabled"
+        :get-label="(person) => person.label"
+        selectable
+        divided
+        label="Project team"
+        style="max-block-size: 14rem; border: 1px solid var(--aven-color-border-subtle)"
+      >
+        <template #leading="{ item }">{{ item.label.slice(0, 1) }}</template>
+        <template #item="{ item, selected }">
+          <span>{{ item.label }}</span>
+          <small>{{ item.role }}{{ selected ? ' · selected' : '' }}</small>
+        </template>
+        <template #empty>No team members.</template>
+      </AvenList>
+      <p>Selected keys: {{ selectedPeople.join(', ') || 'none' }}</p>
+      <ul>
+        <AvenListItem divided>
+          <template #leading>•</template>
+          <strong>Standalone list row</strong>
+          <template #trailing><span>Metadata</span></template>
+        </AvenListItem>
+      </ul>
     </section>
     <section class="playground-card" aria-labelledby="toggle-examples">
       <AvenText id="toggle-examples" type="header1">Toggle controls</AvenText>
