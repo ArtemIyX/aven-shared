@@ -28,6 +28,8 @@ import {
   AvenSheet,
   AvenAlert,
   AvenBanner,
+  AvenToast,
+  AvenToaster,
   AvenAvatar,
   AvenAvatarGroup,
   AvenChip,
@@ -2141,4 +2143,94 @@ test('action bar hides without selection and emits a single clear request', () =
   dispatchHandler(clear.props.onClick, originalEvent)
   assert.equal(clearRequests.length, 1)
   assert.equal(clearRequests[0].originalEvent, originalEvent)
+})
+
+test('toast timers pause for pointer interaction and action requests fire once', () => {
+  const previousSetTimeout = globalThis.setTimeout
+  const previousClearTimeout = globalThis.clearTimeout
+  const previousNow = Date.now
+  let now = 0
+  let nextTimer = 0
+  const timers = new Map()
+  globalThis.setTimeout = (callback, delay) => {
+    const id = ++nextTimer
+    timers.set(id, { callback, delay })
+    return id
+  }
+  globalThis.clearTimeout = (id) => timers.delete(id)
+  Date.now = () => now
+  try {
+    const mounted = makeRenderer()
+    const dismissals = []
+    mounted.renderer
+      .createApp({
+        render: () =>
+          h(AvenToast, {
+            id: 'upload',
+            title: 'Upload finished',
+            duration: 1000,
+            onDismiss: (payload) => dismissals.push(payload),
+          }),
+      })
+      .mount(mounted.root)
+    const toast = mounted.find(mounted.root, (node) => node.type === 'section')
+    assert.equal(timers.size, 1)
+    now = 400
+    dispatchHandler(toast.props.onPointerenter, {})
+    assert.equal(timers.size, 0)
+    dispatchHandler(toast.props.onPointerleave, {})
+    assert.equal([...timers.values()][0].delay, 600)
+    const pending = [...timers.values()][0]
+    pending.callback()
+    assert.deepEqual(dismissals, [{ id: 'upload', reason: 'timeout' }])
+
+    const actionMount = makeRenderer()
+    const events = []
+    actionMount.renderer
+      .createApp({
+        render: () =>
+          h(AvenToast, {
+            id: 'saved',
+            action: { label: 'Open', key: 'open' },
+            duration: 0,
+            onAction: (payload) => events.push(['action', payload]),
+            onDismiss: (payload) => events.push(['dismiss', payload]),
+          }),
+      })
+      .mount(actionMount.root)
+    const buttons = []
+    const walk = (node) => {
+      if (node.type === 'button') buttons.push(node)
+      for (const child of node.children ?? []) if (child.props) walk(child)
+    }
+    walk(actionMount.root)
+    const originalEvent = { type: 'click' }
+    dispatchHandler(buttons[0].props.onClick, originalEvent)
+    dispatchHandler(buttons[1].props.onClick, { type: 'click' })
+    assert.equal(events.length, 2)
+    assert.equal(events[0][0], 'action')
+    assert.equal(events[0][1].originalEvent, originalEvent)
+    assert.deepEqual(events[1], ['dismiss', { id: 'saved', reason: 'action' }])
+  } finally {
+    globalThis.setTimeout = previousSetTimeout
+    globalThis.clearTimeout = previousClearTimeout
+    Date.now = previousNow
+  }
+})
+
+test('toaster limits mounted notifications and uses controlled item data', async () => {
+  const items = [
+    { id: 'one', title: 'One', duration: 0 },
+    { id: 'two', title: 'Two', duration: 0 },
+    { id: 'three', title: 'Three', duration: 0 },
+  ]
+  const html = await render({
+    render: () => h(AvenToaster, { items, maxVisible: 2, position: 'top-center' }),
+  })
+  assert.match(html, /aria-label="Notifications"/)
+  assert.match(html, /position-top-center/)
+  assert.match(html, /One/)
+  assert.match(html, /Two/)
+  assert.doesNotMatch(html, /Three/)
+  assert.equal((html.match(/role="status"/g) ?? []).length, 2)
 })

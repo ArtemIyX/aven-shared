@@ -76,6 +76,15 @@ export type {
   AvenActionBarProps,
   AvenActionBarEvents,
   AvenActionBarSlots,
+  AvenToastKey,
+  AvenToastAction,
+  AvenToastItem,
+  AvenToastProps,
+  AvenToastEvents,
+  AvenToastSlots,
+  AvenToasterProps,
+  AvenToasterEvents,
+  AvenToasterSlots,
   AvenAlertDialogProps,
   AvenAlertDialogEvents,
   AvenAlertDialogSlots,
@@ -156,6 +165,8 @@ export { default as AvenEmptyState } from './AvenEmptyState.vue'
 export { default as AvenResultState } from './AvenResultState.vue'
 export { default as AvenToolbar } from './AvenToolbar.vue'
 export { default as AvenActionBar } from './AvenActionBar.vue'
+export { default as AvenToast } from './AvenToast.vue'
+export { default as AvenToaster } from './AvenToaster.vue'
 export { default as AvenCard } from './AvenCard.vue'
 export { default as AvenPropertyRow } from './AvenPropertyRow.vue'
 export type { AvenTextProps } from './AvenText.js'

@@ -160,6 +160,54 @@ export type AvenActionBarSlots = Omit<AvenToolbarSlots, 'selection'> & {
   selection?: (scope: { count: number }) => unknown
   actions?: () => unknown
 }
+export type AvenToastKey = string | number
+export type AvenToastAction = { label: string; key: string | number }
+export type AvenToastItem<Key extends AvenToastKey = AvenToastKey> = {
+  id: Key
+  title?: string
+  description?: string
+  tone?: AvenTone
+  duration?: number
+  closable?: boolean
+  action?: AvenToastAction
+}
+export type AvenToastProps<Key extends AvenToastKey = AvenToastKey> = AvenToastItem<Key> & {
+  pauseOnHover?: boolean
+  pauseOnFocus?: boolean
+  live?: 'polite' | 'assertive' | 'off'
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'icon' | 'content' | 'title' | 'description' | 'actions' | 'close'>
+}
+export type AvenToastEvents<Key extends AvenToastKey = AvenToastKey> = {
+  dismiss: [payload: { id: Key; reason: 'timeout' | 'close' | 'action' | 'programmatic' }]
+  action: [payload: { id: Key; key: string | number; originalEvent: MouseEvent }]
+}
+export type AvenToastSlots = {
+  icon?: () => unknown
+  title?: () => unknown
+  default?: () => unknown
+  action?: (scope: { action: AvenToastAction; dismiss: () => void }) => unknown
+  'close-icon'?: () => unknown
+}
+export type AvenToasterProps<Key extends AvenToastKey = AvenToastKey> = {
+  items: AvenToastItem<Key>[]
+  position?:
+    'top-start' | 'top-center' | 'top-end' | 'bottom-start' | 'bottom-center' | 'bottom-end'
+  maxVisible?: number
+  gap?: string
+  pauseOnHover?: boolean
+  pauseOnFocus?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'toast'>
+}
+export type AvenToasterEvents<Key extends AvenToastKey = AvenToastKey> = {
+  dismiss: AvenToastEvents<Key>['dismiss']
+  action: AvenToastEvents<Key>['action']
+  afterClose: [payload: { id: Key }]
+}
+export type AvenToasterSlots<Key extends AvenToastKey = AvenToastKey> = {
+  toast?: (scope: { item: AvenToastItem<Key>; dismiss: () => void }) => unknown
+}
 export type AvenListboxProps<T extends string | number = string | number> = {
   modelValue?: T | T[] | null
   defaultValue?: T | T[] | null

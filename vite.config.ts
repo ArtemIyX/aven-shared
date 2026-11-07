@@ -57,6 +57,8 @@ export default defineConfig({
         AvenActionBar: fileURLToPath(
           new URL('./packages/vue/src/AvenActionBar.vue', import.meta.url),
         ),
+        AvenToast: fileURLToPath(new URL('./packages/vue/src/AvenToast.vue', import.meta.url)),
+        AvenToaster: fileURLToPath(new URL('./packages/vue/src/AvenToaster.vue', import.meta.url)),
         AvenCard: fileURLToPath(new URL('./packages/vue/src/AvenCard.vue', import.meta.url)),
         AvenPropertyRow: fileURLToPath(
           new URL('./packages/vue/src/AvenPropertyRow.vue', import.meta.url),

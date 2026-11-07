@@ -48,9 +48,12 @@ import {
   AvenStat,
   AvenSplitButton,
   AvenText,
+  AvenToast,
+  AvenToaster,
   AvenToggleButton,
   AvenToggleGroup,
   AvenToolbar,
+  type AvenToastItem,
 } from '@wellsaik/aven-vue'
 
 const userName = ref('Avery')
@@ -78,6 +81,27 @@ const bannerVisible = ref(true)
 const chipRemovals = ref(0)
 const retries = ref(0)
 const selectedRows = ref(3)
+const toastItems = ref<AvenToastItem<string>[]>([
+  {
+    id: 'saved',
+    title: 'Changes saved',
+    description: 'Your profile is up to date.',
+    tone: 'success',
+    action: { label: 'View profile', key: 'profile' },
+  },
+])
+let nextToastId = 1
+const toastActivity = ref('')
+function dismissToast(id: string) {
+  toastItems.value = toastItems.value.filter((item) => item.id !== id)
+}
+function addToast() {
+  const id = `notice-${nextToastId++}`
+  toastItems.value = [
+    ...toastItems.value,
+    { id, title: 'Background sync complete', description: 'Your changes are available offline.' },
+  ]
+}
 const people = [
   { id: 'ava', name: 'Ava Chen', initials: 'AC', tone: 'accent' },
   { id: 'noah', name: 'Noah Reed', initials: 'NR', tone: 'success' },
@@ -714,6 +738,24 @@ const buttonTones = [
       <AvenButton variant="outline" @click="selectedRows = selectedRows ? 0 : 3">
         {{ selectedRows ? 'Hide' : 'Show' }} action bar
       </AvenButton>
+    </section>
+    <section class="playground-card" aria-labelledby="toast-examples">
+      <AvenText id="toast-examples" type="header1">Toast feedback</AvenText>
+      <AvenButton variant="outline" @click="addToast">Add notification</AvenButton>
+      <AvenToaster
+        :items="toastItems"
+        position="bottom-end"
+        :max-visible="3"
+        @dismiss="dismissToast(String($event.id))"
+        @action="toastActivity = `Action ${$event.key} requested`"
+        @after-close="toastActivity = 'Notification closed'"
+      >
+        <template #toast="{ item, dismiss }">
+          <small>{{ item.id }}</small>
+          <AvenButton size="sm" variant="ghost" @click="dismiss">Dismiss from content</AvenButton>
+        </template>
+      </AvenToaster>
+      <p aria-live="polite">{{ toastActivity }}</p>
     </section>
     <section class="playground-card" aria-labelledby="toggle-examples">
       <AvenText id="toggle-examples" type="header1">Toggle controls</AvenText>
