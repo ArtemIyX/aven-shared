@@ -5,6 +5,7 @@ import {
   AvenAccordion,
   AvenActionBar,
   AvenAppShell,
+  AvenStepper,
   AvenBadge,
   AvenButton,
   AvenButtonGroup,
@@ -98,6 +99,12 @@ const toastActivity = ref('')
 const projectNote = ref('')
 const scrollPosition = ref('Scroll the release notes.')
 const shellState = ref('Navigation expanded; inspector closed.')
+const currentStep = ref('profile')
+const stepperItems = [
+  { key: 'profile', label: 'Profile', description: 'Contact details', status: 'complete' as const },
+  { key: 'preferences', label: 'Preferences', description: 'Choose updates' },
+  { key: 'review', label: 'Review', description: 'Confirm settings' },
+]
 function dismissToast(id: string) {
   toastItems.value = toastItems.value.filter((item) => item.id !== id)
 }
@@ -842,6 +849,29 @@ const buttonTones = [
         <template #statusbar>Connected · All changes saved</template>
       </AvenAppShell>
       <p>{{ shellState }}</p>
+    </section>
+    <section class="playground-card" aria-labelledby="stepper-examples">
+      <AvenText id="stepper-examples" type="header1">Progress steps</AvenText>
+      <AvenStepper v-model="currentStep" :items="stepperItems" clickable label="Account setup">
+        <template #label="{ item, current }">
+          <span :aria-current="current ? 'step' : undefined">{{ item.label }}</span>
+        </template>
+      </AvenStepper>
+      <p>Current step: {{ currentStep }}</p>
+      <AvenStepper
+        :items="stepperItems"
+        orientation="vertical"
+        :model-value="currentStep"
+        label="Setup progress preview"
+      />
+      <AvenStepper
+        :items="stepperItems"
+        default-value="preferences"
+        clickable
+        :linear="false"
+        orientation="vertical"
+        label="Uncontrolled setup example"
+      />
     </section>
     <section class="playground-card" aria-labelledby="toggle-examples">
       <AvenText id="toggle-examples" type="header1">Toggle controls</AvenText>

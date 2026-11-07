@@ -284,6 +284,42 @@ export type AvenAppShellSlots = {
   'sidebar-toggle'?: (scope: { collapsed: boolean; toggle: () => boolean }) => unknown
   'inspector-toggle'?: (scope: { open: boolean; toggle: () => boolean }) => unknown
 }
+
+export type AvenStepperItem<Key extends string | number = string | number> = {
+  key: Key
+  label: string
+  description?: string
+  status?: 'incomplete' | 'complete' | 'error'
+  disabled?: boolean
+}
+export type AvenStepperProps<Key extends string | number = string | number> = {
+  modelValue?: Key
+  defaultValue?: Key
+  items: AvenStepperItem<Key>[]
+  linear?: boolean
+  orientation?: 'horizontal' | 'vertical'
+  clickable?: boolean
+  label?: string
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'list' | 'step' | 'indicator' | 'connector' | 'label' | 'description'>
+}
+export type AvenStepperEvents<Key extends string | number = string | number> = {
+  'update:modelValue': [value: Key]
+  requestStep: [payload: { key: Key; from: Key | undefined; originalEvent: MouseEvent }]
+}
+export type AvenStepperItemSlot<Key extends string | number = string | number> = {
+  item: AvenStepperItem<Key>
+  index: number
+  current: boolean
+  completed: boolean
+}
+export type AvenStepperSlots<Key extends string | number = string | number> = {
+  step?: (scope: AvenStepperItemSlot<Key>) => unknown
+  indicator?: (scope: AvenStepperItemSlot<Key>) => unknown
+  label?: (scope: AvenStepperItemSlot<Key>) => unknown
+  description?: (scope: AvenStepperItemSlot<Key>) => unknown
+  connector?: (scope: { index: number }) => unknown
+}
 export type AvenListboxProps<T extends string | number = string | number> = {
   modelValue?: T | T[] | null
   defaultValue?: T | T[] | null

@@ -33,6 +33,7 @@ import {
   AvenTextarea,
   AvenScrollArea,
   AvenAppShell,
+  AvenStepper,
   AvenAvatar,
   AvenAvatarGroup,
   AvenChip,
@@ -2389,4 +2390,46 @@ test('app shell preserves landmarks and controlled and uncontrolled layout reque
   assert.equal(controlled.value.toggleSidebar(), true)
   assert.deepEqual(controlledUpdates, [true])
   assert.ok(controlledMount.find(controlledMount.root, (node) => node.type === 'aside'))
+})
+
+test('stepper uses ordered step semantics and gates controlled navigation through completion', async () => {
+  const items = [
+    { key: 'profile', label: 'Profile', status: 'complete' },
+    { key: 'preferences', label: 'Preferences' },
+    { key: 'review', label: 'Review' },
+  ]
+  const html = await render({
+    render: () => h(AvenStepper, { items, modelValue: 'profile', clickable: true, label: 'Setup' }),
+  })
+  assert.match(html, /<nav aria-label="Setup"/)
+  assert.match(html, /<ol/)
+  assert.match(html, /aria-current="step"/)
+
+  const mounted = makeRenderer()
+  const requests = []
+  const updates = []
+  mounted.renderer
+    .createApp({
+      render: () =>
+        h(
+          AvenStepper,
+          {
+            items,
+            modelValue: 'profile',
+            clickable: true,
+            onRequestStep: (payload) => requests.push(payload),
+            'onUpdate:modelValue': (value) => updates.push(value),
+          },
+          {},
+        ),
+    })
+    .mount(mounted.root)
+  const buttons = mounted.root.children[0].children[0].children
+  const next = buttons[1].children.find((node) => node.type === 'button')
+  const blocked = buttons[2].children.find((node) => node.type === 'button')
+  const originalEvent = { type: 'click' }
+  next.props.onClick(originalEvent)
+  blocked.props.onClick({ type: 'click' })
+  assert.deepEqual(updates, ['preferences'])
+  assert.deepEqual(requests, [{ key: 'preferences', from: 'profile', originalEvent }])
 })
