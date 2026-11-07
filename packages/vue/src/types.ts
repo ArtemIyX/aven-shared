@@ -357,6 +357,8 @@ export type AvenFieldProps = {
   description?: string
   error?: string | string[]
   required?: boolean
+  disabled?: boolean
+  readonly?: boolean
   optional?: boolean
   invalid?: boolean
   orientation?: 'vertical' | 'horizontal'
