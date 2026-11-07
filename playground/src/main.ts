@@ -7,4 +7,3 @@ import '@wellsaik/aven-vue/style.css'
 import './playground.css'
 
 createApp(App).mount('#app')
-
