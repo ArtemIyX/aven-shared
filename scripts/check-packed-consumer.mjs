@@ -65,6 +65,9 @@ try {
       assert(paths.includes('dist/AvenMenu.js'))
       assert(paths.includes('dist/AvenMenuItem.js'))
       assert(paths.includes('dist/AvenMenuGroup.js'))
+      assert(paths.includes('dist/AvenCard.js'))
+      assert(paths.includes('dist/AvenPanel.js'))
+      assert(paths.includes('dist/AvenPropertyRow.js'))
     }
   }
   await writeFile(
@@ -148,6 +151,10 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
     `import { h } from 'vue'\nimport { AvenMenu, AvenMenuItem, AvenMenuGroup, type AvenMenuProps, type AvenMenuEvents, type AvenMenuItemSlots } from '@wellsaik/aven-vue'\ntype Key = 'rename' | 'pin' | 'archive'\nconst props: AvenMenuProps<Key> = { items: [{ key: 'rename', label: 'Rename' }, { key: 'pin', label: 'Pin', kind: 'checkbox', checked: false, group: 'project' }, { key: 'archive', label: 'Archive', kind: 'submenu', children: [{ key: 'rename', label: 'Rename' }] }], groups: [{ key: 'project', label: 'Project' }] }\nconst selected: AvenMenuEvents<Key>['select'][0] = { key: 'rename', item: { key: 'rename', label: 'Rename' }, originalEvent: new Event('click') }\nconst slots: AvenMenuItemSlots<Key> = { default: ({ item, checked }) => checked ? item.label : item.label }\nvoid selected; void slots; h(AvenMenu, props); h(AvenMenuItem, { item: props.items[0]! }); h(AvenMenuGroup, { label: 'Actions' })\n`,
   )
   await writeFile(
+    path.join(directory, 'surface-consumer.ts'),
+    `import { h } from 'vue'\nimport { AvenCard, AvenPanel, AvenPropertyRow, type AvenCardProps, type AvenPanelProps, type AvenPropertyRowProps, type AvenPropertyRowEvents } from '@wellsaik/aven-vue'\nconst card: AvenCardProps = { title: 'Card', headingLevel: 3, variant: 'outlined' }\nconst panel: AvenPanelProps = { title: 'Panel', headingLevel: 4, headerDivider: false }\nconst row: AvenPropertyRowProps = { label: 'Owner', labelWidth: '10ch', editable: true, truncate: true }\nconst edit: AvenPropertyRowEvents['edit'][0] = { originalEvent: new MouseEvent('click') }\nvoid edit; h(AvenCard, card); h(AvenPanel, panel); h(AvenPropertyRow, row)\n`,
+  )
+  await writeFile(
     path.join(directory, 'tsconfig.json'),
     JSON.stringify({
       compilerOptions: {
@@ -167,6 +174,7 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
         'date-consumer.ts',
         'form-consumer.ts',
         'menu-consumer.ts',
+        'surface-consumer.ts',
       ],
     }),
   )
@@ -191,6 +199,7 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
         'date-consumer.ts',
         'form-consumer.ts',
         'menu-consumer.ts',
+        'surface-consumer.ts',
       ],
     }),
   )

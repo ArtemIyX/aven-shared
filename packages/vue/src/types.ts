@@ -1191,6 +1191,79 @@ export type AvenMenuGroupProps = {
   ui?: AvenUi<'root' | 'label'>
 }
 export type AvenMenuGroupSlots = { default?: () => unknown; label?: () => unknown }
+export type AvenCardProps = {
+  as?: 'article' | 'section' | 'div'
+  title?: string
+  description?: string
+  headingLevel?: 1 | 2 | 3 | 4 | 5 | 6
+  variant?: 'elevated' | 'outlined' | 'flat'
+  padding?: 'none' | 'sm' | 'md' | 'lg'
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'header' | 'body' | 'footer' | 'title' | 'description' | 'actions'>
+}
+export type AvenCardSlots = {
+  header?: () => unknown
+  title?: () => unknown
+  description?: () => unknown
+  default?: () => unknown
+  footer?: () => unknown
+  actions?: () => unknown
+}
+export type AvenPanelProps = {
+  as?: 'article' | 'section' | 'div' | 'aside'
+  title?: string
+  description?: string
+  headingLevel?: 1 | 2 | 3 | 4 | 5 | 6
+  padding?: 'none' | 'sm' | 'md' | 'lg'
+  variant?: 'flat' | 'outline' | 'raised'
+  headerDivider?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<
+    | 'root'
+    | 'header'
+    | 'title'
+    | 'description'
+    | 'body'
+    | 'footer'
+    | 'actions'
+    | 'leading'
+    | 'trailing'
+  >
+}
+export type AvenPanelSlots = {
+  header?: () => unknown
+  title?: () => unknown
+  description?: () => unknown
+  default?: () => unknown
+  footer?: () => unknown
+  actions?: () => unknown
+  leading?: () => unknown
+  trailing?: () => unknown
+}
+export type AvenPropertyRowProps = {
+  label: string
+  value?: string | number
+  description?: string
+  orientation?: 'horizontal' | 'vertical'
+  labelWidth?: string
+  truncate?: boolean
+  editable?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'label' | 'value' | 'description' | 'help' | 'editor' | 'edit'>
+}
+export type AvenPropertyRowEvents = {
+  edit: [payload: { originalEvent: MouseEvent }]
+  finish: []
+  cancel: []
+}
+export type AvenPropertyRowSlots = {
+  label?: () => unknown
+  default?: () => unknown
+  description?: () => unknown
+  help?: () => unknown
+  editor?: (scope: { finish: () => void; cancel: () => void }) => unknown
+  'edit-icon'?: () => unknown
+}
 export type AvenDialogProps = {
   open?: boolean
   defaultOpen?: boolean

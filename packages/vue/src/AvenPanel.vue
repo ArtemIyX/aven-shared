@@ -1,28 +1,14 @@
 <script setup lang="ts">
-import type { AvenUi } from './types.js'
-withDefaults(
-  defineProps<{
-    as?: 'article' | 'section' | 'div' | 'aside'
-    title?: string
-    description?: string
-    padding?: 'none' | 'sm' | 'md' | 'lg'
-    variant?: 'flat' | 'outline' | 'raised'
-    headerDivider?: boolean
-    unstyled?: boolean
-    ui?: AvenUi<
-      | 'root'
-      | 'header'
-      | 'title'
-      | 'description'
-      | 'body'
-      | 'footer'
-      | 'actions'
-      | 'leading'
-      | 'trailing'
-    >
-  }>(),
-  { as: 'section', padding: 'md', variant: 'outline', headerDivider: true, unstyled: false },
-)
+import type { AvenPanelProps, AvenPanelSlots } from './types.js'
+withDefaults(defineProps<AvenPanelProps>(), {
+  as: 'section',
+  padding: 'md',
+  variant: 'outline',
+  headingLevel: 2,
+  headerDivider: true,
+  unstyled: false,
+})
+defineSlots<AvenPanelSlots>()
 </script>
 <template>
   <component
@@ -35,45 +21,71 @@ withDefaults(
       ui?.root?.class,
     ]"
     :style="ui?.root?.style"
+    v-bind="ui?.root?.attrs"
   >
     <header
       v-if="
-        $slots.header || title || description || $slots.actions || $slots.leading || $slots.trailing
+        title ||
+        description ||
+        $slots.header ||
+        $slots.title ||
+        $slots.description ||
+        $slots.actions ||
+        $slots.leading ||
+        $slots.trailing
       "
       :class="['panel-header', { 'has-divider': headerDivider }, ui?.header?.class]"
       :style="ui?.header?.style"
+      v-bind="ui?.header?.attrs"
     >
-      <slot name="header"
-        ><slot name="leading" />
+      <slot name="header">
+        <span :class="ui?.leading?.class" :style="ui?.leading?.style" v-bind="ui?.leading?.attrs">
+          <slot name="leading" />
+        </span>
         <div class="panel-heading">
-          <slot name="title"
-            ><h2
+          <slot name="title">
+            <component
+              :is="`h${headingLevel}`"
               v-if="title"
               class="panel-title"
               :class="ui?.title?.class"
               :style="ui?.title?.style"
+              v-bind="ui?.title?.attrs"
+              >{{ title }}</component
             >
-              {{ title }}
-            </h2></slot
-          ><slot name="description"
-            ><p
+          </slot>
+          <slot name="description">
+            <p
               v-if="description"
               class="panel-description"
               :class="ui?.description?.class"
               :style="ui?.description?.style"
+              v-bind="ui?.description?.attrs"
             >
               {{ description }}
-            </p></slot
-          >
+            </p>
+          </slot>
         </div>
-        <slot name="trailing" /><slot name="actions"
-      /></slot>
+        <span
+          :class="ui?.trailing?.class"
+          :style="ui?.trailing?.style"
+          v-bind="ui?.trailing?.attrs"
+        >
+          <slot name="trailing" />
+        </span>
+        <div :class="ui?.actions?.class" :style="ui?.actions?.style" v-bind="ui?.actions?.attrs">
+          <slot name="actions" />
+        </div>
+      </slot>
     </header>
-    <div :class="['panel-body', ui?.body?.class]" :style="ui?.body?.style"><slot /></div>
+    <div :class="['panel-body', ui?.body?.class]" :style="ui?.body?.style" v-bind="ui?.body?.attrs">
+      <slot />
+    </div>
     <footer
       v-if="$slots.footer"
       :class="['panel-footer', ui?.footer?.class]"
       :style="ui?.footer?.style"
+      v-bind="ui?.footer?.attrs"
     >
       <slot name="footer" />
     </footer>
@@ -140,5 +152,15 @@ withDefaults(
   border-radius: 0;
   background: transparent;
   box-shadow: none;
+}
+@media (forced-colors: active) {
+  .is-outline {
+    border-color: CanvasText;
+  }
+}
+@media print {
+  .aven-panel {
+    box-shadow: none;
+  }
 }
 </style>

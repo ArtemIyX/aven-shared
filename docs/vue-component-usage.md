@@ -9,12 +9,14 @@ import {
   AvenAccordion,
   AvenButton,
   AvenButtonGroup,
+  AvenCard,
   AvenCollapsible,
   AvenContainer,
   AvenFormattedValue,
   AvenGrid,
   AvenInline,
   AvenPanel,
+  AvenPropertyRow,
   AvenPasswordField,
   AvenRadio,
   AvenRadioGroup,
@@ -56,9 +58,11 @@ Events `click(MouseEvent)`, `focus(FocusEvent)`, and `blur(FocusEvent)` come fro
 
 `AvenIconButton` uses the same button `variant`, `tone`, `size`, `type`, `disabled`, `loading`, and `loadingBehavior` contracts. It requires `label` for its accessible name, defaults to `variant='ghost'`, `tone='neutral'`, and `shape='square'`, and supports `shape='circle'` plus optional `tooltip`. A tooltip becomes the native `title` and supplements the required accessible label. The default slot or `icon` slot supplies decorative glyph content; the `loading` slot replaces the decorative spinner while busy. It emits the native `click`, `focus`, and `blur` events once, suppresses blocked activation, and exposes `focus()` and `blur()` methods. UI parts are `root`, `icon`, and `spinner`; `--aven-icon-button-size` customizes the glyph while the pointer target remains at least 44px. `unstyled` preserves the label, focus indicator, and target size.
 
-## AvenPanel
+## AvenCard, AvenPanel, and AvenPropertyRow
 
-Props: `as='section'` (`article | section | div | aside`), `title?`, `description?`, `padding='md'` (`none | sm | md | lg`), `variant='outline'` (`flat | outline | raised`), `headerDivider=true`, `unstyled=false`, `ui` parts `root/header/title/description/body/footer/actions/leading/trailing`. It has no custom events. Slots: `header`, `title`, `description`, default body, `footer`, `actions`, `leading`, and `trailing`. A custom `header` slot replaces the composed header.
+`AvenCard` uses an `article` root, `variant='elevated'`, and `padding='md'` by default; variants are `elevated`, `outlined`, and `flat`. `AvenPanel` uses a `section` root, `variant='outline'`, `padding='md'`, and `headerDivider=true`; variants are `flat`, `outline`, and `raised`. Both accept `as`, `title`, `description`, `headingLevel=2` (1–6), and `unstyled`. Their title prop renders the selected heading level, and title/description slots replace its content while retaining the default structure. Slots: `header`, `title`, `description`, default body, `footer`, and `actions`; Panel also has `leading` and `trailing`. A custom `header` slot replaces the composed header. Neither surface emits custom events. UI parts expose `class/style/attrs`; CSS values come from shared surface, border, radius, shadow, text, and spacing tokens. Forced colors retain outlines and print removes shadows.
+
+`AvenPropertyRow` is a `div` containing a `dt` and `dd`; place rows in a native `dl`. It defaults to horizontal alignment and an 8rem label column; `orientation='vertical'`, `labelWidth`, `truncate`, and `unstyled` customize layout. `editable=false` adds no action. When enabled, an Edit button emits `edit({originalEvent})` once. If an `editor` slot is supplied, the button enters editing mode and the slot receives `finish()` and `cancel()` callbacks, which close the editor and emit matching zero-payload events. Without an editor slot the button only requests application editing. Slots: `label`, default value, `description`, `help`, `editor{finish,cancel}`, and `edit-icon`. UI parts include root/label/value/description/help/editor/edit; narrow screens stack the row and values wrap by default. Truncation is opt-in.
 
 ## AvenAccordion
 

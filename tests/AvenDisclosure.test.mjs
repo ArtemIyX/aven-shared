@@ -52,6 +52,9 @@ import {
   AvenMenu,
   AvenMenuItem,
   AvenMenuGroup,
+  AvenCard,
+  AvenPanel,
+  AvenPropertyRow,
   AvenDatePicker,
   AvenDateRangePicker,
   AvenTimePicker,
@@ -62,7 +65,6 @@ import {
   AvenKbd,
   AvenCollapsible,
   AvenFormattedValue,
-  AvenPanel,
   AvenPasswordField,
   AvenRadio,
   AvenRadioGroup,
@@ -3131,4 +3133,54 @@ test('menu actions, checkbox and radio items, groups, and nested submenu request
     render: () => h(AvenMenuItem, { item: { key: 'open', label: 'Open' } }),
   })
   assert.match(itemHtml, /role="menuitem"/)
+})
+
+test('card surfaces and editable property rows preserve heading, list, customization, and edit contracts', async () => {
+  const html = await render({
+    render: () =>
+      h('div', [
+        h(
+          AvenCard,
+          {
+            title: 'Card title',
+            description: 'Card details',
+            headingLevel: 3,
+            'data-surface': 'card',
+          },
+          { default: () => 'Card body' },
+        ),
+        h(AvenPanel, { title: 'Panel title', headingLevel: 4 }, { default: () => 'Panel body' }),
+        h('dl', [
+          h(AvenPropertyRow, {
+            label: 'Email',
+            value: 'avery@example.test',
+            labelWidth: '12rem',
+            truncate: true,
+          }),
+        ]),
+      ]),
+  })
+  assert.match(html, /<h3[^>]*>[\s\S]*Card title[\s\S]*<\/h3>/)
+  assert.match(html, /<h4[^>]*>Panel title<\/h4>/)
+  assert.match(html, /data-surface="card"/)
+  assert.match(html, /<dt[^>]*>[\s\S]*Email[\s\S]*<\/dt>/)
+  assert.match(html, /avery@example\.test/)
+  assert.match(html, /is-truncated/)
+
+  const { renderer, root, find } = makeRenderer()
+  const edits = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenPropertyRow, {
+          label: 'Name',
+          value: 'Avery',
+          editable: true,
+          onEdit: (payload) => edits.push(payload),
+        }),
+    })
+    .mount(root)
+  const editButton = find(root, (node) => node.props?.['aria-label'] === 'Edit Name')
+  editButton.props.onClick(new Event('click'))
+  assert.equal(edits.length, 1)
 })

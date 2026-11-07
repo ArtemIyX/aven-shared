@@ -387,10 +387,10 @@ Slot notation `item{item,key,...}` means a scoped named slot. A slot without bra
 ### 46. AvenCard / AvenPanel / AvenPropertyRow — P0
 
 - **Styles:** flat/outline/raised, padded/flush, header divider, footer actions; property label/value in stacked or aligned columns.
-- **Props:** Card/Panel title?, description?, padding='md', variant='outline', as restricted content element; PropertyRow label:string, orientation='horizontal', labelWidth?, truncate=false, editable=false.
-- **Events:** none for passive surfaces; PropertyRow `edit({originalEvent})` only when edit affordance configured. Whole-card navigation should compose a link without wrapping nested controls in it.
-- **Slots:** header/title/description/default/footer/actions/leading/trailing; PropertyRow label/value/editor{finish,cancel}, help.
-- **Hooks/behavior:** surface-card/panel, border/radius/padding/gap/label-width. Preserve heading order, wrapping, text selection; use definition lists for semantic property groups where appropriate.
+- **Props:** Card/Panel title?, description?, padding='md', variant, `headingLevel=2` (1–6), as restricted content element; PropertyRow label:string, orientation='horizontal', `labelWidth='8rem'`, truncate=false, editable=false.
+- **Events:** none for passive surfaces; PropertyRow `edit({originalEvent})` only when edit affordance configured, followed by application-owned completion/cancel through the editor slot. Whole-card navigation should compose a link without wrapping nested controls in it.
+- **Slots:** header/title/description/default/footer/actions/leading/trailing; PropertyRow label/value/editor{finish,cancel}, help and optional edit-icon.
+- **Hooks/behavior:** surface-card/panel, border/radius/padding/gap/label-width. Preserve heading order through the headingLevel prop, wrapping, text selection; use definition lists for semantic property groups where appropriate.
 
 ### 47. AvenAccordion / AvenCollapsible — P1
 

@@ -1,15 +1,13 @@
 <script setup lang="ts">
-import type { AvenUi } from './types.js'
-withDefaults(
-  defineProps<{
-    as?: 'article' | 'section' | 'div'
-    variant?: 'elevated' | 'outlined' | 'flat'
-    padding?: 'none' | 'sm' | 'md' | 'lg'
-    unstyled?: boolean
-    ui?: AvenUi<'root' | 'header' | 'body' | 'footer' | 'title' | 'description' | 'actions'>
-  }>(),
-  { as: 'article', variant: 'elevated', padding: 'md', unstyled: false },
-)
+import type { AvenCardProps, AvenCardSlots } from './types.js'
+withDefaults(defineProps<AvenCardProps>(), {
+  as: 'article',
+  variant: 'elevated',
+  padding: 'md',
+  headingLevel: 2,
+  unstyled: false,
+})
+defineSlots<AvenCardSlots>()
 </script>
 <template>
   <component
@@ -22,21 +20,55 @@ withDefaults(
       ui?.root?.class,
     ]"
     :style="ui?.root?.style"
+    v-bind="ui?.root?.attrs"
     ><header
-      v-if="$slots.header || $slots.title || $slots.description || $slots.actions"
+      v-if="
+        title ||
+        description ||
+        $slots.header ||
+        $slots.title ||
+        $slots.description ||
+        $slots.actions
+      "
       class="card-header"
       :class="ui?.header?.class"
+      :style="ui?.header?.style"
+      v-bind="ui?.header?.attrs"
     >
       <slot name="header"
-        ><div class="card-heading"><slot name="title" /><slot name="description" /></div>
-        <slot name="actions"
-      /></slot>
+        ><div class="card-heading">
+          <component
+            :is="`h${headingLevel}`"
+            v-if="title || $slots.title"
+            class="card-title"
+            :class="ui?.title?.class"
+            :style="ui?.title?.style"
+            v-bind="ui?.title?.attrs"
+            ><slot name="title">{{ title }}</slot></component
+          >
+          <p
+            v-if="description || $slots.description"
+            class="card-description"
+            :class="ui?.description?.class"
+            :style="ui?.description?.style"
+            v-bind="ui?.description?.attrs"
+          >
+            <slot name="description">{{ description }}</slot>
+          </p>
+        </div>
+        <div :class="ui?.actions?.class" :style="ui?.actions?.style" v-bind="ui?.actions?.attrs">
+          <slot name="actions" />
+        </div>
+      </slot>
     </header>
-    <div :class="['card-body', ui?.body?.class]" :style="ui?.body?.style"><slot /></div>
+    <div :class="['card-body', ui?.body?.class]" :style="ui?.body?.style" v-bind="ui?.body?.attrs">
+      <slot />
+    </div>
     <footer
       v-if="$slots.footer"
       :class="['card-footer', ui?.footer?.class]"
       :style="ui?.footer?.style"
+      v-bind="ui?.footer?.attrs"
     >
       <slot name="footer" /></footer
   ></component>
@@ -88,10 +120,31 @@ withDefaults(
   display: grid;
   gap: var(--aven-space-1);
 }
+.card-title,
+.card-description {
+  margin: 0;
+}
+.card-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+.card-description {
+  color: var(--aven-color-text-secondary);
+}
 .is-unstyled {
   border: 0;
   border-radius: 0;
   box-shadow: none;
   background: transparent;
+}
+@media (forced-colors: active) {
+  .is-outlined {
+    border-color: CanvasText;
+  }
+}
+@media print {
+  .aven-card {
+    box-shadow: none;
+  }
 }
 </style>

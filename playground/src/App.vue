@@ -59,6 +59,8 @@ import {
   AvenGrid,
   AvenInline,
   AvenPanel,
+  AvenCard,
+  AvenPropertyRow,
   AvenPasswordField,
   AvenRadio,
   AvenRadioGroup,
@@ -611,6 +613,28 @@ const buttonTones = [
       <AvenPanel title="Profile summary" description="A passive content surface" variant="outline">
         <p>Panel content uses the shared semantic surface tokens.</p>
       </AvenPanel>
+      <AvenCard
+        title="Project card"
+        description="Card with named content"
+        :heading-level="3"
+        variant="outlined"
+      >
+        <template #actions><AvenButton variant="ghost">More</AvenButton></template>
+        <p>Card actions stay separate from the passive surface.</p>
+        <template #footer>Updated just now</template>
+      </AvenCard>
+      <dl class="property-list">
+        <AvenPropertyRow label="Owner" value="Avery" />
+        <AvenPropertyRow label="Contact" value="avery@example.test" orientation="vertical" editable>
+          <template #editor="{ finish, cancel }">
+            <AvenInline>
+              <input aria-label="Contact email" value="avery@example.test" />
+              <AvenButton @click="finish">Save</AvenButton>
+              <AvenButton variant="ghost" @click="cancel">Cancel</AvenButton>
+            </AvenInline>
+          </template>
+        </AvenPropertyRow>
+      </dl>
       <AvenAccordion
         :items="accordionItems"
         :model-value="openSection"
