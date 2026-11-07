@@ -17,6 +17,45 @@ export type AvenOption<T, Extra extends object = object> = {
   group?: string | number
   keywords?: string[]
 } & Extra
+export type AvenListboxProps<T extends string | number = string | number> = {
+  modelValue?: T | T[] | null
+  defaultValue?: T | T[] | null
+  options: AvenOption<T>[]
+  multiple?: boolean
+  orientation?: 'vertical' | 'horizontal'
+  selectionBehavior?: 'toggle' | 'replace'
+  loop?: boolean
+  disabled?: boolean
+  readonly?: boolean
+  id?: string
+  name?: string
+  label?: string
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'option' | 'group' | 'indicator' | 'empty'>
+}
+export type AvenListboxEvents<T extends string | number = string | number> = {
+  'update:modelValue': [value: T | T[] | null]
+  change: [value: T | T[] | null]
+  highlight: [payload: { value: T; index: number; originalEvent: Event }]
+  endReached: [payload: { lastKey: T }]
+}
+export type AvenListboxItemSlot<T extends string | number = string | number> = {
+  item: AvenOption<T>
+  key: T
+  index: number
+  selected: boolean
+  active: boolean
+  disabled: boolean
+}
+export type AvenListboxSlots<T extends string | number = string | number> = {
+  item?: (scope: AvenListboxItemSlot<T>) => unknown
+  group?: (scope: { group: string | number }) => unknown
+  indicator?: (scope: { selected: boolean }) => unknown
+  empty?: () => unknown
+  header?: () => unknown
+  footer?: () => unknown
+  separator?: () => unknown
+}
 export type AvenCommand<Key extends string | number = string | number> = {
   key: Key
   label: string

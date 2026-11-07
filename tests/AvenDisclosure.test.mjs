@@ -11,6 +11,7 @@ import {
   AvenIcon,
   AvenField,
   AvenFieldset,
+  AvenListbox,
   AvenLink,
   AvenCollapsible,
   AvenFormattedValue,
@@ -591,6 +592,67 @@ function makeRenderer() {
 function dispatchHandler(handler, event) {
   for (const callback of Array.isArray(handler) ? handler : [handler]) callback(event)
 }
+
+test('listbox exposes stable option semantics, grouped slots, and controlled form values', async () => {
+  const html = await render({
+    render: () =>
+      h(
+        AvenListbox,
+        {
+          id: 'team-list',
+          label: 'Teams',
+          name: 'team',
+          modelValue: 'design',
+          options: [
+            { value: 'design', label: 'Design', group: 'Product' },
+            { value: 'engineering', label: 'Engineering', group: 'Product', disabled: true },
+          ],
+        },
+        {
+          group: ({ group }) => `Group ${group}`,
+          item: ({ item, selected, disabled }) => `${item.label}:${selected}:${disabled}`,
+        },
+      ),
+  })
+  assert.match(html, /role="listbox"[^>]*aria-label="Teams"/)
+  assert.match(html, /role="option" aria-selected="true"/)
+  assert.match(html, /aria-disabled="true"/)
+  assert.match(html, /Group Product/)
+  assert.match(html, /name="team" value="design"/)
+})
+
+test('listbox keyboard movement skips disabled options and commits once', async () => {
+  const { renderer, root, find } = makeRenderer()
+  const changes = []
+  const ends = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenListbox, {
+          options: [
+            { value: 'first', label: 'First' },
+            { value: 'blocked', label: 'Blocked', disabled: true },
+            { value: 'last', label: 'Last' },
+          ],
+          defaultValue: 'first',
+          onChange: (value) => changes.push(value),
+          onEndReached: (payload) => ends.push(payload),
+        }),
+    })
+    .mount(root)
+  const list = find(root, (node) => node.props?.role === 'listbox')
+  dispatchHandler(list.props.onFocus, { type: 'focus' })
+  dispatchHandler(list.props.onKeydown, { key: 'ArrowDown', preventDefault() {} })
+  await nextTick()
+  assert.equal(list.props['aria-activedescendant']?.endsWith('-option-2'), true)
+  dispatchHandler(list.props.onKeydown, { key: 'ArrowDown', preventDefault() {} })
+  assert.deepEqual(ends, [{ lastKey: 'last' }])
+  dispatchHandler(list.props.onKeydown, { key: 'Enter', preventDefault() {} })
+  assert.deepEqual(changes, ['last'])
+  dispatchHandler(list.props.onKeydown, { key: 'ArrowUp', preventDefault() {} })
+  await nextTick()
+  assert.equal(list.props['aria-activedescendant']?.endsWith('-option-0'), true)
+})
 
 test('search waits for IME composition, debounces once, and submits without a duplicate search', async () => {
   const { renderer, root, find } = makeRenderer()

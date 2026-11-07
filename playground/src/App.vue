@@ -9,6 +9,7 @@ import {
   AvenIconButton,
   AvenIcon,
   AvenLink,
+  AvenListbox,
   AvenCollapsible,
   AvenContainer,
   AvenFormattedValue,
@@ -38,6 +39,8 @@ const billingPeriod = ref('monthly')
 const emailUpdates = ref(true)
 const quietMode = ref(false)
 const textFormat = ref<string[]>(['bold'])
+const listboxValue = ref<string | null>('design')
+const highlightedTeam = ref('')
 const lastSplitAction = ref('')
 const buttonClicks = ref(0)
 const openSection = ref<string | null>('account')
@@ -61,6 +64,12 @@ const projectCommands = [
   { key: 'copy-link', label: 'Copy link' },
   { key: 'archive', label: 'Archive project' },
   { key: 'delete', label: 'Delete project', disabled: true },
+]
+const listboxOptions = [
+  { value: 'design', label: 'Design', description: 'Visual system', group: 'Teams' },
+  { value: 'engineering', label: 'Engineering', description: 'Product delivery', group: 'Teams' },
+  { value: 'finance', label: 'Finance', group: 'Operations' },
+  { value: 'legal', label: 'Legal', disabled: true, group: 'Operations' },
 ]
 const buttonTones = [
   'neutral',
@@ -377,6 +386,32 @@ const buttonTones = [
         description="Standalone radio control; bind checked for reactive state."
         :checked="emailUpdates"
         @update:checked="emailUpdates = $event"
+      />
+    </section>
+    <section class="playground-card" aria-labelledby="listbox-examples">
+      <AvenText id="listbox-examples" type="header1">Listbox selection</AvenText>
+      <AvenListbox
+        v-model="listboxValue"
+        name="team"
+        label="Team"
+        :options="listboxOptions"
+        @highlight="highlightedTeam = String($event.value)"
+      >
+        <template #item="{ item, selected, active }">
+          <span
+            ><strong>{{ item.label }}</strong
+            ><small v-if="item.description">{{ item.description }}</small></span
+          >
+          <small v-if="active">Focused</small><small v-else-if="selected">Selected</small>
+        </template>
+      </AvenListbox>
+      <p>Selected team: {{ listboxValue }}</p>
+      <p>Active option: {{ highlightedTeam || 'focus the list to begin' }}</p>
+      <AvenListbox
+        :options="listboxOptions"
+        multiple
+        :default-value="['design']"
+        label="Multiple teams"
       />
     </section>
     <section class="playground-card" aria-labelledby="toggle-examples">

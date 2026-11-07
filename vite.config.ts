@@ -57,6 +57,7 @@ export default defineConfig({
         AvenTooltip: fileURLToPath(new URL('./packages/vue/src/AvenTooltip.vue', import.meta.url)),
         AvenPopover: fileURLToPath(new URL('./packages/vue/src/AvenPopover.vue', import.meta.url)),
         AvenSelect: fileURLToPath(new URL('./packages/vue/src/AvenSelect.vue', import.meta.url)),
+        AvenListbox: fileURLToPath(new URL('./packages/vue/src/AvenListbox.vue', import.meta.url)),
         AvenMenu: fileURLToPath(new URL('./packages/vue/src/AvenMenu.vue', import.meta.url)),
         AvenDropdownMenu: fileURLToPath(
           new URL('./packages/vue/src/AvenDropdownMenu.vue', import.meta.url),

@@ -175,10 +175,10 @@ Slot notation `item{item,key,...}` means a scoped named slot. A slot without bra
 ### 20. AvenListbox — P1
 
 - **Styles:** bordered/flat, compact/comfortable, selected checkmark, option descriptions, grouped sections, single/multiple.
-- **Props:** `modelValue:Value|null|Value[]`, `defaultValue`, `multiple=false`, `options:Option[]`, `orientation='vertical'`, `selectionBehavior:'toggle'|'replace'`, `loop=false`, `virtual=false`.
+- **Props:** `modelValue:Value|null|Value[]`, `defaultValue`, `multiple=false`, `options:Option[]`, `orientation='vertical'`, `selectionBehavior:'toggle'|'replace'`, `loop=false`. Virtualization is deliberately left to a separate adapter because arbitrary consumer option slots and group headings require measured-row support to keep `aria-activedescendant` attached to a mounted option.
 - **Events:** update:modelValue, change on selection; `highlight({value,index,originalEvent})`; `endReached({lastKey})` for app pagination.
 - **Slots:** item{item,key,index,selected,active,disabled}, group{group}, indicator{selected}, empty, header/footer, separator.
-- **Hooks/behavior:** item-hover/selected-bg, padding/gap; listbox/option semantics, arrows/Home/End/typeahead, clear separation of active and selected. Virtual options need valid active-descendant IDs and visible active rows.
+- **Hooks/behavior:** item-hover/selected-bg, padding/gap; listbox/option semantics, arrows/Home/End/typeahead, clear separation of active and selected. Consumers with very large collections should supply a measured virtualization adapter; this component keeps active options mounted and does not claim virtualization.
 
 ### 21. AvenCombobox / AvenMultiSelect — P1
 
