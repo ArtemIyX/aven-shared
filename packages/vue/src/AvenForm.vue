@@ -1,32 +1,27 @@
 <script setup lang="ts">
 import { useAttrs } from 'vue'
-import type { AvenUi } from './types.js'
+import { useAvenId } from './composables.js'
+import type { AvenFormEvents, AvenFormProps, AvenFormSlots } from './types.js'
 defineOptions({ inheritAttrs: false })
-const props = withDefaults(
-  defineProps<{
-    disabled?: boolean
-    loading?: boolean
-    errors?: { controlId: string; message: string }[]
-    columns?: number
-    gap?: string
-    unstyled?: boolean
-    ui?: AvenUi<'root' | 'header' | 'body' | 'errorSummary' | 'footer'>
-  }>(),
-  {
-    disabled: false,
-    loading: false,
-    errors: () => [],
-    columns: 1,
-    gap: 'var(--aven-space-4)',
-    unstyled: false,
-  },
-)
-const emit = defineEmits<{ submit: [event: SubmitEvent]; reset: [event: Event] }>()
+const props = withDefaults(defineProps<AvenFormProps>(), {
+  disabled: false,
+  loading: false,
+  errors: () => [],
+  columns: 1,
+  gap: 'var(--aven-space-4)',
+  unstyled: false,
+})
+const emit = defineEmits<AvenFormEvents>()
+const slots = defineSlots<AvenFormSlots>()
 const attrs = useAttrs()
+const errorTitleId = useAvenId(undefined, 'form-errors-title')
 </script>
 <template>
   <form
-    v-bind="attrs"
+    v-bind="{ ...attrs, ...ui?.root?.attrs }"
+    :action="action"
+    :method="method"
+    :novalidate="novalidate"
     :aria-busy="loading || undefined"
     :class="[
       'aven-form',
@@ -35,36 +30,54 @@ const attrs = useAttrs()
       ui?.root?.class,
     ]"
     :style="[
-      { '--aven-form-columns': columns, '--aven-form-gap': gap },
+      { '--aven-form-columns': Math.max(1, Math.floor(columns)), '--aven-form-gap': gap },
       attrs.style,
       ui?.root?.style,
     ]"
     @submit="emit('submit', $event)"
     @reset="emit('reset', $event)"
   >
-    <header v-if="$slots.header" :class="ui?.header?.class"><slot name="header" /></header>
+    <header
+      v-if="$slots.header"
+      v-bind="ui?.header?.attrs"
+      :class="ui?.header?.class"
+      :style="ui?.header?.style"
+    >
+      <slot name="header" />
+    </header>
     <div
       v-if="errors.length"
+      v-bind="ui?.errorSummary?.attrs"
       :class="['form-errors', ui?.errorSummary?.class]"
       role="alert"
-      aria-labelledby="aven-form-errors-title"
+      :aria-labelledby="errorTitleId"
+      :style="ui?.errorSummary?.style"
     >
-      <h2 id="aven-form-errors-title">Please correct these errors</h2>
-      <ul>
-        <li v-for="error in errors" :key="`${error.controlId}:${error.message}`">
-          <a :href="`#${error.controlId}`">{{ error.message }}</a>
-        </li>
-      </ul>
-      <slot name="error-summary" :errors="errors" />
+      <h2 :id="errorTitleId">Please correct these errors</h2>
+      <slot name="error-summary" :errors="errors">
+        <ul>
+          <li v-for="error in errors" :key="`${error.controlId}:${error.message}`">
+            <a :href="`#${error.controlId}`">{{ error.message }}</a>
+          </li>
+        </ul>
+      </slot>
     </div>
     <fieldset
+      v-bind="ui?.body?.attrs"
       :disabled="disabled"
       :class="['form-fields', ui?.body?.class]"
       :style="ui?.body?.style"
     >
       <slot :disabled="disabled" :loading="loading" />
     </fieldset>
-    <footer v-if="$slots.footer" :class="ui?.footer?.class"><slot name="footer" /></footer>
+    <footer
+      v-if="$slots.footer"
+      v-bind="ui?.footer?.attrs"
+      :class="ui?.footer?.class"
+      :style="ui?.footer?.style"
+    >
+      <slot name="footer" />
+    </footer>
   </form>
 </template>
 <style scoped>

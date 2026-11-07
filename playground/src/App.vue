@@ -52,6 +52,8 @@ import {
   AvenFormattedValue,
   AvenField,
   AvenFieldset,
+  AvenForm,
+  AvenFormActions,
   AvenEmptyState,
   AvenGrid,
   AvenInline,
@@ -149,6 +151,9 @@ const pickedRange = ref<{ start: AvenDateOnly | null; end: AvenDateOnly | null }
 })
 const pickedTime = ref<string | null>('09:30')
 const dateActivity = ref('Keyboard arrows move by day or week; Page Up and Page Down change month.')
+const formActivity = ref(
+  'The form remains native and leaves validation/persistence to the application.',
+)
 const workspaceOptions = [
   { value: 'design', label: 'Design workspace', description: 'Product and design work' },
   { value: 'engineering', label: 'Engineering workspace', description: 'Build and release work' },
@@ -389,6 +394,53 @@ const buttonTones = [
         <AvenCheckbox name="notifications" value="product" label="Product updates" />
         <AvenCheckbox name="notifications" value="security" label="Security notices" />
       </AvenFieldset>
+    </section>
+    <section class="playground-card" aria-labelledby="form-examples">
+      <AvenText id="form-examples" type="header1">Native form layout and actions</AvenText>
+      <AvenForm
+        action="/profile"
+        method="post"
+        :errors="[{ controlId: 'profile-email', message: 'Use an organization email address.' }]"
+        :columns="2"
+        @submit.prevent="
+          formActivity = 'Submit event received once; the application owns save behavior.'
+        "
+        @reset="formActivity = 'Native reset requested.'"
+      >
+        <template #header><h3>Profile details</h3></template>
+        <template #default="{ disabled, loading }">
+          <AvenInput
+            id="profile-email"
+            name="email"
+            label="Work email"
+            type="email"
+            required
+            :disabled="disabled || loading"
+          />
+          <AvenInput
+            id="profile-team"
+            name="team"
+            label="Team name"
+            :disabled="disabled || loading"
+          />
+        </template>
+        <template #error-summary="{ errors }">
+          <ul>
+            <li v-for="error in errors" :key="error.controlId">
+              <a :href="`#${error.controlId}`">{{ error.message }}</a>
+            </li>
+          </ul>
+        </template>
+        <template #footer>
+          <AvenFormActions align="between" sticky>
+            <template #secondary
+              ><AvenButton type="reset" variant="outline">Reset</AvenButton></template
+            >
+            <AvenButton type="submit">Save profile</AvenButton>
+          </AvenFormActions>
+        </template>
+      </AvenForm>
+      <p aria-live="polite">{{ formActivity }}</p>
     </section>
 
     <section class="playground-card" aria-labelledby="type-examples">

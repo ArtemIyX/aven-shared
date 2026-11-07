@@ -137,6 +137,10 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
     `import { h } from 'vue'\nimport { AvenDatePicker, AvenDateRangePicker, AvenTimePicker, type AvenDateOnly, type AvenDatePickerProps, type AvenDateRangePickerProps, type AvenTimePickerProps } from '@wellsaik/aven-vue'\nconst date: AvenDateOnly = '2024-02-29'\nconst dateProps: AvenDatePickerProps = { modelValue: date, locale: 'en-GB', weekStartsOn: 1 }\nconst rangeProps: AvenDateRangePickerProps = { defaultValue: { start: date, end: null }, months: 2 }\nconst timeProps: AvenTimePickerProps = { defaultValue: '09:30', timeStep: 15, hourCycle: 'h23' }\nh(AvenDatePicker, dateProps); h(AvenDateRangePicker, rangeProps); h(AvenTimePicker, timeProps)\n`,
   )
   await writeFile(
+    path.join(directory, 'form-consumer.ts'),
+    `import { h } from 'vue'\nimport { AvenForm, AvenFormActions, type AvenFormError, type AvenFormProps, type AvenFormEvents, type AvenFormActionsProps } from '@wellsaik/aven-vue'\nconst errors: AvenFormError[] = [{ controlId: 'email', message: 'Required' }]\nconst form: AvenFormProps = { action: '/save', method: 'post', novalidate: true, errors, columns: 2 }\nconst submit: AvenFormEvents['submit'][0] = new SubmitEvent('submit')\nconst actions: AvenFormActionsProps = { align: 'between', sticky: true }\nvoid submit; h(AvenForm, form); h(AvenFormActions, actions)\n`,
+  )
+  await writeFile(
     path.join(directory, 'tsconfig.json'),
     JSON.stringify({
       compilerOptions: {
@@ -154,6 +158,7 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
         'overlay-consumer.ts',
         'primitive-consumer.ts',
         'date-consumer.ts',
+        'form-consumer.ts',
       ],
     }),
   )
@@ -176,6 +181,7 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
         'overlay-consumer.ts',
         'primitive-consumer.ts',
         'date-consumer.ts',
+        'form-consumer.ts',
       ],
     }),
   )

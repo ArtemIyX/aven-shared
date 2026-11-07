@@ -1,17 +1,11 @@
 <script setup lang="ts">
-import type { AvenUi } from './types.js'
-withDefaults(
-  defineProps<{
-    align?: 'start' | 'center' | 'end' | 'between'
-    sticky?: boolean
-    unstyled?: boolean
-    ui?: AvenUi<'root' | 'secondary'>
-  }>(),
-  { align: 'end', sticky: false, unstyled: false },
-)
+import type { AvenFormActionsProps, AvenFormActionsSlots } from './types.js'
+withDefaults(defineProps<AvenFormActionsProps>(), { align: 'end', sticky: false, unstyled: false })
+defineSlots<AvenFormActionsSlots>()
 </script>
 <template>
   <div
+    v-bind="ui?.root?.attrs"
     :class="[
       'aven-form-actions',
       `align-${align}`,
@@ -20,8 +14,21 @@ withDefaults(
     ]"
     :style="ui?.root?.style"
   >
-    <div v-if="$slots.secondary" :class="ui?.secondary?.class"><slot name="secondary" /></div>
-    <div class="primary-actions"><slot /></div>
+    <div
+      v-if="$slots.secondary"
+      v-bind="ui?.secondary?.attrs"
+      :class="ui?.secondary?.class"
+      :style="ui?.secondary?.style"
+    >
+      <slot name="secondary" />
+    </div>
+    <div
+      v-bind="ui?.primary?.attrs"
+      :class="['primary-actions', ui?.primary?.class]"
+      :style="ui?.primary?.style"
+    >
+      <slot />
+    </div>
   </div>
 </template>
 <style scoped>

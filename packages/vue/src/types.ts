@@ -814,6 +814,33 @@ export type AvenDateRangePickerSlots = Omit<AvenDatePickerSlots, 'day' | 'preset
     item: { key: string | number; label: string; value: AvenDateRangeValue }
   }) => unknown
 }
+export type AvenFormError = { controlId: string; message: string }
+export type AvenFormProps = {
+  action?: string
+  method?: 'get' | 'post' | 'dialog'
+  novalidate?: boolean
+  disabled?: boolean
+  loading?: boolean
+  errors?: AvenFormError[]
+  columns?: number
+  gap?: string
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'header' | 'body' | 'errorSummary' | 'footer'>
+}
+export type AvenFormEvents = { submit: [event: SubmitEvent]; reset: [event: Event] }
+export type AvenFormSlots = {
+  default?: (scope: { disabled: boolean; loading: boolean }) => unknown
+  header?: () => unknown
+  footer?: () => unknown
+  'error-summary'?: (scope: { errors: AvenFormError[] }) => unknown
+}
+export type AvenFormActionsProps = {
+  align?: 'start' | 'center' | 'end' | 'between'
+  sticky?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'secondary' | 'primary'>
+}
+export type AvenFormActionsSlots = { default?: () => unknown; secondary?: () => unknown }
 export type AvenTimePickerProps = {
   modelValue?: string | null
   defaultValue?: string | null

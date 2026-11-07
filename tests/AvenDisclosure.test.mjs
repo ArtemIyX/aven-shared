@@ -47,6 +47,8 @@ import {
   AvenFileInput,
   AvenDropzone,
   AvenColorPicker,
+  AvenForm,
+  AvenFormActions,
   AvenDatePicker,
   AvenDateRangePicker,
   AvenTimePicker,
@@ -2985,4 +2987,62 @@ test('date range commits only complete calendar ranges and time picker emits val
   input.props.onBlur()
   assert.deepEqual(updates, ['09:30'])
   assert.deepEqual(changes, ['09:30'])
+})
+
+test('form keeps native submit and reset events, disabled fieldset propagation, and linked errors', async () => {
+  const errors = [{ controlId: 'email-control', message: 'Enter a work email.' }]
+  const html = await render({
+    render: () => h(AvenForm, { action: '/profile', method: 'post', novalidate: true, errors }),
+  })
+  assert.match(html, /<form[^>]*action="\/profile"[^>]*method="post"[^>]*novalidate/)
+  assert.match(html, /href="#email-control"/)
+  assert.match(html, /Please correct these errors/)
+
+  const { renderer, root, find } = makeRenderer()
+  const submits = [],
+    resets = []
+  renderer
+    .createApp({
+      render: () =>
+        h(
+          AvenForm,
+          {
+            disabled: true,
+            loading: true,
+            errors,
+            onSubmit: (event) => submits.push(event),
+            onReset: (event) => resets.push(event),
+          },
+          { default: () => h('input', { id: 'email-control' }) },
+        ),
+    })
+    .mount(root)
+  const form = find(root, (node) => node.type === 'form')
+  const fieldset = find(root, (node) => node.type === 'fieldset')
+  const submit = {
+    type: 'submit',
+    prevented: false,
+    preventDefault() {
+      this.prevented = true
+    },
+  }
+  const reset = {
+    type: 'reset',
+    prevented: false,
+    preventDefault() {
+      this.prevented = true
+    },
+  }
+  form.props.onSubmit(submit)
+  form.props.onReset(reset)
+  assert.deepEqual(submits, [submit])
+  assert.deepEqual(resets, [reset])
+  assert.equal(submit.prevented, false)
+  assert.equal(fieldset.props.disabled, true)
+  assert.equal(form.props['aria-busy'], true)
+  const actions = await render({
+    render: () => h(AvenFormActions, { align: 'between', sticky: true }),
+  })
+  assert.match(actions, /align-between/)
+  assert.match(actions, /is-sticky/)
 })
