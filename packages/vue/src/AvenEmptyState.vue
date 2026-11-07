@@ -1,0 +1,110 @@
+<script setup lang="ts">
+import type { AvenTone, AvenUi } from './types.js'
+withDefaults(
+  defineProps<{
+    kind?: 'empty' | 'no-results' | 'error' | 'offline' | 'success'
+    title: string
+    description?: string
+    tone?: AvenTone
+    loading?: boolean
+    unstyled?: boolean
+    ui?: AvenUi<'root' | 'icon' | 'title' | 'description' | 'actions' | 'footer'>
+  }>(),
+  { kind: 'empty', loading: false, unstyled: false },
+)
+const emit = defineEmits<{ retry: [payload: { originalEvent: MouseEvent }] }>()
+</script>
+<template>
+  <section
+    :class="[
+      'aven-empty-state',
+      `kind-${kind}`,
+      { 'is-loading': loading, 'is-unstyled': unstyled },
+      ui?.root?.class,
+    ]"
+    :style="ui?.root?.style"
+    :aria-busy="loading || undefined"
+  >
+    <span v-if="$slots.illustration || $slots.icon" :class="['state-icon', ui?.icon?.class]"
+      ><slot name="illustration"><slot name="icon" /></slot
+    ></span>
+    <h2 :class="['state-title', ui?.title?.class]">
+      <slot name="title">{{ title }}</slot>
+    </h2>
+    <p
+      v-if="description || $slots.description || $slots.default"
+      :class="['state-description', ui?.description?.class]"
+    >
+      <slot name="description">{{ description }}</slot
+      ><slot />
+    </p>
+    <div v-if="$slots.actions || kind === 'error'" :class="['state-actions', ui?.actions?.class]">
+      <slot name="actions"
+        ><button
+          v-if="kind === 'error'"
+          type="button"
+          @click="emit('retry', { originalEvent: $event })"
+        >
+          Try again
+        </button></slot
+      >
+    </div>
+    <div v-if="$slots.footer" :class="['state-footer', ui?.footer?.class]">
+      <slot name="footer" />
+    </div>
+  </section>
+</template>
+<style scoped>
+.aven-empty-state {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--aven-space-3);
+  max-inline-size: 36rem;
+  margin-inline: auto;
+  padding: var(--aven-space-8);
+  text-align: center;
+  color: var(--aven-color-text-primary);
+}
+.state-icon {
+  font-size: 2rem;
+  color: var(--aven-color-icon-secondary);
+}
+.state-title {
+  margin: 0;
+  font-size: var(--aven-font-size-xl);
+}
+.state-description {
+  margin: 0;
+  color: var(--aven-color-text-secondary);
+  max-inline-size: 60ch;
+}
+.state-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--aven-space-3);
+}
+.state-actions button {
+  font: inherit;
+  padding: var(--aven-space-2) var(--aven-space-4);
+  border: 1px solid var(--aven-color-border-default);
+  border-radius: var(--aven-radius-md);
+  background: var(--aven-color-surface-base);
+  color: var(--aven-color-text-primary);
+  cursor: pointer;
+}
+.state-actions button:focus-visible {
+  outline: 2px solid var(--aven-color-focus-ring);
+}
+.state-footer {
+  font-size: var(--aven-font-size-sm);
+  color: var(--aven-color-text-secondary);
+}
+.is-unstyled {
+  padding: 0;
+  text-align: start;
+}
+</style>
