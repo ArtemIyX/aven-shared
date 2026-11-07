@@ -61,6 +61,7 @@ import {
   AvenPanel,
   AvenCard,
   AvenPropertyRow,
+  AvenCodeBlock,
   AvenPasswordField,
   AvenRadio,
   AvenRadioGroup,
@@ -84,6 +85,7 @@ import {
 } from '@wellsaik/aven-vue'
 
 const userName = ref('Avery')
+const sampleCode = 'const answer = 42\nconsole.log(answer)'
 const searchQuery = ref('')
 const contactEmail = ref('')
 const lastSearch = ref('')
@@ -608,6 +610,22 @@ const buttonTones = [
       <AvenText type="header2">A local application theme</AvenText>
     </section>
     <ColorGallery />
+    <section class="playground-card" aria-labelledby="code-example">
+      <AvenText id="code-example" type="header1">Adapter-ready code block</AvenText>
+      <AvenCodeBlock
+        :code="sampleCode"
+        language="typescript"
+        label="A short TypeScript example"
+        show-line-numbers
+        copyable
+        wrap
+      >
+        <template #header>Example source</template>
+        <template #line="{ line, index }">
+          <span :data-line="index + 1">{{ line }}</span>
+        </template>
+      </AvenCodeBlock>
+    </section>
     <section class="playground-card" aria-labelledby="surface-examples">
       <AvenText id="surface-examples" type="header1">Panels and disclosure</AvenText>
       <AvenPanel title="Profile summary" description="A passive content surface" variant="outline">

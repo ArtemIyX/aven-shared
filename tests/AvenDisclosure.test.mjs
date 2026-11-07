@@ -55,6 +55,7 @@ import {
   AvenCard,
   AvenPanel,
   AvenPropertyRow,
+  AvenCodeBlock,
   AvenDatePicker,
   AvenDateRangePicker,
   AvenTimePicker,
@@ -3183,4 +3184,65 @@ test('card surfaces and editable property rows preserve heading, list, customiza
   const editButton = find(root, (node) => node.props?.['aria-label'] === 'Edit Name')
   editButton.props.onClick(new Event('click'))
   assert.equal(edits.length, 1)
+})
+
+test('code block keeps code as text, numbers stable lines, and reports visible clipboard failure', async () => {
+  const html = await render({
+    render: () =>
+      h(
+        AvenCodeBlock,
+        {
+          code: 'first <tag>\\nsecond',
+          language: 'text',
+          label: 'Example source',
+          showLineNumbers: true,
+          copyable: true,
+        },
+        { header: () => 'Example' },
+      ),
+  })
+  assert.match(html, /aria-label="Example source"/)
+  assert.match(html, /&lt;tag&gt;/)
+  assert.match(html, /line-number/)
+  assert.match(html, /Copy code/)
+  assert.doesNotMatch(html, /<tag>/)
+
+  const { renderer, root, find } = makeRenderer()
+  let block
+  const events = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenCodeBlock, {
+          ref: (instance) => (block = instance),
+          code: 'copy me',
+          copyable: true,
+          onCopy: (payload) => events.push(payload),
+        }),
+    })
+    .mount(root)
+  const result = await block.copy()
+  await nextTick()
+  assert.equal(result.success, false)
+  assert.equal(events.length, 1)
+  assert.equal(events[0].success, false)
+  assert.match(find(root, (node) => node.props?.role === 'status').text, /Could not copy code/)
+  const originalNavigator = Object.getOwnPropertyDescriptor(globalThis, 'navigator')
+  const copied = []
+  Object.defineProperty(globalThis, 'navigator', {
+    configurable: true,
+    value: { clipboard: { writeText: async (value) => copied.push(value) } },
+  })
+  try {
+    const success = await block.copy()
+    await nextTick()
+    assert.deepEqual(success, { success: true })
+    assert.deepEqual(copied, ['copy me'])
+    assert.equal(events.length, 2)
+    assert.equal(events[1].success, true)
+    assert.match(find(root, (node) => node.props?.role === 'status').text, /Code copied/)
+  } finally {
+    if (originalNavigator) Object.defineProperty(globalThis, 'navigator', originalNavigator)
+    else delete globalThis.navigator
+  }
 })

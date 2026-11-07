@@ -1264,6 +1264,30 @@ export type AvenPropertyRowSlots = {
   editor?: (scope: { finish: () => void; cancel: () => void }) => unknown
   'edit-icon'?: () => unknown
 }
+export type AvenCodeBlockProps = {
+  code: string
+  language?: string
+  showLineNumbers?: boolean
+  copyable?: boolean
+  wrap?: boolean
+  label?: string
+  copyLabel?: string
+  copiedLabel?: string
+  copyErrorLabel?: string
+  unstyled?: boolean
+  ui?: AvenUi<
+    'root' | 'header' | 'language' | 'code' | 'line' | 'lineNumber' | 'actions' | 'copy' | 'status'
+  >
+}
+export type AvenCodeBlockEvents = {
+  copy: [payload: { success: boolean; error?: Error }]
+}
+export type AvenCodeBlockSlots = {
+  header?: () => unknown
+  language?: (scope: { language?: string }) => unknown
+  actions?: () => unknown
+  line?: (scope: { line: string; index: number }) => unknown
+}
 export type AvenDialogProps = {
   open?: boolean
   defaultOpen?: boolean

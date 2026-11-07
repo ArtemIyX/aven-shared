@@ -177,6 +177,9 @@ export type {
   AvenPropertyRowProps,
   AvenPropertyRowEvents,
   AvenPropertyRowSlots,
+  AvenCodeBlockProps,
+  AvenCodeBlockEvents,
+  AvenCodeBlockSlots,
   AvenSearchFieldProps,
   AvenInputProps,
   AvenInputEvents,
@@ -269,6 +272,7 @@ export { default as AvenColorPicker } from './AvenColorPicker.vue'
 export { default as AvenDatePicker } from './AvenDatePicker.vue'
 export { default as AvenDateRangePicker } from './AvenDateRangePicker.vue'
 export { default as AvenTimePicker } from './AvenTimePicker.vue'
+export { default as AvenCodeBlock } from './AvenCodeBlock.vue'
 export { default as AvenCard } from './AvenCard.vue'
 export { default as AvenPropertyRow } from './AvenPropertyRow.vue'
 export type { AvenTextProps } from './AvenText.js'

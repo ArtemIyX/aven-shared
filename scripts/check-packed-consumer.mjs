@@ -65,6 +65,7 @@ try {
       assert(paths.includes('dist/AvenMenu.js'))
       assert(paths.includes('dist/AvenMenuItem.js'))
       assert(paths.includes('dist/AvenMenuGroup.js'))
+      assert(paths.includes('dist/AvenCodeBlock.js'))
       assert(paths.includes('dist/AvenCard.js'))
       assert(paths.includes('dist/AvenPanel.js'))
       assert(paths.includes('dist/AvenPropertyRow.js'))
@@ -155,6 +156,10 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
     `import { h } from 'vue'\nimport { AvenCard, AvenPanel, AvenPropertyRow, type AvenCardProps, type AvenPanelProps, type AvenPropertyRowProps, type AvenPropertyRowEvents } from '@wellsaik/aven-vue'\nconst card: AvenCardProps = { title: 'Card', headingLevel: 3, variant: 'outlined' }\nconst panel: AvenPanelProps = { title: 'Panel', headingLevel: 4, headerDivider: false }\nconst row: AvenPropertyRowProps = { label: 'Owner', labelWidth: '10ch', editable: true, truncate: true }\nconst edit: AvenPropertyRowEvents['edit'][0] = { originalEvent: new MouseEvent('click') }\nvoid edit; h(AvenCard, card); h(AvenPanel, panel); h(AvenPropertyRow, row)\n`,
   )
   await writeFile(
+    path.join(directory, 'code-consumer.ts'),
+    `import { h } from 'vue'\nimport { AvenCodeBlock, type AvenCodeBlockProps, type AvenCodeBlockEvents, type AvenCodeBlockSlots } from '@wellsaik/aven-vue'\nconst props: AvenCodeBlockProps = { code: 'const answer = 42', language: 'typescript', showLineNumbers: true, copyable: true }\nconst copied: AvenCodeBlockEvents['copy'][0] = { success: false, error: new Error('blocked') }\nconst slots: AvenCodeBlockSlots = { line: ({ line, index }) => index ? line : line }\nvoid copied; void slots; h(AvenCodeBlock, props)\n`,
+  )
+  await writeFile(
     path.join(directory, 'tsconfig.json'),
     JSON.stringify({
       compilerOptions: {
@@ -175,6 +180,7 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
         'form-consumer.ts',
         'menu-consumer.ts',
         'surface-consumer.ts',
+        'code-consumer.ts',
       ],
     }),
   )
@@ -200,6 +206,7 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
         'form-consumer.ts',
         'menu-consumer.ts',
         'surface-consumer.ts',
+        'code-consumer.ts',
       ],
     }),
   )
