@@ -1,0 +1,117 @@
+# Vue component usage reference
+
+Import `@wellsaik/aven-shared/tokens.css` and `@wellsaik/aven-vue/style.css` once in the application entry point. Import components from the `@wellsaik/aven-vue` root entry. The API notes here describe the current implementation slice; see [component implementation status](component-implementation-status.md) before relying on an entry marked partial.
+
+```ts
+import '@wellsaik/aven-shared/tokens.css'
+import '@wellsaik/aven-vue/style.css'
+import {
+  AvenAccordion,
+  AvenButton,
+  AvenButtonGroup,
+  AvenCollapsible,
+  AvenContainer,
+  AvenFormattedValue,
+  AvenGrid,
+  AvenInline,
+  AvenPanel,
+  AvenPasswordField,
+  AvenRadio,
+  AvenRadioGroup,
+  AvenToggleButton,
+  AvenToggleGroup,
+  AvenSearchField,
+  AvenStack,
+  AvenStat,
+  AvenSplitButton,
+  AvenProvider,
+} from '@wellsaik/aven-vue'
+```
+
+## Provider and generated IDs
+
+`AvenProvider` accepts `config` with `idPrefix`, `locale`, `dir`, `density`, `defaultSize`, `messages`, and `resolveIcon`. `useAvenId(explicit, part)` returns an explicit ID unchanged or allocates an instance ID using the nearest provider factory. Accordion, Collapsible, Field, and radio controls use it for linked relationships. Without a provider, IDs use a counter scoped to the current Vue app, so separate SSR and hydration app instances produce the same sequence when their component setup order matches; use a provider when an application needs an explicit prefix.
+
+## AvenIcon
+
+`AvenIcon` accepts `name?`, `size='md'` (`xs | sm | md | lg | number`), `strokeWidth=2`, `spin=false`, optional semantic `tone`, `unstyled=false`, and `ui.root/svg`. A named icon resolves through the nearest provider's `resolveIcon(name)` function; without a resolved icon, its default slot renders trusted Vue content such as SVG elements. Decorative icons default to `aria-hidden`; set `decorative=false` and provide the required `label` for meaningful imagery. It never interprets SVG strings. `--aven-icon-size`, `--aven-icon-color`, and `--aven-icon-stroke-width` are the component hooks; spinning stops under reduced motion. Use `AvenIconButton` for an icon action.
+
+## AvenBadge and AvenStatusDot
+
+`AvenBadge` is passive and has no custom events. It defaults to `tone='neutral'`, `variant='soft'`, `size='sm'`, and `max=99`. Its variants are `soft`, `solid`, `outline`, and `dot`; `count` is hidden at zero unless `showZero=true`, and values above `max` display as `max+`. If both `count` and `label` are supplied, the accessible name is the full count followed by the label, while the visible count remains capped. Leading/trailing slots decorate its default content; `ui` supports `root`, `leading`, `trailing`, and `dot`. Hooks are `--aven-badge-bg/fg/border/radius/dot-size/gap/padding`, with semantic tone token fallbacks.
+
+`AvenStatusDot` always provides a text status: its default slot or `label` is shown, and otherwise a visually hidden `<tone> status` label is rendered. `ui` supports `root`, `dot`, and `label`; dot color, size, and spacing are adjustable through `--aven-status-dot-color/size/gap`. Color alone never carries its meaning.
+
+## AvenLink
+
+`AvenLink` renders a native anchor and requires `href`. It accepts `target`, `rel`, `download`, `underline='hover'` (`always | hover | none`), `variant='default'` (`subtle | standalone`), optional `tone`, `external=false`, `unstyled=false`, and `ui.root/leading/trailing`. When `target='_blank'` and `rel` is omitted, it supplies `noopener noreferrer`; an explicit `rel` is preserved verbatim. `external` adds a decorative trailing arrow unless the trailing slot is supplied. `click(MouseEvent)` forwards once without canceling or rewriting modified navigation. Slots are default, `leading`, and `trailing`. Hooks include `--aven-link-color`, `--aven-link-hover-color`, `--aven-link-pressed-color`, `--aven-link-visited-color`, `--aven-link-gap`, `--aven-link-underline-offset`, and `--aven-link-underline-thickness`. Unavailable destinations should be rendered as text instead of a disabled anchor.
+
+## AvenButton
+
+`AvenButton` is a native button. It defaults to `variant='solid'`, `tone='accent'`, `size='md'`, `type='button'`, `shape='rounded'`, `loadingBehavior='block'`, and `block=false`. Variants are `solid`, `soft`, `outline`, `ghost`, and `link`; tones are `neutral`, `accent`, `secondary`, `info`, `success`, `warning`, `danger`, and `critical`; sizes are `xs`, `sm`, `md`, and `lg`; shapes are `rounded`, `pill`, and `square`. `disabled` blocks all action; `loading` exposes `aria-busy` and blocks by default, while `loadingBehavior='allow'` leaves activation enabled. `type`, `form`, `formaction`, `formmethod`, `formtarget`, and other native attributes retain browser form behavior. The default slot remains the accessible name while loading.
+
+Events `click(MouseEvent)`, `focus(FocusEvent)`, and `blur(FocusEvent)` come from the native button and are forwarded once; disabled/loading-blocked clicks are suppressed. Methods `focus()` and `blur()` act on the native button. Slots: default, `leading{disabled,loading}`, `trailing{disabled,loading}`, and `loading{loading}`. The loading slot is decorative and hidden from assistive technology; keep progress wording in the default label or an associated status message. UI parts are `root`, `label`, `leading`, `trailing`, and `spinner`, each with `class`, `style`, and `attrs`. Component CSS hooks: `--aven-button-bg`, `--aven-button-fg`, `--aven-button-border`, `--aven-button-hover-bg`, `--aven-button-pressed-bg`, `--aven-button-radius`, `--aven-button-padding-inline`, `--aven-button-min-block-size`, and `--aven-button-gap`; semantic token values are the fallbacks. `unstyled` removes visual treatment while preserving a native 44px minimum target, focus indication, form behavior, and state semantics.
+
+## AvenIconButton
+
+`AvenIconButton` uses the same button `variant`, `tone`, `size`, `type`, `disabled`, `loading`, and `loadingBehavior` contracts. It requires `label` for its accessible name, defaults to `variant='ghost'`, `tone='neutral'`, and `shape='square'`, and supports `shape='circle'` plus optional `tooltip`. A tooltip becomes the native `title` and supplements the required accessible label. The default slot or `icon` slot supplies decorative glyph content; the `loading` slot replaces the decorative spinner while busy. It emits the native `click`, `focus`, and `blur` events once, suppresses blocked activation, and exposes `focus()` and `blur()` methods. UI parts are `root`, `icon`, and `spinner`; `--aven-icon-button-size` customizes the glyph while the pointer target remains at least 44px. `unstyled` preserves the label, focus indicator, and target size.
+
+## AvenPanel
+
+Props: `as='section'` (`article | section | div | aside`), `title?`, `description?`, `padding='md'` (`none | sm | md | lg`), `variant='outline'` (`flat | outline | raised`), `headerDivider=true`, `unstyled=false`, `ui` parts `root/header/title/description/body/footer/actions/leading/trailing`. It has no custom events. Slots: `header`, `title`, `description`, default body, `footer`, `actions`, `leading`, and `trailing`. A custom `header` slot replaces the composed header.
+
+## AvenAccordion
+
+Generic keys are `string | number`. `items` is required and has `{ key, label, disabled? }`. `modelValue` makes the selection controlled; `defaultValue=null` initializes uncontrolled state. `multiple=false`, `collapsible=true`, `lazy=true`, and `unmountOnHide=false` are defaults. Single mode emits `Key | null`; multiple mode emits `Key[]`.
+
+`update:modelValue(next)` and `change(next)` fire once on an accepted user toggle. Disabled items and an attempt to close the last open item when `collapsible=false` do not emit. Slots: `trigger{item,open,disabled,triggerAttrs,triggerRef}` replaces the button and must bind both `triggerAttrs` and `triggerRef` to one native button; `leading{item}`, `trailing{item}`, `indicator{open}`, and `content{item,open}`. The fallback trigger is a native button with linked `aria-expanded` and `aria-controls`. ArrowUp/ArrowDown/Home/End move focus among enabled triggers.
+
+## AvenCollapsible
+
+`open?` controls state; otherwise `defaultOpen=false` initializes it. `disabled=false`, `lazy=true`, `unmountOnHide=false`. User toggles emit `update:open(boolean)` and `openChange(boolean)` once. `afterOpen` or `afterClose` fires after the next Vue render tick. Slots: `trigger{open,disabled,triggerAttrs,triggerRef}` may replace the button and must bind the supplied attributes/ref; default slot supplies fallback trigger text; `leading`, `trailing`, `indicator{open}`, `content{open}`, and `panel`. No focus trap is used. Closed retained content is hidden from interaction and accessibility APIs.
+
+## Layout primitives
+
+`AvenStack` uses a vertical flex layout; `AvenInline` uses a wrapping row by default. Both accept `gap='space-4'` (Stack) or `gap='space-3'` (Inline), numeric pixel gaps, CSS lengths, `align`, `justify`, a restricted `as` element, `unstyled`, and `ui.root`. `AvenGrid` accepts `columns=1` or `{ base?, sm?, md?, lg? }`, with mobile-first breakpoints at 40rem, 48rem, and 64rem. It also accepts `gap='space-4'`, `as`, `unstyled`, and `ui.root`. `AvenContainer` defaults to `maxWidth='72rem'`, `gutter='space-4'`, and centered layout; it accepts a restricted semantic `as`, `unstyled`, and `ui.root`. Spacing names map to public shared CSS variables; other strings pass through as CSS values.
+
+## AvenFormattedValue and AvenStat
+
+`AvenFormattedValue` requires `value` and defaults to `kind='number'`; kinds are `number`, `currency`, `percent`, `date`, `datetime`, `relative`, and `duration`. `locale` falls back to provider locale. Currency defaults to USD; `digits=2` controls maximum fractional digits for number/currency/percent. Relative values are seconds from now; durations are nonnegative seconds. Invalid dates/numbers render their input text rather than `NaN`.
+
+`AvenStat` requires `label` and `value`; `tone='neutral'`, `trend='flat'`, and `format='number'` are defaults. It accepts `trendLabel`, `description`, `currency`, and `locale`. The default slot receives `{ value }`; `trend{trend}` may replace the trend glyph and label. Trend direction is accompanied by text so meaning does not depend on color.
+
+All listed components accept `class`, `style`, and documented `ui` part `class/style` overrides. `unstyled` removes presentation while preserving semantic structure and interaction behavior.
+
+## AvenSearchField
+
+`modelValue?` controls the query; otherwise `defaultValue=''` initializes internal state. `debounce=0` runs the `search({query})` event immediately after an accepted non-composition input. While composition is active, the component emits accepted model updates but delays search until composition ends. `submit({query,originalEvent})` fires on uncomposed Enter; a pending debounced search is flushed once before submit. The field accepts `label`, `description`, `error`, `required`, `disabled`, `readonly`, `invalid`, `id`, `name`, `placeholder`, `autocomplete`, `inputmode`, `clearable`, and `clearLabel='Clear search'`, plus native attributes. Slots: `label{required,invalid}`, `description`, `error{messages}`, `leading`, `trailing`, `prefix`, `suffix`, and `clear-icon`. It exposes `focus()`, `blur()`, and `select()` methods. `update:modelValue` fires for each accepted input edit; `change(string)`, `focus`, `blur`, and `clear({previousValue,originalEvent})` follow the underlying native input interaction. A native form reset restores `defaultValue` and emits an update when controlled.
+
+## AvenPasswordField
+
+`modelValue?` controls the value; otherwise `defaultValue=''`. `revealed?` controls visibility; otherwise `defaultRevealed=false`. `revealable=true`; accessible labels default to `Show password` and `Hide password`. Toggle emits `update:revealed(boolean)` once per user action, except when disabled or reveal is disabled. The field accepts the same label/help/error and native attributes as SearchField, with `autocomplete`, `clearable`, and `unstyled`. Slots: `label{required,invalid}`, `description`, `error{messages}`, `leading`, `trailing`, `prefix`, `suffix`, `clear-icon`, and `reveal-icon{revealed}`. The reveal action is a native `type=button` with `aria-pressed`; focus remains on that action when toggled. It exposes `focus()`, `blur()`, and `select()`. A native form reset restores both default value and visibility, emitting updates for controlled props.
+
+## AvenField and AvenFieldset
+
+`AvenField` accepts `id`, `label`, `description`, `error` (string or string array), `required`, `disabled`, `readonly`, `optional`, `invalid`, `orientation='vertical'` (`horizontal`), `labelWidth`, `unstyled`, and typed `ui.root/label/description/error/control`. The default slot receives `{controlId,descriptionId,errorId,invalid,controlAttrs}`; spread `controlAttrs` onto the associated native control to carry its stable ID, required/disabled/readonly state, invalid marker, and only the help/error IDs that are rendered. `label{required,invalid}`, `description`, `error{messages}`, `before`, `after`, and `actions` slots are available. The error region uses `role=alert` and becomes invalid when an error prop or error slot is present. Horizontal labels wrap into a stacked layout on narrow windows; `labelWidth` sets `--aven-field-label-width`.
+
+`AvenFieldset` renders a native `fieldset` and `legend`, with `disabled`, `required` marker, `invalid`, `description`, `unstyled`, and `ui.root/legend/description/content`. Its description has a stable ID linked through `aria-describedby`; native fieldset disabled semantics disable descendants. Slots: default content, `legend`, and `description`.
+
+## AvenRadio and AvenRadioGroup
+
+`AvenRadio<T>` renders a native radio with required `value` and visible `label`. Set `name` to join a native radio group and bind `checked` to application state for controlled use; `defaultChecked` sets the initial native state. It accepts `description`, `id`, `disabled`, `required`, `invalid`, `unstyled`, and typed `ui` parts (`root`, `control`, `indicator`, `label`, `description`). `update:checked(true)` and `change({value,checked:true,originalEvent})` fire once when the native control becomes checked; native keyboard behavior and focus/blur events are preserved. The label and optional description slots replace their text.
+
+`AvenRadioGroup<T>` accepts `items: AvenOption<T>[]`, optional `name`, `id`, `description`, and `error`, `label`, `required=false`, `orientation='vertical'`, `disabled=false`, and typed `ui` overrides. `modelValue?` controls selection; otherwise `defaultValue=null` initializes it. A user selecting a different enabled item emits `update:modelValue(value)` and `change(value)` once. It renders a fieldset and legend; shared description and error text are linked to the group. One native name is shared by all options, so browser arrow-key and Space behavior, required validation, and form submission stay native. A prevented form reset leaves state untouched; otherwise uncontrolled selection returns to `defaultValue`.
+
+Slots: `label{required,invalid}`, `description`, `item{item,key,selected,active,disabled}`, `indicator{checked,item,key}`, and `error{message}`. The library owns the input and label; item slots should provide descriptive noninteractive content only. `active` tracks keyboard focus, while `selected` tracks the committed value.
+
+## AvenToggleButton and AvenToggleGroup
+
+`AvenToggleButton` is a native button with `aria-pressed`. `modelValue?` controls pressed state; otherwise `defaultValue=false` starts uncontrolled state. It defaults to `type='button'`, accepts `disabled`, optional accessible `label` (required for icon-only content), `unstyled`, and typed `ui` parts (`root`, `label`, `leading`, `trailing`, `indicator`). Activation emits `update:modelValue(boolean)` and `change(boolean)` once. Slots are default, `leading`, `trailing`, and `indicator{pressed}`. Native attributes and listeners stay on the button.
+
+`AvenToggleGroup<T>` renders a toolbar and accepts `items: AvenOption<T>[]`, `multiple=false`, `allowEmpty=true`, `orientation='horizontal'`, `size='md'`, `tone='accent'`, optional group `label` and `name`, `disabled`, `unstyled`, and typed `ui` parts. Single mode accepts/emits `T | null`; multiple mode accepts/emits `T[]`. `modelValue?` controls the selection; otherwise `defaultValue=null`. Activating a different enabled item emits the full next selection in `update:modelValue` and `change`. Activating a selected item clears it only when `allowEmpty=true`. Arrow keys move focus among enabled buttons and Home/End move to the first/last enabled button; focus movement does not change selection. Space and Enter use native button activation. Slots: `item{item,key,selected,active,disabled}`, `leading{item}`, `trailing{item}`, and `indicator{item,selected}`. `active` is focused state and `selected` is committed selection. When `name` is supplied, selected values submit as repeated native hidden inputs for multiple selection or one value for single selection.
+
+## AvenSplitButton
+
+`AvenButtonGroup` wraps related buttons in a responsive horizontal or vertical group. It accepts `orientation='horizontal'`, `attached=false`, `size='md'`, optional accessible `label`, `unstyled`, and `ui.root` overrides. With a label it renders a named `role=group`; attached mode joins the child button corners, while separated mode keeps the `space-2` gap. Child actions remain independent; the group adds no arrow-key model. It forwards root attributes and exposes no custom events.
+
+`AvenSplitButton<Key>` composes one primary `AvenButton` with a separate `AvenDropdownMenu` trigger. It requires `items: AvenCommand<Key>[]`; `open?` controls menu state, otherwise `defaultOpen=false`. `primaryDisabled` and `menuDisabled` are independent. `attached=true`, `closeOnSelect=true`, `placement='bottom-start'`, `offset=4`, `variant='solid'`, `tone='accent'`, `size='md'`, `type='button'`, and `loading=false` are defaults. `label='Actions'` names the group and `menuLabel='More actions'` names the menu trigger. `click(MouseEvent)` fires only for primary action; menu open never runs the primary action. `select({key,item,originalEvent})` forwards the chosen command. `update:open(boolean)` fires on a menu state request, while `openChange({open,reason})` reflects the menu's `trigger`, `select`, `escape`, `outside`, or `programmatic` transition. Slots: default primary label, `leading{disabled,loading}`, `trigger{triggerAttrs,triggerRef,open}`, `trigger-icon{open}`, `item{item,key,active,disabled}`, `menu-header`, and `menu-footer`. Custom triggers must bind both `triggerAttrs` and `triggerRef` to a focusable button. UI parts are `root`, `primary`, `trigger`, and `content`; `unstyled` keeps button/menu semantics and behavior.
