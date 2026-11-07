@@ -618,6 +618,58 @@ export type AvenViewSwitcherSlots<T extends string | number = string | number> =
   header?: () => unknown
   footer?: () => unknown
 }
+export type AvenUploadItem = {
+  key: string
+  name: string
+  size: number
+  progress?: number
+  status: 'queued' | 'uploading' | 'success' | 'error' | 'cancelled'
+  error?: string
+}
+export type AvenFileInputProps = {
+  modelValue?: File[]
+  defaultValue?: File[]
+  accept?: string
+  multiple?: boolean
+  maxFiles?: number
+  maxSize?: number
+  disabled?: boolean
+  loading?: boolean
+  name?: string
+  label?: string
+  browseLabel?: string
+  files?: AvenUploadItem[]
+  dropzone?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'surface' | 'list' | 'file'>
+}
+export type AvenFileInputEvents = {
+  'update:modelValue': [files: File[]]
+  select: [payload: { files: File[]; originalEvent: Event }]
+  reject: [
+    payload: { files: File[]; reasons: Array<{ file: File; reason: 'type' | 'size' | 'count' }> },
+  ]
+  remove: [payload: { key: string }]
+  retry: [payload: { key: string }]
+  cancel: [payload: { key: string }]
+}
+export type AvenFileInputSlots = {
+  default?: (scope: { dragging: boolean; open: () => void; disabled: boolean }) => unknown
+  file?: (scope: {
+    file: File | AvenUploadItem
+    remove: () => void
+    retry: () => void
+    cancel: () => void
+    disabled: boolean
+  }) => unknown
+  progress?: (scope: { file: AvenUploadItem; progress?: number }) => unknown
+  empty?: () => unknown
+  error?: (scope: {
+    files: File[]
+    reasons: Array<{ file: File; reason: 'type' | 'size' | 'count' }>
+  }) => unknown
+  actions?: () => unknown
+}
 export type AvenListboxProps<T extends string | number = string | number> = {
   modelValue?: T | T[] | null
   defaultValue?: T | T[] | null

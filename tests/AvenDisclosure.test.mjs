@@ -44,6 +44,8 @@ import {
   AvenActivityList,
   AvenSwitcher,
   AvenViewSwitcher,
+  AvenFileInput,
+  AvenDropzone,
   AvenAvatar,
   AvenAvatarGroup,
   AvenChip,
@@ -2823,4 +2825,45 @@ test('switchers expose listbox and radio semantics and request changed values on
   option.props.onClick(new Event('click'))
   assert.deepEqual(updates, ['engineering'])
   assert.deepEqual(changes, ['engineering'])
+})
+
+test('file input enforces client limits, emits selection once, and keeps the dropzone native fallback', async () => {
+  const { renderer, root, find } = makeRenderer()
+  const updates = []
+  const selections = []
+  const rejections = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenFileInput, {
+          modelValue: [],
+          files: [{ key: 'upload', name: 'queue.zip', size: 4, status: 'queued' }],
+          accept: 'image/*',
+          multiple: true,
+          maxFiles: 2,
+          maxSize: 10,
+          label: 'Attachments',
+          'onUpdate:modelValue': (value) => updates.push(value),
+          onSelect: (payload) => selections.push(payload),
+          onReject: (payload) => rejections.push(payload),
+        }),
+    })
+    .mount(root)
+  const input = find(root, (node) => node.type === 'input' && node.props.type === 'file')
+  const image = { name: 'image.png', type: 'image/png', size: 8, lastModified: 1 }
+  const text = { name: 'notes.txt', type: 'text/plain', size: 4, lastModified: 2 }
+  input.files = [image, text]
+  input.props.onChange({ currentTarget: input })
+  await nextTick()
+  assert.equal(updates.length, 1)
+  assert.deepEqual(updates[0], [image])
+  assert.deepEqual(selections[0].files, [image])
+  assert.equal(rejections.length, 1)
+  assert.deepEqual(
+    rejections[0].reasons.map(({ reason }) => reason),
+    ['type'],
+  )
+  const html = await render({ render: () => h(AvenDropzone, { label: 'Drop attachments' }) })
+  assert.match(html, /class="aven-file-input is-dropzone/)
+  assert.match(html, /type="file"/)
 })

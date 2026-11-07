@@ -92,6 +92,12 @@ export default defineConfig({
         AvenViewSwitcher: fileURLToPath(
           new URL('./packages/vue/src/AvenViewSwitcher.vue', import.meta.url),
         ),
+        AvenFileInput: fileURLToPath(
+          new URL('./packages/vue/src/AvenFileInput.vue', import.meta.url),
+        ),
+        AvenDropzone: fileURLToPath(
+          new URL('./packages/vue/src/AvenDropzone.vue', import.meta.url),
+        ),
         AvenCard: fileURLToPath(new URL('./packages/vue/src/AvenCard.vue', import.meta.url)),
         AvenPropertyRow: fileURLToPath(
           new URL('./packages/vue/src/AvenPropertyRow.vue', import.meta.url),

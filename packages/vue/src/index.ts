@@ -128,6 +128,10 @@ export type {
   AvenViewSwitcherProps,
   AvenViewSwitcherEvents,
   AvenViewSwitcherSlots,
+  AvenUploadItem,
+  AvenFileInputProps,
+  AvenFileInputEvents,
+  AvenFileInputSlots,
   AvenAlertDialogProps,
   AvenAlertDialogEvents,
   AvenAlertDialogSlots,
@@ -222,6 +226,8 @@ export { default as AvenDataTable } from './AvenDataTable.vue'
 export { default as AvenTimeline, default as AvenActivityList } from './AvenTimeline.vue'
 export { default as AvenSwitcher } from './AvenSwitcher.vue'
 export { default as AvenViewSwitcher } from './AvenViewSwitcher.vue'
+export { default as AvenFileInput } from './AvenFileInput.vue'
+export { default as AvenDropzone } from './AvenDropzone.vue'
 export { default as AvenCard } from './AvenCard.vue'
 export { default as AvenPropertyRow } from './AvenPropertyRow.vue'
 export type { AvenTextProps } from './AvenText.js'

@@ -16,6 +16,8 @@ import {
   AvenActivityList,
   AvenSwitcher,
   AvenViewSwitcher,
+  AvenFileInput,
+  AvenDropzone,
   AvenBadge,
   AvenButton,
   AvenButtonGroup,
@@ -131,6 +133,7 @@ const tableActivity = ref('Use the table controls to sort, select, resize, reord
 const activityMessage = ref('Expand an event or request older activity.')
 const workspaceChoice = ref<string | null>('design')
 const viewChoice = ref<string | null>('list')
+const pickedFiles = ref<File[]>([])
 const workspaceOptions = [
   { value: 'design', label: 'Design workspace', description: 'Product and design work' },
   { value: 'engineering', label: 'Engineering workspace', description: 'Build and release work' },
@@ -145,6 +148,22 @@ const viewOptions = [
   { value: 'list', label: 'List', icon: '☷' },
   { value: 'grid', label: 'Grid', icon: '▦' },
   { value: 'calendar', label: 'Calendar', icon: '▣' },
+]
+const uploadQueue = [
+  {
+    key: 'upload-1',
+    name: 'quarterly-report.pdf',
+    size: 248000,
+    progress: 64,
+    status: 'uploading' as const,
+  },
+  {
+    key: 'upload-2',
+    name: 'archive.zip',
+    size: 1024000,
+    status: 'error' as const,
+    error: 'Upload was interrupted.',
+  },
 ]
 const activityItems = [
   {
@@ -1140,6 +1159,61 @@ const buttonTones = [
           ><strong>{{ item.label }} (compact activity view)</strong></template
         >
       </AvenActivityList>
+    </section>
+    <section class="playground-card" aria-labelledby="file-input-examples">
+      <AvenText id="file-input-examples" type="header1">Files and dropzone</AvenText>
+      <form @submit.prevent="pickedFiles = [...pickedFiles]">
+        <AvenFileInput
+          v-model="pickedFiles"
+          label="Attachments"
+          name="attachments"
+          accept="image/*,.pdf"
+          multiple
+          :max-files="4"
+          :max-size="5242880"
+        >
+          <template #default="{ open, disabled }">
+            <div class="inline-content">
+              <strong>Select up to four files</strong
+              ><AvenButton type="button" :disabled="disabled" @click="open"
+                >Choose attachments</AvenButton
+              >
+            </div>
+          </template>
+          <template #file="{ file, remove, disabled }"
+            ><span>{{ file.name }}</span
+            ><AvenButton type="button" variant="ghost" :disabled="disabled" @click="remove"
+              >Remove</AvenButton
+            ></template
+          >
+          <template #error="{ reasons }"
+            ><p role="alert">{{ reasons.length }} file(s) could not be added.</p></template
+          >
+        </AvenFileInput>
+        <AvenButton type="submit">Submit files</AvenButton>
+        <AvenButton type="reset" variant="outline">Reset selection</AvenButton>
+      </form>
+      <AvenDropzone label="Upload queue" :files="uploadQueue" disabled>
+        <template #file="{ file, retry, cancel, disabled }">
+          <strong>{{ file.name }}</strong>
+          <AvenButton
+            v-if="'status' in file && file.status === 'error'"
+            type="button"
+            size="sm"
+            :disabled="disabled"
+            @click="retry"
+            >Retry</AvenButton
+          >
+          <AvenButton
+            v-if="'status' in file && file.status === 'uploading'"
+            type="button"
+            size="sm"
+            :disabled="disabled"
+            @click="cancel"
+            >Cancel</AvenButton
+          >
+        </template>
+      </AvenDropzone>
     </section>
     <section class="playground-card" aria-labelledby="switcher-examples">
       <AvenText id="switcher-examples" type="header1">Workspace and view switchers</AvenText>
