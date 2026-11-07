@@ -20,6 +20,8 @@ import {
   AvenMenubar,
   AvenAlertDialog,
   AvenDialog,
+  AvenEmptyState,
+  AvenResultState,
   AvenCommandPalette,
   AvenDrawer,
   AvenSheet,
@@ -1971,5 +1973,51 @@ test('avatar groups preserve item generics and report overflow requests once', a
   dispatchHandler(button.props.onClick, originalEvent)
   assert.equal(requests.length, 1)
   assert.deepEqual(requests[0].hiddenItems, [people[1]])
+  assert.equal(requests[0].originalEvent, originalEvent)
+})
+
+test('empty and result states keep loading and retry behavior explicit', async () => {
+  const html = await render({
+    render: () => h(AvenEmptyState, { kind: 'error', title: 'Unavailable', loading: true }),
+  })
+  assert.match(html, /aria-busy="true"/)
+  assert.match(html, />\s*Try again\s*</)
+
+  const customActions = await render({
+    render: () =>
+      h(
+        AvenEmptyState,
+        { kind: 'error', title: 'Unavailable' },
+        {
+          actions: () => h('a', { href: '/help' }, 'Help'),
+        },
+      ),
+  })
+  assert.match(customActions, /href="\/help"/)
+  assert.doesNotMatch(customActions, />\s*Try again\s*</)
+
+  const mounted = makeRenderer()
+  const requests = []
+  mounted.renderer
+    .createApp({
+      render: () =>
+        h(AvenResultState, {
+          kind: 'error',
+          title: 'Failed',
+          layout: 'inline',
+          size: 'compact',
+          'data-state': 'activity',
+          onRetry: (payload) => requests.push(payload),
+        }),
+    })
+    .mount(mounted.root)
+  const section = mounted.find(mounted.root, (node) => node.type === 'section')
+  assert.match(section.props.class, /aven-result-state/)
+  assert.match(section.props.class, /layout-inline/)
+  assert.equal(section.props['data-state'], 'activity')
+  const retry = mounted.find(mounted.root, (node) => node.type === 'button')
+  const originalEvent = { type: 'click' }
+  dispatchHandler(retry.props.onClick, originalEvent)
+  assert.equal(requests.length, 1)
   assert.equal(requests[0].originalEvent, originalEvent)
 })

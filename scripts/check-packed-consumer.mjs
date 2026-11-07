@@ -38,6 +38,7 @@ try {
       assert(paths.includes('dist/AvenDrawer.js'))
       assert(paths.includes('dist/AvenSheet.js'))
       assert(paths.includes('dist/AvenBanner.js'))
+      assert(paths.includes('dist/AvenResultState.js'))
     }
   }
   await writeFile(
@@ -103,7 +104,7 @@ try {
   )
   await writeFile(
     path.join(directory, 'primitive-consumer.ts'),
-    `import { h } from 'vue'\nimport { AvenAvatar, AvenAvatarGroup, AvenChip, AvenKbd, AvenSeparator, AvenTag, type AvenAvatarGroupProps, type AvenChipProps, type AvenTagProps } from '@wellsaik/aven-vue'\ntype Person = { id: string; name: string }\nconst group: AvenAvatarGroupProps<Person> = { items: [{ id: 'ava', name: 'Ava' }], getKey: person => person.id, max: 2 }\nconst chip: AvenChipProps<'vue'|'ts'> = { value: 'vue', interactive: true, removable: true }\nconst tag: AvenTagProps = { tone: 'success', variant: 'outline' }\nh(AvenAvatarGroup<Person>, group)\nh(AvenAvatar, { name: 'Ava Chen', alt: '' })\nh(AvenChip, chip)\nh(AvenTag, tag)\nh(AvenKbd, { keys: ['Control', 'K'] })\nh(AvenSeparator, { decorative: false })\n`,
+    `import { h } from 'vue'\nimport { AvenAvatar, AvenAvatarGroup, AvenChip, AvenKbd, AvenSeparator, AvenTag, AvenEmptyState, AvenResultState, type AvenEmptyStateProps, type AvenResultStateProps, type AvenAvatarGroupProps, type AvenChipProps, type AvenTagProps } from '@wellsaik/aven-vue'\ntype Person = { id: string; name: string }\nconst group: AvenAvatarGroupProps<Person> = { items: [{ id: 'ava', name: 'Ava' }], getKey: person => person.id, max: 2 }\nconst chip: AvenChipProps<'vue'|'ts'> = { value: 'vue', interactive: true, removable: true }\nconst tag: AvenTagProps = { tone: 'success', variant: 'outline' }\nconst empty: AvenEmptyStateProps = { title: 'No results', kind: 'no-results' }\nconst result: AvenResultStateProps = { title: 'Failed', kind: 'error', layout: 'inline', size: 'compact' }\nh(AvenAvatarGroup<Person>, group)\nh(AvenAvatar, { name: 'Ava Chen', alt: '' })\nh(AvenChip, chip)\nh(AvenTag, tag)\nh(AvenKbd, { keys: ['Control', 'K'] })\nh(AvenSeparator, { decorative: false })\nh(AvenEmptyState, empty)\nh(AvenResultState, result)\n`,
   )
   await writeFile(
     path.join(directory, 'tsconfig.json'),

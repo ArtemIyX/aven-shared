@@ -63,6 +63,12 @@ export type {
   AvenKbdSlots,
   AvenSeparatorProps,
   AvenSeparatorSlots,
+  AvenEmptyStateProps,
+  AvenEmptyStateEvents,
+  AvenEmptyStateSlots,
+  AvenResultStateProps,
+  AvenResultStateEvents,
+  AvenResultStateSlots,
   AvenAlertDialogProps,
   AvenAlertDialogEvents,
   AvenAlertDialogSlots,
@@ -140,6 +146,7 @@ export { default as AvenProgress } from './AvenProgress.vue'
 export { default as AvenFieldset } from './AvenFieldset.vue'
 export { default as AvenSkeleton } from './AvenSkeleton.vue'
 export { default as AvenEmptyState } from './AvenEmptyState.vue'
+export { default as AvenResultState } from './AvenResultState.vue'
 export { default as AvenCard } from './AvenCard.vue'
 export { default as AvenPropertyRow } from './AvenPropertyRow.vue'
 export type { AvenTextProps } from './AvenText.js'

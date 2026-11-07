@@ -1,28 +1,27 @@
 <script setup lang="ts">
-import type { AvenTone, AvenUi } from './types.js'
-withDefaults(
-  defineProps<{
-    kind?: 'empty' | 'no-results' | 'error' | 'offline' | 'success'
-    title: string
-    description?: string
-    tone?: AvenTone
-    loading?: boolean
-    unstyled?: boolean
-    ui?: AvenUi<'root' | 'icon' | 'title' | 'description' | 'actions' | 'footer'>
-  }>(),
-  { kind: 'empty', loading: false, unstyled: false },
-)
-const emit = defineEmits<{ retry: [payload: { originalEvent: MouseEvent }] }>()
+import { useAttrs } from 'vue'
+import type { AvenEmptyStateEvents, AvenEmptyStateProps, AvenEmptyStateSlots } from './types.js'
+defineOptions({ inheritAttrs: false })
+const props = withDefaults(defineProps<AvenEmptyStateProps>(), {
+  kind: 'empty',
+  loading: false,
+  unstyled: false,
+})
+const emit = defineEmits<AvenEmptyStateEvents>()
+defineSlots<AvenEmptyStateSlots>()
+const attrs = useAttrs()
 </script>
 <template>
   <section
+    v-bind="{ ...attrs, ...ui?.root?.attrs }"
     :class="[
       'aven-empty-state',
       `kind-${kind}`,
       { 'is-loading': loading, 'is-unstyled': unstyled },
+      attrs.class,
       ui?.root?.class,
     ]"
-    :style="ui?.root?.style"
+    :style="[attrs.style, ui?.root?.style]"
     :aria-busy="loading || undefined"
   >
     <span v-if="$slots.illustration || $slots.icon" :class="['state-icon', ui?.icon?.class]"

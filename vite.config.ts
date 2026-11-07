@@ -50,6 +50,9 @@ export default defineConfig({
         AvenEmptyState: fileURLToPath(
           new URL('./packages/vue/src/AvenEmptyState.vue', import.meta.url),
         ),
+        AvenResultState: fileURLToPath(
+          new URL('./packages/vue/src/AvenResultState.vue', import.meta.url),
+        ),
         AvenCard: fileURLToPath(new URL('./packages/vue/src/AvenCard.vue', import.meta.url)),
         AvenPropertyRow: fileURLToPath(
           new URL('./packages/vue/src/AvenPropertyRow.vue', import.meta.url),

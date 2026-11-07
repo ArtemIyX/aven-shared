@@ -33,12 +33,14 @@ import {
   AvenFormattedValue,
   AvenField,
   AvenFieldset,
+  AvenEmptyState,
   AvenGrid,
   AvenInline,
   AvenPanel,
   AvenPasswordField,
   AvenRadio,
   AvenRadioGroup,
+  AvenResultState,
   AvenSearchField,
   AvenStatusDot,
   AvenStack,
@@ -72,6 +74,7 @@ const drawerOpen = ref(false)
 const sheetOpen = ref(false)
 const bannerVisible = ref(true)
 const chipRemovals = ref(0)
+const retries = ref(0)
 const people = [
   { id: 'ava', name: 'Ava Chen', initials: 'AC', tone: 'accent' },
   { id: 'noah', name: 'Noah Reed', initials: 'NR', tone: 'success' },
@@ -672,6 +675,25 @@ const buttonTones = [
         <template #overflow="{ count }">+{{ count }} more</template>
       </AvenAvatarGroup>
       <p>{{ chipRemovals }} removal request{{ chipRemovals === 1 ? '' : 's' }} made.</p>
+    </section>
+    <section class="playground-card" aria-labelledby="result-examples">
+      <AvenText id="result-examples" type="header1">Empty and result states</AvenText>
+      <AvenEmptyState
+        kind="no-results"
+        title="No projects match"
+        description="Adjust the search or filters."
+      >
+        <template #actions><AvenButton variant="outline">Clear filters</AvenButton></template>
+      </AvenEmptyState>
+      <AvenResultState
+        kind="error"
+        layout="inline"
+        size="compact"
+        title="Activity could not load"
+        description="Try again when the connection is available."
+        @retry="retries++"
+      />
+      <p>{{ retries }} retry request{{ retries === 1 ? '' : 's' }}.</p>
     </section>
     <section class="playground-card" aria-labelledby="toggle-examples">
       <AvenText id="toggle-examples" type="header1">Toggle controls</AvenText>

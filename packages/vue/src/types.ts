@@ -99,6 +99,33 @@ export type AvenSeparatorProps = {
   ui?: AvenUi<'root' | 'label'>
 }
 export type AvenSeparatorSlots = { default?: () => unknown; label?: () => unknown }
+export type AvenEmptyStateProps = {
+  kind?: 'empty' | 'no-results' | 'error' | 'offline' | 'success'
+  title: string
+  description?: string
+  tone?: AvenTone
+  loading?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'icon' | 'title' | 'description' | 'actions' | 'footer'>
+}
+export type AvenEmptyStateEvents = {
+  retry: [payload: { originalEvent: MouseEvent }]
+}
+export type AvenEmptyStateSlots = {
+  illustration?: () => unknown
+  icon?: () => unknown
+  title?: () => unknown
+  default?: () => unknown
+  description?: () => unknown
+  actions?: () => unknown
+  footer?: () => unknown
+}
+export type AvenResultStateProps = AvenEmptyStateProps & {
+  layout?: 'inline' | 'contained' | 'full-page'
+  size?: 'compact' | 'large'
+}
+export type AvenResultStateEvents = AvenEmptyStateEvents
+export type AvenResultStateSlots = AvenEmptyStateSlots
 export type AvenListboxProps<T extends string | number = string | number> = {
   modelValue?: T | T[] | null
   defaultValue?: T | T[] | null

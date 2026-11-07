@@ -171,3 +171,9 @@ The text input has `role=combobox`, list autocomplete, expanded/controls/active-
 ## AvenKbd and AvenSeparator
 
 `AvenKbd` accepts `keys?:string[]` and `platform='auto'`; it formats common modifier/navigation names but never registers a shortcut. Auto uses Mac glyphs on detected Mac platforms and Windows/Linux labels otherwise. The default slot supplies alternative key text. `AvenSeparator` defaults to a decorative horizontal divider. Set `decorative=false` for `role=separator` with its orientation; its optional `label` slot can describe a horizontal break and `inset` adds a logical start margin. Neither emits custom events. Both preserve root attrs/class/style and support typed UI parts and `unstyled`.
+
+## AvenEmptyState and AvenResultState
+
+Both accept required `title`, optional `description`, `kind='empty'`, `loading=false`, `unstyled`, and typed root/icon/title/description/actions/footer UI parts. Kinds are `empty`, `no-results`, `error`, `offline`, and `success`. `loading` marks the section `aria-busy` while retaining its current content; it never implies that a request has succeeded or failed. An error kind supplies a native “Try again” button when no custom `actions` slot is supplied; it emits one `retry({originalEvent})` request and never performs a network request.
+
+`AvenEmptyState` is the centered general state surface. `AvenResultState` composes it with `layout='contained'` (`inline`, `contained`, or `full-page`) and `size='large'` (`compact` or `large`) presets for common result layouts. Both expose `illustration`/`icon`, `title`, `description`, default content, `actions`, and `footer` slots. Root attributes, classes, styles, and UI overrides remain available on the semantic section.
