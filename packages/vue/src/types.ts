@@ -109,6 +109,93 @@ export type AvenRangeSliderSlots = {
   mark?: (scope: AvenSliderMark) => unknown
   value?: (scope: { value: number; index: 0 | 1 }) => unknown
 }
+export type AvenComboboxProps<T extends string | number = string | number> = {
+  modelValue?: T | T[] | null
+  defaultValue?: T | T[] | null
+  options: AvenOption<T>[]
+  multiple?: boolean
+  query?: string
+  defaultQuery?: string
+  filter?: (option: AvenOption<T>, query: string) => boolean
+  remote?: boolean
+  loading?: boolean
+  error?: string
+  clearable?: boolean
+  clearLabel?: string
+  creatable?: boolean
+  maxSelected?: number
+  open?: boolean
+  defaultOpen?: boolean
+  placement?: 'top' | 'bottom'
+  popupWidth?: string
+  placeholder?: string
+  label?: string
+  description?: string
+  required?: boolean
+  requiredMessage?: string
+  disabled?: boolean
+  readonly?: boolean
+  invalid?: boolean
+  id?: string
+  name?: string
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'control' | 'leading' | 'trailing' | 'popup' | 'option' | 'chip' | 'clear'>
+}
+export type AvenMultiSelectProps<T extends string | number = string | number> = Omit<
+  AvenComboboxProps<T>,
+  'multiple' | 'modelValue' | 'defaultValue'
+> & {
+  modelValue?: T[]
+  defaultValue?: T[]
+}
+export type AvenComboboxEvents<T extends string | number = string | number> = {
+  'update:modelValue': [value: T | T[] | null]
+  change: [value: T | T[] | null]
+  'update:query': [query: string]
+  create: [payload: { query: string; originalEvent: Event }]
+  clear: [payload: { previousValue: T | T[] | null }]
+  remove: [payload: { value: T; originalEvent: Event }]
+  'update:open': [open: boolean]
+  openChange: [change: AvenOpenChange]
+  loadMore: [payload: { query: string; lastKey: T }]
+  focus: [event: FocusEvent]
+  blur: [event: FocusEvent]
+}
+export type AvenComboboxOptionSlot<T extends string | number = string | number> = {
+  item: AvenOption<T>
+  key: T
+  index: number
+  selected: boolean
+  active: boolean
+  disabled: boolean
+}
+export type AvenComboboxSlots<T extends string | number = string | number> = {
+  selected?: (scope: { items: AvenOption<T>[] }) => unknown
+  chip?: (scope: {
+    item: AvenOption<T>
+    remove: (event: MouseEvent) => void
+    disabled: boolean
+  }) => unknown
+  option?: (scope: AvenComboboxOptionSlot<T>) => unknown
+  group?: (scope: { group: string | number }) => unknown
+  leading?: () => unknown
+  trailing?: () => unknown
+  empty?: (scope: { query: string }) => unknown
+  loading?: () => unknown
+  error?: (scope: { error: string }) => unknown
+  create?: (scope: { query: string }) => unknown
+  'popup-header'?: () => unknown
+  'popup-footer'?: () => unknown
+  label?: () => unknown
+  description?: () => unknown
+}
+export type AvenMultiSelectEvents<T extends string | number = string | number> = Omit<
+  AvenComboboxEvents<T>,
+  'update:modelValue' | 'change'
+> & {
+  'update:modelValue': [value: T[]]
+  change: [value: T[]]
+}
 export type AvenCommand<Key extends string | number = string | number> = {
   key: Key
   label: string

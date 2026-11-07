@@ -12,6 +12,8 @@ import {
   AvenListbox,
   AvenSlider,
   AvenRangeSlider,
+  AvenCombobox,
+  AvenMultiSelect,
   AvenCollapsible,
   AvenContainer,
   AvenFormattedValue,
@@ -45,6 +47,10 @@ const listboxValue = ref<string | null>('design')
 const highlightedTeam = ref('')
 const volume = ref(42)
 const priceRange = ref<[number, number]>([20, 80])
+const selectedTeam = ref<string | null>('design')
+const selectedTopics = ref<string[]>(['vue'])
+const teamQuery = ref('')
+const remoteLoading = ref(false)
 const lastSplitAction = ref('')
 const buttonClicks = ref(0)
 const openSection = ref<string | null>('account')
@@ -74,6 +80,11 @@ const listboxOptions = [
   { value: 'engineering', label: 'Engineering', description: 'Product delivery', group: 'Teams' },
   { value: 'finance', label: 'Finance', group: 'Operations' },
   { value: 'legal', label: 'Legal', disabled: true, group: 'Operations' },
+]
+const topicOptions = [
+  { value: 'vue', label: 'Vue', keywords: ['framework', 'ui'], group: 'Frontend' },
+  { value: 'typescript', label: 'TypeScript', description: 'Typed JavaScript', group: 'Frontend' },
+  { value: 'accessibility', label: 'Accessibility', group: 'Quality' },
 ]
 const buttonTones = [
   'neutral',
@@ -451,6 +462,57 @@ const buttonTones = [
         >
       </AvenRangeSlider>
       <p>Price range: ${{ priceRange[0] }}–${{ priceRange[1] }}</p>
+    </section>
+    <section class="playground-card" aria-labelledby="combobox-examples">
+      <AvenText id="combobox-examples" type="header1">Searchable selections</AvenText>
+      <AvenCombobox
+        v-model="selectedTeam"
+        label="Team"
+        description="Type to filter, or use the arrow keys and Enter."
+        :options="listboxOptions"
+        clearable
+        :query="teamQuery"
+        @update:query="teamQuery = $event"
+      >
+        <template #option="{ item, active, selected }"
+          ><strong>{{ item.label }}</strong
+          ><small>{{ item.description }}</small
+          ><small v-if="active">Focused</small><small v-if="selected">Selected</small></template
+        >
+        <template #popup-footer><small>Team options can be filtered as you type.</small></template>
+      </AvenCombobox>
+      <p>Team: {{ selectedTeam }}</p>
+      <AvenMultiSelect
+        v-model="selectedTopics"
+        label="Topics"
+        :options="topicOptions"
+        :max-selected="2"
+        clearable
+      >
+        <template #chip="{ item, remove, disabled }"
+          ><span>{{ item.label }}</span
+          ><button
+            type="button"
+            :disabled="disabled"
+            :aria-label="`Remove ${item.label}`"
+            @click="remove($event)"
+          >
+            ×
+          </button></template
+        >
+        <template #loading><span role="status">Loading topics…</span></template>
+      </AvenMultiSelect>
+      <AvenButton variant="outline" size="sm" @click="remoteLoading = !remoteLoading"
+        >Toggle remote loading example</AvenButton
+      >
+      <AvenCombobox
+        label="Remote options"
+        :options="topicOptions"
+        remote
+        :loading="remoteLoading"
+        :error="remoteLoading ? '' : 'The remote source is unavailable.'"
+        placeholder="Remote search"
+      />
     </section>
     <section class="playground-card" aria-labelledby="toggle-examples">
       <AvenText id="toggle-examples" type="header1">Toggle controls</AvenText>

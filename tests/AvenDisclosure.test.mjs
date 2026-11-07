@@ -14,6 +14,8 @@ import {
   AvenListbox,
   AvenSlider,
   AvenRangeSlider,
+  AvenCombobox,
+  AvenMultiSelect,
   AvenLink,
   AvenCollapsible,
   AvenFormattedValue,
@@ -541,6 +543,9 @@ function makeRenderer() {
         this.focused = false
         this.props.onBlur?.({ target: this })
       },
+      setCustomValidity(message) {
+        this.validationMessage = message
+      },
     }
     Object.defineProperty(element, 'form', {
       get() {
@@ -771,6 +776,172 @@ test('uncontrolled sliders restore defaults on native form reset and respect can
   await new Promise((resolve) => setImmediate(resolve))
   await nextTick()
   assert.equal(ranges[0].props.value, 60)
+})
+
+test('combobox links its input, help, error, popup, options, and grouped values', async () => {
+  const options = [
+    { value: 'alpha', label: 'Alpha', group: 'Letters' },
+    { value: 'beta', label: 'Beta', group: 'Letters', disabled: true },
+  ]
+  const html = await render({
+    render: () =>
+      h('div', [
+        h(AvenCombobox, {
+          id: 'team-picker',
+          label: 'Team',
+          description: 'Choose a team.',
+          error: 'Required',
+          required: true,
+          options,
+          defaultOpen: true,
+        }),
+        h(AvenMultiSelect, {
+          id: 'topic-picker',
+          label: 'Topics',
+          name: 'topics',
+          options,
+          defaultValue: ['alpha'],
+        }),
+        h(AvenCombobox, {
+          id: 'filtered-picker',
+          label: 'Filtered options',
+          options: [
+            { value: 'internal-a', label: 'SECRET-ALPHA' },
+            { value: 'internal-b', label: 'VISIBLE-BETA' },
+          ],
+          defaultQuery: 'beta',
+          defaultOpen: true,
+        }),
+        h(
+          AvenCombobox,
+          {
+            id: 'loading-picker',
+            label: 'Async options',
+            options,
+            loading: true,
+            defaultOpen: true,
+          },
+          {
+            loading: () => h('span', { role: 'status' }, 'Loading choices'),
+          },
+        ),
+      ]),
+  })
+  assert.match(html, /role="combobox"/)
+  assert.match(html, /aria-required="true"/)
+  assert.match(html, /aria-expanded="true"/)
+  assert.match(html, /aria-describedby="team-picker-description team-picker-error"/)
+  assert.match(html, /role="listbox"[^>]*aria-multiselectable="true"/)
+  assert.match(html, /name="topics" value="alpha"/)
+  assert.match(html, /Remove Alpha/)
+  assert.match(html, /aria-disabled="true"/)
+  assert.match(html, /VISIBLE-BETA/)
+  assert.doesNotMatch(html, /SECRET-ALPHA/)
+  assert.match(html, /role="status"[^>]*>Loading choices/)
+})
+
+test('combobox keyboard selection emits one commit and IME Enter cannot commit early', async () => {
+  const { renderer, root, find } = makeRenderer()
+  const updates = []
+  const changes = []
+  const queries = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenCombobox, {
+          options: [
+            { value: 'alpha', label: 'Alpha' },
+            { value: 'blocked', label: 'Blocked', disabled: true },
+            { value: 'beta', label: 'Beta' },
+          ],
+          defaultOpen: true,
+          defaultValue: 'alpha',
+          'onUpdate:modelValue': (value) => updates.push(value),
+          onChange: (value) => changes.push(value),
+          'onUpdate:query': (value) => queries.push(value),
+        }),
+    })
+    .mount(root)
+  const input = find(root, (node) => node.type === 'input' && node.props.role === 'combobox')
+  dispatchHandler(input.props.onKeydown, { key: 'ArrowDown', preventDefault() {} })
+  dispatchHandler(input.props.onKeydown, { key: 'ArrowDown', preventDefault() {} })
+  dispatchHandler(input.props.onKeydown, {
+    key: 'Enter',
+    preventDefault() {},
+    stopPropagation() {},
+  })
+  assert.deepEqual(updates, ['beta'])
+  assert.deepEqual(changes, ['beta'])
+  assert.deepEqual(queries, ['Beta'])
+  dispatchHandler(input.props.onFocus, { type: 'focus', stopPropagation() {} })
+  let prevented = false
+  dispatchHandler(input.props.onKeydown, {
+    key: 'Enter',
+    isComposing: true,
+    preventDefault() {
+      prevented = true
+    },
+  })
+  assert.equal(prevented, true)
+  assert.deepEqual(updates, ['beta'])
+})
+
+test('combobox required validity checks selection rather than query text', async () => {
+  const { renderer, root, find } = makeRenderer()
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenCombobox, {
+          options: [{ value: 'alpha', label: 'Alpha' }],
+          required: true,
+          requiredMessage: 'Choose an option.',
+          defaultOpen: true,
+        }),
+    })
+    .mount(root)
+  const input = find(root, (node) => node.type === 'input' && node.props.role === 'combobox')
+  assert.equal(input.validationMessage, 'Choose an option.')
+  dispatchHandler(input.props.onInput, { target: { value: 'unmatched query' } })
+  assert.equal(input.validationMessage, 'Choose an option.')
+  const option = find(root, (node) => node.props?.role === 'option')
+  dispatchHandler(option.props.onClick, { stopPropagation() {} })
+  assert.equal(input.validationMessage, '')
+})
+
+test('multi-select enforces its limit and removes a selected chip through the library action', async () => {
+  const { renderer, root, find } = makeRenderer()
+  const updates = []
+  const removals = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenMultiSelect, {
+          options: [
+            { value: 'alpha', label: 'Alpha' },
+            { value: 'beta', label: 'Beta' },
+          ],
+          defaultValue: ['alpha'],
+          defaultOpen: true,
+          maxSelected: 1,
+          'onUpdate:modelValue': (value) => updates.push(value),
+          onRemove: (payload) => removals.push(payload.value),
+        }),
+    })
+    .mount(root)
+  const beta = find(
+    root,
+    (node) =>
+      node.props?.role === 'option' && node.children?.some((child) => child.text === 'Beta'),
+  )
+  dispatchHandler(beta.props.onClick, { stopPropagation() {} })
+  assert.deepEqual(updates, [])
+  const removeButton = find(
+    root,
+    (node) => node.type === 'button' && node.props['aria-label'] === 'Remove Alpha',
+  )
+  dispatchHandler(removeButton.props.onClick, { stopPropagation() {} })
+  assert.deepEqual(updates, [[]])
+  assert.deepEqual(removals, ['alpha'])
 })
 
 test('search waits for IME composition, debounces once, and submits without a duplicate search', async () => {

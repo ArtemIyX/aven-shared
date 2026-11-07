@@ -25,7 +25,13 @@ try {
     assert(paths.includes('README.md'))
     assert(paths.includes('dist/index.js'))
     assert(paths.includes('dist/index.d.ts'))
-    if (item.name === '@wellsaik/aven-vue') assert(paths.includes('dist/AvenListbox.js'))
+    if (item.name === '@wellsaik/aven-vue') {
+      assert(paths.includes('dist/AvenListbox.js'))
+      assert(paths.includes('dist/AvenSlider.js'))
+      assert(paths.includes('dist/AvenRangeSlider.js'))
+      assert(paths.includes('dist/AvenCombobox.js'))
+      assert(paths.includes('dist/AvenMultiSelect.js'))
+    }
   }
   await writeFile(
     path.join(directory, 'package.json'),
@@ -81,6 +87,10 @@ try {
     `import { h } from 'vue'\nimport { AvenSlider, AvenRangeSlider, type AvenSliderProps, type AvenRangeSliderProps } from '@wellsaik/aven-vue'\nconst slider: AvenSliderProps = { label: 'Volume', min: 0, max: 100 }\nconst range: AvenRangeSliderProps = { startLabel: 'Minimum', endLabel: 'Maximum', minGap: 5 }\nh(AvenSlider, slider)\nh(AvenRangeSlider, range)\n`,
   )
   await writeFile(
+    path.join(directory, 'selection-consumer.ts'),
+    `import { h } from 'vue'\nimport { AvenCombobox, AvenMultiSelect, type AvenComboboxProps, type AvenMultiSelectProps } from '@wellsaik/aven-vue'\nconst singleOptions: AvenComboboxProps<'a'|'b'>['options'] = [{ value: 'a', label: 'A' }, { value: 'b', label: 'B' }]\nconst multiOptions: AvenMultiSelectProps<'x'|'y'>['options'] = [{ value: 'x', label: 'X' }, { value: 'y', label: 'Y' }]\nh(AvenCombobox, { options: singleOptions, modelValue: 'a' })\nh(AvenMultiSelect, { options: multiOptions, modelValue: ['x'] })\n`,
+  )
+  await writeFile(
     path.join(directory, 'tsconfig.json'),
     JSON.stringify({
       compilerOptions: {
@@ -91,7 +101,7 @@ try {
         skipLibCheck: false,
         noEmit: true,
       },
-      include: ['main.ts', 'slider-consumer.ts'],
+      include: ['main.ts', 'slider-consumer.ts', 'selection-consumer.ts'],
     }),
   )
   run(['exec', '--', 'tsc', '-p', 'tsconfig.json'], directory)
@@ -106,7 +116,7 @@ try {
         skipLibCheck: false,
         noEmit: true,
       },
-      include: ['main.ts', 'slider-consumer.ts'],
+      include: ['main.ts', 'slider-consumer.ts', 'selection-consumer.ts'],
     }),
   )
   run(['exec', '--', 'tsc', '-p', 'tsconfig.json'], directory)

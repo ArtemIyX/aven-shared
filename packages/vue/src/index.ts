@@ -21,6 +21,12 @@ export type {
   AvenRangeSliderProps,
   AvenRangeSliderEvents,
   AvenRangeSliderSlots,
+  AvenComboboxProps,
+  AvenMultiSelectProps,
+  AvenComboboxEvents,
+  AvenMultiSelectEvents,
+  AvenComboboxOptionSlot,
+  AvenComboboxSlots,
   AvenCommand,
   AvenSearchFieldProps,
   AvenInputProps,
@@ -102,6 +108,8 @@ export { default as AvenSelect } from './AvenSelect.vue'
 export { default as AvenListbox } from './AvenListbox.vue'
 export { default as AvenSlider } from './AvenSlider.vue'
 export { default as AvenRangeSlider } from './AvenRangeSlider.vue'
+export { default as AvenCombobox } from './AvenCombobox.vue'
+export { default as AvenMultiSelect } from './AvenMultiSelect.vue'
 export { default as AvenRadioGroup } from './AvenRadioGroup.vue'
 export { default as AvenRadio } from './AvenRadio.vue'
 export { default as AvenToggleButton } from './AvenToggleButton.vue'
