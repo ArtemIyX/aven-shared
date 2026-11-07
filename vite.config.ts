@@ -75,6 +75,9 @@ export default defineConfig({
         AvenAlertDialog: fileURLToPath(
           new URL('./packages/vue/src/AvenAlertDialog.vue', import.meta.url),
         ),
+        AvenCommandPalette: fileURLToPath(
+          new URL('./packages/vue/src/AvenCommandPalette.vue', import.meta.url),
+        ),
         AvenMenu: fileURLToPath(new URL('./packages/vue/src/AvenMenu.vue', import.meta.url)),
         AvenDropdownMenu: fileURLToPath(
           new URL('./packages/vue/src/AvenDropdownMenu.vue', import.meta.url),

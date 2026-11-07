@@ -17,6 +17,7 @@ import {
   AvenContextMenu,
   AvenMenubar,
   AvenAlertDialog,
+  AvenCommandPalette,
   AvenCollapsible,
   AvenContainer,
   AvenFormattedValue,
@@ -56,6 +57,7 @@ const teamQuery = ref('')
 const remoteLoading = ref(false)
 const menuAction = ref('')
 const confirmOpen = ref(false)
+const paletteOpen = ref(false)
 const lastSplitAction = ref('')
 const buttonClicks = ref(0)
 const openSection = ref<string | null>('account')
@@ -109,6 +111,11 @@ const menubarItems = [
     ],
   },
   { key: 'view', label: 'View', children: [{ key: 'zoom-in', label: 'Zoom in' }] },
+]
+const paletteCommands = [
+  { key: 'new-file', label: 'New file', group: 'File', shortcut: 'Ctrl+N' },
+  { key: 'open-file', label: 'Open file', group: 'File', shortcut: 'Ctrl+O' },
+  { key: 'toggle-sidebar', label: 'Toggle sidebar', group: 'View', keywords: ['panel'] },
 ]
 const buttonTones = [
   'neutral',
@@ -572,6 +579,17 @@ const buttonTones = [
         This change cannot be undone. Confirm only after checking that the project is no longer
         needed.
       </AvenAlertDialog>
+      <AvenButton variant="outline" @click="paletteOpen = true">Open command palette</AvenButton>
+      <AvenCommandPalette
+        v-model:open="paletteOpen"
+        :items="paletteCommands"
+        label="Project commands"
+        placeholder="Search project commands"
+        @select="menuAction = $event.item.label"
+      >
+        <template #input-leading>⌕</template>
+        <template #footer><span>Use arrow keys to navigate and Enter to run.</span></template>
+      </AvenCommandPalette>
     </section>
     <section class="playground-card" aria-labelledby="toggle-examples">
       <AvenText id="toggle-examples" type="header1">Toggle controls</AvenText>

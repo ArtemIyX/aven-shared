@@ -39,7 +39,16 @@ const localQuery = ref(props.defaultQuery)
 const localOpen = ref(props.defaultOpen)
 const input = ref<HTMLInputElement>()
 const root = ref<HTMLDivElement>()
-const activeIndex = ref(-1)
+const activeIndex = ref(
+  props.defaultActiveKey == null
+    ? -1
+    : props.options.findIndex((option) => Object.is(option.value, props.defaultActiveKey)),
+)
+const currentActiveIndex = computed(() =>
+  props.activeKey === undefined
+    ? activeIndex.value
+    : props.options.findIndex((option) => Object.is(option.value, props.activeKey)),
+)
 const composing = ref(false)
 const selectedCache = new Map<T, AvenOption<T>>()
 const value = computed(() => (props.modelValue !== undefined ? props.modelValue : localValue.value))
@@ -88,7 +97,7 @@ const groupedOptions = computed(() => {
   return groups
 })
 const activeItem = computed(() =>
-  filteredOptions.value.find((item) => props.options.indexOf(item) === activeIndex.value),
+  filteredOptions.value.find((item) => props.options.indexOf(item) === currentActiveIndex.value),
 )
 const activeId = computed(() =>
   activeItem.value ? `${listId}-option-${props.options.indexOf(activeItem.value)}` : undefined,
@@ -158,7 +167,14 @@ function setQuery(next: string) {
   if (next === query.value) return
   if (props.query === undefined) localQuery.value = next
   emit('update:query', next)
-  activeIndex.value = -1
+  setActiveIndex(-1)
+}
+function setActiveIndex(next: number) {
+  if (currentActiveIndex.value === next) return
+  const item = props.options[next]
+  if (props.activeKey === undefined) activeIndex.value = next
+  else emit('update:activeKey', item?.value ?? null)
+  if (item && !item.disabled) emit('highlight', { key: item.value, item })
 }
 function setOpen(next: boolean, reason: AvenOpenReason, event?: Event) {
   if (props.disabled || props.readonly || isOpen.value === next) return
@@ -166,7 +182,7 @@ function setOpen(next: boolean, reason: AvenOpenReason, event?: Event) {
   emit('update:open', next)
   emit('openChange', { open: next, reason })
   if (!next && reason === 'escape') input.value?.focus()
-  if (next && activeIndex.value < 0) activeIndex.value = firstEnabledIndex()
+  if (next && currentActiveIndex.value < 0) setActiveIndex(firstEnabledIndex())
   event?.stopPropagation?.()
 }
 function firstEnabledIndex() {
@@ -188,9 +204,11 @@ function choose(item: AvenOption<T>, event: MouseEvent | KeyboardEvent) {
       if (props.maxSelected !== undefined && selectedValues.value.length >= props.maxSelected)
         return
       setValue([...selectedValues.value, item.value])
+      emit('select', { key: item.value, item, originalEvent: event })
     }
     setQuery('')
   } else {
+    emit('select', { key: item.value, item, originalEvent: event })
     if (!isSelected(item.value)) setValue(item.value)
     setQuery(item.label)
     setOpen(false, 'select', event)
@@ -234,16 +252,20 @@ function onKeydown(event: KeyboardEvent) {
   if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
     event.preventDefault()
     if (!isOpen.value) setOpen(true, 'trigger', event)
-    const previousIndex = activeIndex.value
+    const previousIndex = currentActiveIndex.value
     const enabled = filteredOptions.value
       .map((item) => props.options.indexOf(item))
       .filter((index) => !props.options[index]?.disabled)
     if (!enabled.length) return
-    let position = enabled.indexOf(activeIndex.value)
+    let position = enabled.indexOf(currentActiveIndex.value)
     if (position < 0) position = event.key === 'ArrowDown' ? -1 : enabled.length
     position = (position + (event.key === 'ArrowDown' ? 1 : -1) + enabled.length) % enabled.length
-    activeIndex.value = enabled[position]!
-    if (position === enabled.length - 1 && activeIndex.value !== previousIndex && props.remote)
+    setActiveIndex(enabled[position]!)
+    if (
+      position === enabled.length - 1 &&
+      currentActiveIndex.value !== previousIndex &&
+      props.remote
+    )
       emit('loadMore', { query: query.value, lastKey: props.options[enabled[position]!]!.value })
     return
   }
@@ -265,6 +287,7 @@ function onOutside(event: PointerEvent) {
 }
 function onDocumentKeydown(event: KeyboardEvent) {
   if (event.key === 'Escape' && isOpen.value) {
+    event.preventDefault()
     event.stopPropagation()
     setOpen(false, 'escape', event)
   }
@@ -275,7 +298,7 @@ function resetFromForm(event: Event) {
     const next = props.defaultValue ?? (props.multiple ? [] : null)
     localValue.value = next
     localQuery.value = props.defaultQuery
-    activeIndex.value = -1
+    setActiveIndex(-1)
     setOpen(false, 'programmatic')
     if (props.modelValue !== undefined) emit('update:modelValue', next)
     if (props.query !== undefined) emit('update:query', props.defaultQuery)
@@ -451,7 +474,7 @@ defineExpose({ focus, blur, select: () => input.value?.select(), clear })
                 :class="[
                   'combobox-option',
                   {
-                    'is-active': activeIndex === entry.index,
+                    'is-active': currentActiveIndex === entry.index,
                     'is-selected': isSelected(entry.item.value),
                     'is-disabled': entry.item.disabled,
                   },
@@ -460,7 +483,7 @@ defineExpose({ focus, blur, select: () => input.value?.select(), clear })
                 :style="ui?.option?.style"
                 v-bind="ui?.option?.attrs"
                 @mousedown.prevent
-                @mouseenter="!entry.item.disabled && (activeIndex = entry.index)"
+                @mouseenter="!entry.item.disabled && setActiveIndex(entry.index)"
                 @click="choose(entry.item, $event)"
               >
                 <slot
@@ -469,7 +492,7 @@ defineExpose({ focus, blur, select: () => input.value?.select(), clear })
                   :key="entry.item.value"
                   :index="entry.index"
                   :selected="isSelected(entry.item.value)"
-                  :active="activeIndex === entry.index"
+                  :active="currentActiveIndex === entry.index"
                   :disabled="!!entry.item.disabled"
                   >{{ entry.item.label
                   }}<small v-if="entry.item.description">{{ entry.item.description }}</small></slot
@@ -487,7 +510,7 @@ defineExpose({ focus, blur, select: () => input.value?.select(), clear })
                 :class="[
                   'combobox-option',
                   {
-                    'is-active': activeIndex === entry.index,
+                    'is-active': currentActiveIndex === entry.index,
                     'is-selected': isSelected(entry.item.value),
                     'is-disabled': entry.item.disabled,
                   },
@@ -496,7 +519,7 @@ defineExpose({ focus, blur, select: () => input.value?.select(), clear })
                 :style="ui?.option?.style"
                 v-bind="ui?.option?.attrs"
                 @mousedown.prevent
-                @mouseenter="!entry.item.disabled && (activeIndex = entry.index)"
+                @mouseenter="!entry.item.disabled && setActiveIndex(entry.index)"
                 @click="choose(entry.item, $event)"
               >
                 <slot
@@ -505,7 +528,7 @@ defineExpose({ focus, blur, select: () => input.value?.select(), clear })
                   :key="entry.item.value"
                   :index="entry.index"
                   :selected="isSelected(entry.item.value)"
-                  :active="activeIndex === entry.index"
+                  :active="currentActiveIndex === entry.index"
                   :disabled="!!entry.item.disabled"
                   >{{ entry.item.label
                   }}<small v-if="entry.item.description">{{ entry.item.description }}</small></slot

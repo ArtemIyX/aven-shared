@@ -119,6 +119,8 @@ export type AvenComboboxProps<T extends string | number = string | number> = {
   filter?: (option: AvenOption<T>, query: string) => boolean
   remote?: boolean
   loading?: boolean
+  activeKey?: T | null
+  defaultActiveKey?: T | null
   error?: string
   clearable?: boolean
   clearLabel?: string
@@ -152,12 +154,15 @@ export type AvenComboboxEvents<T extends string | number = string | number> = {
   'update:modelValue': [value: T | T[] | null]
   change: [value: T | T[] | null]
   'update:query': [query: string]
+  'update:activeKey': [key: T | null]
   create: [payload: { query: string; originalEvent: Event }]
   clear: [payload: { previousValue: T | T[] | null }]
   remove: [payload: { value: T; originalEvent: Event }]
   'update:open': [open: boolean]
   openChange: [change: AvenOpenChange]
   loadMore: [payload: { query: string; lastKey: T }]
+  select: [payload: { key: T; item: AvenOption<T>; originalEvent: Event }]
+  highlight: [payload: { key: T; item: AvenOption<T> }]
   focus: [event: FocusEvent]
   blur: [event: FocusEvent]
 }
@@ -346,6 +351,57 @@ export type AvenAlertDialogSlots = Omit<AvenDialogSlots, 'actions'> & {
     loading: boolean
   }) => unknown
   'confirm-label'?: () => unknown
+}
+export type AvenPaletteCommand<Key extends string | number = string | number> = AvenCommand<Key> & {
+  group?: string
+  keywords?: string[]
+}
+export type AvenCommandPaletteProps<Key extends string | number = string | number> = {
+  open?: boolean
+  defaultOpen?: boolean
+  query?: string
+  defaultQuery?: string
+  activeKey?: Key | null
+  defaultActiveKey?: Key | null
+  items: AvenPaletteCommand<Key>[]
+  loading?: boolean
+  error?: string
+  remote?: boolean
+  filter?: (item: AvenPaletteCommand<Key>, query: string) => boolean
+  closeOnSelect?: boolean
+  placeholder?: string
+  label?: string
+  emptyText?: string
+  unstyled?: boolean
+  ui?: AvenUi<
+    'root' | 'content' | 'header' | 'title' | 'description' | 'body' | 'input' | 'option' | 'footer'
+  >
+}
+export type AvenCommandPaletteEvents<Key extends string | number = string | number> = Omit<
+  AvenDialogEvents,
+  'update:open'
+> & {
+  'update:open': [open: boolean]
+  'update:query': [query: string]
+  'update:activeKey': [key: Key | null]
+  select: [payload: { key: Key; item: AvenPaletteCommand<Key>; originalEvent: Event }]
+  highlight: [payload: { key: Key; item: AvenPaletteCommand<Key> }]
+  loadMore: [payload: { query: string }]
+}
+export type AvenCommandPaletteSlots<Key extends string | number = string | number> = {
+  'input-leading'?: () => unknown
+  'input-trailing'?: () => unknown
+  item?: (scope: {
+    item: AvenPaletteCommand<Key>
+    key: Key
+    active: boolean
+    disabled: boolean
+  }) => unknown
+  group?: (scope: { group: string }) => unknown
+  shortcut?: (scope: { item: AvenPaletteCommand<Key> }) => unknown
+  empty?: (scope: { query: string }) => unknown
+  loading?: () => unknown
+  footer?: () => unknown
 }
 export type AvenInputProps = {
   modelValue?: string

@@ -40,6 +40,7 @@ function propose(open: boolean, reason: AvenOpenReason, event?: Event) {
   emit('openChange', { open, reason })
 }
 async function sync() {
+  if (typeof document === 'undefined') return
   await nextTick()
   const el = dialog.value
   if (!el) return

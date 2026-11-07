@@ -20,6 +20,7 @@ import {
   AvenMenubar,
   AvenAlertDialog,
   AvenDialog,
+  AvenCommandPalette,
   AvenLink,
   AvenCollapsible,
   AvenFormattedValue,
@@ -849,6 +850,8 @@ test('combobox keyboard selection emits one commit and IME Enter cannot commit e
   const updates = []
   const changes = []
   const queries = []
+  const highlights = []
+  const selections = []
   renderer
     .createApp({
       render: () =>
@@ -863,20 +866,29 @@ test('combobox keyboard selection emits one commit and IME Enter cannot commit e
           'onUpdate:modelValue': (value) => updates.push(value),
           onChange: (value) => changes.push(value),
           'onUpdate:query': (value) => queries.push(value),
+          onHighlight: (payload) => highlights.push(payload.key),
+          onSelect: (payload) => selections.push(payload),
         }),
     })
     .mount(root)
   const input = find(root, (node) => node.type === 'input' && node.props.role === 'combobox')
   dispatchHandler(input.props.onKeydown, { key: 'ArrowDown', preventDefault() {} })
   dispatchHandler(input.props.onKeydown, { key: 'ArrowDown', preventDefault() {} })
-  dispatchHandler(input.props.onKeydown, {
+  const enterEvent = {
     key: 'Enter',
     preventDefault() {},
     stopPropagation() {},
+  }
+  dispatchHandler(input.props.onKeydown, {
+    ...enterEvent,
   })
   assert.deepEqual(updates, ['beta'])
   assert.deepEqual(changes, ['beta'])
   assert.deepEqual(queries, ['Beta'])
+  assert.deepEqual(highlights, ['alpha', 'beta'])
+  assert.equal(selections.length, 1)
+  assert.equal(selections[0].key, 'beta')
+  assert.equal(selections[0].originalEvent.key, 'Enter')
   dispatchHandler(input.props.onFocus, { type: 'focus', stopPropagation() {} })
   let prevented = false
   dispatchHandler(input.props.onKeydown, {
@@ -910,6 +922,30 @@ test('combobox required validity checks selection rather than query text', async
   const option = find(root, (node) => node.props?.role === 'option')
   dispatchHandler(option.props.onClick, { stopPropagation() {} })
   assert.equal(input.validationMessage, '')
+})
+
+test('combobox controlled active keys request navigation without mutating rendered state', async () => {
+  const { renderer, root, find } = makeRenderer()
+  const requests = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenCombobox, {
+          options: [
+            { value: 'alpha', label: 'Alpha' },
+            { value: 'beta', label: 'Beta' },
+          ],
+          activeKey: 'alpha',
+          defaultOpen: true,
+          'onUpdate:activeKey': (key) => requests.push(key),
+        }),
+    })
+    .mount(root)
+  const input = find(root, (node) => node.type === 'input' && node.props?.role === 'combobox')
+  const originalActiveId = input.props['aria-activedescendant']
+  dispatchHandler(input.props.onKeydown, { key: 'ArrowDown', preventDefault() {} })
+  assert.deepEqual(requests, ['beta'])
+  assert.equal(input.props['aria-activedescendant'], originalActiveId)
 })
 
 test('multi-select enforces its limit and removes a selected chip through the library action', async () => {
@@ -1652,4 +1688,48 @@ test('dialog links its accessible title and description and alert dialog request
   dispatchHandler(actionButtons[0].props.onClick, actionEvent)
   assert.deepEqual(confirms, [{ originalEvent: actionEvent }])
   assert.deepEqual(cancels, [{ originalEvent: actionEvent }])
+})
+
+test('command palette opens as a grouped search dialog and requests one command', async () => {
+  const commands = [
+    { key: 'open', label: 'Open file', group: 'File', shortcut: 'Ctrl+O' },
+    { key: 'sidebar', label: 'Toggle sidebar', group: 'View', disabled: true },
+  ]
+  const html = await render({
+    render: () =>
+      h(AvenCommandPalette, {
+        items: commands,
+        label: 'Commands',
+        defaultOpen: true,
+        defaultQuery: 'file',
+      }),
+  })
+  assert.match(html, /<dialog/)
+  assert.match(html, /role="combobox"/)
+  assert.match(html, /role="listbox"/)
+  assert.match(html, /Open file/)
+  assert.match(html, /Ctrl\+O/)
+
+  const mounted = makeRenderer()
+  const selections = []
+  const paletteRef = ref(null)
+  const app = mounted.renderer.createApp({
+    render: () =>
+      h(AvenCommandPalette, {
+        ref: paletteRef,
+        items: [{ key: 'run', label: 'Run task' }],
+        onSelect: (payload) => selections.push(payload),
+      }),
+  })
+  app.mount(mounted.root)
+  paletteRef.value.open()
+  await nextTick()
+  await nextTick()
+  const option = mounted.find(mounted.root, (node) => node.props?.role === 'option')
+  const originalEvent = { type: 'click' }
+  dispatchHandler(option.props.onClick, originalEvent)
+  assert.equal(selections.length, 1)
+  assert.equal(selections[0].key, 'run')
+  assert.equal(selections[0].item.label, 'Run task')
+  assert.equal(selections[0].originalEvent, originalEvent)
 })
