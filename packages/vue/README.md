@@ -9,3 +9,5 @@ import { AvenButton, AvenField, AvenInput, AvenProvider } from '@wellsaik/aven-v
 ```
 
 The stylesheet subpath points to the CSS extracted from Vue SFCs plus the retained AvenText foundation styles. Importing component JavaScript does not inject global CSS. See the [component catalog](../../docs/component-catalog.md), [usage reference](../../docs/vue-component-usage.md), [theme reference](../../docs/component-theme-reference.md), and [implementation status](../../docs/component-implementation-status.md) for contracts and current coverage.
+
+Engine-independent adapters are available from optional entry points: import chart presentation surfaces from `@wellsaik/aven-vue/charts` and the rich text field/document contracts from `@wellsaik/aven-vue/rich-text`. These entries do not add a chart engine, editor engine, or highlighter dependency. Continue importing `@wellsaik/aven-vue/style.css` explicitly for their scoped styles.

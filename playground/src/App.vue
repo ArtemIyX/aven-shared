@@ -95,6 +95,8 @@ import {
   type AvenSortField,
   type AvenSortItem,
 } from '@wellsaik/aven-vue'
+import { AvenChartFrame, AvenChartLegend, AvenChartTooltip } from '@wellsaik/aven-vue/charts'
+import { AvenRichTextField, type AvenRichTextDocument } from '@wellsaik/aven-vue/rich-text'
 
 const userName = ref('Avery')
 const sampleCode = 'const answer = 42\nconsole.log(answer)'
@@ -151,6 +153,27 @@ const boardItems: Record<string, { title: string; owner: string }> = {
   'task-test': { title: 'Verify keyboard behavior', owner: 'Sam' },
 }
 const lastBoardRequest = ref('')
+const chartSeries = [
+  { key: 'planned', label: 'Planned', colorToken: '--aven-color-chart-series-01' },
+  { key: 'actual', label: 'Actual', colorToken: '--aven-color-chart-series-02' },
+  {
+    key: 'forecast',
+    label: 'Forecast',
+    colorToken: '--aven-color-chart-series-03',
+    shape: 'diamond' as const,
+  },
+]
+const hiddenSeries = ref<string[]>(['forecast'])
+const richDocument = ref<AvenRichTextDocument>({
+  type: 'doc',
+  content: [
+    {
+      type: 'paragraph',
+      content: [{ type: 'text', text: 'A native, form-ready document draft.' }],
+    },
+  ],
+})
+const customDocument = ref({ format: 'notes-v1', content: 'Custom engine documents stay typed.' })
 const lastFilterApply = ref('')
 function updateFilterValue(setValue: (value: AvenFilterValue['value']) => void, event: Event) {
   setValue((event.target as HTMLInputElement).value)
@@ -821,6 +844,174 @@ const buttonTones = [
         </template>
       </AvenBoard>
       <p v-if="lastBoardRequest" aria-live="polite">{{ lastBoardRequest }}</p>
+    </section>
+    <section class="playground-card" aria-labelledby="chart-examples">
+      <AvenText id="chart-examples" type="header1">Chart adapter surfaces</AvenText>
+      <p>
+        Series visibility belongs to the application; the chart slot receives semantic chart tokens.
+      </p>
+      <AvenChartFrame
+        title="Release readiness"
+        description="Planned and observed checks by week"
+        :legend-items="chartSeries"
+        :tooltip-items="[
+          {
+            key: 'planned',
+            label: 'Planned',
+            value: '82%',
+            colorToken: '--aven-color-chart-series-01',
+          },
+          {
+            key: 'actual',
+            label: 'Actual',
+            value: '76%',
+            colorToken: '--aven-color-chart-series-02',
+          },
+        ]"
+        :style="{ '--aven-chart-frame-bg': 'var(--aven-color-surface-chart)' }"
+      >
+        <template #default="{ theme }">
+          <svg
+            viewBox="0 0 420 180"
+            role="img"
+            aria-label="Release readiness bar chart"
+            :data-theme="theme.theme"
+          >
+            <title>Weekly release readiness</title>
+            <g
+              v-for="(series, seriesIndex) in chartSeries.filter(
+                (item) => !hiddenSeries.includes(item.key),
+              )"
+              :key="series.key"
+            >
+              <rect
+                v-for="(value, index) in [42, 68, 54, 82]"
+                :key="index"
+                :x="38 + index * 92"
+                :y="150 - value - seriesIndex * 8"
+                width="34"
+                :height="value"
+                :fill="`var(--${series.colorToken})`"
+                rx="4"
+              />
+            </g>
+            <text x="38" y="172">Week 1</text>
+            <text x="130" y="172">Week 2</text>
+            <text x="222" y="172">Week 3</text>
+            <text x="314" y="172">Week 4</text>
+          </svg>
+        </template>
+        <template #legend="{ items }">
+          <AvenChartLegend
+            :items="items"
+            label="Readiness series"
+            interactive
+            :hidden-keys="hiddenSeries"
+            @toggle-series="
+              hiddenSeries = $event.visible
+                ? hiddenSeries.filter((key) => key !== $event.key)
+                : [...hiddenSeries, $event.key]
+            "
+          />
+        </template>
+        <template #tooltip="{ items }">
+          <AvenChartTooltip :items="items" :x="200" :y="24" open />
+        </template>
+        <template #accessible-table>
+          <table>
+            <caption>
+              Readiness values by week
+            </caption>
+            <thead>
+              <tr>
+                <th>Series</th>
+                <th>Week 1</th>
+                <th>Week 2</th>
+                <th>Week 3</th>
+                <th>Week 4</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>Planned</th>
+                <td>42</td>
+                <td>68</td>
+                <td>54</td>
+                <td>82</td>
+              </tr>
+              <tr>
+                <th>Actual</th>
+                <td>37</td>
+                <td>61</td>
+                <td>59</td>
+                <td>76</td>
+              </tr>
+            </tbody>
+          </table>
+        </template>
+      </AvenChartFrame>
+    </section>
+    <section class="playground-card" aria-labelledby="rich-text-example">
+      <AvenText id="rich-text-example" type="header1">Rich text document adapters</AvenText>
+      <form
+        @reset="richDocument = { type: 'doc', content: [{ type: 'paragraph' }] }"
+        @submit.prevent
+      >
+        <AvenRichTextField
+          v-model="richDocument"
+          name="release-notes"
+          label="Release notes"
+          required
+          help-text="The basic schema keeps paragraph text as structured data."
+        >
+          <template #toolbar="{ selection, wordCount }">
+            <span
+              >{{ selection ? `Selected: ${selection}` : 'No selection' }} ·
+              {{ wordCount }} words</span
+            >
+          </template>
+          <template #footer="{ wordCount }"
+            >{{ wordCount }} words · Submitted as plain text; model stays structured.</template
+          >
+        </AvenRichTextField>
+        <div class="playground-row">
+          <AvenButton type="submit">Save notes</AvenButton
+          ><AvenButton type="reset" variant="outline">Reset form</AvenButton>
+        </div>
+      </form>
+      <AvenRichTextField
+        v-model="customDocument"
+        label="Custom document adapter"
+        schema-label="notes-v1"
+        help-text="Replace the editor slot with an app-selected engine."
+      >
+        <template
+          #editor="{
+            value,
+            update,
+            disabled,
+            readonly,
+            editorAttrs,
+            registerEditor,
+            onFocus,
+            onBlur,
+          }"
+        >
+          <textarea
+            v-bind="editorAttrs"
+            :ref="registerEditor"
+            :value="value.content"
+            :disabled="disabled"
+            :readonly="readonly"
+            aria-label="Custom notes editor"
+            @input="
+              update({ format: 'notes-v1', content: ($event.target as HTMLTextAreaElement).value })
+            "
+            @focus="onFocus"
+            @blur="onBlur"
+          />
+        </template>
+      </AvenRichTextField>
     </section>
     <section class="playground-card" aria-labelledby="surface-examples">
       <AvenText id="surface-examples" type="header1">Panels and disclosure</AvenText>

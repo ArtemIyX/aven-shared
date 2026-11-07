@@ -30,6 +30,14 @@
       "types": "./dist/AvenText.d.ts",
       "import": "./dist/AvenText.js"
     },
+    "./charts": {
+      "types": "./dist/charts.d.ts",
+      "import": "./dist/charts.js"
+    },
+    "./rich-text": {
+      "types": "./dist/rich-text.d.ts",
+      "import": "./dist/rich-text.js"
+    },
     "./style.css": "./dist/aven-vue.css"
   },
   "dependencies": {

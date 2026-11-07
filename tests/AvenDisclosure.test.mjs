@@ -90,6 +90,8 @@ import {
   AvenSeparator,
   AvenTag,
 } from '../packages/vue/dist/index.js'
+import { AvenChartFrame, AvenChartLegend, AvenChartTooltip } from '../packages/vue/dist/charts.js'
+import { AvenRichTextField } from '../packages/vue/dist/rich-text.js'
 
 async function render(component) {
   return renderToString(createSSRApp(component))
@@ -3800,4 +3802,209 @@ test('board keeps list semantics and requests one pointer or keyboard move witho
   assert.equal(dragMoves.length, 1)
   assert.equal(dragMoves[0].originalEvent instanceof Object, true)
   assert.deepEqual(columns[0].itemKeys, ['task-1'])
+})
+
+test('chart adapters preserve semantic states, themed slots, and controlled visibility requests', async () => {
+  const chartItems = [{ key: 'sales', label: 'Sales', colorToken: '--aven-color-chart-series-01' }]
+  const html = await render({
+    render: () =>
+      h(
+        AvenChartFrame,
+        {
+          title: 'Revenue',
+          theme: 'dark',
+          legendItems: chartItems,
+          tooltipItems: [{ key: 'sales', label: 'Sales', value: 12 }],
+        },
+        {
+          default: ({ theme }) =>
+            h('svg', { 'data-chart-theme': theme.theme }, [h('title', 'Revenue plot')]),
+          legend: ({ items }) => h(AvenChartLegend, { items, interactive: true, hiddenKeys: [] }),
+          tooltip: ({ items }) => h(AvenChartTooltip, { items, x: 40, y: 30, open: true }),
+          'accessible-table': () => h('table', [h('caption', 'Revenue data')]),
+        },
+      ),
+  })
+  assert.match(html, /<figure[^>]*data-aven-theme="dark"/)
+  assert.match(html, /<h2[^>]*>.*Revenue.*<\/h2>/)
+  assert.match(html, /data-chart-theme="dark"/)
+  assert.match(html, /role="tooltip"/)
+  assert.match(html, /Revenue data/)
+
+  const mounted = makeRenderer()
+  const visibility = []
+  mounted.renderer
+    .createApp({
+      render: () =>
+        h(AvenChartLegend, {
+          items: chartItems,
+          interactive: true,
+          hiddenKeys: [],
+          onToggleSeries: (payload) => visibility.push(payload),
+        }),
+    })
+    .mount(mounted.root)
+  const action = mounted.find(mounted.root, (node) => node.type === 'button')
+  assert.equal(action.props['aria-pressed'], true)
+  action.props.onClick(new Event('click'))
+  action.props.onClick(new Event('click'))
+  assert.deepEqual(visibility, [
+    { key: 'sales', visible: false },
+    { key: 'sales', visible: false },
+  ])
+
+  const retryMount = makeRenderer()
+  const retries = []
+  retryMount.renderer
+    .createApp({
+      render: () =>
+        h(AvenChartFrame, {
+          error: 'Network unavailable',
+          onRetry: (request) => retries.push(request),
+        }),
+    })
+    .mount(retryMount.root)
+  retryMount
+    .find(retryMount.root, (node) => node.type === 'button')
+    .props.onClick(new Event('click'))
+  assert.equal(retries.length, 1)
+  assert.match(
+    await render({ render: () => h(AvenChartFrame, { loading: true }) }),
+    /role="status"/,
+  )
+})
+
+test('rich text field supports native forms, controlled commits, custom schemas, and disabled state', async () => {
+  const documentValue = {
+    type: 'doc',
+    content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Release draft' }] }],
+  }
+  const html = await render({
+    render: () =>
+      h(AvenRichTextField, {
+        id: 'notes',
+        label: 'Release notes',
+        name: 'notes',
+        required: true,
+        modelValue: documentValue,
+        helpText: 'Internal draft',
+      }),
+  })
+  assert.match(html, /<textarea[^>]*name="notes"/)
+  assert.match(html, /aria-labelledby="notes"/)
+  assert.match(html, /aria-describedby="aven-rich-text-help-\d+"/)
+  assert.match(html, /required/)
+  assert.match(html, /Release draft/)
+
+  const mounted = makeRenderer()
+  const updates = []
+  const changes = []
+  mounted.renderer
+    .createApp({
+      render: () =>
+        h(AvenRichTextField, {
+          label: 'Notes',
+          defaultValue: documentValue,
+          'onUpdate:modelValue': (value) => updates.push(value),
+          onChange: (payload) => changes.push(payload),
+        }),
+    })
+    .mount(mounted.root)
+  const textarea = mounted.find(mounted.root, (node) => node.type === 'textarea')
+  dispatchHandler(textarea.props.onFocus, { target: textarea })
+  dispatchHandler(textarea.props.onInput, { currentTarget: { value: 'First line\nSecond line' } })
+  dispatchHandler(textarea.props.onBlur, { target: textarea })
+  assert.equal(updates.length, 1)
+  assert.deepEqual(updates[0], {
+    type: 'doc',
+    content: [
+      { type: 'paragraph', content: [{ type: 'text', text: 'First line' }] },
+      { type: 'paragraph', content: [{ type: 'text', text: 'Second line' }] },
+    ],
+  })
+  assert.equal(changes.length, 1)
+
+  const resetMount = makeRenderer()
+  const resetUpdates = []
+  resetMount.renderer
+    .createApp({
+      render: () =>
+        h('form', null, [
+          h(AvenRichTextField, {
+            label: 'Reset notes',
+            defaultValue: documentValue,
+            'onUpdate:modelValue': (value) => resetUpdates.push(value),
+          }),
+        ]),
+    })
+    .mount(resetMount.root)
+  const form = resetMount.find(resetMount.root, (node) => node.type === 'form')
+  const priorWindow = globalThis.window
+  globalThis.window = { setTimeout: globalThis.setTimeout.bind(globalThis) }
+  try {
+    form.dispatchEvent({ type: 'reset', defaultPrevented: false })
+    await new Promise((resolve) => globalThis.setTimeout(resolve, 0))
+    assert.deepEqual(resetUpdates, [documentValue])
+    form.dispatchEvent({ type: 'reset', defaultPrevented: true })
+    await new Promise((resolve) => globalThis.setTimeout(resolve, 0))
+    assert.equal(resetUpdates.length, 1)
+  } finally {
+    if (priorWindow === undefined) delete globalThis.window
+    else globalThis.window = priorWindow
+  }
+
+  const custom = await render({
+    render: () =>
+      h(
+        AvenRichTextField,
+        { label: 'Custom notes', modelValue: { schema: 'v2', body: 'Hello' } },
+        {
+          editor: ({ editorAttrs }) =>
+            h('div', { ...editorAttrs, contenteditable: 'true' }, 'Hello'),
+        },
+      ),
+  })
+  assert.match(custom, /role="textbox"/)
+  assert.match(custom, /aria-multiline="true"/)
+  assert.match(custom, /data-aven-rich-text-editor/)
+
+  const withSlotHelp = await render({
+    render: () =>
+      h(AvenRichTextField, { label: 'Notes' }, { help: () => h('span', 'Custom help') }),
+  })
+  assert.match(withSlotHelp, /aria-describedby="aven-rich-text-help-\d+"/)
+  assert.match(withSlotHelp, /Custom help/)
+
+  const focusMount = makeRenderer()
+  const fieldRef = ref()
+  focusMount.renderer
+    .createApp({
+      render: () =>
+        h(
+          AvenRichTextField,
+          { ref: fieldRef, label: 'Custom editor', modelValue: { schema: 'v2', body: 'Hello' } },
+          {
+            editor: ({ editorAttrs, registerEditor, onFocus, onBlur }) =>
+              h('div', {
+                ...editorAttrs,
+                ref: registerEditor,
+                contenteditable: 'true',
+                onFocus,
+                onBlur,
+              }),
+          },
+        ),
+    })
+    .mount(focusMount.root)
+  fieldRef.value.focus()
+  await nextTick()
+  assert.equal(
+    focusMount.find(focusMount.root, (node) => node.props?.role === 'textbox').focused,
+    true,
+  )
+
+  const disabled = await render({
+    render: () => h(AvenRichTextField, { label: 'Notes', disabled: true }),
+  })
+  assert.match(disabled, /<textarea[^>]*disabled/)
 })

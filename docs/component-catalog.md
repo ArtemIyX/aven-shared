@@ -485,7 +485,7 @@ Slot notation `item{item,key,...}` means a scoped named slot. A slot without bra
 ### 58. AvenBoard / AvenBoardColumn — P3 optional integration
 
 - **Styles:** horizontal scroll columns, compact cards, count headers, empty drop surface, dragging indicator.
-- **Props:** columns:{key,label,itemKeys}[], itemsByKey (Map or keyed record), disabled=false, draggable=false, loadingKeys=[]; app can reject a proposed move through canMove.
+- **Props:** `AvenBoard<Item,ItemKey,ColumnKey>` takes `AvenBoardColumnData<ColumnKey,ItemKey>[]` columns and `itemsByKey` (`Map<ItemKey,Item>` or keyed record), disabled=false, draggable=false, loadingKeys=[]; app can reject a proposed move through canMove.
 - **Events:** `moveRequest({itemKey,fromColumn,toColumn,fromIndex,toIndex,originalEvent})`, `select({key,item})`, `add({columnKey})`; app accepts/rejects and updates arrays.
 - **Slots:** column-header/footer, card{item,key,index,column}, drag-preview{item}, empty-column{column}, add-card.
 - **Hooks/behavior:** column-bg/width/gap/drop-indicator; keyboard-accessible Move action plus native pointer drag, with move requests only and no local array mutation. Stable item keys come from itemKeys. Business workflow transitions and persistence are outside the board; no drag engine dependency is needed.
@@ -493,18 +493,18 @@ Slot notation `item{item,key,...}` means a scoped named slot. A slot without bra
 ### 59. AvenChartFrame / AvenChartLegend / AvenChartTooltip — P3 optional integration
 
 - **Styles:** chart surface, legend inline/wrapped/vertical, floating tooltip, categorical/sequential/diverging palette roles.
-- **Props:** ChartFrame title?, description?, loading=false, error?, aspectRatio?; Legend items:{key,label,colorToken,hidden?}[], interactive=false; Tooltip items and coordinate/placement data supplied by chart adapter.
+- **Props:** `AvenChartFrame` title/description/loading/error/empty/aspectRatio/theme; `AvenChartLegend<Key>` stable keyed items, controlled `hiddenKeys` or `defaultHiddenKeys`, and horizontal/vertical orientation; `AvenChartTooltip<Key>` keyed label/value items, open state and chart-local x/y coordinates with logical placement.
 - **Events:** `toggleSeries({key,visible})`, `retry({originalEvent})`; chart-specific select/zoom events belong to the rendering adapter.
 - **Slots:** default{theme}, title/description, legend{items}, tooltip{items}, empty/loading/error, accessible-table.
-- **Hooks/behavior:** existing chart module colors and same theme scope for plot/legend/tooltip; provide textual summary/table, non-color distinctions and stable series assignment. Canvas adapters resolve computed tokens and redraw on theme changes. Core does not choose a chart engine.
+- **Hooks/behavior:** import from `@wellsaik/aven-vue/charts`; components use semantic chart tokens from the shared color module and keep plot, legend, and tooltip in the same physical theme subtree. The frame provides loading/error/empty states, retry requests, a chart slot with explicit/inherited theme scope, and an accessible-table slot. Interactive legend buttons request `toggleSeries({key,visible})` once and do not mutate application series data when controlled. Tooltip coordinates are supplied by the renderer and remain inside the frame. Keep accessible labels/tables and non-color series distinctions; canvas adapters read inherited CSS tokens and redraw when the consuming theme changes. Core does not choose or bundle a chart engine.
 
 ### 60. AvenRichTextField / AvenCodeBlock — P3 optional integration
 
 - **Styles:** document/plain editor chrome, formatting toolbar, placeholder, readonly preview; code monospace with optional header and copy action.
-- **Props:** editor modelValue uses explicitly selected document schema, readonly/disabled/placeholder, extensions configured by app; CodeBlock code:string, language?, showLineNumbers=false, copyable=false, wrap=false.
-- **Events:** editor update:modelValue(document), change on defined commit, focus/blur; CodeBlock `copy({success,error?})` after clipboard attempt. Clipboard failure must be visible.
-- **Slots:** toolbar{editor}, leading/trailing, footer{selection,wordCount}; CodeBlock header, language, actions, line{line,index} if compatible with highlighter.
-- **Hooks/behavior:** editor bg/text/selection/border, code bg/font/tab-size. Keep engine/highlighter optional, sanitize untrusted rendered HTML, and avoid v-html for arbitrary slot strings. Model migrations, collaboration and storage are adapter responsibilities.
+- **Props:** `AvenRichTextField<Document>` model/default value, field name/label, placeholder, required/readonly/disabled/help/error and an explicitly typed document schema; extensions are supplied by an app-selected editor slot. `AvenCodeBlock` accepts code/language, line numbers, copy, wrap and labels.
+- **Events:** editor `update:modelValue(document)` on each accepted edit, `change({value,originalEvent})` on blur when the document changed, plus focus/blur; CodeBlock `copy({success,error?})` after a clipboard attempt. Clipboard failure is announced visibly.
+- **Slots:** editor receives `{value,update,disabled,readonly,placeholder,focus,registerEditor,editorAttrs,onFocus,onBlur,updateSelection,updateWordCount}`; toolbar/footer receive selection and word count; leading/trailing are adornments. CodeBlock has header, language, actions, and adapter-safe text line slots.
+- **Hooks/behavior:** import from `@wellsaik/aven-vue/rich-text`. The fallback document schema stores unmarked paragraphs and text nodes and uses a native textarea with native required/disabled/readonly and form submission/reset; schemas with marks/extensions use the typed editor slot, keep accessible attributes via `editorAttrs`, register a focusable editor element, and serialize their model as JSON in a named hidden field. Adapters update selection/word count and own schema-specific native validity. Never inject arbitrary HTML or use `v-html`; engine markup and schema validation remain adapter responsibilities. CSS hooks cover editor surface/text/border/focus and code background/font/tab size. Collaboration, migration, and storage stay app-owned.
 
 ## Public infrastructure (not visual catalog widgets)
 

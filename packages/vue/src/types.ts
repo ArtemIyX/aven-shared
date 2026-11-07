@@ -1288,6 +1288,147 @@ export type AvenCodeBlockSlots = {
   actions?: () => unknown
   line?: (scope: { line: string; index: number }) => unknown
 }
+export type AvenChartFrameProps = {
+  title?: string
+  description?: string
+  loading?: boolean
+  loadingLabel?: string
+  error?: string | Error
+  empty?: boolean
+  emptyLabel?: string
+  disabled?: boolean
+  retryLabel?: string
+  aspectRatio?: number
+  theme?: 'light' | 'dark' | 'system'
+  legendItems?: readonly AvenChartLegendItem[]
+  tooltipItems?: readonly AvenChartTooltipItem[]
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'surface'>
+}
+export type AvenChartFrameEvents = { retry: [payload: { originalEvent: MouseEvent }] }
+export type AvenChartFrameSlots = {
+  default?: (scope: { theme: { theme: unknown; dir: unknown } }) => unknown
+  title?: (scope: { title?: string }) => unknown
+  description?: (scope: { description?: string }) => unknown
+  legend?: (scope: { items: readonly AvenChartLegendItem[] }) => unknown
+  tooltip?: (scope: { items: readonly AvenChartTooltipItem[] }) => unknown
+  empty?: () => unknown
+  loading?: () => unknown
+  error?: (scope: { error?: string | Error; retry: (event: MouseEvent) => void }) => unknown
+  'accessible-table'?: () => unknown
+}
+export type AvenChartLegendItem<Key extends string | number = string> = {
+  key: Key
+  label: string
+  colorToken?: string
+  value?: string | number
+  shape?: 'circle' | 'square' | 'diamond' | 'line'
+  hidden?: boolean
+  disabled?: boolean
+}
+export type AvenChartLegendProps<Key extends string | number = string> = {
+  items: readonly AvenChartLegendItem<Key>[]
+  label?: string
+  interactive?: boolean
+  orientation?: 'horizontal' | 'vertical'
+  hiddenKeys?: readonly Key[]
+  defaultHiddenKeys?: readonly Key[]
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'item' | 'marker'>
+}
+export type AvenChartLegendEvents<Key extends string | number = string> = {
+  toggleSeries: [payload: { key: Key; visible: boolean }]
+}
+export type AvenChartLegendSlots<Key extends string | number = string> = {
+  item?: (scope: {
+    item: AvenChartLegendItem<Key>
+    visible: boolean
+    toggle: () => void
+  }) => unknown
+}
+export type AvenChartTooltipItem<Key extends string | number = string> = {
+  key: Key
+  label: string
+  value: string | number
+  colorToken?: string
+}
+export type AvenChartTooltipProps<Key extends string | number = string> = {
+  items: readonly AvenChartTooltipItem<Key>[]
+  x: number
+  y: number
+  open?: boolean
+  placement?: 'top' | 'bottom' | 'start' | 'end'
+  label?: string
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'item'>
+}
+export type AvenChartTooltipSlots<Key extends string | number = string> = {
+  default?: (scope: {
+    items: readonly AvenChartTooltipItem<Key>[]
+    x: number
+    y: number
+  }) => unknown
+}
+export type AvenRichTextMarkType = 'bold' | 'italic' | 'code' | 'link'
+export type AvenRichTextMark = {
+  type: AvenRichTextMarkType
+  attrs?: Readonly<Record<string, string>>
+}
+export type AvenRichTextText = { type: 'text'; text: string; marks?: readonly AvenRichTextMark[] }
+export type AvenRichTextParagraph = { type: 'paragraph'; content?: readonly AvenRichTextText[] }
+export type AvenRichTextDocument = { type: 'doc'; content: readonly AvenRichTextParagraph[] }
+export type AvenRichTextFieldProps<Document extends object = AvenRichTextDocument> = {
+  id?: string
+  name?: string
+  label: string
+  modelValue?: Document
+  defaultValue?: Document
+  placeholder?: string
+  disabled?: boolean
+  readonly?: boolean
+  required?: boolean
+  helpText?: string
+  error?: string
+  schemaLabel?: string
+  unstyled?: boolean
+  ui?: AvenUi<
+    'root' | 'label' | 'toolbar' | 'editor' | 'leading' | 'trailing' | 'footer' | 'help' | 'error'
+  >
+}
+export type AvenRichTextFieldEvents<Document extends object = AvenRichTextDocument> = {
+  'update:modelValue': [value: Document]
+  change: [payload: { value: Document; originalEvent: FocusEvent }]
+  focus: [event: FocusEvent]
+  blur: [event: FocusEvent]
+}
+export type AvenRichTextEditorScope<Document extends object = AvenRichTextDocument> = {
+  value: Document
+  update: (value: Document) => void
+  disabled: boolean
+  readonly: boolean
+  placeholder?: string
+  focus: () => void
+  registerEditor: (element: Element | import('vue').ComponentPublicInstance | null) => void
+  editorAttrs: Record<string, string | boolean | undefined>
+  onFocus: (event: FocusEvent) => void
+  onBlur: (event: FocusEvent) => void
+  updateSelection: (selection: string) => void
+  updateWordCount: (wordCount: number) => void
+}
+export type AvenRichTextFieldSlots<Document extends object = AvenRichTextDocument> = {
+  toolbar?: (scope: {
+    selection: string
+    wordCount: number
+    disabled: boolean
+    readonly: boolean
+  }) => unknown
+  editor?: (scope: AvenRichTextEditorScope<Document>) => unknown
+  leading?: () => unknown
+  trailing?: () => unknown
+  footer?: (scope: { selection: string; wordCount: number }) => unknown
+  help?: () => unknown
+  error?: (scope: { error: string }) => unknown
+}
 export type AvenTreeNode<Key extends string | number = string | number> = {
   key: Key
   label: string

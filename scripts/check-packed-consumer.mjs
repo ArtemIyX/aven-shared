@@ -75,6 +75,8 @@ try {
       assert(paths.includes('dist/AvenSortControl.js'))
       assert(paths.includes('dist/AvenBoard.js'))
       assert(paths.includes('dist/AvenBoardColumn.js'))
+      assert(paths.includes('dist/charts.js'))
+      assert(paths.includes('dist/rich-text.js'))
       assert(paths.includes('dist/AvenCard.js'))
       assert(paths.includes('dist/AvenPanel.js'))
       assert(paths.includes('dist/AvenPropertyRow.js'))
@@ -120,6 +122,22 @@ try {
     ],
     directory,
   )
+  const importCheck = spawnSync(
+    process.execPath,
+    [
+      '--input-type=module',
+      '-e',
+      "const root = await import('@wellsaik/aven-vue'); const charts = await import('@wellsaik/aven-vue/charts'); const rich = await import('@wellsaik/aven-vue/rich-text'); if ('AvenChartFrame' in root || 'AvenRichTextField' in root || !charts.AvenChartFrame || !rich.AvenRichTextField) process.exit(1)",
+    ],
+    { cwd: directory, encoding: 'utf8' },
+  )
+  assert.equal(importCheck.status, 0, importCheck.stderr)
+  const componentCss = await readFile(
+    path.join(directory, 'node_modules/@wellsaik/aven-vue/dist/aven-vue.css'),
+    'utf8',
+  )
+  assert.match(componentCss, /\.aven-chart-frame/)
+  assert.match(componentCss, /\.aven-rich-text-field/)
   await access(require.resolve('@wellsaik/aven-vue/style.css'))
   await writeFile(
     path.join(directory, 'index.html'),
@@ -185,6 +203,14 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
     `import { h } from 'vue'\nimport { AvenBoard, AvenBoardColumn, type AvenBoardColumnData, type AvenBoardProps, type AvenBoardEvents, type AvenBoardColumnProps } from '@wellsaik/aven-vue'\ntype ItemKey = 'task'\ntype ColumnKey = 'todo' | 'done'\ntype Item = { title: string; owner: string }\nconst columns: AvenBoardColumnData<ColumnKey, ItemKey>[] = [{ key: 'todo', label: 'To do', itemKeys: ['task'] }, { key: 'done', label: 'Done', itemKeys: [] }]\nconst itemsByKey = new Map<ItemKey, Item>([['task', { title: 'Release', owner: 'Ava' }]])\nconst props: AvenBoardProps<Item, ItemKey, ColumnKey> = { columns, itemsByKey, draggable: true, canMove: request => request.toColumn === 'done' }\nconst move: AvenBoardEvents<Item, ItemKey, ColumnKey>['moveRequest'][0] = { itemKey: 'task', fromColumn: 'todo', toColumn: 'done', fromIndex: 0, toIndex: 0, originalEvent: new Event('drop') }\nconst column: AvenBoardColumnProps<Item, ItemKey, ColumnKey> = { column: columns[0]!, entries: [{ key: 'task', item: { title: 'Release', owner: 'Ava' }, index: 0, loading: false }] }\nvoid move; h(AvenBoard<Item, ItemKey, ColumnKey>, props); h(AvenBoardColumn<Item, ItemKey, ColumnKey>, column)\n`,
   )
   await writeFile(
+    path.join(directory, 'charts-consumer.ts'),
+    `import { h } from 'vue'\nimport { AvenChartFrame, AvenChartLegend, AvenChartTooltip, type AvenChartLegendItem, type AvenChartFrameEvents } from '@wellsaik/aven-vue/charts'\ntype Series = 'plan' | 'actual'\nconst items: AvenChartLegendItem<Series>[] = [{ key: 'plan', label: 'Plan', colorToken: '--aven-color-chart-series-01' }, { key: 'actual', label: 'Actual', hidden: true }]\nconst retry: AvenChartFrameEvents['retry'][0] = { originalEvent: new MouseEvent('click') }\nvoid retry; h(AvenChartFrame, { title: 'Checks', legendItems: items, aspectRatio: 1.7 }); h(AvenChartLegend<Series>, { items, interactive: true, hiddenKeys: ['actual'] }); h(AvenChartTooltip<Series>, { items: [{ key: 'plan', label: 'Plan', value: 4 }], x: 10, y: 12, open: true })\n`,
+  )
+  await writeFile(
+    path.join(directory, 'rich-text-consumer.ts'),
+    `import { h } from 'vue'\nimport { AvenRichTextField, type AvenRichTextDocument, type AvenRichTextFieldEvents } from '@wellsaik/aven-vue/rich-text'\nconst value: AvenRichTextDocument = { type: 'doc', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Draft' }] }] }\nconst change: AvenRichTextFieldEvents['change'][0] = { value, originalEvent: new FocusEvent('blur') }\nvoid change; h(AvenRichTextField, { label: 'Notes', modelValue: value, name: 'notes', required: true })\n`,
+  )
+  await writeFile(
     path.join(directory, 'tsconfig.json'),
     JSON.stringify({
       compilerOptions: {
@@ -210,6 +236,8 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
         'search-consumer.ts',
         'filter-builder-consumer.ts',
         'board-consumer.ts',
+        'charts-consumer.ts',
+        'rich-text-consumer.ts',
       ],
     }),
   )
@@ -240,6 +268,8 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
         'search-consumer.ts',
         'filter-builder-consumer.ts',
         'board-consumer.ts',
+        'charts-consumer.ts',
+        'rich-text-consumer.ts',
       ],
     }),
   )
@@ -250,9 +280,14 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
     'utf8',
   )
   assert.match(bundle, /from\s*["']vue["']/)
+  const chartBundle = await readFile(
+    path.join(directory, 'node_modules/@wellsaik/aven-vue/dist/charts.js'),
+    'utf8',
+  )
+  assert.match(chartBundle, /from\s*["']vue["']/)
   assert(!bundle.includes('packages/shared/src'))
   console.log(
-    `Packed packages installed outside the workspace; ${seen.size} shared stylesheets resolved, Vue-free shared import, root component declarations and imports, and Vite consumer passed.`,
+    `Packed packages installed outside the workspace; ${seen.size} shared stylesheets resolved, Vue-free shared import, root and optional adapter declarations/imports, and Vite consumer passed.`,
   )
 } finally {
   await rm(directory, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 })

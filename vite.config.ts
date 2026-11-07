@@ -9,6 +9,8 @@ export default defineConfig({
     lib: {
       entry: {
         index: fileURLToPath(new URL('./packages/vue/src/index.ts', import.meta.url)),
+        charts: fileURLToPath(new URL('./packages/vue/src/charts.ts', import.meta.url)),
+        'rich-text': fileURLToPath(new URL('./packages/vue/src/rich-text.ts', import.meta.url)),
         AvenText: fileURLToPath(new URL('./packages/vue/src/AvenText.ts', import.meta.url)),
         AvenButton: fileURLToPath(new URL('./packages/vue/src/AvenButton.vue', import.meta.url)),
         AvenField: fileURLToPath(new URL('./packages/vue/src/AvenField.vue', import.meta.url)),
