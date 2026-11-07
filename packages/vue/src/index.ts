@@ -132,6 +132,10 @@ export type {
   AvenFileInputProps,
   AvenFileInputEvents,
   AvenFileInputSlots,
+  AvenColorSwatch,
+  AvenColorPickerProps,
+  AvenColorPickerEvents,
+  AvenColorPickerSlots,
   AvenAlertDialogProps,
   AvenAlertDialogEvents,
   AvenAlertDialogSlots,
@@ -228,6 +232,7 @@ export { default as AvenSwitcher } from './AvenSwitcher.vue'
 export { default as AvenViewSwitcher } from './AvenViewSwitcher.vue'
 export { default as AvenFileInput } from './AvenFileInput.vue'
 export { default as AvenDropzone } from './AvenDropzone.vue'
+export { default as AvenColorPicker } from './AvenColorPicker.vue'
 export { default as AvenCard } from './AvenCard.vue'
 export { default as AvenPropertyRow } from './AvenPropertyRow.vue'
 export type { AvenTextProps } from './AvenText.js'

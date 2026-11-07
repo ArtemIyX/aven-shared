@@ -18,6 +18,7 @@ import {
   AvenViewSwitcher,
   AvenFileInput,
   AvenDropzone,
+  AvenColorPicker,
   AvenBadge,
   AvenButton,
   AvenButtonGroup,
@@ -134,6 +135,9 @@ const activityMessage = ref('Expand an event or request older activity.')
 const workspaceChoice = ref<string | null>('design')
 const viewChoice = ref<string | null>('list')
 const pickedFiles = ref<File[]>([])
+const accentColor = ref<string | null>('#2457d6ff')
+const colorPickerOpen = ref(false)
+const colorActivity = ref('Choose a named swatch or edit the hex draft.')
 const workspaceOptions = [
   { value: 'design', label: 'Design workspace', description: 'Product and design work' },
   { value: 'engineering', label: 'Engineering workspace', description: 'Build and release work' },
@@ -164,6 +168,12 @@ const uploadQueue = [
     status: 'error' as const,
     error: 'Upload was interrupted.',
   },
+]
+const colorSwatches = [
+  { key: 'ocean', label: 'Ocean', value: '#2457d6' },
+  { key: 'leaf', label: 'Leaf', value: '#16845b' },
+  { key: 'sunset', label: 'Sunset', value: '#cf4c34' },
+  { key: 'glass', label: 'Glass', value: '#ffffff80' },
 ]
 const activityItems = [
   {
@@ -1159,6 +1169,38 @@ const buttonTones = [
           ><strong>{{ item.label }} (compact activity view)</strong></template
         >
       </AvenActivityList>
+    </section>
+    <section class="playground-card" aria-labelledby="color-picker-examples">
+      <AvenText id="color-picker-examples" type="header1">Color picker</AvenText>
+      <AvenColorPicker
+        v-model="accentColor"
+        v-model:open="colorPickerOpen"
+        label="Accent color"
+        name="accent-color"
+        format="hexa"
+        alpha
+        clearable
+        :swatches="colorSwatches"
+        @change="(value) => (colorActivity = `Committed ${value ?? 'no color'}`)"
+        @invalid-input="({ text }) => (colorActivity = `Invalid color: ${text}`)"
+      >
+        <template #swatch="{ item, selected }"
+          ><span class="swatch-color" aria-hidden="true" />{{ item.label
+          }}{{ selected ? ' · selected' : '' }}</template
+        >
+        <template #footer
+          ><p>Changes stay local until the surrounding form is submitted.</p></template
+        >
+      </AvenColorPicker>
+      <p aria-live="polite">
+        {{ colorActivity }} Current value: {{ accentColor ?? 'none' }}; popup
+        {{ colorPickerOpen ? 'open' : 'closed' }}.
+      </p>
+      <AvenColorPicker
+        default-value="#16845b"
+        label="Uncontrolled brand color"
+        :swatches="colorSwatches.slice(0, 3)"
+      />
     </section>
     <section class="playground-card" aria-labelledby="file-input-examples">
       <AvenText id="file-input-examples" type="header1">Files and dropzone</AvenText>

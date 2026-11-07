@@ -46,6 +46,7 @@ import {
   AvenViewSwitcher,
   AvenFileInput,
   AvenDropzone,
+  AvenColorPicker,
   AvenAvatar,
   AvenAvatarGroup,
   AvenChip,
@@ -2866,4 +2867,52 @@ test('file input enforces client limits, emits selection once, and keeps the dro
   const html = await render({ render: () => h(AvenDropzone, { label: 'Drop attachments' }) })
   assert.match(html, /class="aven-file-input is-dropzone/)
   assert.match(html, /type="file"/)
+})
+
+test('color picker retains named swatches, emits one controlled commit, and reports invalid drafts', async () => {
+  const swatches = [
+    { key: 'blue', label: 'Ocean blue', value: '#2457d6' },
+    { key: 'glass', label: 'Glass', value: '#ffffff80' },
+  ]
+  const html = await render({
+    render: () =>
+      h(AvenColorPicker, {
+        modelValue: '#112233',
+        swatches,
+        open: true,
+        alpha: true,
+        label: 'Accent color',
+      }),
+  })
+  assert.match(html, /role="dialog"[^>]*aria-label="Accent color"/)
+  assert.match(html, /Ocean blue, #2457d6/)
+  assert.match(html, /with transparency/)
+  assert.match(html, /type="color"/)
+
+  const { renderer, root, find } = makeRenderer()
+  const updates = []
+  const changes = []
+  const invalid = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenColorPicker, {
+          modelValue: '#112233',
+          swatches,
+          open: true,
+          label: 'Accent color',
+          'onUpdate:modelValue': (value) => updates.push(value),
+          onChange: (value) => changes.push(value),
+          onInvalidInput: (payload) => invalid.push(payload),
+        }),
+    })
+    .mount(root)
+  const swatch = find(root, (node) => node.props?.['aria-pressed'] === false)
+  swatch.props.onClick()
+  assert.deepEqual(updates, ['#2457d6'])
+  assert.deepEqual(changes, ['#2457d6'])
+  const text = find(root, (node) => node.type === 'input' && node.props.type === 'text')
+  text.props.onInput({ currentTarget: { value: 'invalid' } })
+  text.props.onBlur({ currentTarget: { value: 'invalid' } })
+  assert.deepEqual(invalid, [{ text: 'invalid' }])
 })

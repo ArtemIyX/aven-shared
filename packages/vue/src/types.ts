@@ -670,6 +670,48 @@ export type AvenFileInputSlots = {
   }) => unknown
   actions?: () => unknown
 }
+export type AvenColorSwatch = { key: string; label: string; value: string }
+export type AvenColorPickerProps = {
+  modelValue?: string | null
+  defaultValue?: string | null
+  format?: 'hex' | 'hexa'
+  swatches?: AvenColorSwatch[]
+  alpha?: boolean
+  clearable?: boolean
+  open?: boolean
+  defaultOpen?: boolean
+  allowCustom?: boolean
+  disabled?: boolean
+  required?: boolean
+  name?: string
+  label?: string
+  description?: string
+  error?: string
+  invalid?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'trigger' | 'input' | 'popover' | 'swatch'>
+}
+export type AvenColorPickerEvents = {
+  'update:modelValue': [value: string | null]
+  change: [value: string | null]
+  invalidInput: [payload: { text: string }]
+  'update:open': [open: boolean]
+  clear: [payload: { previousValue: string | null; originalEvent: Event }]
+}
+export type AvenColorPickerSlots = {
+  trigger?: (scope: {
+    triggerAttrs: Record<string, unknown>
+    triggerRef: (element: unknown) => void
+    value: string | null
+    open: boolean
+  }) => unknown
+  swatch?: (scope: { item: AvenColorSwatch; selected: boolean }) => unknown
+  value?: (scope: { value: string | null }) => unknown
+  label?: () => unknown
+  description?: () => unknown
+  error?: () => unknown
+  footer?: () => unknown
+}
 export type AvenListboxProps<T extends string | number = string | number> = {
   modelValue?: T | T[] | null
   defaultValue?: T | T[] | null
