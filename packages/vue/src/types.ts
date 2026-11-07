@@ -1497,6 +1497,122 @@ export type AvenSearchBarSlots = {
   summary?: AvenFilterBarSlots['summary']
   empty?: () => unknown
 }
+export type AvenFilterCondition<Key extends string = string> = {
+  id: string | number
+  field: Key
+  operator: string
+  value: AvenFilterScalar
+}
+export type AvenFilterGroup<Key extends string = string> = {
+  id: string | number
+  operator: 'and' | 'or'
+  children: Array<AvenFilterCondition<Key> | AvenFilterGroup<Key>>
+}
+export type AvenFilterNode<Key extends string = string> =
+  AvenFilterCondition<Key> | AvenFilterGroup<Key>
+export type AvenFilterBuilderProps<Key extends string = string> = {
+  id?: string
+  modelValue?: AvenFilterGroup<Key>
+  defaultValue?: AvenFilterGroup<Key>
+  definitions: AvenFilterDefinition[]
+  maxDepth?: number
+  allowGroups?: boolean
+  disabled?: boolean
+  loading?: boolean
+  label?: string
+  applyLabel?: string
+  resetLabel?: string
+  unstyled?: boolean
+  ui?: AvenUi<
+    'root' | 'group' | 'conditions' | 'condition' | 'operator' | 'value' | 'actions' | 'footer'
+  >
+}
+export type AvenFilterBuilderEvents<Key extends string = string> = {
+  'update:modelValue': [value: AvenFilterGroup<Key>]
+  change: [value: AvenFilterGroup<Key>]
+  add: [payload: { parentId: string | number; condition: AvenFilterCondition<Key> }]
+  addGroup: [payload: { parentId: string | number; group: AvenFilterGroup<Key> }]
+  remove: [payload: { id: string | number }]
+  reset: [payload: { previousValue: AvenFilterGroup<Key> }]
+  invalid: [payload: { ids: Array<string | number> }]
+}
+export type AvenFilterBuilderSlots<Key extends string = string> = {
+  field?: (scope: {
+    condition: AvenFilterCondition<Key>
+    definitions: AvenFilterDefinition[]
+    update: (field: Key) => void
+    invalid: boolean
+    errorId: string
+  }) => unknown
+  operator?: (scope: {
+    condition: AvenFilterCondition<Key>
+    definition?: AvenFilterDefinition
+    update: (operator: string) => void
+    invalid: boolean
+    errorId: string
+  }) => unknown
+  value?: (scope: {
+    condition: AvenFilterCondition<Key>
+    definition?: AvenFilterDefinition
+    update: (value: AvenFilterScalar) => void
+    invalid: boolean
+    errorId: string
+  }) => unknown
+  condition?: (scope: {
+    condition: AvenFilterCondition<Key>
+    definition?: AvenFilterDefinition
+    update: (value: Partial<Omit<AvenFilterCondition<Key>, 'id'>>) => void
+    remove: () => void
+    invalid: boolean
+    errorId: string
+  }) => unknown
+  'group-header'?: (scope: { group: AvenFilterGroup<Key>; depth: number }) => unknown
+  'add-action'?: (scope: {
+    group: AvenFilterGroup<Key>
+    addCondition: () => void
+    addGroup: () => void
+    canAddGroup: boolean
+    disabled: boolean
+  }) => unknown
+  footer?: (scope: { apply: () => void; reset: () => void; valid: boolean }) => unknown
+}
+export type AvenSortField<Key extends string = string> = {
+  key: Key
+  label: string
+  disabled?: boolean
+}
+export type AvenSortItem<Key extends string = string> = {
+  key: Key
+  direction: 'asc' | 'desc'
+}
+export type AvenSortControlProps<Key extends string = string> = {
+  id?: string
+  modelValue?: AvenSortItem<Key>[]
+  defaultValue?: AvenSortItem<Key>[]
+  fields: AvenSortField<Key>[]
+  multiple?: boolean
+  disabled?: boolean
+  label?: string
+  addLabel?: string
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'list' | 'item' | 'field' | 'direction' | 'actions' | 'add' | 'remove'>
+}
+export type AvenSortControlEvents<Key extends string = string> = {
+  'update:modelValue': [value: AvenSortItem<Key>[]]
+  change: [value: AvenSortItem<Key>[]]
+  remove: [payload: { key: Key; index: number }]
+}
+export type AvenSortControlSlots<Key extends string = string> = {
+  item?: (scope: {
+    field?: AvenSortField<Key>
+    direction: 'asc' | 'desc'
+    index: number
+    update: (value: Partial<AvenSortItem<Key>>) => void
+    remove: () => void
+  }) => unknown
+  'add-action'?: (scope: { add: () => void; disabled: boolean }) => unknown
+  empty?: () => unknown
+}
 export type AvenDialogProps = {
   open?: boolean
   defaultOpen?: boolean

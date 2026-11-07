@@ -126,6 +126,12 @@ export default defineConfig({
         AvenSearchBar: fileURLToPath(
           new URL('./packages/vue/src/AvenSearchBar.vue', import.meta.url),
         ),
+        AvenFilterBuilder: fileURLToPath(
+          new URL('./packages/vue/src/AvenFilterBuilder.vue', import.meta.url),
+        ),
+        AvenSortControl: fileURLToPath(
+          new URL('./packages/vue/src/AvenSortControl.vue', import.meta.url),
+        ),
         AvenCard: fileURLToPath(new URL('./packages/vue/src/AvenCard.vue', import.meta.url)),
         AvenPropertyRow: fileURLToPath(
           new URL('./packages/vue/src/AvenPropertyRow.vue', import.meta.url),

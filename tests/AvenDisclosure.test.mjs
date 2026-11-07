@@ -61,6 +61,8 @@ import {
   AvenSearchBar,
   AvenFilterBar,
   AvenFilterChip,
+  AvenFilterBuilder,
+  AvenSortControl,
   AvenDatePicker,
   AvenDateRangePicker,
   AvenTimePicker,
@@ -3510,4 +3512,188 @@ test('search and filter family supports controlled apply mode, single filter req
     .mount(disabledMount.root)
   find(disabledMount.root, (node) => node.type === 'button').props.onClick(new Event('click'))
   assert.deepEqual(disabledEvents, [])
+})
+
+test('filter builder validates nested drafts and emits controlled requests and apply commits once', async () => {
+  const definitions = [
+    {
+      key: 'status',
+      label: 'Status',
+      valueType: 'select',
+      operators: ['is', 'is not'],
+      options: [
+        { value: 'open', label: 'Open' },
+        { value: 'closed', label: 'Closed' },
+      ],
+    },
+  ]
+  const model = {
+    id: 'root',
+    operator: 'and',
+    children: [
+      {
+        id: 'group-child',
+        operator: 'or',
+        children: [{ id: 'status-open', field: 'status', operator: 'is', value: 'open' }],
+      },
+    ],
+  }
+  const html = await render({
+    render: () => h(AvenFilterBuilder, { modelValue: model, definitions, maxDepth: 3 }),
+  })
+  assert.match(html, /role="group" aria-label="Filter builder"/)
+  assert.match(html, /role="group" aria-label="Condition group 2"/)
+  assert.match(html, /Apply filters/)
+
+  const { renderer, root, find } = makeRenderer()
+  const updates = [],
+    changes = [],
+    additions = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenFilterBuilder, {
+          modelValue: model,
+          definitions,
+          'onUpdate:modelValue': (value) => updates.push(value),
+          onChange: (value) => changes.push(value),
+          onAdd: (value) => additions.push(value),
+        }),
+    })
+    .mount(root)
+  find(
+    root,
+    (node) => node.type === 'button' && node.props.class === 'filter-apply',
+  ).props.onClick()
+  assert.deepEqual(changes, [model])
+  const addButton = find(
+    root,
+    (node) => node.type === 'button' && node.props['aria-label'] === 'Add condition',
+  )
+  addButton.props.onClick()
+  assert.equal(updates.length, 1)
+  assert.equal(updates[0].children[0].children.length, 2)
+  assert.equal(additions.length, 1)
+  assert.equal(additions[0].parentId, 'group-child')
+  assert.equal(model.children[0].children.length, 1)
+
+  const incompleteHtml = await render({
+    render: () =>
+      h(AvenFilterBuilder, {
+        defaultValue: {
+          id: 'incomplete-root',
+          operator: 'and',
+          children: [{ id: 'incomplete-condition', field: 'status', operator: 'is', value: '' }],
+        },
+        definitions,
+      }),
+  })
+  assert.match(incompleteHtml, /aria-invalid="true"/)
+  assert.match(
+    incompleteHtml,
+    /aria-describedby="aven-filter-condition-incomplete-condition-error"/,
+  )
+  assert.match(incompleteHtml, /id="aven-filter-condition-incomplete-condition-error"/)
+
+  const groupUpdates = [],
+    groupRemoves = []
+  const groupMount = makeRenderer()
+  groupMount.renderer
+    .createApp({
+      render: () =>
+        h(AvenFilterBuilder, {
+          modelValue: model,
+          definitions,
+          'onUpdate:modelValue': (value) => groupUpdates.push(value),
+          onRemove: (payload) => groupRemoves.push(payload),
+        }),
+    })
+    .mount(groupMount.root)
+  find(
+    groupMount.root,
+    (node) => node.type === 'button' && node.props['aria-label'] === 'Remove condition group 2',
+  ).props.onClick()
+  assert.deepEqual(groupUpdates[0].children, [])
+  assert.deepEqual(groupRemoves, [{ id: 'group-child' }])
+
+  const invalid = [],
+    invalidChanges = []
+  const invalidMount = makeRenderer()
+  invalidMount.renderer
+    .createApp({
+      render: () =>
+        h(AvenFilterBuilder, {
+          defaultValue: { id: 'empty', operator: 'and', children: [] },
+          definitions,
+          onInvalid: (payload) => invalid.push(payload),
+          onChange: (value) => invalidChanges.push(value),
+        }),
+    })
+    .mount(invalidMount.root)
+  find(
+    invalidMount.root,
+    (node) => node.type === 'button' && node.props.class === 'filter-apply',
+  ).props.onClick()
+  assert.equal(invalidChanges.length, 0)
+  assert.equal(invalid.length, 1)
+  assert.deepEqual(invalid[0].ids, ['empty'])
+})
+
+test('sort control preserves generic keys, keyboard-operable order, and one commit per action', async () => {
+  const fields = [
+    { key: 'created', label: 'Created' },
+    { key: 'status', label: 'Status' },
+  ]
+  const model = [
+    { key: 'created', direction: 'asc' },
+    { key: 'status', direction: 'desc' },
+  ]
+  const html = await render({
+    render: () =>
+      h(AvenSortControl, { fields, modelValue: model, multiple: true, label: 'Project ordering' }),
+  })
+  assert.match(html, /role="group" aria-label="Project ordering"/)
+  assert.match(html, /Sort priority 1 field/)
+  assert.match(html, /Move Status sort priority up/)
+  const { renderer, root, find } = makeRenderer()
+  const updates = [],
+    changes = [],
+    removes = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenSortControl, {
+          fields,
+          modelValue: model,
+          multiple: true,
+          'onUpdate:modelValue': (value) => updates.push(value),
+          onChange: (value) => changes.push(value),
+          onRemove: (value) => removes.push(value),
+        }),
+    })
+    .mount(root)
+  find(
+    root,
+    (node) => node.type === 'button' && node.props['aria-label']?.startsWith('Sort Created'),
+  ).props.onClick()
+  assert.equal(updates.length, 1)
+  assert.equal(changes.length, 1)
+  assert.deepEqual(
+    updates[0].map((item) => item.direction),
+    ['desc', 'desc'],
+  )
+  find(
+    root,
+    (node) => node.type === 'button' && node.props['aria-label'] === 'Move Status sort priority up',
+  ).props.onClick()
+  assert.deepEqual(
+    updates[1].map((item) => item.key),
+    ['status', 'created'],
+  )
+  find(
+    root,
+    (node) => node.type === 'button' && node.props['aria-label'] === 'Remove Created sort field',
+  ).props.onClick()
+  assert.deepEqual(removes, [{ key: 'created', index: 0 }])
+  assert.equal(model[0].direction, 'asc')
 })

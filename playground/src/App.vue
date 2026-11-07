@@ -66,6 +66,8 @@ import {
   AvenSearchBar,
   AvenFilterBar,
   AvenFilterChip,
+  AvenFilterBuilder,
+  AvenSortControl,
   AvenPasswordField,
   AvenRadio,
   AvenRadioGroup,
@@ -88,6 +90,9 @@ import {
   type AvenDateOnly,
   type AvenFilterValue,
   type AvenFilterDefinition,
+  type AvenFilterGroup,
+  type AvenSortField,
+  type AvenSortItem,
 } from '@wellsaik/aven-vue'
 
 const userName = ref('Avery')
@@ -120,6 +125,20 @@ const filterDefinitions: AvenFilterDefinition[] = [
   },
   { key: 'owner', label: 'Owner', valueType: 'text', operators: ['contains', 'is'] },
 ]
+const filterBuilderValue = ref<AvenFilterGroup>({
+  id: 'project-conditions',
+  operator: 'and',
+  children: [{ id: 'active-condition', field: 'status', operator: 'is', value: 'active' }],
+})
+const sortFields: AvenSortField<'updated' | 'name' | 'status'>[] = [
+  { key: 'updated', label: 'Last updated' },
+  { key: 'name', label: 'Name' },
+  { key: 'status', label: 'Status' },
+]
+const sortOrder = ref<AvenSortItem<'updated' | 'name' | 'status'>[]>([
+  { key: 'updated', direction: 'desc' },
+])
+const lastSortChange = ref('')
 const lastFilterApply = ref('')
 function updateFilterValue(setValue: (value: AvenFilterValue['value']) => void, event: Event) {
   setValue((event.target as HTMLInputElement).value)
@@ -717,6 +736,43 @@ const buttonTones = [
       <AvenText type="caption">Built-in filter editors</AvenText>
       <AvenFilterBar v-model:filters="activeFilters" :definitions="filterDefinitions" />
       <p v-if="lastFilterApply" aria-live="polite">Applied: {{ lastFilterApply }}</p>
+      <AvenText type="caption">Nested filter builder</AvenText>
+      <AvenFilterBuilder
+        v-model="filterBuilderValue"
+        :definitions="filterDefinitions"
+        :max-depth="3"
+      >
+        <template #value="{ condition, definition, update }">
+          <input
+            :aria-label="`${definition?.label ?? condition.field} custom value`"
+            :value="condition.value ?? ''"
+            @input="update(($event.target as HTMLInputElement).value)"
+          />
+        </template>
+        <template #footer="{ apply, reset, valid }">
+          <AvenButton :disabled="!valid" @click="apply">Preview filter</AvenButton>
+          <AvenButton variant="ghost" @click="reset">Reset conditions</AvenButton>
+        </template>
+      </AvenFilterBuilder>
+      <AvenText type="caption">Multi-field sort order</AvenText>
+      <AvenSortControl
+        v-model="sortOrder"
+        :fields="sortFields"
+        multiple
+        @change="lastSortChange = $event.map((item) => `${item.key}:${item.direction}`).join(', ')"
+      >
+        <template #item="{ field, direction, update, remove }">
+          <span>{{ field?.label }} · {{ direction }}</span>
+          <AvenButton
+            size="sm"
+            variant="outline"
+            @click="update({ direction: direction === 'asc' ? 'desc' : 'asc' })"
+            >Reverse</AvenButton
+          >
+          <AvenButton size="sm" variant="ghost" @click="remove">Remove</AvenButton>
+        </template>
+      </AvenSortControl>
+      <p v-if="lastSortChange" aria-live="polite">Sort: {{ lastSortChange }}</p>
     </section>
     <section class="playground-card" aria-labelledby="surface-examples">
       <AvenText id="surface-examples" type="header1">Panels and disclosure</AvenText>

@@ -460,11 +460,11 @@ Slot notation `item{item,key,...}` means a scoped named slot. A slot without bra
 
 ### 55. AvenFilterBuilder / AvenSortControl — P2
 
-- **Styles:** nested condition groups, compact property/operator/value rows, popover editor; sort direction arrows and multi-sort list.
-- **Props:** builder modelValue:FilterGroup, definitions, maxDepth=3, allowGroups=true; sort modelValue:{key,direction:'asc'|'desc'}[], fields, multiple=false. FilterGroup is typed `{id,operator:'and'|'or',children:(Condition|FilterGroup)[]}`.
-- **Events:** update:modelValue, change on explicit apply; `add({parentId,condition})`, `remove({id})`, `reset({previousValue})`; SortControl emits update:modelValue on committed order/direction change.
-- **Slots:** field/operator/value editors, condition{condition,update,remove}, group-header{group}, add-action, footer{apply,reset}; sort item{field,direction,index}.
-- **Hooks/behavior:** group-indent/row-gap/border; preserve incomplete drafts without applying invalid queries. Validate operators against field types; library models intent without generating SQL or a service-specific query language.
+- **Styles:** nested condition groups, compact property/operator/value rows and group controls; sort direction and priority buttons with a multi-sort list.
+- **Props:** builder modelValue or defaultValue:FilterGroup, definitions, maxDepth=3 (including root), allowGroups=true; sort modelValue or defaultValue:{key,direction:'asc'|'desc'}[], fields, multiple=false. FilterGroup is typed `{id,operator:'and'|'or',children:(Condition|FilterGroup)[]}`.
+- **Events:** update:modelValue for builder drafts; `change` on explicit valid apply; `invalid({ids})`; `add({parentId,condition})`, `addGroup({parentId,group})`, `remove({id})`, `reset({previousValue})`; SortControl emits update:modelValue then change once per committed order/direction/add/remove, followed by remove({key,index}) when applicable.
+- **Slots:** field/operator/value editors, condition{condition,update,remove}, group-header{group,depth}, add-action, footer{apply,reset,valid}; sort item{field,direction,index,update,remove}, add-action, empty.
+- **Hooks/behavior:** group-indent/row-gap/border and sort gap/border/focus hooks; preserve incomplete drafts without applying invalid queries. Validate operators against field definitions; library models intent without generating SQL or a service-specific query language. Sort priority has keyboard-operable move actions and no drag dependency.
 
 ### 56. AvenStat / AvenFormattedValue — P2
 

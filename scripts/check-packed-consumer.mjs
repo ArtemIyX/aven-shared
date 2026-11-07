@@ -71,6 +71,8 @@ try {
       assert(paths.includes('dist/AvenFilterChip.js'))
       assert(paths.includes('dist/AvenFilterBar.js'))
       assert(paths.includes('dist/AvenSearchBar.js'))
+      assert(paths.includes('dist/AvenFilterBuilder.js'))
+      assert(paths.includes('dist/AvenSortControl.js'))
       assert(paths.includes('dist/AvenCard.js'))
       assert(paths.includes('dist/AvenPanel.js'))
       assert(paths.includes('dist/AvenPropertyRow.js'))
@@ -173,6 +175,10 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
     `import { h } from 'vue'\nimport { AvenSearchBar, AvenFilterBar, AvenFilterChip, type AvenFilterValue, type AvenFilterDefinition, type AvenSearchBarProps, type AvenSearchBarEvents, type AvenFilterBarEvents } from '@wellsaik/aven-vue'\nconst definitions: AvenFilterDefinition[] = [{ key: 'status', label: 'Status', valueType: 'select', operators: ['is'], options: [{ value: 'open', label: 'Open' }] }]\nconst filters: AvenFilterValue[] = [{ id: 'status-open', field: 'status', operator: 'is', value: 'open' }]\nconst props: AvenSearchBarProps = { defaultQuery: '', defaultFilters: filters, definitions, mode: 'apply' }\nconst apply: AvenSearchBarEvents['apply'][0] = { query: 'open', filters }\nconst clear: AvenFilterBarEvents['clear'][0] = { previousFilters: filters }\nvoid apply; void clear; h(AvenSearchBar, props); h(AvenFilterBar, { filters, definitions }); h(AvenFilterChip, { filter: filters[0]!, definition: definitions[0] })\n`,
   )
   await writeFile(
+    path.join(directory, 'filter-builder-consumer.ts'),
+    `import { h } from 'vue'\nimport { AvenFilterBuilder, AvenSortControl, type AvenFilterDefinition, type AvenFilterCondition, type AvenFilterGroup, type AvenFilterBuilderProps, type AvenFilterBuilderEvents, type AvenSortField, type AvenSortItem } from '@wellsaik/aven-vue'\ntype Field = 'status' | 'created'\nconst definitions: AvenFilterDefinition[] = [{ key: 'status', label: 'Status', valueType: 'select', operators: ['is'], options: [{ value: 'open', label: 'Open' }] }, { key: 'created', label: 'Created', valueType: 'date', operators: ['after', 'before'] }]\nconst condition: AvenFilterCondition<Field> = { id: 'open', field: 'status', operator: 'is', value: 'open' }\nconst group: AvenFilterGroup<Field> = { id: 'root', operator: 'and', children: [condition] }\nconst props: AvenFilterBuilderProps<Field> = { modelValue: group, definitions, maxDepth: 3, allowGroups: true }\nconst change: AvenFilterBuilderEvents<Field>['change'][0] = group\nconst fields: AvenSortField<Field>[] = [{ key: 'created', label: 'Created' }, { key: 'status', label: 'Status' }]\nconst sort: AvenSortItem<Field>[] = [{ key: 'created', direction: 'desc' }]\nvoid change; h(AvenFilterBuilder<Field>, props); h(AvenSortControl<Field>, { fields, modelValue: sort, multiple: true })\n`,
+  )
+  await writeFile(
     path.join(directory, 'tsconfig.json'),
     JSON.stringify({
       compilerOptions: {
@@ -196,6 +202,7 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
         'code-consumer.ts',
         'tree-consumer.ts',
         'search-consumer.ts',
+        'filter-builder-consumer.ts',
       ],
     }),
   )
@@ -224,6 +231,7 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
         'code-consumer.ts',
         'tree-consumer.ts',
         'search-consumer.ts',
+        'filter-builder-consumer.ts',
       ],
     }),
   )

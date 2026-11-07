@@ -199,6 +199,17 @@ export type {
   AvenSearchBarProps,
   AvenSearchBarEvents,
   AvenSearchBarSlots,
+  AvenFilterCondition,
+  AvenFilterGroup,
+  AvenFilterNode,
+  AvenFilterBuilderProps,
+  AvenFilterBuilderEvents,
+  AvenFilterBuilderSlots,
+  AvenSortField,
+  AvenSortItem,
+  AvenSortControlProps,
+  AvenSortControlEvents,
+  AvenSortControlSlots,
   AvenSearchFieldProps,
   AvenInputProps,
   AvenInputEvents,
@@ -297,6 +308,8 @@ export { default as AvenTreeItem } from './AvenTreeItem.vue'
 export { default as AvenFilterChip } from './AvenFilterChip.vue'
 export { default as AvenFilterBar } from './AvenFilterBar.vue'
 export { default as AvenSearchBar } from './AvenSearchBar.vue'
+export { default as AvenFilterBuilder } from './AvenFilterBuilder.vue'
+export { default as AvenSortControl } from './AvenSortControl.vue'
 export { default as AvenCard } from './AvenCard.vue'
 export { default as AvenPropertyRow } from './AvenPropertyRow.vue'
 export type { AvenTextProps } from './AvenText.js'
