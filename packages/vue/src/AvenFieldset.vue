@@ -1,18 +1,21 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue'
+import { computed, useAttrs, useSlots } from 'vue'
 import type { AvenFieldsetProps, AvenFieldsetSlots } from './types.js'
 import { useAvenId } from './composables.js'
 defineOptions({ inheritAttrs: false })
-const props = withDefaults(
-  defineProps<AvenFieldsetProps>(),
-  { disabled: false, required: false, invalid: false, unstyled: false },
-)
+const props = withDefaults(defineProps<AvenFieldsetProps>(), {
+  disabled: false,
+  required: false,
+  invalid: false,
+  unstyled: false,
+})
 const attrs = useAttrs()
+const slots = useSlots()
 defineSlots<AvenFieldsetSlots>()
 const descriptionId = computed(() =>
-  props.description || props.ui?.description?.attrs?.id
-    ? (props.ui?.description?.attrs?.id as string | undefined) ??
-      ((attrs.id as string | undefined) ? `${attrs.id}-description` : generatedId)
+  props.description || slots.description || props.ui?.description?.attrs?.id
+    ? ((props.ui?.description?.attrs?.id as string | undefined) ??
+      ((attrs.id as string | undefined) ? `${attrs.id}-description` : generatedId))
     : undefined,
 )
 const generatedId = useAvenId(undefined, 'fieldset-description')

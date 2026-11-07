@@ -12,6 +12,8 @@ import {
   AvenCollapsible,
   AvenContainer,
   AvenFormattedValue,
+  AvenField,
+  AvenFieldset,
   AvenGrid,
   AvenInline,
   AvenPanel,
@@ -30,6 +32,7 @@ import {
 
 const userName = ref('Avery')
 const searchQuery = ref('')
+const contactEmail = ref('')
 const lastSearch = ref('')
 const billingPeriod = ref('monthly')
 const emailUpdates = ref(true)
@@ -126,6 +129,27 @@ const buttonTones = [
         <AvenStatusDot tone="warning" size="lg" label="Sync delayed" />
         <AvenStatusDot tone="critical">Service unavailable</AvenStatusDot>
       </AvenInline>
+    </section>
+
+    <section class="playground-card" aria-labelledby="field-examples">
+      <AvenText id="field-examples" type="header1">Fields and grouped controls</AvenText>
+      <AvenField
+        id="contact-email"
+        label="Contact email"
+        orientation="horizontal"
+        label-width="9rem"
+        required
+        description="We use this address for account notices."
+        :error="contactEmail && !contactEmail.includes('@') ? 'Enter a valid email address.' : ''"
+      >
+        <template #default="{ controlAttrs }">
+          <AvenInput v-bind="controlAttrs" v-model="contactEmail" type="email" />
+        </template>
+      </AvenField>
+      <AvenFieldset legend="Notification preferences" description="Choose any that apply.">
+        <AvenCheckbox name="notifications" value="product" label="Product updates" />
+        <AvenCheckbox name="notifications" value="security" label="Security notices" />
+      </AvenFieldset>
     </section>
 
     <section class="playground-card" aria-labelledby="type-examples">

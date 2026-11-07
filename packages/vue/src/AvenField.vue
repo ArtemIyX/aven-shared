@@ -3,18 +3,15 @@ import { computed, useAttrs, useSlots } from 'vue'
 import type { AvenFieldProps, AvenFieldSlots } from './types.js'
 import { useAvenId } from './composables.js'
 defineOptions({ inheritAttrs: false })
-const props = withDefaults(
-  defineProps<AvenFieldProps>(),
-  {
-    required: false,
-    disabled: false,
-    readonly: false,
-    optional: false,
-    invalid: false,
-    orientation: 'vertical',
-    unstyled: false,
-  },
-)
+const props = withDefaults(defineProps<AvenFieldProps>(), {
+  required: false,
+  disabled: false,
+  readonly: false,
+  optional: false,
+  invalid: false,
+  orientation: 'vertical',
+  unstyled: false,
+})
 defineSlots<AvenFieldSlots>()
 const attrs = useAttrs()
 const slots = useSlots()
@@ -44,11 +41,7 @@ const forwardedAttrs = computed(() => {
       attrs.class,
       ui?.root?.class,
     ]"
-    :style="[
-      { '--aven-field-label-width': props.labelWidth },
-      attrs.style,
-      ui?.root?.style,
-    ]"
+    :style="[{ '--aven-field-label-width': props.labelWidth }, attrs.style, ui?.root?.style]"
   >
     <slot name="before" />
     <label
@@ -57,9 +50,7 @@ const forwardedAttrs = computed(() => {
       v-bind="ui?.label?.attrs"
       :class="['field-label', ui?.label?.class]"
       :style="ui?.label?.style"
-      ><slot name="label" :required="required" :invalid="invalidState">{{
-        label
-      }}</slot
+      ><slot name="label" :required="required" :invalid="invalidState">{{ label }}</slot
       ><span v-if="required" aria-hidden="true"> *</span
       ><span v-else-if="optional" class="optional">(optional)</span></label
     >
@@ -80,9 +71,8 @@ const forwardedAttrs = computed(() => {
           disabled,
           readonly,
           'aria-describedby':
-            [hasDescription ? descId : null, hasError ? errorId : null]
-              .filter(Boolean)
-              .join(' ') || undefined,
+            [hasDescription ? descId : null, hasError ? errorId : null].filter(Boolean).join(' ') ||
+            undefined,
           'aria-invalid': invalidState || undefined,
         }"
       />

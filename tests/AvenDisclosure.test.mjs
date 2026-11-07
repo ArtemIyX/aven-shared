@@ -9,6 +9,8 @@ import {
   AvenButtonGroup,
   AvenIconButton,
   AvenIcon,
+  AvenField,
+  AvenFieldset,
   AvenLink,
   AvenCollapsible,
   AvenFormattedValue,
@@ -95,6 +97,52 @@ test('provider replaces configuration reactively for injected consumers', async 
   config.value = { locale: 'fr-FR' }
   await nextTick()
   assert.equal(output.text, 'fr-FR')
+})
+
+test('field connects required native controls to stable help and error messages', async () => {
+  const html = await render({
+    render: () =>
+      h(
+        AvenField,
+        {
+          id: 'contact-email',
+          label: 'Email',
+          required: true,
+          disabled: true,
+          readonly: true,
+          description: 'Account notices',
+          error: ['Invalid address', 'Use a work email'],
+        },
+        {
+          default: ({ controlAttrs }) => h('input', controlAttrs),
+          error: ({ messages }) => messages.join(' / '),
+        },
+      ),
+  })
+  assert.match(html, /<label[^>]*for="contact-email"/)
+  assert.match(html, /id="contact-email"[^>]*required[^>]*disabled[^>]*readonly/)
+  assert.match(html, /aria-describedby="contact-email-description contact-email-error"/)
+  assert.match(html, /aria-invalid="true"/)
+  assert.match(html, /id="contact-email-description"/)
+  assert.match(html, /id="contact-email-error" role="alert"/)
+  assert.match(html, /Invalid address \/ Use a work email/)
+})
+
+test('fieldset links its description and preserves native disabled behavior', async () => {
+  const html = await render({
+    render: () =>
+      h(
+        AvenFieldset,
+        { legend: 'Notifications', description: 'Pick any channels.', disabled: true },
+        { default: () => h('input', { type: 'checkbox', name: 'updates' }) },
+      ),
+  })
+  const id = html.match(/aria-describedby="([^"]+)"/)
+  assert.ok(id)
+  assert.match(html, /<fieldset[^>]*disabled/)
+  assert.match(html, new RegExp(`<p id="${id[1]}"`))
+  assert.match(html, /<legend[^>]*>[\s\S]*?Notifications/)
+  assert.match(html, /type="checkbox" name="updates"/)
 })
 
 test('collapsible reflects controlled open state and keeps the panel linked', async () => {
