@@ -187,6 +187,18 @@ export type {
   AvenTreeItemProps,
   AvenTreeItemEvents,
   AvenTreeItemSlots,
+  AvenFilterScalar,
+  AvenFilterDefinition,
+  AvenFilterValue,
+  AvenFilterChipProps,
+  AvenFilterChipEvents,
+  AvenFilterChipSlots,
+  AvenFilterBarProps,
+  AvenFilterBarEvents,
+  AvenFilterBarSlots,
+  AvenSearchBarProps,
+  AvenSearchBarEvents,
+  AvenSearchBarSlots,
   AvenSearchFieldProps,
   AvenInputProps,
   AvenInputEvents,
@@ -282,6 +294,9 @@ export { default as AvenTimePicker } from './AvenTimePicker.vue'
 export { default as AvenCodeBlock } from './AvenCodeBlock.vue'
 export { default as AvenTree } from './AvenTree.vue'
 export { default as AvenTreeItem } from './AvenTreeItem.vue'
+export { default as AvenFilterChip } from './AvenFilterChip.vue'
+export { default as AvenFilterBar } from './AvenFilterBar.vue'
+export { default as AvenSearchBar } from './AvenSearchBar.vue'
 export { default as AvenCard } from './AvenCard.vue'
 export { default as AvenPropertyRow } from './AvenPropertyRow.vue'
 export type { AvenTextProps } from './AvenText.js'

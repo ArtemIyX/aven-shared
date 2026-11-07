@@ -1382,6 +1382,121 @@ export type AvenTreeItemSlots<Key extends string | number = string | number> = {
   icon?: (scope: { node: AvenTreeNode<Key> }) => unknown
   actions?: (scope: { node: AvenTreeNode<Key> }) => unknown
 }
+export type AvenFilterScalar = string | number | boolean | null | Array<string | number>
+export type AvenFilterDefinition = {
+  key: string
+  label: string
+  valueType: 'text' | 'number' | 'date' | 'boolean' | 'select' | 'multi-select'
+  operators: string[]
+  options?: AvenOption<string | number>[]
+}
+export type AvenFilterValue = {
+  id: string | number
+  field: string
+  operator: string
+  value: AvenFilterScalar
+}
+export type AvenFilterChipProps = {
+  filter: AvenFilterValue
+  definition?: AvenFilterDefinition
+  disabled?: boolean
+  removeLabel?: string
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'label' | 'remove'>
+}
+export type AvenFilterChipEvents = {
+  remove: [payload: { id: string | number; originalEvent: MouseEvent }]
+}
+export type AvenFilterChipSlots = {
+  default?: (scope: { filter: AvenFilterValue; definition?: AvenFilterDefinition }) => unknown
+  'remove-icon'?: () => unknown
+}
+export type AvenFilterBarProps = {
+  filters: AvenFilterValue[]
+  definitions: AvenFilterDefinition[]
+  disabled?: boolean
+  loading?: boolean
+  showClearAll?: boolean
+  label?: string
+  clearLabel?: string
+  unstyled?: boolean
+  ui?: AvenUi<
+    'root' | 'filters' | 'filter' | 'chip' | 'editor' | 'add' | 'summary' | 'empty' | 'clear'
+  >
+}
+export type AvenFilterBarEvents = {
+  'update:filters': [filters: AvenFilterValue[]]
+  remove: [payload: { id: string | number; originalEvent: MouseEvent }]
+  clear: [payload: { previousFilters: AvenFilterValue[] }]
+  add: [filter: AvenFilterValue]
+}
+export type AvenFilterBarSlots = {
+  filter?: (scope: {
+    filter: AvenFilterValue
+    definition?: AvenFilterDefinition
+    remove: (event: MouseEvent) => void
+    disabled: boolean
+  }) => unknown
+  editor?: (scope: {
+    definition?: AvenFilterDefinition
+    value: AvenFilterValue
+    setValue: (value: AvenFilterScalar) => void
+    setOperator: (operator: string) => void
+    disabled: boolean
+  }) => unknown
+  'add-trigger'?: (scope: {
+    definitions: AvenFilterDefinition[]
+    add: (filter: AvenFilterValue) => void
+    disabled: boolean
+  }) => unknown
+  summary?: (scope: { count: number }) => unknown
+  empty?: () => unknown
+}
+export type AvenSearchBarProps = {
+  query?: string
+  defaultQuery?: string
+  filters?: AvenFilterValue[]
+  defaultFilters?: AvenFilterValue[]
+  definitions?: AvenFilterDefinition[]
+  mode?: 'live' | 'apply'
+  debounce?: number
+  loading?: boolean
+  resultCount?: number
+  showClearAll?: boolean
+  disabled?: boolean
+  label?: string
+  placeholder?: string
+  unstyled?: boolean
+  ui?: AvenUi<
+    | 'root'
+    | 'search'
+    | 'leading'
+    | 'trailing'
+    | 'filters'
+    | 'chip'
+    | 'remove'
+    | 'add'
+    | 'summary'
+    | 'clear'
+  >
+}
+export type AvenSearchBarEvents = {
+  'update:query': [query: string]
+  'update:filters': [filters: AvenFilterValue[]]
+  search: [payload: { query: string; filters: AvenFilterValue[] }]
+  apply: [payload: { query: string; filters: AvenFilterValue[] }]
+  remove: [payload: { id: string | number; originalEvent: MouseEvent }]
+  clear: [payload: { previousFilters: AvenFilterValue[] }]
+}
+export type AvenSearchBarSlots = {
+  leading?: () => unknown
+  trailing?: () => unknown
+  filter?: AvenFilterBarSlots['filter']
+  editor?: AvenFilterBarSlots['editor']
+  'add-trigger'?: AvenFilterBarSlots['add-trigger']
+  summary?: AvenFilterBarSlots['summary']
+  empty?: () => unknown
+}
 export type AvenDialogProps = {
   open?: boolean
   defaultOpen?: boolean

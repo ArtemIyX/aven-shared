@@ -68,6 +68,9 @@ try {
       assert(paths.includes('dist/AvenCodeBlock.js'))
       assert(paths.includes('dist/AvenTree.js'))
       assert(paths.includes('dist/AvenTreeItem.js'))
+      assert(paths.includes('dist/AvenFilterChip.js'))
+      assert(paths.includes('dist/AvenFilterBar.js'))
+      assert(paths.includes('dist/AvenSearchBar.js'))
       assert(paths.includes('dist/AvenCard.js'))
       assert(paths.includes('dist/AvenPanel.js'))
       assert(paths.includes('dist/AvenPropertyRow.js'))
@@ -166,6 +169,10 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
     `import { h } from 'vue'\nimport { AvenTree, AvenTreeItem, type AvenTreeNode, type AvenTreeProps, type AvenTreeEvents, type AvenTreeSlots } from '@wellsaik/aven-vue'\ntype Key = 'src' | 'app'\nconst nodes: AvenTreeNode<Key>[] = [{ key: 'src', label: 'src', children: [{ key: 'app', label: 'App.vue' }] }]\nconst props: AvenTreeProps<Key> = { nodes, defaultExpandedKeys: ['src'], multiple: true, checkable: true }\nconst activate: AvenTreeEvents<Key>['activate'][0] = { key: 'app', node: nodes[0]!.children![0]!, originalEvent: new Event('keydown') }\nconst slots: AvenTreeSlots<Key> = { item: ({ key, level }) => String(key) + level }\nvoid activate; void slots; h(AvenTree, props); h(AvenTreeItem, { treeId: 'files', node: nodes[0]!, level: 1, position: 1, setSize: 1, index: 0, indexByKey: new Map([['src', 0]]), selectedKeys: [], expandedKeys: [], checkedKeys: [], loadingKeys: [], activeIndex: 0 })\n`,
   )
   await writeFile(
+    path.join(directory, 'search-consumer.ts'),
+    `import { h } from 'vue'\nimport { AvenSearchBar, AvenFilterBar, AvenFilterChip, type AvenFilterValue, type AvenFilterDefinition, type AvenSearchBarProps, type AvenSearchBarEvents, type AvenFilterBarEvents } from '@wellsaik/aven-vue'\nconst definitions: AvenFilterDefinition[] = [{ key: 'status', label: 'Status', valueType: 'select', operators: ['is'], options: [{ value: 'open', label: 'Open' }] }]\nconst filters: AvenFilterValue[] = [{ id: 'status-open', field: 'status', operator: 'is', value: 'open' }]\nconst props: AvenSearchBarProps = { defaultQuery: '', defaultFilters: filters, definitions, mode: 'apply' }\nconst apply: AvenSearchBarEvents['apply'][0] = { query: 'open', filters }\nconst clear: AvenFilterBarEvents['clear'][0] = { previousFilters: filters }\nvoid apply; void clear; h(AvenSearchBar, props); h(AvenFilterBar, { filters, definitions }); h(AvenFilterChip, { filter: filters[0]!, definition: definitions[0] })\n`,
+  )
+  await writeFile(
     path.join(directory, 'tsconfig.json'),
     JSON.stringify({
       compilerOptions: {
@@ -188,6 +195,7 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
         'surface-consumer.ts',
         'code-consumer.ts',
         'tree-consumer.ts',
+        'search-consumer.ts',
       ],
     }),
   )
@@ -215,6 +223,7 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
         'surface-consumer.ts',
         'code-consumer.ts',
         'tree-consumer.ts',
+        'search-consumer.ts',
       ],
     }),
   )

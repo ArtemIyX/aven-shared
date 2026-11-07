@@ -452,11 +452,11 @@ Slot notation `item{item,key,...}` means a scoped named slot. A slot without bra
 
 ### 54. AvenSearchBar / AvenFilterBar / AvenFilterChip — P2
 
-- **Styles:** inline search with chips, wrapping toolbar, expanded filter panel, compact summary and clear-all.
-- **Props:** query:string='', filters:FilterValue[], definitions:FilterDefinition[], loading=false, resultCount?, showClearAll=true, debounce=0. Definition includes key/label/value type/operators/options; FilterValue includes stable id/field/operator/value.
+- **Styles:** inline search with chips, wrapping toolbar, expanded filter panel, compact summary and clear-all. Filter definitions render native value editors by default; named slots can replace them.
+- **Props:** query:string='', filters:FilterValue[], definitions:FilterDefinition[], mode='live'|'apply', loading=false, resultCount?, showClearAll=true, debounce=0. Definition includes key/label/value type/operators/options; FilterValue includes stable id/field/operator/value. Search and filter values can be controlled or initialized with defaults.
 - **Events:** update:query, update:filters; `search({query,filters})`, `remove({id})`, `clear({previousFilters})`, `apply({query,filters})`. Choose live or apply mode explicitly; no surprise auto-save.
 - **Slots:** leading/trailing, filter{filter,definition,remove}, editor{definition,value,setValue}, add-trigger, summary{count}, empty.
-- **Hooks/behavior:** input/chip/toolbar hooks; accessible remove labels identify the criterion. Search parsing, query serialization, saved views and data transport remain app-owned.
+- **Hooks/behavior:** input/chip/toolbar CSS variables and typed UI parts; accessible remove labels identify the criterion; live search is debounced only when requested, while apply mode commits explicitly. Search parsing, query serialization, saved views and data transport remain app-owned.
 
 ### 55. AvenFilterBuilder / AvenSortControl — P2
 

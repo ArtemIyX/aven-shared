@@ -58,6 +58,9 @@ import {
   AvenCodeBlock,
   AvenTree,
   AvenTreeItem,
+  AvenSearchBar,
+  AvenFilterBar,
+  AvenFilterChip,
   AvenDatePicker,
   AvenDateRangePicker,
   AvenTimePicker,
@@ -3361,4 +3364,150 @@ test('tree exposes nested tree semantics, cascade checks, keyboard navigation, a
       }),
   })
   assert.match(itemHtml, /role="treeitem"/)
+})
+
+test('search and filter family supports controlled apply mode, single filter requests, and accessible chips', async () => {
+  const filter = { id: 'status-1', field: 'status', operator: 'is', value: 'active' }
+  const definitions = [
+    {
+      key: 'status',
+      label: 'Status',
+      valueType: 'select',
+      operators: ['is', 'is not'],
+      options: [{ value: 'active', label: 'Active' }],
+    },
+  ]
+  const html = await render({
+    render: () =>
+      h(AvenSearchBar, {
+        query: 'open items',
+        filters: [filter],
+        definitions,
+        mode: 'apply',
+        resultCount: 3,
+      }),
+  })
+  assert.match(html, /role="search" aria-label="Search and filters"/)
+  assert.match(html, /type="search"[^>]*value="open items"/)
+  assert.match(html, /aria-label="Remove Status filter"/)
+  assert.match(html, /Apply search and filters/)
+  assert.match(html, /3 results/)
+
+  const editorHtml = await render({
+    render: () => h(AvenFilterBar, { filters: [filter], definitions }),
+  })
+  assert.match(editorHtml, /Status operator/)
+  assert.match(editorHtml, /Status filter value/)
+  assert.match(editorHtml, /<select/)
+
+  const { renderer, root, find } = makeRenderer()
+  const queries = [],
+    filterUpdates = [],
+    removes = [],
+    applies = [],
+    searches = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenSearchBar, {
+          query: 'controlled',
+          filters: [filter],
+          definitions,
+          mode: 'apply',
+          'onUpdate:query': (value) => queries.push(value),
+          'onUpdate:filters': (value) => filterUpdates.push(value),
+          onRemove: (value) => removes.push(value),
+          onApply: (value) => applies.push(value),
+          onSearch: (value) => searches.push(value),
+        }),
+    })
+    .mount(root)
+  const input = find(root, (node) => node.type === 'input' && node.props.type === 'search')
+  input.props.onInput({ target: { value: 'new query' } })
+  assert.deepEqual(queries, ['new query'])
+  assert.equal(input.props.value, 'controlled')
+  assert.equal(searches.length, 0)
+  const removeButton = find(
+    root,
+    (node) => node.type === 'button' && node.props['aria-label'] === 'Remove Status filter',
+  )
+  removeButton.props.onClick(new Event('click'))
+  assert.deepEqual(filterUpdates, [[]])
+  assert.equal(removes.length, 1)
+  const applyButton = find(
+    root,
+    (node) => node.type === 'button' && node.props.class === 'search-apply-filters',
+  )
+  applyButton.props.onClick()
+  assert.deepEqual(applies, [{ query: 'controlled', filters: [filter] }])
+
+  const chip = []
+  const chipHtml = await render({
+    render: () =>
+      h(
+        AvenFilterBar,
+        {
+          filters: [filter],
+          definitions,
+        },
+        {
+          filter: ({ filter: item, remove }) =>
+            h(AvenFilterChip, { filter: item, onRemove: remove }),
+        },
+      ),
+  })
+  assert.match(chipHtml, /role="group" aria-label="Filters"/)
+  const chipMount = makeRenderer()
+  chipMount.renderer
+    .createApp({
+      render: () =>
+        h(AvenFilterChip, {
+          filter,
+          definition: definitions[0],
+          onRemove: (payload) => chip.push(payload),
+        }),
+    })
+    .mount(chipMount.root)
+  find(chipMount.root, (node) => node.type === 'button').props.onClick(new Event('click'))
+  assert.equal(chip.length, 1)
+  assert.equal(chip[0].id, filter.id)
+
+  const clearUpdates = [],
+    cleared = []
+  const clearMount = makeRenderer()
+  clearMount.renderer
+    .createApp({
+      render: () =>
+        h(AvenFilterBar, {
+          filters: [filter],
+          definitions,
+          'onUpdate:filters': (value) => clearUpdates.push(value),
+          onClear: (value) => cleared.push(value),
+        }),
+    })
+    .mount(clearMount.root)
+  find(
+    clearMount.root,
+    (node) => node.type === 'button' && node.props.class === 'filter-clear',
+  ).props.onClick()
+  assert.deepEqual(clearUpdates, [[]])
+  assert.deepEqual(cleared, [{ previousFilters: [filter] }])
+
+  const disabledEvents = []
+  const disabledMount = makeRenderer()
+  disabledMount.renderer
+    .createApp({
+      render: () =>
+        h(AvenFilterBar, {
+          filters: [filter],
+          definitions,
+          disabled: true,
+          'onUpdate:filters': (value) => disabledEvents.push(value),
+          onClear: (value) => disabledEvents.push(value),
+          onRemove: (value) => disabledEvents.push(value),
+        }),
+    })
+    .mount(disabledMount.root)
+  find(disabledMount.root, (node) => node.type === 'button').props.onClick(new Event('click'))
+  assert.deepEqual(disabledEvents, [])
 })

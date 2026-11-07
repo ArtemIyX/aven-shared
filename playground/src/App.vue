@@ -63,6 +63,9 @@ import {
   AvenPropertyRow,
   AvenCodeBlock,
   AvenTree,
+  AvenSearchBar,
+  AvenFilterBar,
+  AvenFilterChip,
   AvenPasswordField,
   AvenRadio,
   AvenRadioGroup,
@@ -83,6 +86,8 @@ import {
   type AvenToastItem,
   type AvenTableColumn,
   type AvenDateOnly,
+  type AvenFilterValue,
+  type AvenFilterDefinition,
 } from '@wellsaik/aven-vue'
 
 const userName = ref('Avery')
@@ -98,6 +103,27 @@ const fileTree = [
   },
   { key: 'readme', label: 'README.md' },
 ]
+const filterQuery = ref('')
+const activeFilters = ref<AvenFilterValue[]>([
+  { id: 'status-active', field: 'status', operator: 'is', value: 'active' },
+])
+const filterDefinitions: AvenFilterDefinition[] = [
+  {
+    key: 'status',
+    label: 'Status',
+    valueType: 'select',
+    operators: ['is', 'is not'],
+    options: [
+      { value: 'active', label: 'Active' },
+      { value: 'paused', label: 'Paused' },
+    ],
+  },
+  { key: 'owner', label: 'Owner', valueType: 'text', operators: ['contains', 'is'] },
+]
+const lastFilterApply = ref('')
+function updateFilterValue(setValue: (value: AvenFilterValue['value']) => void, event: Event) {
+  setValue((event.target as HTMLInputElement).value)
+}
 const searchQuery = ref('')
 const contactEmail = ref('')
 const lastSearch = ref('')
@@ -653,6 +679,44 @@ const buttonTones = [
           ><span v-if="node.key === 'app'">Vue component</span></template
         >
       </AvenTree>
+    </section>
+    <section class="playground-card" aria-labelledby="filter-example">
+      <AvenText id="filter-example" type="header1">Search and filter bar</AvenText>
+      <AvenSearchBar
+        v-model:query="filterQuery"
+        v-model:filters="activeFilters"
+        :definitions="filterDefinitions"
+        mode="apply"
+        :result-count="24"
+        label="Search projects and filters"
+        @apply="lastFilterApply = $event.query"
+      >
+        <template #filter="{ filter, definition, remove }">
+          <AvenFilterChip
+            :filter="filter"
+            :definition="definition"
+            @remove="remove($event.originalEvent)"
+          />
+        </template>
+        <template #editor="{ definition, value, setValue }">
+          <input
+            :aria-label="`${definition?.label ?? value.field} filter value`"
+            :value="value.value ?? ''"
+            @input="updateFilterValue(setValue, $event)"
+          />
+        </template>
+        <template #add-trigger="{ add, disabled }">
+          <AvenButton
+            :disabled="disabled"
+            variant="outline"
+            @click="add({ id: 'owner-filter', field: 'owner', operator: 'contains', value: '' })"
+            >Add owner filter</AvenButton
+          >
+        </template>
+      </AvenSearchBar>
+      <AvenText type="caption">Built-in filter editors</AvenText>
+      <AvenFilterBar v-model:filters="activeFilters" :definitions="filterDefinitions" />
+      <p v-if="lastFilterApply" aria-live="polite">Applied: {{ lastFilterApply }}</p>
     </section>
     <section class="playground-card" aria-labelledby="surface-examples">
       <AvenText id="surface-examples" type="header1">Panels and disclosure</AvenText>
