@@ -320,6 +320,29 @@ export type AvenStepperSlots<Key extends string | number = string | number> = {
   description?: (scope: AvenStepperItemSlot<Key>) => unknown
   connector?: (scope: { index: number }) => unknown
 }
+export type AvenSplitPaneProps = {
+  modelValue?: number[]
+  defaultValue?: number[]
+  panes?: number
+  minSizes?: number[]
+  maxSizes?: number[]
+  orientation?: 'horizontal' | 'vertical'
+  collapsible?: boolean
+  resizeStep?: number
+  labels?: string[]
+  label?: string
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'pane' | 'handle'>
+}
+export type AvenSplitPaneEvents = {
+  'update:modelValue': [sizes: number[]]
+  resizeStart: [payload: { sizes: number[] }]
+  resizeEnd: [payload: { sizes: number[] }]
+}
+export type AvenSplitPaneSlots = {
+  pane?: (scope: { index: number; sizes: number[] }) => unknown
+  handle?: (scope: { index: number; sizes: number[] }) => unknown
+}
 export type AvenListboxProps<T extends string | number = string | number> = {
   modelValue?: T | T[] | null
   defaultValue?: T | T[] | null

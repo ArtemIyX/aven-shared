@@ -34,6 +34,7 @@ import {
   AvenScrollArea,
   AvenAppShell,
   AvenStepper,
+  AvenSplitPane,
   AvenAvatar,
   AvenAvatarGroup,
   AvenChip,
@@ -2432,4 +2433,44 @@ test('stepper uses ordered step semantics and gates controlled navigation throug
   blocked.props.onClick({ type: 'click' })
   assert.deepEqual(updates, ['preferences'])
   assert.deepEqual(requests, [{ key: 'preferences', from: 'profile', originalEvent }])
+})
+
+test('split pane exposes separator values and keyboard resize requests once', async () => {
+  const html = await render({
+    render: () =>
+      h(
+        AvenSplitPane,
+        { label: 'Workspace', modelValue: [35, 65], labels: ['Editor', 'Preview'] },
+        { pane: ({ index }) => `Pane ${index + 1}` },
+      ),
+  })
+  assert.match(html, /role="group" aria-label="Workspace"/)
+  assert.match(html, /role="separator" tabindex="0" aria-label="Editor resize handle"/)
+  assert.match(html, /aria-valuenow="35"/)
+
+  const mounted = makeRenderer()
+  const updates = []
+  mounted.renderer
+    .createApp({
+      render: () =>
+        h(
+          AvenSplitPane,
+          {
+            modelValue: [35, 65],
+            minSizes: [20, 20],
+            'onUpdate:modelValue': (value) => updates.push(value),
+          },
+          { pane: ({ index }) => `Pane ${index + 1}` },
+        ),
+    })
+    .mount(mounted.root)
+  const separator = mounted.find(mounted.root, (node) => node.props?.role === 'separator')
+  let prevented = false
+  separator.props.onKeydown({ key: 'ArrowRight', preventDefault: () => (prevented = true) })
+  separator.props.onKeydown({ key: 'Home', preventDefault: () => (prevented = true) })
+  assert.equal(prevented, true)
+  assert.deepEqual(updates, [
+    [36, 64],
+    [20, 80],
+  ])
 })

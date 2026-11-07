@@ -99,6 +99,9 @@ export type {
   AvenStepperEvents,
   AvenStepperItemSlot,
   AvenStepperSlots,
+  AvenSplitPaneProps,
+  AvenSplitPaneEvents,
+  AvenSplitPaneSlots,
   AvenAlertDialogProps,
   AvenAlertDialogEvents,
   AvenAlertDialogSlots,
@@ -184,6 +187,7 @@ export { default as AvenToaster } from './AvenToaster.vue'
 export { default as AvenScrollArea } from './AvenScrollArea.vue'
 export { default as AvenAppShell } from './AvenAppShell.vue'
 export { default as AvenStepper } from './AvenStepper.vue'
+export { default as AvenSplitPane } from './AvenSplitPane.vue'
 export { default as AvenCard } from './AvenCard.vue'
 export { default as AvenPropertyRow } from './AvenPropertyRow.vue'
 export type { AvenTextProps } from './AvenText.js'

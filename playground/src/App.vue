@@ -6,6 +6,7 @@ import {
   AvenActionBar,
   AvenAppShell,
   AvenStepper,
+  AvenSplitPane,
   AvenBadge,
   AvenButton,
   AvenButtonGroup,
@@ -100,6 +101,7 @@ const projectNote = ref('')
 const scrollPosition = ref('Scroll the release notes.')
 const shellState = ref('Navigation expanded; inspector closed.')
 const currentStep = ref('profile')
+const splitSizes = ref([35, 65])
 const stepperItems = [
   { key: 'profile', label: 'Profile', description: 'Contact details', status: 'complete' as const },
   { key: 'preferences', label: 'Preferences', description: 'Choose updates' },
@@ -872,6 +874,35 @@ const buttonTones = [
         orientation="vertical"
         label="Uncontrolled setup example"
       />
+    </section>
+    <section class="playground-card" aria-labelledby="split-pane-examples">
+      <AvenText id="split-pane-examples" type="header1">Resizable panes</AvenText>
+      <AvenSplitPane
+        v-model="splitSizes"
+        label="Editor and preview"
+        :min-sizes="[20, 20]"
+        :max-sizes="[80, 80]"
+        style="block-size: 13rem; border: 1px solid var(--aven-color-border-subtle)"
+        @resize-end="({ sizes }) => (splitSizes = sizes)"
+      >
+        <template #pane="{ index, sizes }">
+          <div style="padding: 1rem">
+            <strong>{{ index === 0 ? 'Editor' : 'Preview' }}</strong>
+            <p>{{ Math.round(sizes[index] ?? 0) }}% of the available width</p>
+          </div>
+        </template>
+      </AvenSplitPane>
+      <AvenSplitPane
+        :panes="2"
+        :default-value="[50, 50]"
+        orientation="vertical"
+        label="Vertical workspace preview"
+        style="block-size: 12rem; border: 1px solid var(--aven-color-border-subtle)"
+      >
+        <template #pane="{ index }">
+          <div style="padding: 1rem">Vertical section {{ index + 1 }}</div>
+        </template>
+      </AvenSplitPane>
     </section>
     <section class="playground-card" aria-labelledby="toggle-examples">
       <AvenText id="toggle-examples" type="header1">Toggle controls</AvenText>
