@@ -208,6 +208,39 @@ export type AvenToasterEvents<Key extends AvenToastKey = AvenToastKey> = {
 export type AvenToasterSlots<Key extends AvenToastKey = AvenToastKey> = {
   toast?: (scope: { item: AvenToastItem<Key>; dismiss: () => void }) => unknown
 }
+export type AvenTextareaProps = {
+  modelValue?: string
+  defaultValue?: string
+  rows?: number
+  minRows?: number
+  maxRows?: number
+  autosize?: boolean
+  resize?: 'vertical' | 'none' | 'both'
+  maxlength?: number
+  showCount?: boolean
+  placeholder?: string
+  disabled?: boolean
+  readonly?: boolean
+  required?: boolean
+  name?: string
+  id?: string
+  invalid?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'control' | 'footer' | 'count' | 'leading' | 'trailing'>
+}
+export type AvenTextareaEvents = {
+  'update:modelValue': [value: string]
+  change: [value: string]
+  focus: [event: FocusEvent]
+  blur: [event: FocusEvent]
+  resize: [payload: { height: number }]
+}
+export type AvenTextareaSlots = {
+  leading?: () => unknown
+  trailing?: () => unknown
+  footer?: (scope: { length: number; maxlength?: number }) => unknown
+  count?: (scope: { length: number; maxlength?: number }) => unknown
+}
 export type AvenListboxProps<T extends string | number = string | number> = {
   modelValue?: T | T[] | null
   defaultValue?: T | T[] | null

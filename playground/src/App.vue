@@ -50,6 +50,7 @@ import {
   AvenText,
   AvenToast,
   AvenToaster,
+  AvenTextarea,
   AvenToggleButton,
   AvenToggleGroup,
   AvenToolbar,
@@ -92,6 +93,7 @@ const toastItems = ref<AvenToastItem<string>[]>([
 ])
 let nextToastId = 1
 const toastActivity = ref('')
+const projectNote = ref('')
 function dismissToast(id: string) {
   toastItems.value = toastItems.value.filter((item) => item.id !== id)
 }
@@ -454,6 +456,22 @@ const buttonTones = [
       </AvenSearchField>
       <p v-if="lastSearch">Last query: {{ lastSearch }}</p>
       <AvenPasswordField label="Password" autocomplete="current-password" />
+      <AvenField label="Project note" description="A short note shared with the team.">
+        <template #default="{ controlAttrs }">
+          <AvenTextarea
+            v-bind="controlAttrs"
+            v-model="projectNote"
+            :min-rows="2"
+            :max-rows="6"
+            :maxlength="240"
+            autosize
+            show-count
+          >
+            <template #leading>✎</template>
+            <template #trailing><span aria-hidden="true">⌘↵ saves</span></template>
+          </AvenTextarea>
+        </template>
+      </AvenField>
     </section>
     <section class="playground-card" aria-labelledby="radio-examples">
       <AvenText id="radio-examples" type="header1">Radio choices</AvenText>

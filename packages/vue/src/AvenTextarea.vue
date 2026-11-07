@@ -1,51 +1,31 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, watch, useAttrs } from 'vue'
-import type { AvenUi } from './types.js'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch, useAttrs } from 'vue'
+import type { AvenTextareaEvents, AvenTextareaProps, AvenTextareaSlots } from './types.js'
 defineOptions({ inheritAttrs: false })
-const props = withDefaults(
-  defineProps<{
-    modelValue?: string
-    defaultValue?: string
-    rows?: number
-    minRows?: number
-    maxRows?: number
-    autosize?: boolean
-    resize?: 'vertical' | 'none' | 'both'
-    maxlength?: number
-    showCount?: boolean
-    placeholder?: string
-    disabled?: boolean
-    readonly?: boolean
-    required?: boolean
-    name?: string
-    id?: string
-    invalid?: boolean
-    unstyled?: boolean
-    ui?: AvenUi<'root' | 'control' | 'footer' | 'count'>
-  }>(),
-  {
-    defaultValue: '',
-    rows: 3,
-    autosize: false,
-    resize: 'vertical',
-    showCount: false,
-    disabled: false,
-    readonly: false,
-    required: false,
-    invalid: false,
-    unstyled: false,
-  },
-)
-const emit = defineEmits<{
-  'update:modelValue': [value: string]
-  change: [value: string]
-  focus: [event: FocusEvent]
-  blur: [event: FocusEvent]
-  resize: [payload: { height: number }]
-}>()
+const props = withDefaults(defineProps<AvenTextareaProps>(), {
+  defaultValue: '',
+  rows: 3,
+  autosize: false,
+  resize: 'vertical',
+  showCount: false,
+  disabled: false,
+  readonly: false,
+  required: false,
+  invalid: false,
+  unstyled: false,
+})
+const emit = defineEmits<AvenTextareaEvents>()
+defineSlots<AvenTextareaSlots>()
 const attrs = useAttrs(),
   local = ref(props.defaultValue),
-  el = ref<HTMLTextAreaElement>()
+  el = ref<HTMLTextAreaElement>(),
+  composing = ref(false)
+let form: HTMLFormElement | null = null
+let skipNextInput = false
+const controlAttrs = computed(() => {
+  const { class: _class, style: _style, ...control } = attrs
+  return control
+})
 const value = computed(() => (props.modelValue !== undefined ? props.modelValue : local.value))
 watch(
   () => props.modelValue,
@@ -69,10 +49,42 @@ async function size() {
   if (old !== h) emit('resize', { height: h })
 }
 function input(e: Event) {
+  if (composing.value) return
+  if (skipNextInput) {
+    skipNextInput = false
+    return
+  }
+  acceptInput(e)
+}
+function acceptInput(e: Event) {
   const v = (e.target as HTMLTextAreaElement).value
   local.value = v
   emit('update:modelValue', v)
 }
+function compositionStart() {
+  composing.value = true
+}
+function compositionEnd(e: CompositionEvent) {
+  composing.value = false
+  skipNextInput = true
+  acceptInput(e)
+  queueMicrotask(() => (skipNextInput = false))
+}
+function reset(event: Event) {
+  queueMicrotask(() => {
+    if (event.defaultPrevented) return
+    const next = props.defaultValue ?? ''
+    if (props.modelValue !== undefined) emit('update:modelValue', next)
+    else local.value = next
+    void size()
+  })
+}
+onMounted(() => {
+  form = el.value?.form ?? null
+  form?.addEventListener('reset', reset)
+  void size()
+})
+onBeforeUnmount(() => form?.removeEventListener('reset', reset))
 defineExpose({
   focus: () => el.value?.focus(),
   blur: () => el.value?.blur(),
@@ -81,6 +93,7 @@ defineExpose({
 </script>
 <template>
   <div
+    v-bind="ui?.root?.attrs"
     :class="[
       'aven-textarea',
       { 'is-invalid': invalid, 'is-disabled': disabled, 'is-unstyled': unstyled },
@@ -89,26 +102,41 @@ defineExpose({
     ]"
     :style="[attrs.style, ui?.root?.style]"
   >
-    <textarea
-      ref="el"
-      v-bind="attrs"
-      :id="id"
-      :name="name"
-      :rows="rows"
-      :maxlength="maxlength"
-      :placeholder="placeholder"
-      :disabled="disabled"
-      :readonly="readonly"
-      :required="required"
-      :aria-invalid="invalid || undefined"
-      :value="value"
-      :class="['textarea-control', `resize-${resize}`, ui?.control?.class]"
-      :style="ui?.control?.style"
-      @input="input"
-      @change="emit('change', ($event.target as HTMLTextAreaElement).value)"
-      @focus="emit('focus', $event)"
-      @blur="emit('blur', $event)"
-    />
+    <div class="textarea-shell">
+      <span v-if="$slots.leading" :class="ui?.leading?.class" :style="ui?.leading?.style">
+        <slot name="leading" />
+      </span>
+      <textarea
+        ref="el"
+        v-bind="{ ...controlAttrs, ...ui?.control?.attrs }"
+        :id="id"
+        :name="name"
+        :rows="rows"
+        :maxlength="maxlength"
+        :placeholder="placeholder"
+        :disabled="disabled"
+        :readonly="readonly"
+        :required="required"
+        :aria-invalid="invalid || undefined"
+        :value="value"
+        :class="[
+          'textarea-control',
+          `resize-${resize}`,
+          { 'is-autosize': autosize },
+          ui?.control?.class,
+        ]"
+        :style="ui?.control?.style"
+        @input="input"
+        @change="!composing && emit('change', ($event.target as HTMLTextAreaElement).value)"
+        @compositionstart="compositionStart"
+        @compositionend="compositionEnd"
+        @focus="emit('focus', $event)"
+        @blur="emit('blur', $event)"
+      />
+      <span v-if="$slots.trailing" :class="ui?.trailing?.class" :style="ui?.trailing?.style">
+        <slot name="trailing" />
+      </span>
+    </div>
     <div
       v-if="showCount || $slots.footer"
       :class="['textarea-footer', ui?.footer?.class]"
@@ -155,6 +183,21 @@ defineExpose({
   color: inherit;
   font: inherit;
   line-height: var(--aven-line-height-normal);
+}
+.textarea-shell {
+  display: flex;
+  align-items: stretch;
+  min-inline-size: 0;
+}
+.textarea-shell > span {
+  display: flex;
+  align-items: flex-start;
+  flex: none;
+  padding: var(--aven-space-3);
+  color: var(--aven-color-text-secondary);
+}
+.textarea-control.is-autosize {
+  min-block-size: 0;
 }
 .resize-none {
   resize: none;

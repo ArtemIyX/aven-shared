@@ -30,6 +30,7 @@ import {
   AvenBanner,
   AvenToast,
   AvenToaster,
+  AvenTextarea,
   AvenAvatar,
   AvenAvatarGroup,
   AvenChip,
@@ -2233,4 +2234,66 @@ test('toaster limits mounted notifications and uses controlled item data', async
   assert.match(html, /Two/)
   assert.doesNotMatch(html, /Three/)
   assert.equal((html.match(/role="status"/g) ?? []).length, 2)
+})
+
+test('textarea defers IME drafts, commits once, and exposes its count content', async () => {
+  const mounted = makeRenderer()
+  const updates = []
+  mounted.renderer
+    .createApp({
+      render: () =>
+        h(AvenTextarea, {
+          defaultValue: '',
+          'onUpdate:modelValue': (value) => updates.push(value),
+        }),
+    })
+    .mount(mounted.root)
+  const textarea = mounted.find(mounted.root, (node) => node.type === 'textarea')
+  dispatchHandler(textarea.props.onCompositionstart, {})
+  dispatchHandler(textarea.props.onInput, { target: { value: 'かな' } })
+  assert.deepEqual(updates, [])
+  const compositionEnd = { target: { value: 'かな' } }
+  dispatchHandler(textarea.props.onCompositionend, compositionEnd)
+  dispatchHandler(textarea.props.onInput, { target: { value: 'かな' } })
+  assert.deepEqual(updates, ['かな'])
+
+  const html = await render({
+    render: () =>
+      h(AvenTextarea, {
+        defaultValue: 'Note',
+        maxlength: 20,
+        showCount: true,
+        class: 'consumer-root',
+        'aria-describedby': 'note-help',
+      }),
+  })
+  assert.match(html, /class="aven-textarea[^\"]*consumer-root/)
+  assert.match(html, /<textarea[^>]*aria-describedby="note-help"/)
+  assert.match(html, />4 \/ 20</)
+})
+
+test('textarea restores defaults on accepted native reset and respects canceled reset', async () => {
+  const mounted = makeRenderer()
+  mounted.renderer
+    .createApp({
+      render: () => h('form', {}, [h(AvenTextarea, { defaultValue: 'Original' })]),
+    })
+    .mount(mounted.root)
+  const form = mounted.find(mounted.root, (node) => node.type === 'form')
+  const textarea = mounted.find(mounted.root, (node) => node.type === 'textarea')
+  assert.equal(form.listeners.get('reset')?.length, 1)
+  dispatchHandler(textarea.props.onInput, { target: { value: 'Edited' } })
+  await nextTick()
+  assert.equal(textarea.props.value, 'Edited')
+  form.dispatchEvent({ type: 'reset', defaultPrevented: false })
+  await new Promise((resolve) => queueMicrotask(resolve))
+  await nextTick()
+  assert.equal(textarea.props.value, 'Original')
+
+  dispatchHandler(textarea.props.onInput, { target: { value: 'Keep this edit' } })
+  await nextTick()
+  form.dispatchEvent({ type: 'reset', defaultPrevented: true })
+  await new Promise((resolve) => queueMicrotask(resolve))
+  await nextTick()
+  assert.equal(textarea.props.value, 'Keep this edit')
 })
