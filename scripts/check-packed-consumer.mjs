@@ -59,6 +59,9 @@ try {
       assert(paths.includes('dist/AvenFileInput.js'))
       assert(paths.includes('dist/AvenDropzone.js'))
       assert(paths.includes('dist/AvenColorPicker.js'))
+      assert(paths.includes('dist/AvenDatePicker.js'))
+      assert(paths.includes('dist/AvenDateRangePicker.js'))
+      assert(paths.includes('dist/AvenTimePicker.js'))
     }
   }
   await writeFile(
@@ -130,6 +133,10 @@ h(AvenDropzone, fileInput)
 h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: 'One' }], modelValue: 'one', clickable: true } satisfies AvenStepperProps<'one'>)\nconst stepRequest: AvenStepperEvents<'one'>['requestStep'][0] = { key: 'one', from: undefined, originalEvent: new MouseEvent('click') }\nvoid stepRequest\nh(AvenToast<'saved'>, toastItems[0])\nh(AvenToaster<'saved'>, toaster)\n`,
   )
   await writeFile(
+    path.join(directory, 'date-consumer.ts'),
+    `import { h } from 'vue'\nimport { AvenDatePicker, AvenDateRangePicker, AvenTimePicker, type AvenDateOnly, type AvenDatePickerProps, type AvenDateRangePickerProps, type AvenTimePickerProps } from '@wellsaik/aven-vue'\nconst date: AvenDateOnly = '2024-02-29'\nconst dateProps: AvenDatePickerProps = { modelValue: date, locale: 'en-GB', weekStartsOn: 1 }\nconst rangeProps: AvenDateRangePickerProps = { defaultValue: { start: date, end: null }, months: 2 }\nconst timeProps: AvenTimePickerProps = { defaultValue: '09:30', timeStep: 15, hourCycle: 'h23' }\nh(AvenDatePicker, dateProps); h(AvenDateRangePicker, rangeProps); h(AvenTimePicker, timeProps)\n`,
+  )
+  await writeFile(
     path.join(directory, 'tsconfig.json'),
     JSON.stringify({
       compilerOptions: {
@@ -146,6 +153,7 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
         'selection-consumer.ts',
         'overlay-consumer.ts',
         'primitive-consumer.ts',
+        'date-consumer.ts',
       ],
     }),
   )
@@ -167,6 +175,7 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
         'selection-consumer.ts',
         'overlay-consumer.ts',
         'primitive-consumer.ts',
+        'date-consumer.ts',
       ],
     }),
   )

@@ -101,6 +101,15 @@ export default defineConfig({
         AvenColorPicker: fileURLToPath(
           new URL('./packages/vue/src/AvenColorPicker.vue', import.meta.url),
         ),
+        AvenDatePicker: fileURLToPath(
+          new URL('./packages/vue/src/AvenDatePicker.vue', import.meta.url),
+        ),
+        AvenDateRangePicker: fileURLToPath(
+          new URL('./packages/vue/src/AvenDateRangePicker.vue', import.meta.url),
+        ),
+        AvenTimePicker: fileURLToPath(
+          new URL('./packages/vue/src/AvenTimePicker.vue', import.meta.url),
+        ),
         AvenCard: fileURLToPath(new URL('./packages/vue/src/AvenCard.vue', import.meta.url)),
         AvenPropertyRow: fileURLToPath(
           new URL('./packages/vue/src/AvenPropertyRow.vue', import.meta.url),

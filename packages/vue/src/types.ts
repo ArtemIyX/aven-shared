@@ -712,6 +712,139 @@ export type AvenColorPickerSlots = {
   error?: () => unknown
   footer?: () => unknown
 }
+export type AvenDateOnly = `${string}-${string}-${string}`
+export type AvenDatePreset = { key: string | number; label: string; value: AvenDateOnly }
+export type AvenDateRangeValue = { start: AvenDateOnly | null; end: AvenDateOnly | null }
+export type AvenDatePickerProps = {
+  modelValue?: AvenDateOnly | null
+  defaultValue?: AvenDateOnly | null
+  min?: AvenDateOnly
+  max?: AvenDateOnly
+  disabledDate?: (date: AvenDateOnly) => boolean
+  locale?: string
+  weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6
+  months?: number
+  presets?: AvenDatePreset[]
+  clearable?: boolean
+  open?: boolean
+  defaultOpen?: boolean
+  name?: string
+  id?: string
+  label?: string
+  placeholder?: string
+  description?: string
+  error?: string
+  invalid?: boolean
+  required?: boolean
+  disabled?: boolean
+  readonly?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<
+    | 'root'
+    | 'input'
+    | 'trigger'
+    | 'popover'
+    | 'grid'
+    | 'day'
+    | 'selected'
+    | 'range'
+    | 'preset'
+    | 'error'
+  >
+}
+export type AvenDatePickerEvents = {
+  'update:modelValue': [value: AvenDateOnly | null]
+  change: [value: AvenDateOnly | null]
+  'update:open': [value: boolean]
+  monthChange: [value: { year: number; month: number }]
+  invalidInput: [payload: { text: string; reason: 'incomplete' | 'invalid' }]
+  presetSelect: [payload: { key: string | number; value: AvenDateOnly }]
+}
+export type AvenDatePickerSlots = {
+  field?: (scope: {
+    value: string
+    open: boolean
+    disabled: boolean
+    openPicker: () => void
+  }) => unknown
+  day?: (scope: {
+    date: AvenDateOnly
+    selected: boolean
+    today: boolean
+    disabled: boolean
+    inRange: boolean
+  }) => unknown
+  weekday?: (scope: { label: string; index: number }) => unknown
+  preset?: (scope: { item: AvenDatePreset }) => unknown
+  footer?: (scope: { apply: () => void; clear: () => void }) => unknown
+}
+export type AvenDateRangePickerProps = Omit<
+  AvenDatePickerProps,
+  'modelValue' | 'defaultValue' | 'min' | 'max' | 'presets'
+> & {
+  modelValue?: AvenDateRangeValue
+  defaultValue?: AvenDateRangeValue
+  min?: AvenDateOnly
+  max?: AvenDateOnly
+  presets?: Array<{ key: string | number; label: string; value: AvenDateRangeValue }>
+}
+export type AvenDateRangePickerEvents = Omit<
+  AvenDatePickerEvents,
+  'update:modelValue' | 'change' | 'presetSelect'
+> & {
+  'update:modelValue': [value: AvenDateRangeValue]
+  change: [value: AvenDateRangeValue]
+  presetSelect: [payload: { key: string | number; value: AvenDateRangeValue }]
+}
+export type AvenDateRangePickerSlots = Omit<AvenDatePickerSlots, 'day' | 'preset' | 'field'> & {
+  field?: (scope: {
+    value: AvenDateRangeValue
+    open: boolean
+    disabled: boolean
+    openPicker: () => void
+  }) => unknown
+  day?: (scope: {
+    date: AvenDateOnly
+    selected: boolean
+    today: boolean
+    disabled: boolean
+    inRange: boolean
+  }) => unknown
+  preset?: (scope: {
+    item: { key: string | number; label: string; value: AvenDateRangeValue }
+  }) => unknown
+}
+export type AvenTimePickerProps = {
+  modelValue?: string | null
+  defaultValue?: string | null
+  min?: string
+  max?: string
+  locale?: string
+  timeStep?: number
+  hourCycle?: 'h12' | 'h23'
+  seconds?: boolean
+  clearable?: boolean
+  name?: string
+  id?: string
+  label?: string
+  description?: string
+  error?: string
+  invalid?: boolean
+  required?: boolean
+  disabled?: boolean
+  readonly?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'input' | 'control' | 'error'>
+}
+export type AvenTimePickerEvents = {
+  'update:modelValue': [value: string | null]
+  change: [value: string | null]
+  invalidInput: [payload: { text: string; reason: 'incomplete' | 'invalid' }]
+}
+export type AvenTimePickerSlots = {
+  field?: (scope: { value: string; disabled: boolean }) => unknown
+  'time-option'?: (scope: { value: string; label: string; selected: boolean }) => unknown
+}
 export type AvenListboxProps<T extends string | number = string | number> = {
   modelValue?: T | T[] | null
   defaultValue?: T | T[] | null

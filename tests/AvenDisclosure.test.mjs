@@ -47,6 +47,9 @@ import {
   AvenFileInput,
   AvenDropzone,
   AvenColorPicker,
+  AvenDatePicker,
+  AvenDateRangePicker,
+  AvenTimePicker,
   AvenAvatar,
   AvenAvatarGroup,
   AvenChip,
@@ -2915,4 +2918,71 @@ test('color picker retains named swatches, emits one controlled commit, and repo
   text.props.onInput({ currentTarget: { value: 'invalid' } })
   text.props.onBlur({ currentTarget: { value: 'invalid' } })
   assert.deepEqual(invalid, [{ text: 'invalid' }])
+})
+
+test('date picker preserves date-only values, calendar semantics, and one completed commit', async () => {
+  const html = await render({
+    render: () => h(AvenDatePicker, { defaultValue: '2024-02-29', label: 'Leap day' }),
+  })
+  assert.match(html, /value="2024-02-29"/)
+  assert.match(html, /Open calendar/)
+  const { renderer, root, find } = makeRenderer()
+  const updates = [],
+    changes = [],
+    invalid = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenDatePicker, {
+          modelValue: '2024-02-29',
+          open: true,
+          label: 'Date',
+          'onUpdate:modelValue': (value) => updates.push(value),
+          onChange: (value) => changes.push(value),
+          onInvalidInput: (payload) => invalid.push(payload),
+        }),
+    })
+    .mount(root)
+  const input = find(root, (node) => node.type === 'input' && node.props.type === 'text')
+  input.props.onInput({ target: { value: '2024-03-01' } })
+  assert.deepEqual(updates, ['2024-03-01'])
+  assert.deepEqual(changes, ['2024-03-01'])
+  input.props.onInput({ target: { value: '2024-02-31' } })
+  assert.deepEqual(invalid, [])
+  input.props.onBlur()
+  assert.deepEqual(invalid, [{ text: '2024-02-31', reason: 'invalid' }])
+})
+
+test('date range commits only complete calendar ranges and time picker emits valid native values once', async () => {
+  const rangeHtml = await render({
+    render: () =>
+      h(AvenDateRangePicker, {
+        defaultValue: { start: '2024-02-01', end: '2024-02-29' },
+        label: 'Date range',
+        open: true,
+      }),
+  })
+  assert.match(rangeHtml, /role="grid"/)
+  assert.match(rangeHtml, /aria-selected="true"/)
+  const { renderer, root, find } = makeRenderer()
+  const updates = [],
+    changes = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenTimePicker, {
+          modelValue: '09:00',
+          label: 'Start time',
+          timeStep: 15,
+          'onUpdate:modelValue': (value) => updates.push(value),
+          onChange: (value) => changes.push(value),
+        }),
+    })
+    .mount(root)
+  const input = find(root, (node) => node.type === 'input' && node.props.type === 'time')
+  input.props.onInput({ target: { value: '09:30' } })
+  input.props.onChange({ target: { value: '09:30' } })
+  input.props.onBlur()
+  assert.deepEqual(updates, ['09:30'])
+  assert.deepEqual(changes, ['09:30'])
 })

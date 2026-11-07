@@ -19,6 +19,9 @@ import {
   AvenFileInput,
   AvenDropzone,
   AvenColorPicker,
+  AvenDatePicker,
+  AvenDateRangePicker,
+  AvenTimePicker,
   AvenBadge,
   AvenButton,
   AvenButtonGroup,
@@ -72,6 +75,7 @@ import {
   AvenToolbar,
   type AvenToastItem,
   type AvenTableColumn,
+  type AvenDateOnly,
 } from '@wellsaik/aven-vue'
 
 const userName = ref('Avery')
@@ -138,6 +142,13 @@ const pickedFiles = ref<File[]>([])
 const accentColor = ref<string | null>('#2457d6ff')
 const colorPickerOpen = ref(false)
 const colorActivity = ref('Choose a named swatch or edit the hex draft.')
+const pickedDate = ref<AvenDateOnly | null>('2026-11-07')
+const pickedRange = ref<{ start: AvenDateOnly | null; end: AvenDateOnly | null }>({
+  start: '2026-11-03',
+  end: '2026-11-07',
+})
+const pickedTime = ref<string | null>('09:30')
+const dateActivity = ref('Keyboard arrows move by day or week; Page Up and Page Down change month.')
 const workspaceOptions = [
   { value: 'design', label: 'Design workspace', description: 'Product and design work' },
   { value: 'engineering', label: 'Engineering workspace', description: 'Build and release work' },
@@ -1201,6 +1212,54 @@ const buttonTones = [
         label="Uncontrolled brand color"
         :swatches="colorSwatches.slice(0, 3)"
       />
+    </section>
+    <section class="playground-card" aria-labelledby="date-picker-examples">
+      <AvenText id="date-picker-examples" type="header1">Date and time pickers</AvenText>
+      <form
+        @submit.prevent="
+          dateActivity = `Submitted ${pickedDate ?? 'no date'}, ${pickedRange.start ?? 'no start'}–${pickedRange.end ?? 'no end'}, ${pickedTime ?? 'no time'}`
+        "
+      >
+        <AvenDatePicker
+          v-model="pickedDate"
+          label="Release date"
+          name="release-date"
+          locale="en-GB"
+          :week-starts-on="1"
+          :months="2"
+          clearable
+          :presets="[{ key: 'today', label: 'Today', value: '2026-11-07' }]"
+          description="Use YYYY-MM-DD; dates are calendar values without time-zone conversion."
+        >
+          <template #day="{ date, selected, today }"
+            ><span :aria-label="`${date}${today ? ', today' : ''}`"
+              >{{ Number(date.slice(-2)) }}{{ selected ? ' ✓' : '' }}</span
+            ></template
+          >
+        </AvenDatePicker>
+        <AvenDateRangePicker
+          v-model="pickedRange"
+          label="Planning window"
+          name="planning"
+          :months="2"
+          :week-starts-on="1"
+          clearable
+        />
+        <AvenTimePicker
+          v-model="pickedTime"
+          label="Start time"
+          name="start-time"
+          locale="en-GB"
+          :time-step="15"
+          hour-cycle="h23"
+          description="Native time control; step is 15 minutes."
+        />
+        <AvenButton type="submit">Submit schedule</AvenButton>
+        <AvenButton type="reset" variant="outline">Reset schedule</AvenButton>
+      </form>
+      <p aria-live="polite">{{ dateActivity }}</p>
+      <AvenDatePicker default-value="2026-02-28" label="Uncontrolled date" />
+      <AvenTimePicker default-value="14:00" label="Uncontrolled time" />
     </section>
     <section class="playground-card" aria-labelledby="file-input-examples">
       <AvenText id="file-input-examples" type="header1">Files and dropzone</AvenText>
