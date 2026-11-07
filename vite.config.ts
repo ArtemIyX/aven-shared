@@ -10,6 +10,122 @@ export default defineConfig({
       entry: {
         index: fileURLToPath(new URL('./packages/vue/src/index.ts', import.meta.url)),
         AvenText: fileURLToPath(new URL('./packages/vue/src/AvenText.ts', import.meta.url)),
+        AvenButton: fileURLToPath(new URL('./packages/vue/src/AvenButton.vue', import.meta.url)),
+        AvenField: fileURLToPath(new URL('./packages/vue/src/AvenField.vue', import.meta.url)),
+        AvenInput: fileURLToPath(new URL('./packages/vue/src/AvenInput.vue', import.meta.url)),
+        AvenSearchField: fileURLToPath(
+          new URL('./packages/vue/src/AvenSearchField.vue', import.meta.url),
+        ),
+        AvenPasswordField: fileURLToPath(
+          new URL('./packages/vue/src/AvenPasswordField.vue', import.meta.url),
+        ),
+        AvenBadge: fileURLToPath(new URL('./packages/vue/src/AvenBadge.vue', import.meta.url)),
+        AvenLink: fileURLToPath(new URL('./packages/vue/src/AvenLink.vue', import.meta.url)),
+        AvenSeparator: fileURLToPath(
+          new URL('./packages/vue/src/AvenSeparator.vue', import.meta.url),
+        ),
+        AvenTextarea: fileURLToPath(
+          new URL('./packages/vue/src/AvenTextarea.vue', import.meta.url),
+        ),
+        AvenCheckbox: fileURLToPath(
+          new URL('./packages/vue/src/AvenCheckbox.vue', import.meta.url),
+        ),
+        AvenSwitch: fileURLToPath(new URL('./packages/vue/src/AvenSwitch.vue', import.meta.url)),
+        AvenStatusDot: fileURLToPath(
+          new URL('./packages/vue/src/AvenStatusDot.vue', import.meta.url),
+        ),
+        AvenKbd: fileURLToPath(new URL('./packages/vue/src/AvenKbd.vue', import.meta.url)),
+        AvenAlert: fileURLToPath(new URL('./packages/vue/src/AvenAlert.vue', import.meta.url)),
+        AvenSpinner: fileURLToPath(new URL('./packages/vue/src/AvenSpinner.vue', import.meta.url)),
+        AvenProgress: fileURLToPath(
+          new URL('./packages/vue/src/AvenProgress.vue', import.meta.url),
+        ),
+        AvenFieldset: fileURLToPath(
+          new URL('./packages/vue/src/AvenFieldset.vue', import.meta.url),
+        ),
+        AvenSkeleton: fileURLToPath(
+          new URL('./packages/vue/src/AvenSkeleton.vue', import.meta.url),
+        ),
+        AvenEmptyState: fileURLToPath(
+          new URL('./packages/vue/src/AvenEmptyState.vue', import.meta.url),
+        ),
+        AvenCard: fileURLToPath(new URL('./packages/vue/src/AvenCard.vue', import.meta.url)),
+        AvenPropertyRow: fileURLToPath(
+          new URL('./packages/vue/src/AvenPropertyRow.vue', import.meta.url),
+        ),
+        AvenDialog: fileURLToPath(new URL('./packages/vue/src/AvenDialog.vue', import.meta.url)),
+        AvenTooltip: fileURLToPath(new URL('./packages/vue/src/AvenTooltip.vue', import.meta.url)),
+        AvenPopover: fileURLToPath(new URL('./packages/vue/src/AvenPopover.vue', import.meta.url)),
+        AvenSelect: fileURLToPath(new URL('./packages/vue/src/AvenSelect.vue', import.meta.url)),
+        AvenMenu: fileURLToPath(new URL('./packages/vue/src/AvenMenu.vue', import.meta.url)),
+        AvenDropdownMenu: fileURLToPath(
+          new URL('./packages/vue/src/AvenDropdownMenu.vue', import.meta.url),
+        ),
+        AvenIcon: fileURLToPath(new URL('./packages/vue/src/AvenIcon.vue', import.meta.url)),
+        AvenIconButton: fileURLToPath(
+          new URL('./packages/vue/src/AvenIconButton.vue', import.meta.url),
+        ),
+        AvenTabs: fileURLToPath(new URL('./packages/vue/src/AvenTabs.vue', import.meta.url)),
+        AvenSegmentedControl: fileURLToPath(
+          new URL('./packages/vue/src/AvenSegmentedControl.vue', import.meta.url),
+        ),
+        AvenBreadcrumb: fileURLToPath(
+          new URL('./packages/vue/src/AvenBreadcrumb.vue', import.meta.url),
+        ),
+        AvenPagination: fileURLToPath(
+          new URL('./packages/vue/src/AvenPagination.vue', import.meta.url),
+        ),
+        AvenNavList: fileURLToPath(new URL('./packages/vue/src/AvenNavList.vue', import.meta.url)),
+        AvenNumberInput: fileURLToPath(
+          new URL('./packages/vue/src/AvenNumberInput.vue', import.meta.url),
+        ),
+        AvenForm: fileURLToPath(new URL('./packages/vue/src/AvenForm.vue', import.meta.url)),
+        AvenFormActions: fileURLToPath(
+          new URL('./packages/vue/src/AvenFormActions.vue', import.meta.url),
+        ),
+        AvenChip: fileURLToPath(new URL('./packages/vue/src/AvenChip.vue', import.meta.url)),
+        AvenTag: fileURLToPath(new URL('./packages/vue/src/AvenTag.vue', import.meta.url)),
+        AvenAvatar: fileURLToPath(new URL('./packages/vue/src/AvenAvatar.vue', import.meta.url)),
+        AvenAvatarGroup: fileURLToPath(
+          new URL('./packages/vue/src/AvenAvatarGroup.vue', import.meta.url),
+        ),
+        AvenSidebar: fileURLToPath(new URL('./packages/vue/src/AvenSidebar.vue', import.meta.url)),
+        AvenButtonGroup: fileURLToPath(
+          new URL('./packages/vue/src/AvenButtonGroup.vue', import.meta.url),
+        ),
+        AvenSplitButton: fileURLToPath(
+          new URL('./packages/vue/src/AvenSplitButton.vue', import.meta.url),
+        ),
+        AvenRadioGroup: fileURLToPath(
+          new URL('./packages/vue/src/AvenRadioGroup.vue', import.meta.url),
+        ),
+        AvenRadio: fileURLToPath(new URL('./packages/vue/src/AvenRadio.vue', import.meta.url)),
+        AvenToggleButton: fileURLToPath(
+          new URL('./packages/vue/src/AvenToggleButton.vue', import.meta.url),
+        ),
+        AvenToggleGroup: fileURLToPath(
+          new URL('./packages/vue/src/AvenToggleGroup.vue', import.meta.url),
+        ),
+        AvenCheckboxGroup: fileURLToPath(
+          new URL('./packages/vue/src/AvenCheckboxGroup.vue', import.meta.url),
+        ),
+        AvenPanel: fileURLToPath(new URL('./packages/vue/src/AvenPanel.vue', import.meta.url)),
+        AvenAccordion: fileURLToPath(
+          new URL('./packages/vue/src/AvenAccordion.vue', import.meta.url),
+        ),
+        AvenCollapsible: fileURLToPath(
+          new URL('./packages/vue/src/AvenCollapsible.vue', import.meta.url),
+        ),
+        AvenStack: fileURLToPath(new URL('./packages/vue/src/AvenStack.vue', import.meta.url)),
+        AvenInline: fileURLToPath(new URL('./packages/vue/src/AvenInline.vue', import.meta.url)),
+        AvenGrid: fileURLToPath(new URL('./packages/vue/src/AvenGrid.vue', import.meta.url)),
+        AvenContainer: fileURLToPath(
+          new URL('./packages/vue/src/AvenContainer.vue', import.meta.url),
+        ),
+        AvenFormattedValue: fileURLToPath(
+          new URL('./packages/vue/src/AvenFormattedValue.vue', import.meta.url),
+        ),
+        AvenStat: fileURLToPath(new URL('./packages/vue/src/AvenStat.vue', import.meta.url)),
       },
       formats: ['es'],
       fileName: (_format, entryName) => `${entryName}.js`,
