@@ -1,4 +1,7 @@
 import './style.css'
+import type { DefineComponent } from 'vue'
+import AvenIconComponent from './AvenIcon.vue'
+import type { AvenIconProps, AvenIconSlots } from './types.js'
 export { AvenProvider, useAvenConfig, avenProviderKey, avenIdFactoryKey } from './provider.js'
 export type { AvenProviderConfig } from './provider.js'
 export type {
@@ -92,7 +95,9 @@ export { default as AvenToggleGroup } from './AvenToggleGroup.vue'
 export { default as AvenCheckboxGroup } from './AvenCheckboxGroup.vue'
 export { default as AvenMenu } from './AvenMenu.vue'
 export { default as AvenDropdownMenu } from './AvenDropdownMenu.vue'
-export { default as AvenIcon } from './AvenIcon.vue'
+export const AvenIcon = AvenIconComponent as unknown as DefineComponent<AvenIconProps> & {
+  new (): { $slots: AvenIconSlots }
+}
 export { default as AvenIconButton } from './AvenIconButton.vue'
 export { default as AvenButtonGroup } from './AvenButtonGroup.vue'
 export { default as AvenSplitButton } from './AvenSplitButton.vue'

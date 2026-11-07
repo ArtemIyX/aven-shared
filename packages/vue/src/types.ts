@@ -300,6 +300,10 @@ type AvenIconBaseProps = {
   unstyled?: boolean
   ui?: AvenUi<'root' | 'svg'>
 }
+export type AvenIconRuntimeProps = AvenIconBaseProps & {
+  decorative?: boolean
+  label?: string
+}
 export type AvenIconProps = AvenIconBaseProps &
   ({ decorative?: true; label?: string } | { decorative: false; label: string })
 export type AvenIconSlots = {

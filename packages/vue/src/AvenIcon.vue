@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, useAttrs, type Component } from 'vue'
 import { useAvenConfig } from './provider.js'
-import type { AvenIconProps, AvenIconSlots } from './types.js'
+import type { AvenIconRuntimeProps, AvenIconSlots } from './types.js'
 defineOptions({ inheritAttrs: false })
-const props = withDefaults(defineProps<AvenIconProps>(), {
+const props = withDefaults(defineProps<AvenIconRuntimeProps>(), {
   size: 'md',
   strokeWidth: 2,
   decorative: true,
