@@ -12,6 +12,8 @@ import {
   AvenVirtualList,
   AvenTable,
   AvenDataTable,
+  AvenTimeline,
+  AvenActivityList,
   AvenBadge,
   AvenButton,
   AvenButtonGroup,
@@ -124,6 +126,24 @@ const tableSort = ref([])
 const tableSelected = ref<string[]>(['tx-2'])
 const tableExpanded = ref<string[]>([])
 const tableActivity = ref('Use the table controls to sort, select, resize, reorder or expand rows.')
+const activityMessage = ref('Expand an event or request older activity.')
+const activityItems = [
+  {
+    key: 'created',
+    timestamp: '2026-11-05T10:30:00Z',
+    label: 'Workspace created',
+    description: 'Avery created the design workspace.',
+    status: 'info' as const,
+    details: 'Created from the standard project template.',
+  },
+  {
+    key: 'reviewed',
+    timestamp: '2026-11-06T14:15:00Z',
+    label: 'Review completed',
+    description: 'The first review was approved.',
+    status: 'success' as const,
+  },
+]
 const transactions = [
   { id: 'tx-1', name: 'Workshop invoice', owner: 'Mika', amount: 480 },
   { id: 'tx-2', name: 'Design subscription', owner: 'Ava', amount: 29 },
@@ -1071,6 +1091,36 @@ const buttonTones = [
           </tr>
         </tbody>
       </AvenTable>
+    </section>
+    <section class="playground-card" aria-labelledby="timeline-examples">
+      <AvenText id="timeline-examples" type="header1">Timeline and activity</AvenText>
+      <AvenTimeline
+        :items="activityItems"
+        locale="en-GB"
+        time-zone="Europe/Riga"
+        has-more
+        @load-more="({ lastKey }) => (activityMessage = `Load older entries after ${lastKey}`)"
+        @expand="
+          ({ key, expanded }) =>
+            (activityMessage = `${key} details ${expanded ? 'opened' : 'closed'}`)
+        "
+      >
+        <template #indicator="{ item }">{{ item.status === 'success' ? '✓' : '•' }}</template>
+        <template #timestamp="{ formatted }"
+          ><span>{{ formatted }}</span></template
+        >
+        <template #footer>
+          <AvenButton variant="outline" @click="activityMessage = 'Custom footer action requested'"
+            >Show older activity</AvenButton
+          >
+        </template>
+      </AvenTimeline>
+      <p aria-live="polite">{{ activityMessage }}</p>
+      <AvenActivityList :items="activityItems.slice(0, 1)" order="asc" density="compact">
+        <template #title="{ item }"
+          ><strong>{{ item.label }} (compact activity view)</strong></template
+        >
+      </AvenActivityList>
     </section>
     <section class="playground-card" aria-labelledby="toggle-examples">
       <AvenText id="toggle-examples" type="header1">Toggle controls</AvenText>

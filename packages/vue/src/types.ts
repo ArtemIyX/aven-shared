@@ -525,6 +525,46 @@ export type AvenDataTableSlots<
   error?: () => unknown
   pagination?: (scope: { rowCount: number }) => unknown
 }
+
+export type AvenTimelineItem<Key extends string | number = string | number> = {
+  key: Key
+  timestamp: string | Date
+  label: string
+  description?: string
+  details?: string
+  status?: 'neutral' | 'info' | 'success' | 'warning' | 'danger'
+}
+export type AvenTimelineProps<Key extends string | number = string | number> = {
+  items: AvenTimelineItem<Key>[]
+  order?: 'asc' | 'desc'
+  density?: 'compact' | 'comfortable'
+  locale?: string
+  timeZone?: string
+  loading?: boolean
+  hasMore?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'list' | 'item' | 'indicator' | 'timestamp'>
+}
+export type AvenTimelineEvents<Key extends string | number = string | number> = {
+  loadMore: [payload: { lastKey: Key }]
+  expand: [payload: { key: Key; expanded: boolean }]
+  action: [payload: { key: Key; action: string; originalEvent: Event }]
+}
+export type AvenTimelineSlots<Key extends string | number = string | number> = {
+  item?: (scope: { item: AvenTimelineItem<Key>; index: number }) => unknown
+  indicator?: (scope: { item: AvenTimelineItem<Key> }) => unknown
+  timestamp?: (scope: { item: AvenTimelineItem<Key>; formatted: string }) => unknown
+  title?: (scope: { item: AvenTimelineItem<Key> }) => unknown
+  description?: (scope: { item: AvenTimelineItem<Key> }) => unknown
+  details?: (scope: { item: AvenTimelineItem<Key> }) => unknown
+  actions?: (scope: {
+    item: AvenTimelineItem<Key>
+    action: (action: string, originalEvent: Event) => void
+  }) => unknown
+  empty?: () => unknown
+  loading?: () => unknown
+  footer?: () => unknown
+}
 export type AvenListboxProps<T extends string | number = string | number> = {
   modelValue?: T | T[] | null
   defaultValue?: T | T[] | null

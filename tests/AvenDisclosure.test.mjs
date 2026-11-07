@@ -40,6 +40,8 @@ import {
   AvenVirtualList,
   AvenTable,
   AvenDataTable,
+  AvenTimeline,
+  AvenActivityList,
   AvenAvatar,
   AvenAvatarGroup,
   AvenChip,
@@ -2720,4 +2722,48 @@ test('data table keeps native table semantics and emits controlled sort, select,
   assert.deepEqual(rowClicks, [
     { row: rows[0], key: 'b', originalEvent: { target: {}, type: 'click' } },
   ])
+})
+
+test('timeline exposes ordered semantic dates, status, expansion and load-more contracts', async () => {
+  const items = [
+    { key: 'first', timestamp: '2026-01-01T09:00:00Z', label: 'Created', details: 'Ticket opened' },
+    { key: 'last', timestamp: '2026-01-02T09:00:00Z', label: 'Resolved', status: 'success' },
+  ]
+  const html = await render({
+    render: () => h(AvenTimeline, { items, hasMore: true, locale: 'en-GB', timeZone: 'UTC' }),
+  })
+  assert.match(html, /<ol[^>]*class="timeline-list"/)
+  assert.ok(html.indexOf('Resolved') < html.indexOf('Created'))
+  assert.match(html, /<time[^>]*datetime="2026-01-02T09:00:00Z"/)
+  assert.match(html, /aria-hidden="true"/)
+  const activity = await render({ render: () => h(AvenActivityList, { items }) })
+  assert.match(activity, /class="aven-timeline is-comfortable"/)
+
+  const mounted = makeRenderer()
+  const expansions = []
+  const loads = []
+  mounted.renderer
+    .createApp({
+      render: () =>
+        h(AvenTimeline, {
+          items,
+          hasMore: true,
+          onExpand: (payload) => expansions.push(payload),
+          onLoadMore: (payload) => loads.push(payload),
+        }),
+    })
+    .mount(mounted.root)
+  const details = mounted.find(
+    mounted.root,
+    (node) => node.type === 'button' && node.props['aria-expanded'] === false,
+  )
+  const load = mounted.find(
+    mounted.root,
+    (node) => node.type === 'button' && node.props['aria-expanded'] === undefined,
+  )
+  load.props.onClick(new Event('click'))
+  assert.deepEqual(loads, [{ lastKey: 'first' }])
+  details.props.onClick(new Event('click'))
+  await nextTick()
+  assert.deepEqual(expansions, [{ key: 'first', expanded: true }])
 })
