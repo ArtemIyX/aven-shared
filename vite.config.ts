@@ -36,6 +36,7 @@ export default defineConfig({
         ),
         AvenKbd: fileURLToPath(new URL('./packages/vue/src/AvenKbd.vue', import.meta.url)),
         AvenAlert: fileURLToPath(new URL('./packages/vue/src/AvenAlert.vue', import.meta.url)),
+        AvenBanner: fileURLToPath(new URL('./packages/vue/src/AvenBanner.vue', import.meta.url)),
         AvenSpinner: fileURLToPath(new URL('./packages/vue/src/AvenSpinner.vue', import.meta.url)),
         AvenProgress: fileURLToPath(
           new URL('./packages/vue/src/AvenProgress.vue', import.meta.url),

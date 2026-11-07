@@ -348,6 +348,30 @@ export type AvenDrawerSlots = Omit<AvenDialogSlots, 'actions'> & {
 export type AvenSheetProps = AvenDrawerProps
 export type AvenSheetEvents = AvenDrawerEvents
 export type AvenSheetSlots = AvenDrawerSlots
+export type AvenAlertProps = {
+  tone?: Extract<AvenTone, 'info' | 'success' | 'warning' | 'danger' | 'critical'>
+  variant?: 'soft' | 'outline' | 'solid'
+  title?: string
+  description?: string
+  dismissible?: boolean
+  dismissLabel?: string
+  live?: 'off' | 'polite' | 'assertive'
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'icon' | 'title' | 'content' | 'actions' | 'close'>
+}
+export type AvenAlertEvents = {
+  dismiss: [payload: { originalEvent: MouseEvent }]
+}
+export type AvenAlertSlots = {
+  icon?: () => unknown
+  title?: () => unknown
+  default?: () => unknown
+  actions?: () => unknown
+  'close-icon'?: () => unknown
+}
+export type AvenBannerProps = AvenAlertProps
+export type AvenBannerEvents = AvenAlertEvents
+export type AvenBannerSlots = AvenAlertSlots
 export type AvenAlertDialogProps = Omit<
   AvenDialogProps,
   'closeOnEscape' | 'closeOnOutside' | 'showClose' | 'ui'

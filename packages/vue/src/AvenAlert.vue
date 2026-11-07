@@ -1,39 +1,34 @@
 <script setup lang="ts">
-import type { AvenTone, AvenUi } from './types.js'
-withDefaults(
-  defineProps<{
-    tone?: Extract<AvenTone, 'info' | 'success' | 'warning' | 'danger' | 'critical'>
-    variant?: 'soft' | 'outline' | 'solid'
-    title?: string
-    description?: string
-    dismissible?: boolean
-    dismissLabel?: string
-    live?: 'off' | 'polite' | 'assertive'
-    unstyled?: boolean
-    ui?: AvenUi<'root' | 'icon' | 'title' | 'content' | 'actions' | 'close'>
-  }>(),
-  {
-    tone: 'info',
-    variant: 'soft',
-    dismissible: false,
-    dismissLabel: 'Dismiss',
-    live: 'off',
-    unstyled: false,
-  },
-)
-const emit = defineEmits<{ dismiss: [payload: { originalEvent: MouseEvent }] }>()
+import { toRefs, useAttrs } from 'vue'
+import type { AvenAlertEvents, AvenAlertProps, AvenAlertSlots } from './types.js'
+defineOptions({ inheritAttrs: false })
+const props = withDefaults(defineProps<AvenAlertProps>(), {
+  tone: 'info',
+  variant: 'soft',
+  dismissible: false,
+  dismissLabel: 'Dismiss',
+  live: 'off',
+  unstyled: false,
+})
+const { tone, variant, title, description, dismissible, dismissLabel, live, unstyled, ui } =
+  toRefs(props)
+const attrs = useAttrs()
+const emit = defineEmits<AvenAlertEvents>()
+defineSlots<AvenAlertSlots>()
 </script>
 <template>
   <section
+    v-bind="{ ...attrs, ...ui?.root?.attrs }"
     :class="[
       'aven-alert',
       `tone-${tone}`,
       `is-${variant}`,
       { 'is-unstyled': unstyled },
+      attrs.class,
       ui?.root?.class,
     ]"
-    :style="ui?.root?.style"
-    :role="tone === 'danger' || tone === 'critical' ? 'alert' : 'status'"
+    :style="[attrs.style, ui?.root?.style]"
+    :role="live === 'assertive' ? 'alert' : live === 'polite' ? 'status' : undefined"
     :aria-live="live === 'off' ? undefined : live"
   >
     <span v-if="$slots.icon" :class="ui?.icon?.class"><slot name="icon" /></span>

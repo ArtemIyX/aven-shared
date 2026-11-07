@@ -300,7 +300,7 @@ Slot notation `item{item,key,...}` means a scoped named slot. A slot without bra
 - **Props:** tone='info', title?, description?, dismissible=false, dismissLabel, `live:'off'|'polite'|'assertive'='off'`; app opts into live announcement for dynamically added content.
 - **Events:** `dismiss({originalEvent})` request; no automatic deletion of app data.
 - **Slots:** icon, title, default, actions, close-icon.
-- **Hooks/behavior:** tone text/subtle/border; alert vs status role based on urgency, avoid repeated announcements during updates. Persistent instructions remain discoverable.
+- **Hooks/behavior:** tone text/subtle/border; `live='off'` has no live role by default, `polite` uses status semantics, and `assertive` uses alert semantics. Avoid repeated announcements during updates. Persistent instructions remain discoverable.
 
 ### 36. AvenToast / AvenToaster — P1
 

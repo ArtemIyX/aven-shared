@@ -42,6 +42,12 @@ export type {
   AvenSheetProps,
   AvenSheetEvents,
   AvenSheetSlots,
+  AvenAlertProps,
+  AvenAlertEvents,
+  AvenAlertSlots,
+  AvenBannerProps,
+  AvenBannerEvents,
+  AvenBannerSlots,
   AvenAlertDialogProps,
   AvenAlertDialogEvents,
   AvenAlertDialogSlots,
@@ -113,6 +119,7 @@ export { default as AvenSwitch } from './AvenSwitch.vue'
 export { default as AvenStatusDot } from './AvenStatusDot.vue'
 export { default as AvenKbd } from './AvenKbd.vue'
 export { default as AvenAlert } from './AvenAlert.vue'
+export { default as AvenBanner } from './AvenBanner.vue'
 export { default as AvenSpinner } from './AvenSpinner.vue'
 export { default as AvenProgress } from './AvenProgress.vue'
 export { default as AvenFieldset } from './AvenFieldset.vue'

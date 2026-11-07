@@ -23,6 +23,8 @@ import {
   AvenCommandPalette,
   AvenDrawer,
   AvenSheet,
+  AvenAlert,
+  AvenBanner,
   AvenLink,
   AvenCollapsible,
   AvenFormattedValue,
@@ -1776,4 +1778,40 @@ test('drawer and sheet expose native dialog semantics, logical placement, and bo
     .mount(mounted.root)
   drawerRef.value.resize(900)
   assert.deepEqual(sizes, ['600px'])
+})
+
+test('alerts opt into live announcement semantics and banners forward one dismiss request', async () => {
+  const staticHtml = await render({
+    render: () => h(AvenAlert, { tone: 'critical', title: 'Service unavailable' }),
+  })
+  assert.doesNotMatch(staticHtml, /role="(?:alert|status)"/)
+  const politeHtml = await render({
+    render: () => h(AvenAlert, { tone: 'warning', live: 'polite', title: 'Review this setting' }),
+  })
+  assert.match(politeHtml, /role="status" aria-live="polite"/)
+  const bannerHtml = await render({
+    render: () => h(AvenBanner, { title: 'Saved', dismissible: true, live: 'assertive' }),
+  })
+  assert.match(bannerHtml, /aven-banner/)
+  assert.match(bannerHtml, /role="alert" aria-live="assertive"/)
+  assert.match(bannerHtml, /Dismiss/)
+
+  const mounted = makeRenderer()
+  const dismissals = []
+  mounted.renderer
+    .createApp({
+      render: () =>
+        h(AvenBanner, {
+          title: 'Saved',
+          dismissible: true,
+          onDismiss: (payload) => dismissals.push(payload),
+        }),
+    })
+    .mount(mounted.root)
+  const close = mounted.find(mounted.root, (node) => node.type === 'button')
+  const originalEvent = { type: 'click' }
+  dispatchHandler(close.props.onClick, originalEvent)
+  assert.equal(dismissals.length, 1)
+  assert.equal(dismissals[0].originalEvent, originalEvent)
+  assert.ok(mounted.find(mounted.root, (node) => node.type === 'section'))
 })

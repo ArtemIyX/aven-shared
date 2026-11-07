@@ -17,6 +17,8 @@ import {
   AvenContextMenu,
   AvenMenubar,
   AvenAlertDialog,
+  AvenAlert,
+  AvenBanner,
   AvenCommandPalette,
   AvenDrawer,
   AvenSheet,
@@ -62,6 +64,7 @@ const confirmOpen = ref(false)
 const paletteOpen = ref(false)
 const drawerOpen = ref(false)
 const sheetOpen = ref(false)
+const bannerVisible = ref(true)
 const lastSplitAction = ref('')
 const buttonClicks = ref(0)
 const openSection = ref<string | null>('account')
@@ -614,6 +617,23 @@ const buttonTones = [
       >
         <p>Resize this sheet with the handle or arrow keys.</p>
       </AvenSheet>
+    </section>
+    <section class="playground-card" aria-labelledby="alert-examples">
+      <AvenText id="alert-examples" type="header1">Alerts and banners</AvenText>
+      <AvenAlert
+        tone="warning"
+        title="Review the renewal date"
+        description="Your plan renews next month."
+      />
+      <AvenBanner
+        v-if="bannerVisible"
+        tone="success"
+        title="Settings saved"
+        description="Your workspace preferences have been updated."
+        live="polite"
+        dismissible
+        @dismiss="bannerVisible = false"
+      />
     </section>
     <section class="playground-card" aria-labelledby="toggle-examples">
       <AvenText id="toggle-examples" type="header1">Toggle controls</AvenText>

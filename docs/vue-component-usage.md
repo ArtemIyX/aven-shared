@@ -146,6 +146,10 @@ The text input has `role=combobox`, list autocomplete, expanded/controls/active-
 
 `AvenSheet` shares the drawer API and defaults to `side='bottom'`, with rounded top corners. Logical start/end placement follows inherited direction. Size and resizing values are CSS lengths; during a drag the component emits pixel lengths so the application can persist them if needed.
 
+## AvenAlert and AvenBanner
+
+`AvenAlert` and `AvenBanner` default to `tone='info'`, `variant='soft'`, `dismissible=false`, `dismissLabel='Dismiss'`, `live='off'`, and `unstyled=false`. Both accept `title`, `description`, an actions slot, icon/title/content/close UI parts, native attributes, and root class/style. The Banner adds full-width spacing and a responsive layout. Dismissal emits `dismiss({originalEvent})`; the component never removes itself or application data. Live semantics are opt-in: `off` has no live role, `polite` uses `role=status`, and `assertive` uses `role=alert`. Slots are `icon`, `title`, default content, `actions`, and `close-icon`.
+
 ## AvenSplitButton
 
 `AvenButtonGroup` wraps related buttons in a responsive horizontal or vertical group. It accepts `orientation='horizontal'`, `attached=false`, `size='md'`, optional accessible `label`, `unstyled`, and `ui.root` overrides. With a label it renders a named `role=group`; attached mode joins the child button corners, while separated mode keeps the `space-2` gap. Child actions remain independent; the group adds no arrow-key model. It forwards root attributes and exposes no custom events.
