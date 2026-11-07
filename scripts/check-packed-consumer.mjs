@@ -35,6 +35,8 @@ try {
       assert(paths.includes('dist/AvenMenubar.js'))
       assert(paths.includes('dist/AvenAlertDialog.js'))
       assert(paths.includes('dist/AvenCommandPalette.js'))
+      assert(paths.includes('dist/AvenDrawer.js'))
+      assert(paths.includes('dist/AvenSheet.js'))
     }
   }
   await writeFile(
@@ -96,7 +98,7 @@ try {
   )
   await writeFile(
     path.join(directory, 'overlay-consumer.ts'),
-    `import { h } from 'vue'\nimport { AvenAlertDialog, AvenCommandPalette, AvenContextMenu, AvenMenubar, type AvenAlertDialogProps, type AvenCommandPaletteEvents, type AvenCommandPaletteProps, type AvenContextMenuProps, type AvenMenubarProps } from '@wellsaik/aven-vue'\nconst commands = [{ key: 'copy', label: 'Copy' }] as const\nconst context: AvenContextMenuProps<'copy'> = { items: [...commands], activation: 'both' }\nconst menubar: AvenMenubarProps<'file'|'edit'|'new'> = { items: [{ key: 'file', label: 'File', children: [{ key: 'new', label: 'New' }] }, { key: 'edit', label: 'Edit' }], label: 'Document menu' }\nconst confirmation: AvenAlertDialogProps = { title: 'Delete?', closeOnConfirm: true, loading: false }\nconst palette: AvenCommandPaletteProps = { items: [{ key: 'open', label: 'Open', group: 'File' }, { key: 'save', label: 'Save' }], activeKey: 'open' }\nconst selected: AvenCommandPaletteEvents<'open'|'save'>['select'][0] = { key: 'open', item: { key: 'open', label: 'Open' }, originalEvent: new Event('select') }\nvoid selected\nh(AvenContextMenu, context)\nh(AvenMenubar, menubar)\nh(AvenAlertDialog, confirmation)\nh(AvenCommandPalette, palette)\n`,
+    `import { h } from 'vue'\nimport { AvenAlertDialog, AvenCommandPalette, AvenContextMenu, AvenDrawer, AvenMenubar, AvenSheet, type AvenAlertDialogProps, type AvenCommandPaletteEvents, type AvenCommandPaletteProps, type AvenContextMenuProps, type AvenDrawerProps, type AvenMenubarProps, type AvenSheetProps } from '@wellsaik/aven-vue'\nconst commands = [{ key: 'copy', label: 'Copy' }] as const\nconst context: AvenContextMenuProps<'copy'> = { items: [...commands], activation: 'both' }\nconst menubar: AvenMenubarProps<'file'|'edit'|'new'> = { items: [{ key: 'file', label: 'File', children: [{ key: 'new', label: 'New' }] }, { key: 'edit', label: 'Edit' }], label: 'Document menu' }\nconst confirmation: AvenAlertDialogProps = { title: 'Delete?', closeOnConfirm: true, loading: false }\nconst palette: AvenCommandPaletteProps = { items: [{ key: 'open', label: 'Open', group: 'File' }, { key: 'save', label: 'Save' }], activeKey: 'open' }\nconst selected: AvenCommandPaletteEvents<'open'|'save'>['select'][0] = { key: 'open', item: { key: 'open', label: 'Open' }, originalEvent: new Event('select') }\nconst drawer: AvenDrawerProps = { title: 'Inspector', modal: false, side: 'start', resizable: true, minSize: '14rem' }\nconst sheet: AvenSheetProps = { title: 'Details', side: 'bottom' }\nvoid selected\nh(AvenContextMenu, context)\nh(AvenMenubar, menubar)\nh(AvenAlertDialog, confirmation)\nh(AvenCommandPalette, palette)\nh(AvenDrawer, drawer)\nh(AvenSheet, sheet)\n`,
   )
   await writeFile(
     path.join(directory, 'tsconfig.json'),

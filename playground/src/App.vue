@@ -18,6 +18,8 @@ import {
   AvenMenubar,
   AvenAlertDialog,
   AvenCommandPalette,
+  AvenDrawer,
+  AvenSheet,
   AvenCollapsible,
   AvenContainer,
   AvenFormattedValue,
@@ -58,6 +60,8 @@ const remoteLoading = ref(false)
 const menuAction = ref('')
 const confirmOpen = ref(false)
 const paletteOpen = ref(false)
+const drawerOpen = ref(false)
+const sheetOpen = ref(false)
 const lastSplitAction = ref('')
 const buttonClicks = ref(0)
 const openSection = ref<string | null>('account')
@@ -590,6 +594,26 @@ const buttonTones = [
         <template #input-leading>⌕</template>
         <template #footer><span>Use arrow keys to navigate and Enter to run.</span></template>
       </AvenCommandPalette>
+      <AvenButton variant="outline" @click="drawerOpen = true">Open nonmodal inspector</AvenButton>
+      <AvenDrawer
+        v-model:open="drawerOpen"
+        title="Project inspector"
+        description="Review the selected project's details."
+        :modal="false"
+        side="end"
+        size="25rem"
+        resizable
+      >
+        <p>The surrounding page remains available while this inspector is open.</p>
+      </AvenDrawer>
+      <AvenButton variant="outline" @click="sheetOpen = true">Open bottom sheet</AvenButton>
+      <AvenSheet
+        v-model:open="sheetOpen"
+        title="Quick details"
+        description="A mobile-friendly sheet."
+      >
+        <p>Resize this sheet with the handle or arrow keys.</p>
+      </AvenSheet>
     </section>
     <section class="playground-card" aria-labelledby="toggle-examples">
       <AvenText id="toggle-examples" type="header1">Toggle controls</AvenText>

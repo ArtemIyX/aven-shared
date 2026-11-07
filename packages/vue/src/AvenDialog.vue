@@ -8,6 +8,7 @@ const props = withDefaults(defineProps<AvenDialogProps>(), {
   closeOnEscape: true,
   closeOnOutside: true,
   showClose: true,
+  modal: true,
   restoreFocus: true,
   unstyled: false,
 })
@@ -22,6 +23,7 @@ const titleId = `${dialogId}-title`
 const descriptionId = `${dialogId}-description`
 let opener: HTMLElement | null = null
 let wasPrevented = false
+let openedModal: boolean | undefined
 function propose(open: boolean, reason: AvenOpenReason, event?: Event) {
   if (open === isOpen.value) return
   if (!open) {
@@ -44,13 +46,18 @@ async function sync() {
   await nextTick()
   const el = dialog.value
   if (!el) return
+  if (isOpen.value && el.open && openedModal !== props.modal) el.close()
   if (isOpen.value && !el.open) {
-    opener = document.activeElement instanceof HTMLElement ? document.activeElement : null
-    el.showModal()
+    if (openedModal === undefined)
+      opener = document.activeElement instanceof HTMLElement ? document.activeElement : null
+    if (props.modal) el.showModal()
+    else el.show()
+    openedModal = props.modal
     if (props.initialFocus) el.querySelector<HTMLElement>(props.initialFocus)?.focus()
     emit('afterOpen')
   } else if (!isOpen.value && el.open) {
     el.close()
+    openedModal = undefined
     if (props.restoreFocus && opener?.isConnected && !opener.hasAttribute('disabled'))
       opener.focus()
     emit('afterClose')
@@ -63,7 +70,7 @@ function onCancel(e: Event) {
 function onClick(e: MouseEvent) {
   if (e.target === dialog.value && props.closeOnOutside) propose(false, 'outside', e)
 }
-watch(isOpen, () => void sync())
+watch([isOpen, () => props.modal], () => void sync())
 onMounted(() => void sync())
 onBeforeUnmount(() => {
   if (dialog.value?.open) dialog.value.close()

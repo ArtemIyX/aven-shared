@@ -21,6 +21,8 @@ import {
   AvenAlertDialog,
   AvenDialog,
   AvenCommandPalette,
+  AvenDrawer,
+  AvenSheet,
   AvenLink,
   AvenCollapsible,
   AvenFormattedValue,
@@ -1732,4 +1734,46 @@ test('command palette opens as a grouped search dialog and requests one command'
   assert.equal(selections[0].key, 'run')
   assert.equal(selections[0].item.label, 'Run task')
   assert.equal(selections[0].originalEvent, originalEvent)
+})
+
+test('drawer and sheet expose native dialog semantics, logical placement, and bounded resize requests', async () => {
+  const html = await render({
+    render: () =>
+      h('div', [
+        h(AvenDrawer, {
+          title: 'Inspector',
+          description: 'Project details',
+          side: 'start',
+          resizable: true,
+        }),
+        h(AvenSheet, { title: 'Quick details', defaultOpen: true }),
+      ]),
+  })
+  assert.match(html, /class="[^\"]*side-start/)
+  assert.match(
+    html,
+    /class="[^\"]*side-bottom[^\"]*aven-sheet|class="[^\"]*aven-sheet[^\"]*side-bottom/,
+  )
+  assert.match(html, /role="separator" aria-label="Resize Inspector" aria-orientation="vertical"/)
+  assert.match(html, /aria-labelledby="aven-dialog-\d+-title"/)
+
+  const mounted = makeRenderer()
+  const sizes = []
+  const drawerRef = ref(null)
+  mounted.renderer
+    .createApp({
+      render: () =>
+        h(AvenDrawer, {
+          ref: drawerRef,
+          title: 'Inspector',
+          resizable: true,
+          defaultSize: '24rem',
+          minSize: 200,
+          maxSize: 600,
+          'onUpdate:size': (size) => sizes.push(size),
+        }),
+    })
+    .mount(mounted.root)
+  drawerRef.value.resize(900)
+  assert.deepEqual(sizes, ['600px'])
 })

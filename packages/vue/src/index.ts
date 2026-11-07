@@ -36,6 +36,12 @@ export type {
   AvenDialogProps,
   AvenDialogEvents,
   AvenDialogSlots,
+  AvenDrawerProps,
+  AvenDrawerEvents,
+  AvenDrawerSlots,
+  AvenSheetProps,
+  AvenSheetEvents,
+  AvenSheetSlots,
   AvenAlertDialogProps,
   AvenAlertDialogEvents,
   AvenAlertDialogSlots,
@@ -119,6 +125,8 @@ export { useOpenState, useAvenId } from './composables.js'
 export type { AvenOpenReason, AvenOpenChange } from './composables.js'
 export { default as AvenDialog } from './AvenDialog.vue'
 export { default as AvenAlertDialog } from './AvenAlertDialog.vue'
+export { default as AvenDrawer } from './AvenDrawer.vue'
+export { default as AvenSheet } from './AvenSheet.vue'
 export { default as AvenCommandPalette } from './AvenCommandPalette.vue'
 export { default as AvenTooltip } from './AvenTooltip.vue'
 export { default as AvenPopover } from './AvenPopover.vue'

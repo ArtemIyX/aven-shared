@@ -286,6 +286,7 @@ export type AvenDialogProps = {
   open?: boolean
   defaultOpen?: boolean
   id?: string
+  modal?: boolean
   title?: string
   description?: string
   size?: 'sm' | 'md' | 'lg' | 'fullscreen'
@@ -315,6 +316,38 @@ export type AvenDialogSlots = {
   actions?: (scope: { close: () => void }) => unknown
   'close-icon'?: () => unknown
 }
+export type AvenDrawerProps = Omit<AvenDialogProps, 'size' | 'ui'> & {
+  side?: 'start' | 'end' | 'top' | 'bottom'
+  size?: string
+  defaultSize?: string
+  minSize?: number | string
+  maxSize?: number | string
+  resizable?: boolean
+  resizeDisabled?: boolean
+  ui?: AvenUi<
+    | 'root'
+    | 'content'
+    | 'header'
+    | 'title'
+    | 'description'
+    | 'body'
+    | 'footer'
+    | 'close'
+    | 'resizeHandle'
+  >
+}
+export type AvenDrawerEvents = AvenDialogEvents & {
+  'update:size': [size: string]
+  resizeStart: [payload: { size: string }]
+  resizeEnd: [payload: { size: string }]
+}
+export type AvenDrawerSlots = Omit<AvenDialogSlots, 'actions'> & {
+  actions?: (scope: { close: () => void }) => unknown
+  'resize-handle'?: (scope: { size: string }) => unknown
+}
+export type AvenSheetProps = AvenDrawerProps
+export type AvenSheetEvents = AvenDrawerEvents
+export type AvenSheetSlots = AvenDrawerSlots
 export type AvenAlertDialogProps = Omit<
   AvenDialogProps,
   'closeOnEscape' | 'closeOnOutside' | 'showClose' | 'ui'
