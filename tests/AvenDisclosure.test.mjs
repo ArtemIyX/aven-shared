@@ -18,6 +18,8 @@ import {
   AvenMultiSelect,
   AvenContextMenu,
   AvenMenubar,
+  AvenAlertDialog,
+  AvenDialog,
   AvenLink,
   AvenCollapsible,
   AvenFormattedValue,
@@ -1590,4 +1592,64 @@ test('menubar moves active items and opens/selects a submenu with one selection 
   assert.equal(selections.length, 1)
   assert.equal(selections[0].key, 'rename')
   assert.deepEqual(openRequests, ['file', 'edit', null])
+})
+
+test('dialog links its accessible title and description and alert dialog requests actions once', async () => {
+  const dialogHtml = await render({
+    render: () => h(AvenDialog, { title: 'Preferences', description: 'Choose your defaults.' }),
+  })
+  assert.match(dialogHtml, /<dialog[^>]*aria-labelledby="aven-dialog-\d+-title"/)
+  assert.match(dialogHtml, /aria-describedby="aven-dialog-\d+-description"/)
+  const html = await render({
+    render: () =>
+      h(AvenAlertDialog, {
+        title: 'Delete project?',
+        description: 'This cannot be undone.',
+      }),
+  })
+  assert.match(html, /role="alertdialog"/)
+  assert.match(html, /aria-labelledby="aven-dialog-\d+-title"/)
+  assert.match(html, /aria-describedby="aven-dialog-\d+-description"/)
+  assert.match(html, />Cancel<\/button>/)
+  assert.match(html, /Confirm.*<\/button>/)
+
+  const disabled = makeRenderer()
+  disabled.renderer
+    .createApp({
+      render: () => h(AvenAlertDialog, { title: 'Wait', loading: true }),
+    })
+    .mount(disabled.root)
+  const disabledButtons = []
+  const visitDisabled = (node) => {
+    if (node.type === 'button') disabledButtons.push(node)
+    for (const child of node.children ?? []) visitDisabled(child)
+  }
+  visitDisabled(disabled.root)
+  assert.equal(disabledButtons.length, 2)
+  assert.ok(disabledButtons.every((button) => button.props.disabled))
+
+  const mounted = makeRenderer()
+  const confirms = []
+  const cancels = []
+  mounted.renderer
+    .createApp({
+      render: () =>
+        h(AvenAlertDialog, {
+          title: 'Delete project?',
+          onConfirm: (payload) => confirms.push(payload),
+          onCancel: (payload) => cancels.push(payload),
+        }),
+    })
+    .mount(mounted.root)
+  const actionButtons = []
+  const visitActions = (node) => {
+    if (node.type === 'button') actionButtons.push(node)
+    for (const child of node.children ?? []) visitActions(child)
+  }
+  visitActions(mounted.root)
+  const actionEvent = { type: 'click' }
+  dispatchHandler(actionButtons[1].props.onClick, actionEvent)
+  dispatchHandler(actionButtons[0].props.onClick, actionEvent)
+  assert.deepEqual(confirms, [{ originalEvent: actionEvent }])
+  assert.deepEqual(cancels, [{ originalEvent: actionEvent }])
 })

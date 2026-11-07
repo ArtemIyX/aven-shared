@@ -16,6 +16,7 @@ import {
   AvenMultiSelect,
   AvenContextMenu,
   AvenMenubar,
+  AvenAlertDialog,
   AvenCollapsible,
   AvenContainer,
   AvenFormattedValue,
@@ -54,6 +55,7 @@ const selectedTopics = ref<string[]>(['vue'])
 const teamQuery = ref('')
 const remoteLoading = ref(false)
 const menuAction = ref('')
+const confirmOpen = ref(false)
 const lastSplitAction = ref('')
 const buttonClicks = ref(0)
 const openSection = ref<string | null>('account')
@@ -557,6 +559,19 @@ const buttonTones = [
         @select="menuAction = $event.item.label"
       />
       <p aria-live="polite">Last menu action: {{ menuAction || 'none' }}</p>
+      <AvenButton variant="outline" @click="confirmOpen = true"
+        >Open destructive confirmation</AvenButton
+      >
+      <AvenAlertDialog
+        v-model:open="confirmOpen"
+        title="Delete this project?"
+        description="This action permanently removes the project and its shared workspace."
+        confirm-label="Delete project"
+        @confirm="confirmOpen = false"
+      >
+        This change cannot be undone. Confirm only after checking that the project is no longer
+        needed.
+      </AvenAlertDialog>
     </section>
     <section class="playground-card" aria-labelledby="toggle-examples">
       <AvenText id="toggle-examples" type="header1">Toggle controls</AvenText>

@@ -1,4 +1,4 @@
-import type { AvenOpenChange } from './composables.js'
+import type { AvenOpenChange, AvenOpenReason } from './composables.js'
 
 export type AvenSize = 'xs' | 'sm' | 'md' | 'lg'
 export type AvenTone =
@@ -276,6 +276,76 @@ export type AvenCommand<Key extends string | number = string | number> = {
   tone?: AvenTone
   shortcut?: string
   children?: AvenCommand<Key>[]
+}
+export type AvenDialogProps = {
+  open?: boolean
+  defaultOpen?: boolean
+  id?: string
+  title?: string
+  description?: string
+  size?: 'sm' | 'md' | 'lg' | 'fullscreen'
+  closeOnEscape?: boolean
+  closeOnOutside?: boolean
+  showClose?: boolean
+  initialFocus?: string
+  restoreFocus?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'content' | 'header' | 'title' | 'description' | 'body' | 'footer' | 'close'>
+}
+export type AvenDialogEvents = {
+  'update:open': [open: boolean]
+  openChange: [change: AvenOpenChange]
+  beforeClose: [
+    payload: { reason: AvenOpenReason; originalEvent?: Event; preventDefault: () => void },
+  ]
+  afterOpen: []
+  afterClose: []
+}
+export type AvenDialogSlots = {
+  header?: (scope: { close: () => void }) => unknown
+  title?: () => unknown
+  description?: () => unknown
+  default?: (scope: { close: () => void }) => unknown
+  footer?: (scope: { close: () => void }) => unknown
+  actions?: (scope: { close: () => void }) => unknown
+  'close-icon'?: () => unknown
+}
+export type AvenAlertDialogProps = Omit<
+  AvenDialogProps,
+  'closeOnEscape' | 'closeOnOutside' | 'showClose' | 'ui'
+> & {
+  closeOnEscape?: boolean
+  closeOnOutside?: boolean
+  confirmLabel?: string
+  cancelLabel?: string
+  confirmDisabled?: boolean
+  cancelDisabled?: boolean
+  loading?: boolean
+  closeOnConfirm?: boolean
+  ui?: AvenUi<
+    | 'root'
+    | 'content'
+    | 'header'
+    | 'title'
+    | 'description'
+    | 'body'
+    | 'footer'
+    | 'close'
+    | 'confirm'
+    | 'cancel'
+  >
+}
+export type AvenAlertDialogEvents = AvenDialogEvents & {
+  confirm: [payload: { originalEvent: Event }]
+  cancel: [payload: { originalEvent?: Event }]
+}
+export type AvenAlertDialogSlots = Omit<AvenDialogSlots, 'actions'> & {
+  actions?: (scope: {
+    confirm: (event?: Event) => void
+    cancel: (event?: Event) => void
+    loading: boolean
+  }) => unknown
+  'confirm-label'?: () => unknown
 }
 export type AvenInputProps = {
   modelValue?: string

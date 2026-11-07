@@ -33,6 +33,12 @@ export type {
   AvenMenubarProps,
   AvenMenubarEvents,
   AvenMenubarSlots,
+  AvenDialogProps,
+  AvenDialogEvents,
+  AvenDialogSlots,
+  AvenAlertDialogProps,
+  AvenAlertDialogEvents,
+  AvenAlertDialogSlots,
   AvenCommand,
   AvenSearchFieldProps,
   AvenInputProps,
@@ -108,6 +114,7 @@ export type { AvenTextProps } from './AvenText.js'
 export { useOpenState, useAvenId } from './composables.js'
 export type { AvenOpenReason, AvenOpenChange } from './composables.js'
 export { default as AvenDialog } from './AvenDialog.vue'
+export { default as AvenAlertDialog } from './AvenAlertDialog.vue'
 export { default as AvenTooltip } from './AvenTooltip.vue'
 export { default as AvenPopover } from './AvenPopover.vue'
 export { default as AvenSelect } from './AvenSelect.vue'

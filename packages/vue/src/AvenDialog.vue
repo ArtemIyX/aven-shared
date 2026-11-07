@@ -1,47 +1,25 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch, useAttrs } from 'vue'
-import type { AvenOpenReason } from './composables.js'
-import type { AvenUi } from './types.js'
+import { useAvenId, type AvenOpenReason } from './composables.js'
+import type { AvenDialogEvents, AvenDialogProps, AvenDialogSlots } from './types.js'
 defineOptions({ inheritAttrs: false })
-const props = withDefaults(
-  defineProps<{
-    open?: boolean
-    defaultOpen?: boolean
-    title?: string
-    description?: string
-    size?: 'sm' | 'md' | 'lg' | 'fullscreen'
-    closeOnEscape?: boolean
-    closeOnOutside?: boolean
-    showClose?: boolean
-    initialFocus?: string
-    restoreFocus?: boolean
-    unstyled?: boolean
-    ui?: AvenUi<
-      'root' | 'content' | 'header' | 'title' | 'description' | 'body' | 'footer' | 'close'
-    >
-  }>(),
-  {
-    size: 'md',
-    closeOnEscape: true,
-    closeOnOutside: true,
-    showClose: true,
-    restoreFocus: true,
-    unstyled: false,
-  },
-)
-const emit = defineEmits<{
-  'update:open': [open: boolean]
-  openChange: [change: { open: boolean; reason: AvenOpenReason }]
-  beforeClose: [
-    payload: { reason: AvenOpenReason; originalEvent?: Event; preventDefault: () => void },
-  ]
-  afterOpen: []
-  afterClose: []
-}>()
+const props = withDefaults(defineProps<AvenDialogProps>(), {
+  size: 'md',
+  closeOnEscape: true,
+  closeOnOutside: true,
+  showClose: true,
+  restoreFocus: true,
+  unstyled: false,
+})
+const emit = defineEmits<AvenDialogEvents>()
+defineSlots<AvenDialogSlots>()
 const attrs = useAttrs(),
   dialog = ref<HTMLDialogElement>(),
   local = ref(props.defaultOpen ?? false),
   isOpen = computed(() => (props.open === undefined ? local.value : props.open))
+const dialogId = useAvenId(props.id, 'dialog')
+const titleId = `${dialogId}-title`
+const descriptionId = `${dialogId}-description`
 let opener: HTMLElement | null = null
 let wasPrevented = false
 function propose(open: boolean, reason: AvenOpenReason, event?: Event) {
@@ -95,6 +73,7 @@ defineExpose({ close: () => propose(false, 'programmatic'), focus: () => dialog.
   <dialog
     ref="dialog"
     v-bind="attrs"
+    :id="dialogId"
     :class="[
       'aven-dialog',
       `size-${size}`,
@@ -103,7 +82,8 @@ defineExpose({ close: () => propose(false, 'programmatic'), focus: () => dialog.
       ui?.root?.class,
     ]"
     :style="[attrs.style, ui?.root?.style]"
-    :aria-label="title && !$slots.title ? title : undefined"
+    :aria-labelledby="title || $slots.title ? titleId : undefined"
+    :aria-describedby="description || $slots.description ? descriptionId : undefined"
     @cancel="onCancel"
     @click="onClick"
   >
@@ -117,11 +97,12 @@ defineExpose({ close: () => propose(false, 'programmatic'), focus: () => dialog.
       >
         <div class="dialog-heading">
           <slot name="header" :close="() => propose(false, 'programmatic')"
-            ><h2 v-if="title || $slots.title" :class="ui?.title?.class">
+            ><h2 v-if="title || $slots.title" :id="titleId" :class="ui?.title?.class">
               <slot name="title">{{ title }}</slot>
             </h2>
             <p
               v-if="description || $slots.description"
+              :id="descriptionId"
               :class="['dialog-description', ui?.description?.class]"
             >
               <slot name="description">{{ description }}</slot>
