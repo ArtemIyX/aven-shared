@@ -86,6 +86,12 @@ export default defineConfig({
         AvenActivityList: fileURLToPath(
           new URL('./packages/vue/src/AvenTimeline.vue', import.meta.url),
         ),
+        AvenSwitcher: fileURLToPath(
+          new URL('./packages/vue/src/AvenSwitcher.vue', import.meta.url),
+        ),
+        AvenViewSwitcher: fileURLToPath(
+          new URL('./packages/vue/src/AvenViewSwitcher.vue', import.meta.url),
+        ),
         AvenCard: fileURLToPath(new URL('./packages/vue/src/AvenCard.vue', import.meta.url)),
         AvenPropertyRow: fileURLToPath(
           new URL('./packages/vue/src/AvenPropertyRow.vue', import.meta.url),

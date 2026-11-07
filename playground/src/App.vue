@@ -14,6 +14,8 @@ import {
   AvenDataTable,
   AvenTimeline,
   AvenActivityList,
+  AvenSwitcher,
+  AvenViewSwitcher,
   AvenBadge,
   AvenButton,
   AvenButtonGroup,
@@ -127,6 +129,23 @@ const tableSelected = ref<string[]>(['tx-2'])
 const tableExpanded = ref<string[]>([])
 const tableActivity = ref('Use the table controls to sort, select, resize, reorder or expand rows.')
 const activityMessage = ref('Expand an event or request older activity.')
+const workspaceChoice = ref<string | null>('design')
+const viewChoice = ref<string | null>('list')
+const workspaceOptions = [
+  { value: 'design', label: 'Design workspace', description: 'Product and design work' },
+  { value: 'engineering', label: 'Engineering workspace', description: 'Build and release work' },
+  {
+    value: 'research',
+    label: 'Research workspace',
+    description: 'Notes and studies',
+    disabled: true,
+  },
+]
+const viewOptions = [
+  { value: 'list', label: 'List', icon: '☷' },
+  { value: 'grid', label: 'Grid', icon: '▦' },
+  { value: 'calendar', label: 'Calendar', icon: '▣' },
+]
 const activityItems = [
   {
     key: 'created',
@@ -1121,6 +1140,38 @@ const buttonTones = [
           ><strong>{{ item.label }} (compact activity view)</strong></template
         >
       </AvenActivityList>
+    </section>
+    <section class="playground-card" aria-labelledby="switcher-examples">
+      <AvenText id="switcher-examples" type="header1">Workspace and view switchers</AvenText>
+      <AvenSwitcher
+        v-model="workspaceChoice"
+        label="Workspace"
+        :options="workspaceOptions"
+        searchable
+        name="workspace"
+      >
+        <template #option="{ item, selected }"
+          ><strong>{{ item.label }}</strong
+          ><small v-if="item.description">
+            — {{ item.description }}{{ selected ? ' · selected' : '' }}</small
+          ></template
+        >
+        <template #footer
+          ><p class="switcher-hint">Disabled entries remain visible to explain access.</p></template
+        >
+      </AvenSwitcher>
+      <AvenViewSwitcher
+        v-model="viewChoice"
+        label="Display view"
+        :items="viewOptions"
+        mode="auto"
+        name="display-view"
+      >
+        <template #view="{ item }"
+          ><span aria-hidden="true">{{ item.icon }}</span> {{ item.label }}</template
+        >
+      </AvenViewSwitcher>
+      <p aria-live="polite">Workspace: {{ workspaceChoice }}; view: {{ viewChoice }}.</p>
     </section>
     <section class="playground-card" aria-labelledby="toggle-examples">
       <AvenText id="toggle-examples" type="header1">Toggle controls</AvenText>

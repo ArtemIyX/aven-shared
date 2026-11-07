@@ -565,6 +565,59 @@ export type AvenTimelineSlots<Key extends string | number = string | number> = {
   loading?: () => unknown
   footer?: () => unknown
 }
+export type AvenSwitcherProps<T extends string | number = string | number> = {
+  modelValue?: T | null
+  defaultValue?: T | null
+  options: AvenOption<T>[]
+  label: string
+  placeholder?: string
+  name?: string
+  searchable?: boolean
+  loading?: boolean
+  disabled?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'trigger' | 'popup' | 'option' | 'search'>
+}
+export type AvenSwitcherEvents<T extends string | number = string | number> = {
+  'update:modelValue': [value: T]
+  change: [value: T]
+}
+export type AvenSwitcherSlots<T extends string | number = string | number> = {
+  trigger?: (scope: {
+    item?: AvenOption<T>
+    open: boolean
+    triggerAttrs: Record<string, unknown>
+    triggerRef: (element: unknown) => void
+  }) => unknown
+  option?: (scope: { item: AvenOption<T>; selected: boolean; active: boolean }) => unknown
+  leading?: (scope: { item?: AvenOption<T> }) => unknown
+  trailing?: (scope: { item?: AvenOption<T> }) => unknown
+  header?: () => unknown
+  footer?: () => unknown
+}
+export type AvenViewSwitcherProps<T extends string | number = string | number> = {
+  modelValue?: T | null
+  defaultValue?: T | null
+  items: AvenOption<T, { icon?: unknown }>[]
+  mode?: 'segments' | 'menu' | 'auto'
+  label: string
+  name?: string
+  loading?: boolean
+  disabled?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'view'>
+}
+export type AvenViewSwitcherEvents<T extends string | number = string | number> =
+  AvenSwitcherEvents<T>
+export type AvenViewSwitcherSlots<T extends string | number = string | number> = {
+  trigger?: AvenSwitcherSlots<T>['trigger']
+  option?: AvenSwitcherSlots<T>['option']
+  view?: (scope: { item: AvenOption<T, { icon?: unknown }>; selected: boolean }) => unknown
+  leading?: (scope: { item?: AvenOption<T> }) => unknown
+  trailing?: (scope: { item?: AvenOption<T> }) => unknown
+  header?: () => unknown
+  footer?: () => unknown
+}
 export type AvenListboxProps<T extends string | number = string | number> = {
   modelValue?: T | T[] | null
   defaultValue?: T | T[] | null

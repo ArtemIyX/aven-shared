@@ -42,6 +42,8 @@ import {
   AvenDataTable,
   AvenTimeline,
   AvenActivityList,
+  AvenSwitcher,
+  AvenViewSwitcher,
   AvenAvatar,
   AvenAvatarGroup,
   AvenChip,
@@ -2766,4 +2768,59 @@ test('timeline exposes ordered semantic dates, status, expansion and load-more c
   details.props.onClick(new Event('click'))
   await nextTick()
   assert.deepEqual(expansions, [{ key: 'first', expanded: true }])
+})
+
+test('switchers expose listbox and radio semantics and request changed values once', async () => {
+  const options = [
+    { value: 'design', label: 'Design' },
+    { value: 'engineering', label: 'Engineering' },
+    { value: 'blocked', label: 'Blocked', disabled: true },
+  ]
+  const html = await render({
+    render: () => h(AvenViewSwitcher, { items: options, label: 'View', defaultValue: 'design' }),
+  })
+  assert.match(html, /role="radiogroup"/)
+  assert.match(html, /role="radio"/)
+  const { renderer, root, find } = makeRenderer()
+  const updates = []
+  const changes = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenSwitcher, {
+          options,
+          label: 'Workspace',
+          defaultValue: 'design',
+          'onUpdate:modelValue': (value) => updates.push(value),
+          onChange: (value) => changes.push(value),
+        }),
+    })
+    .mount(root)
+  const trigger = find(root, (node) => node.type === 'button')
+  assert.equal(trigger.props['aria-haspopup'], 'listbox')
+  trigger.props.onClick()
+  await nextTick()
+  const disabled = find(
+    root,
+    (node) => node.props?.role === 'option' && node.props['aria-disabled'] === true,
+  )
+  assert.ok(disabled)
+  const listbox = find(root, (node) => node.props?.role === 'listbox')
+  listbox.props.onKeydown({
+    key: 'e',
+    target: listbox,
+    ctrlKey: false,
+    metaKey: false,
+    altKey: false,
+  })
+  await nextTick()
+  assert.match(listbox.props['aria-activedescendant'], /option-1$/)
+  const option = find(
+    root,
+    (node) => node.props?.role === 'option' && node.props.id?.endsWith('-option-1'),
+  )
+  assert.equal(typeof option.props.onClick, 'function', JSON.stringify(option.props))
+  option.props.onClick(new Event('click'))
+  assert.deepEqual(updates, ['engineering'])
+  assert.deepEqual(changes, ['engineering'])
 })
