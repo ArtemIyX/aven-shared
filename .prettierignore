@@ -1,0 +1,15 @@
+node_modules/
+dist/
+playground/dist/
+coverage/
+packages/shared/src/styles/colors/
+packages/shared/src/styles/base.css
+packages/shared/src/styles/charts.css
+packages/shared/src/styles/colors.css
+packages/shared/src/styles/diagrams.css
+packages/shared/src/styles/finance.css
+packages/shared/src/styles/gradients.css
+packages/shared/src/styles/non-color-tokens.css
+packages/shared/src/styles/tokens.css
+packages/shared/src/tokens/colors.json
+playground/src/colors-gallery.json
