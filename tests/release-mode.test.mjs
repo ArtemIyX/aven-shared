@@ -17,36 +17,44 @@ test('manual runs on main publish the merged package version', () => {
 })
 
 test('rejects manual releases from refs other than main', () => {
-  assert.throws(
-    () => resolveReleaseMode('workflow_dispatch', 'refs/heads/CI-3'),
-    /only from main/,
-  )
+  assert.throws(() => resolveReleaseMode('workflow_dispatch', 'refs/heads/CI-3'), /only from main/)
 })
 
 test('rejects unsupported events', () => {
-  assert.throws(
-    () => resolveReleaseMode('pull_request', mainRef),
-    /Unsupported release event/,
-  )
+  assert.throws(() => resolveReleaseMode('pull_request', mainRef), /Unsupported release event/)
 })
 
 test('npm version updates the package and lockfile for each semver bump', async (context) => {
   const directory = await mkdtemp(join(tmpdir(), 'aven-release-version-'))
   context.after(() => rm(directory, { recursive: true, force: true }))
 
-  await writeFile(join(directory, 'package.json'), JSON.stringify({
-    name: 'aven-release-version-test',
-    version: '0.1.0',
-  }, null, 2))
-  await writeFile(join(directory, 'package-lock.json'), JSON.stringify({
-    name: 'aven-release-version-test',
-    version: '0.1.0',
-    lockfileVersion: 3,
-    requires: true,
-    packages: {
-      '': { name: 'aven-release-version-test', version: '0.1.0' },
-    },
-  }, null, 2))
+  await writeFile(
+    join(directory, 'package.json'),
+    JSON.stringify(
+      {
+        name: 'aven-release-version-test',
+        version: '0.1.0',
+      },
+      null,
+      2,
+    ),
+  )
+  await writeFile(
+    join(directory, 'package-lock.json'),
+    JSON.stringify(
+      {
+        name: 'aven-release-version-test',
+        version: '0.1.0',
+        lockfileVersion: 3,
+        requires: true,
+        packages: {
+          '': { name: 'aven-release-version-test', version: '0.1.0' },
+        },
+      },
+      null,
+      2,
+    ),
+  )
 
   const npmCli = process.env.npm_execpath
   assert.ok(npmCli, 'run this test through npm so npm_execpath is available')
