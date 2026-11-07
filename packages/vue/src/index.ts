@@ -162,6 +162,14 @@ export type {
   AvenCommandPaletteEvents,
   AvenCommandPaletteSlots,
   AvenCommand,
+  AvenMenuGroupModel,
+  AvenMenuProps,
+  AvenMenuEvents,
+  AvenMenuItemProps,
+  AvenMenuItemEvents,
+  AvenMenuItemSlots,
+  AvenMenuGroupProps,
+  AvenMenuGroupSlots,
   AvenSearchFieldProps,
   AvenInputProps,
   AvenInputEvents,
@@ -280,6 +288,8 @@ export { default as AvenToggleButton } from './AvenToggleButton.vue'
 export { default as AvenToggleGroup } from './AvenToggleGroup.vue'
 export { default as AvenCheckboxGroup } from './AvenCheckboxGroup.vue'
 export { default as AvenMenu } from './AvenMenu.vue'
+export { default as AvenMenuItem } from './AvenMenuItem.vue'
+export { default as AvenMenuGroup } from './AvenMenuGroup.vue'
 export { default as AvenDropdownMenu } from './AvenDropdownMenu.vue'
 export const AvenIcon = AvenIconComponent as unknown as DefineComponent<AvenIconProps> & {
   new (): { $slots: AvenIconSlots }

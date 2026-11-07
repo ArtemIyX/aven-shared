@@ -49,6 +49,9 @@ import {
   AvenColorPicker,
   AvenForm,
   AvenFormActions,
+  AvenMenu,
+  AvenMenuItem,
+  AvenMenuGroup,
   AvenDatePicker,
   AvenDateRangePicker,
   AvenTimePicker,
@@ -3045,4 +3048,87 @@ test('form keeps native submit and reset events, disabled fieldset propagation, 
   })
   assert.match(actions, /align-between/)
   assert.match(actions, /is-sticky/)
+})
+
+test('menu actions, checkbox and radio items, groups, and nested submenu requests are semantic and single-fire', async () => {
+  const items = [
+    { key: 'rename', label: 'Rename' },
+    { key: 'pin', label: 'Pin project', kind: 'checkbox', checked: false, group: 'project' },
+    { key: 'sort-name', label: 'Name', kind: 'radio', value: 'name', group: 'sort' },
+    {
+      key: 'more',
+      label: 'More',
+      kind: 'submenu',
+      children: [{ key: 'archive', label: 'Archive' }],
+    },
+  ]
+  const html = await render({
+    render: () =>
+      h(AvenMenu, {
+        id: 'project-menu',
+        items,
+        groups: [
+          { key: 'project', label: 'Project settings' },
+          { key: 'sort', label: 'Sort by' },
+        ],
+      }),
+  })
+  assert.match(html, /role="menuitemcheckbox"/)
+  assert.match(html, /role="menuitemradio"/)
+  assert.match(html, /aria-haspopup="menu"/)
+  assert.match(html, /Project settings/)
+  assert.match(html, /role="group"/)
+
+  const { renderer, root, find } = makeRenderer()
+  const selected = [],
+    checked = [],
+    values = [],
+    submenu = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenMenu, {
+          items,
+          groups: [
+            { key: 'project', label: 'Project settings' },
+            { key: 'sort', label: 'Sort by' },
+          ],
+          onSelect: (payload) => selected.push(payload),
+          'onUpdate:checked': (payload) => checked.push(payload),
+          'onUpdate:value': (payload) => values.push(payload),
+          onSubmenuChange: (payload) => submenu.push(payload),
+        }),
+    })
+    .mount(root)
+  const check = find(root, (node) => node.props?.role === 'menuitemcheckbox')
+  check.props.onClick(new Event('click'))
+  assert.deepEqual(checked, [{ key: 'pin', checked: true }])
+  assert.equal(selected.length, 1)
+  const radio = find(root, (node) => node.props?.role === 'menuitemradio')
+  radio.props.onClick(new Event('click'))
+  assert.deepEqual(values, [{ group: 'sort', value: 'name' }])
+  assert.equal(selected.length, 2)
+  const trigger = find(root, (node) => node.props?.['aria-haspopup'] === 'menu')
+  trigger.props.onClick(new Event('click'))
+  await nextTick()
+  assert.deepEqual(submenu, [{ key: 'more', open: true }])
+  const menus = []
+  const collectMenus = (node) => {
+    if (node.props?.role === 'menu') menus.push(node)
+    for (const child of node.children ?? []) collectMenus(child)
+  }
+  collectMenus(root)
+  const nested = find(menus[1], (node) => node.props?.role === 'menuitem')
+  nested.props.onClick(new Event('click'))
+  assert.equal(selected.length, 3)
+  assert.equal(selected.at(-1).key, 'archive')
+
+  const groupHtml = await render({
+    render: () => h(AvenMenuGroup, { label: 'Group' }, { default: () => 'Content' }),
+  })
+  assert.match(groupHtml, /role="group"/)
+  const itemHtml = await render({
+    render: () => h(AvenMenuItem, { item: { key: 'open', label: 'Open' } }),
+  })
+  assert.match(itemHtml, /role="menuitem"/)
 })

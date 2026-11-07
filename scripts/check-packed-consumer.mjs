@@ -62,6 +62,9 @@ try {
       assert(paths.includes('dist/AvenDatePicker.js'))
       assert(paths.includes('dist/AvenDateRangePicker.js'))
       assert(paths.includes('dist/AvenTimePicker.js'))
+      assert(paths.includes('dist/AvenMenu.js'))
+      assert(paths.includes('dist/AvenMenuItem.js'))
+      assert(paths.includes('dist/AvenMenuGroup.js'))
     }
   }
   await writeFile(
@@ -141,6 +144,10 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
     `import { h } from 'vue'\nimport { AvenForm, AvenFormActions, type AvenFormError, type AvenFormProps, type AvenFormEvents, type AvenFormActionsProps } from '@wellsaik/aven-vue'\nconst errors: AvenFormError[] = [{ controlId: 'email', message: 'Required' }]\nconst form: AvenFormProps = { action: '/save', method: 'post', novalidate: true, errors, columns: 2 }\nconst submit: AvenFormEvents['submit'][0] = new SubmitEvent('submit')\nconst actions: AvenFormActionsProps = { align: 'between', sticky: true }\nvoid submit; h(AvenForm, form); h(AvenFormActions, actions)\n`,
   )
   await writeFile(
+    path.join(directory, 'menu-consumer.ts'),
+    `import { h } from 'vue'\nimport { AvenMenu, AvenMenuItem, AvenMenuGroup, type AvenMenuProps, type AvenMenuEvents, type AvenMenuItemSlots } from '@wellsaik/aven-vue'\ntype Key = 'rename' | 'pin' | 'archive'\nconst props: AvenMenuProps<Key> = { items: [{ key: 'rename', label: 'Rename' }, { key: 'pin', label: 'Pin', kind: 'checkbox', checked: false, group: 'project' }, { key: 'archive', label: 'Archive', kind: 'submenu', children: [{ key: 'rename', label: 'Rename' }] }], groups: [{ key: 'project', label: 'Project' }] }\nconst selected: AvenMenuEvents<Key>['select'][0] = { key: 'rename', item: { key: 'rename', label: 'Rename' }, originalEvent: new Event('click') }\nconst slots: AvenMenuItemSlots<Key> = { default: ({ item, checked }) => checked ? item.label : item.label }\nvoid selected; void slots; h(AvenMenu, props); h(AvenMenuItem, { item: props.items[0]! }); h(AvenMenuGroup, { label: 'Actions' })\n`,
+  )
+  await writeFile(
     path.join(directory, 'tsconfig.json'),
     JSON.stringify({
       compilerOptions: {
@@ -159,6 +166,7 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
         'primitive-consumer.ts',
         'date-consumer.ts',
         'form-consumer.ts',
+        'menu-consumer.ts',
       ],
     }),
   )
@@ -182,6 +190,7 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
         'primitive-consumer.ts',
         'date-consumer.ts',
         'form-consumer.ts',
+        'menu-consumer.ts',
       ],
     }),
   )

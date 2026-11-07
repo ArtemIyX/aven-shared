@@ -142,6 +142,12 @@ export default defineConfig({
         AvenDrawer: fileURLToPath(new URL('./packages/vue/src/AvenDrawer.vue', import.meta.url)),
         AvenSheet: fileURLToPath(new URL('./packages/vue/src/AvenSheet.vue', import.meta.url)),
         AvenMenu: fileURLToPath(new URL('./packages/vue/src/AvenMenu.vue', import.meta.url)),
+        AvenMenuItem: fileURLToPath(
+          new URL('./packages/vue/src/AvenMenuItem.vue', import.meta.url),
+        ),
+        AvenMenuGroup: fileURLToPath(
+          new URL('./packages/vue/src/AvenMenuGroup.vue', import.meta.url),
+        ),
         AvenDropdownMenu: fileURLToPath(
           new URL('./packages/vue/src/AvenDropdownMenu.vue', import.meta.url),
         ),

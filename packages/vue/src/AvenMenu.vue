@@ -1,29 +1,64 @@
 <script setup lang="ts" generic="Key extends string | number">
-import { computed, nextTick, ref } from 'vue'
-import type { AvenCommand, AvenUi } from './types.js'
-const props = withDefaults(
-  defineProps<{
-    items: AvenCommand<Key>[]
-    id?: string
-    loop?: boolean
-    orientation?: 'vertical' | 'horizontal'
-    typeahead?: boolean
-    unstyled?: boolean
-    ui?: AvenUi<'root' | 'item' | 'leading' | 'trailing' | 'shortcut'>
-  }>(),
-  { loop: false, orientation: 'vertical', typeahead: true, unstyled: false },
-)
-const emit = defineEmits<{
-  select: [payload: { key: Key; item: AvenCommand<Key>; originalEvent: Event }]
-  highlight: [payload: { key: Key }]
+import { computed, nextTick, onBeforeUnmount, ref } from 'vue'
+import AvenMenuGroup from './AvenMenuGroup.vue'
+import AvenMenuItem from './AvenMenuItem.vue'
+import { useAvenId } from './composables.js'
+import type { AvenCommand, AvenMenuEvents, AvenMenuProps } from './types.js'
+const props = withDefaults(defineProps<AvenMenuProps<Key>>(), {
+  loop: false,
+  orientation: 'vertical',
+  typeahead: true,
+  unstyled: false,
+})
+const emit = defineEmits<AvenMenuEvents<Key>>()
+const slots = defineSlots<{
+  item?: (scope: {
+    item: AvenCommand<Key>
+    key: Key
+    active: boolean
+    disabled: boolean
+    checked: boolean
+  }) => unknown
+  leading?: (scope: { item: AvenCommand<Key> }) => unknown
+  trailing?: (scope: { item: AvenCommand<Key> }) => unknown
+  shortcut?: (scope: { item: AvenCommand<Key> }) => unknown
+  'group-label'?: (scope: { group: { key: string | number; label: string } }) => unknown
+  'submenu-trigger'?: (scope: { item: AvenCommand<Key>; open: boolean }) => unknown
+  submenu?: (scope: { item: AvenCommand<Key>; close: () => void }) => unknown
+  header?: () => unknown
+  footer?: () => unknown
+  empty?: () => unknown
 }>()
-const active = ref(-1),
-  itemEls = ref<HTMLElement[]>([]),
-  query = ref('')
+const active = ref(props.items.findIndex((item) => !item.disabled)),
+  itemEls = ref<Array<{ focus: () => void; activate: (event: Event) => void }>>([]),
+  query = ref(''),
+  root = ref<HTMLElement>()
+const menuId = useAvenId(props.id, 'menu')
 let typeTimer: ReturnType<typeof setTimeout> | undefined
 const enabled = computed(() =>
   props.items.map((item, index) => ({ item, index })).filter((x) => !x.item.disabled),
 )
+const sections = computed(() => {
+  const sections: Array<{
+    key?: string | number
+    label?: string
+    items: Array<{ item: AvenCommand<Key>; index: number }>
+  }> = []
+  props.items.forEach((item, index) => {
+    const key = item.group
+    let section = sections[sections.length - 1]
+    if (!section || !Object.is(section.key, key)) {
+      section = {
+        key,
+        label: props.groups?.find((group) => Object.is(group.key, key))?.label,
+        items: [],
+      }
+      sections.push(section)
+    }
+    section.items.push({ item, index })
+  })
+  return sections
+})
 function focus(index: number) {
   if (!enabled.value.length) return
   let target = index
@@ -42,8 +77,12 @@ function focus(index: number) {
   if (item) emit('highlight', { key: item.key })
 }
 function keydown(e: KeyboardEvent) {
-  const forward = props.orientation === 'vertical' ? 'ArrowDown' : 'ArrowRight',
-    back = props.orientation === 'vertical' ? 'ArrowUp' : 'ArrowLeft'
+  const rtl =
+    root.value &&
+    typeof getComputedStyle !== 'undefined' &&
+    getComputedStyle(root.value).direction === 'rtl'
+  const forward = props.orientation === 'vertical' ? 'ArrowDown' : rtl ? 'ArrowLeft' : 'ArrowRight',
+    back = props.orientation === 'vertical' ? 'ArrowUp' : rtl ? 'ArrowRight' : 'ArrowLeft'
   if (e.key === forward) {
     e.preventDefault()
     focus(active.value + 1)
@@ -60,7 +99,7 @@ function keydown(e: KeyboardEvent) {
     const item = props.items[active.value]
     if (item && !item.disabled) {
       e.preventDefault()
-      emit('select', { key: item.key, item, originalEvent: e })
+      itemEls.value[active.value]?.activate(e)
     }
   } else if (props.typeahead && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
     query.value += e.key.toLocaleLowerCase()
@@ -79,70 +118,99 @@ function keydown(e: KeyboardEvent) {
     )
   }
 }
-function choose(item: AvenCommand<Key>, event: Event) {
-  if (!item.disabled) emit('select', { key: item.key, item, originalEvent: event })
-}
 function setItemRef(index: number, element: unknown) {
   if (element && typeof element === 'object' && 'focus' in element)
-    itemEls.value[index] = element as HTMLElement
+    itemEls.value[index] = element as { focus: () => void; activate: (event: Event) => void }
 }
-function onItemFocus(item: AvenCommand<Key>) {
-  active.value = props.items.findIndex((entry) => Object.is(entry.key, item.key))
-  emit('highlight', { key: item.key })
+function onHighlight(payload: { key: Key }) {
+  const index = props.items.findIndex((item) => Object.is(item.key, payload.key))
+  if (index >= 0) active.value = index
+  emit('highlight', payload)
 }
 defineExpose({
   focusFirst: () => focus(0),
   focusLast: () => focus(props.items.length - 1),
   focus: () => itemEls.value[active.value]?.focus(),
 })
+onBeforeUnmount(() => {
+  if (typeTimer) clearTimeout(typeTimer)
+})
 </script>
 <template>
   <div
-    :id="id"
+    ref="root"
+    :id="menuId"
     role="menu"
     :aria-orientation="orientation"
     :class="['aven-menu', `is-${orientation}`, { 'is-unstyled': unstyled }, ui?.root?.class]"
     :style="ui?.root?.style"
+    v-bind="ui?.root?.attrs"
     @keydown="keydown"
   >
-    <slot name="header" /><template v-if="items.length"
-      ><button
-        v-for="(item, index) in items"
-        :id="`${id ?? 'aven-menu'}-item-${index}`"
-        :key="item.key"
-        :ref="(element) => setItemRef(index, element)"
-        type="button"
-        role="menuitem"
-        :tabindex="active === index ? 0 : -1"
-        :disabled="item.disabled"
-        :class="[
-          'menu-item',
-          { 'is-active': active === index, 'is-disabled': item.disabled },
-          ui?.item?.class,
-        ]"
-        :style="ui?.item?.style"
-        @focus="onItemFocus(item)"
-        @mouseenter="!item.disabled && (active = index)"
-        @click="choose(item, $event)"
+    <slot name="header" />
+    <template v-if="items.length">
+      <AvenMenuGroup
+        v-for="(section, sectionIndex) in sections"
+        :key="`${String(section.key ?? 'ungrouped')}-${sectionIndex}`"
+        :id="`${menuId}-group-${sectionIndex}`"
+        :label="section.label"
+        :decorative="section.key === undefined"
+        :unstyled="unstyled"
+        :ui="{ root: ui?.group, label: ui?.groupLabel }"
       >
-        <span v-if="$slots.leading" :class="ui?.leading?.class"
-          ><slot name="leading" :item="item" /></span
-        ><span class="item-label"
+        <AvenMenuItem
+          v-for="entry in section.items"
+          :key="entry.item.key"
+          :ref="(element) => setItemRef(entry.index, element)"
+          :id="`${menuId}-item-${entry.index}`"
+          :item="entry.item"
+          :active="active === entry.index"
+          :unstyled="unstyled"
+          :ui="{
+            item: ui?.item,
+            leading: ui?.leading,
+            trailing: ui?.trailing,
+            shortcut: ui?.shortcut,
+          }"
+          @mouseenter="!entry.item.disabled && (active = entry.index)"
+          @select="emit('select', $event)"
+          @update:checked="emit('update:checked', $event)"
+          @update:value="emit('update:value', $event)"
+          @highlight="onHighlight($event)"
+          @submenu-change="emit('submenuChange', $event)"
+        >
+          <template v-if="slots.item" #default="scope"
+            ><slot
+              name="item"
+              :item="scope.item"
+              :key="scope.item.key"
+              :active="scope.active"
+              :disabled="scope.disabled"
+              :checked="scope.checked"
+          /></template>
+          <template v-if="slots.leading" #leading="scope"
+            ><slot name="leading" v-bind="scope"
+          /></template>
+          <template v-if="slots.trailing" #trailing="scope"
+            ><slot name="trailing" v-bind="scope"
+          /></template>
+          <template v-if="slots.shortcut" #shortcut="scope"
+            ><slot name="shortcut" v-bind="scope"
+          /></template>
+          <template v-if="slots['submenu-trigger']" #submenu-trigger="scope"
+            ><slot name="submenu-trigger" v-bind="scope"
+          /></template>
+          <template v-if="slots.submenu" #submenu="scope"
+            ><slot name="submenu" v-bind="scope"
+          /></template>
+        </AvenMenuItem>
+        <template v-if="slots['group-label'] && section.key !== undefined" #label
           ><slot
-            name="item"
-            :item="item"
-            :key="item.key"
-            :active="active === index"
-            :disabled="!!item.disabled"
-            :checked="false"
-            >{{ item.label }}</slot
-          ><small v-if="item.description">{{ item.description }}</small></span
-        ><span v-if="item.shortcut" :class="['item-shortcut', ui?.shortcut?.class]"
-          ><slot name="shortcut" :item="item">{{ item.shortcut }}</slot></span
-        ><span v-if="$slots.trailing" :class="ui?.trailing?.class"
-          ><slot name="trailing" :item="item"
-        /></span></button
-    ></template>
+            name="group-label"
+            :group="{ key: section.key, label: section.label ?? String(section.key) }"
+        /></template>
+      </AvenMenuGroup>
+    </template>
     <div v-else role="presentation" class="menu-empty"><slot name="empty">No actions</slot></div>
     <slot name="footer" />
   </div>
@@ -161,40 +229,7 @@ defineExpose({
   box-shadow: 0 8px 20px var(--aven-color-shadow-ambient);
 }
 .menu-item {
-  display: flex;
-  align-items: center;
-  gap: var(--aven-space-3);
-  min-block-size: 2.25rem;
-  padding: var(--aven-space-2) var(--aven-space-3);
-  border: 0;
   border-radius: var(--aven-radius-sm);
-  background: transparent;
-  color: inherit;
-  text-align: start;
-  font: inherit;
-  cursor: pointer;
-}
-.menu-item:hover,
-.menu-item.is-active {
-  background: var(--aven-color-surface-hover);
-}
-.menu-item:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: -2px;
-}
-.menu-item:disabled,
-.is-disabled {
-  color: var(--aven-color-text-disabled);
-  cursor: not-allowed;
-}
-.item-label {
-  flex: 1;
-  min-inline-size: 0;
-}
-.item-label small {
-  display: block;
-  color: var(--aven-color-text-secondary);
-  font-size: var(--aven-font-size-xs);
 }
 .item-shortcut {
   color: var(--aven-color-text-secondary);
@@ -214,8 +249,5 @@ defineExpose({
   padding: 0;
   background: transparent;
   box-shadow: none;
-}
-.is-unstyled .menu-item {
-  border-radius: 0;
 }
 </style>

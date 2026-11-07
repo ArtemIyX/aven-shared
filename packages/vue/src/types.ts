@@ -1125,6 +1125,7 @@ export type AvenMenubarSlots<Key extends string | number = string | number> = {
     disabled: boolean
   }) => unknown
   'submenu-trigger'?: (scope: { item: AvenCommand<Key>; open: boolean }) => unknown
+  submenu?: (scope: { item: AvenCommand<Key>; close: () => void }) => unknown
   header?: () => unknown
   footer?: () => unknown
 }
@@ -1135,8 +1136,61 @@ export type AvenCommand<Key extends string | number = string | number> = {
   disabled?: boolean
   tone?: AvenTone
   shortcut?: string
+  kind?: 'action' | 'checkbox' | 'radio' | 'submenu'
+  checked?: boolean
+  value?: string | number
+  group?: string | number
   children?: AvenCommand<Key>[]
 }
+export type AvenMenuGroupModel = { key: string | number; label: string }
+export type AvenMenuProps<Key extends string | number = string | number> = {
+  items: AvenCommand<Key>[]
+  groups?: AvenMenuGroupModel[]
+  id?: string
+  loop?: boolean
+  orientation?: 'vertical' | 'horizontal'
+  typeahead?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<
+    'root' | 'item' | 'leading' | 'trailing' | 'shortcut' | 'group' | 'groupLabel' | 'empty'
+  >
+}
+export type AvenMenuEvents<Key extends string | number = string | number> = {
+  select: [payload: { key: Key; item: AvenCommand<Key>; originalEvent: Event }]
+  'update:checked': [payload: { key: Key; checked: boolean }]
+  'update:value': [payload: { group: string | number; value: string | number }]
+  highlight: [payload: { key: Key }]
+  submenuChange: [payload: { key: Key; open: boolean }]
+}
+export type AvenMenuItemProps<Key extends string | number = string | number> = {
+  item: AvenCommand<Key>
+  id?: string
+  active?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'item' | 'leading' | 'trailing' | 'shortcut' | 'submenu'>
+}
+export type AvenMenuItemEvents<Key extends string | number = string | number> = AvenMenuEvents<Key>
+export type AvenMenuItemSlots<Key extends string | number = string | number> = {
+  default?: (scope: {
+    item: AvenCommand<Key>
+    active: boolean
+    disabled: boolean
+    checked: boolean
+  }) => unknown
+  leading?: (scope: { item: AvenCommand<Key> }) => unknown
+  trailing?: (scope: { item: AvenCommand<Key> }) => unknown
+  shortcut?: (scope: { item: AvenCommand<Key> }) => unknown
+  'submenu-trigger'?: (scope: { item: AvenCommand<Key>; open: boolean }) => unknown
+  submenu?: (scope: { item: AvenCommand<Key>; close: () => void }) => unknown
+}
+export type AvenMenuGroupProps = {
+  label?: string
+  id?: string
+  decorative?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'label'>
+}
+export type AvenMenuGroupSlots = { default?: () => unknown; label?: () => unknown }
 export type AvenDialogProps = {
   open?: boolean
   defaultOpen?: boolean

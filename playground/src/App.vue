@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import ColorGallery from './ColorGallery.vue'
 import {
   AvenAccordion,
@@ -40,6 +40,7 @@ import {
   AvenCombobox,
   AvenMultiSelect,
   AvenContextMenu,
+  AvenMenu,
   AvenMenubar,
   AvenAlertDialog,
   AvenAlert,
@@ -97,6 +98,40 @@ const selectedTopics = ref<string[]>(['vue'])
 const teamQuery = ref('')
 const remoteLoading = ref(false)
 const menuAction = ref('')
+const menuPinned = ref(false)
+const menuSort = ref<string | number>('name')
+const menuCommands = computed(() => [
+  { key: 'rename', label: 'Rename project', shortcut: 'F2' },
+  {
+    key: 'pin',
+    label: 'Pin project',
+    kind: 'checkbox' as const,
+    checked: menuPinned.value,
+    group: 'project',
+  },
+  {
+    key: 'sort-name',
+    label: 'Sort by name',
+    kind: 'radio' as const,
+    value: 'name',
+    checked: menuSort.value === 'name',
+    group: 'sort',
+  },
+  {
+    key: 'sort-date',
+    label: 'Sort by date',
+    kind: 'radio' as const,
+    value: 'date',
+    checked: menuSort.value === 'date',
+    group: 'sort',
+  },
+  {
+    key: 'more',
+    label: 'More actions',
+    kind: 'submenu' as const,
+    children: [{ key: 'archive', label: 'Archive project' }],
+  },
+])
 const confirmOpen = ref(false)
 const paletteOpen = ref(false)
 const drawerOpen = ref(false)
@@ -812,6 +847,28 @@ const buttonTones = [
           </p></template
         >
       </AvenContextMenu>
+      <AvenMenu
+        :items="menuCommands"
+        :groups="[
+          { key: 'project', label: 'Project settings' },
+          { key: 'sort', label: 'Sort order' },
+        ]"
+        loop
+        @select="menuAction = $event.item.label"
+        @update:checked="menuPinned = $event.checked"
+        @update:value="menuSort = $event.value"
+      >
+        <template #item="{ item, checked }"
+          ><strong>{{ item.label }}</strong
+          >{{ checked ? ' · selected' : '' }}</template
+        >
+        <template #leading="{ item }"
+          ><span aria-hidden="true">{{
+            item.kind === 'checkbox' ? '☑' : item.kind === 'radio' ? '◉' : '›'
+          }}</span></template
+        >
+      </AvenMenu>
+      <p>Pin: {{ menuPinned ? 'on' : 'off' }}; sort: {{ menuSort }}.</p>
       <AvenMenubar
         :items="menubarItems"
         label="Document menu"
