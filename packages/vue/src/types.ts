@@ -258,6 +258,32 @@ export type AvenScrollAreaSlots = {
   default?: () => unknown
   corner?: () => unknown
 }
+export type AvenAppShellProps = {
+  sidebarCollapsed?: boolean
+  defaultSidebarCollapsed?: boolean
+  inspectorOpen?: boolean
+  defaultInspectorOpen?: boolean
+  headerSticky?: boolean
+  label?: string
+  sidebarLabel?: string
+  inspectorLabel?: string
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'header' | 'sidebar' | 'main' | 'inspector' | 'footer' | 'statusbar'>
+}
+export type AvenAppShellEvents = {
+  'update:sidebarCollapsed': [value: boolean]
+  'update:inspectorOpen': [value: boolean]
+}
+export type AvenAppShellSlots = {
+  header?: () => unknown
+  sidebar?: () => unknown
+  default?: () => unknown
+  inspector?: () => unknown
+  footer?: () => unknown
+  statusbar?: () => unknown
+  'sidebar-toggle'?: (scope: { collapsed: boolean; toggle: () => boolean }) => unknown
+  'inspector-toggle'?: (scope: { open: boolean; toggle: () => boolean }) => unknown
+}
 export type AvenListboxProps<T extends string | number = string | number> = {
   modelValue?: T | T[] | null
   defaultValue?: T | T[] | null

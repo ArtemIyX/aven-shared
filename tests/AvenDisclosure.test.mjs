@@ -32,6 +32,7 @@ import {
   AvenToaster,
   AvenTextarea,
   AvenScrollArea,
+  AvenAppShell,
   AvenAvatar,
   AvenAvatarGroup,
   AvenChip,
@@ -2345,4 +2346,47 @@ test('scroll area is focusable, labeled, and reports each end arrival once', asy
     if (previousGetComputedStyle === undefined) delete globalThis.getComputedStyle
     else globalThis.getComputedStyle = previousGetComputedStyle
   }
+})
+
+test('app shell preserves landmarks and controlled and uncontrolled layout requests', async () => {
+  const html = await render({
+    render: () =>
+      h(
+        AvenAppShell,
+        { label: 'Workspace', inspectorOpen: true },
+        {
+          header: () => 'Header',
+          sidebar: () => 'Navigation',
+          default: () => 'Main',
+          inspector: () => 'Details',
+          footer: () => 'Footer',
+          statusbar: () => 'Saved',
+        },
+      ),
+  })
+  assert.match(html, /role="region" aria-label="Workspace"/)
+  assert.match(html, /aria-label="Primary navigation"/)
+  assert.match(html, /aria-label="Inspector"/)
+  assert.match(html, /Main/)
+
+  const controlledMount = makeRenderer()
+  const controlled = ref(null)
+  const controlledUpdates = []
+  controlledMount.renderer
+    .createApp({
+      render: () =>
+        h(
+          AvenAppShell,
+          {
+            ref: controlled,
+            sidebarCollapsed: false,
+            'onUpdate:sidebarCollapsed': (value) => controlledUpdates.push(value),
+          },
+          { sidebar: () => 'Navigation', default: () => 'Main' },
+        ),
+    })
+    .mount(controlledMount.root)
+  assert.equal(controlled.value.toggleSidebar(), true)
+  assert.deepEqual(controlledUpdates, [true])
+  assert.ok(controlledMount.find(controlledMount.root, (node) => node.type === 'aside'))
 })

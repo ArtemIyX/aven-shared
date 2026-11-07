@@ -4,6 +4,7 @@ import ColorGallery from './ColorGallery.vue'
 import {
   AvenAccordion,
   AvenActionBar,
+  AvenAppShell,
   AvenBadge,
   AvenButton,
   AvenButtonGroup,
@@ -96,6 +97,7 @@ let nextToastId = 1
 const toastActivity = ref('')
 const projectNote = ref('')
 const scrollPosition = ref('Scroll the release notes.')
+const shellState = ref('Navigation expanded; inspector closed.')
 function dismissToast(id: string) {
   toastItems.value = toastItems.value.filter((item) => item.id !== id)
 }
@@ -799,6 +801,47 @@ const buttonTones = [
         </ol>
       </AvenScrollArea>
       <p>{{ scrollPosition }}</p>
+    </section>
+    <section class="playground-card" aria-labelledby="app-shell-examples">
+      <AvenText id="app-shell-examples" type="header1">Application shell</AvenText>
+      <AvenAppShell
+        label="Project workspace preview"
+        style="
+          block-size: 24rem;
+          border: 1px solid var(--aven-color-border-subtle);
+          border-radius: var(--aven-radius-lg);
+        "
+        @update:sidebar-collapsed="
+          shellState = $event ? 'Navigation collapsed' : 'Navigation expanded'
+        "
+        @update:inspector-open="shellState += $event ? '; inspector opened' : '; inspector closed'"
+      >
+        <template #sidebar-toggle="{ collapsed, toggle }">
+          <AvenButton size="sm" variant="outline" @click="toggle">
+            {{ collapsed ? 'Show navigation' : 'Hide navigation' }}
+          </AvenButton>
+        </template>
+        <template #header><strong>Project workspace</strong></template>
+        <template #sidebar>
+          <nav aria-label="Project sections">
+            <ul>
+              <li>Overview</li>
+              <li>Activity</li>
+              <li>Settings</li>
+            </ul>
+          </nav>
+        </template>
+        <template #inspector-toggle="{ open, toggle }">
+          <AvenButton size="sm" variant="outline" @click="toggle">
+            {{ open ? 'Close inspector' : 'Open inspector' }}
+          </AvenButton>
+        </template>
+        <template #default>Main workspace content</template>
+        <template #inspector>Selection details</template>
+        <template #footer>Project footer</template>
+        <template #statusbar>Connected · All changes saved</template>
+      </AvenAppShell>
+      <p>{{ shellState }}</p>
     </section>
     <section class="playground-card" aria-labelledby="toggle-examples">
       <AvenText id="toggle-examples" type="header1">Toggle controls</AvenText>
