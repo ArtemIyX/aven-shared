@@ -26,7 +26,13 @@ defineSlots<AvenSeparatorSlots>()
     :aria-orientation="decorative ? undefined : orientation"
     :aria-hidden="decorative || undefined"
   >
-    <span v-if="$slots.label" :class="ui?.label?.class"><slot name="label" /></span><slot />
+    <span
+      v-if="$slots.label"
+      v-bind="ui?.label?.attrs"
+      :class="ui?.label?.class"
+      :style="ui?.label?.style"
+      ><slot name="label" /></span
+    ><slot />
   </div>
 </template>
 <style scoped>

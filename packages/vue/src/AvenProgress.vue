@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { AvenUi } from './types.js'
+import type { AvenProgressSlots, AvenUi } from './types.js'
+defineSlots<AvenProgressSlots>()
 const props = withDefaults(
   defineProps<{
     value: number | null
@@ -28,6 +29,7 @@ const text = computed(() =>
 </script>
 <template>
   <div
+    v-bind="ui?.root?.attrs"
     :class="['aven-progress', { 'is-unstyled': unstyled }, ui?.root?.class]"
     :style="ui?.root?.style"
     role="progressbar"
@@ -37,15 +39,26 @@ const text = computed(() =>
     :aria-valuenow="value === null ? undefined : value"
     :aria-valuetext="value === null ? undefined : text"
   >
-    <div :class="['progress-track', ui?.track?.class]" :style="ui?.track?.style">
+    <span v-if="$slots.label" class="progress-label"
+      ><slot name="label" :value="value" :percent="percent"
+    /></span>
+    <div
+      v-bind="ui?.track?.attrs"
+      :class="['progress-track', ui?.track?.class]"
+      :style="ui?.track?.style"
+    >
       <div
+        v-bind="ui?.fill?.attrs"
         :class="['progress-fill', { 'is-indeterminate': value === null }, ui?.fill?.class]"
         :style="[{ inlineSize: percent === null ? undefined : `${percent}%` }, ui?.fill?.style]"
       />
     </div>
-    <span v-if="showValue && value !== null" :class="['progress-value', ui?.value?.class]">{{
-      text
-    }}</span>
+    <span
+      v-bind="ui?.value?.attrs"
+      v-if="showValue && value !== null"
+      :class="['progress-value', ui?.value?.class]"
+      ><slot name="value" :value="value" :percent="percent ?? 0">{{ text }}</slot></span
+    >
   </div>
 </template>
 <style scoped>

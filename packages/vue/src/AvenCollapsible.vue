@@ -1,27 +1,18 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from 'vue'
-import type { AvenUi } from './types.js'
+import type { AvenCollapsibleEvents, AvenCollapsibleProps, AvenCollapsibleSlots } from './types.js'
 import { useAvenId } from './composables.js'
 
-const props = withDefaults(
-  defineProps<{
-    open?: boolean
-    defaultOpen?: boolean
-    disabled?: boolean
-    lazy?: boolean
-    unmountOnHide?: boolean
-    id?: string
-    unstyled?: boolean
-    ui?: AvenUi<'root' | 'trigger' | 'panel' | 'indicator'>
-  }>(),
-  { defaultOpen: false, disabled: false, lazy: true, unmountOnHide: false, unstyled: false },
-)
-const emit = defineEmits<{
-  'update:open': [value: boolean]
-  openChange: [value: boolean]
-  afterOpen: []
-  afterClose: []
-}>()
+const props = withDefaults(defineProps<AvenCollapsibleProps>(), {
+  open: undefined,
+  defaultOpen: false,
+  disabled: false,
+  lazy: true,
+  unmountOnHide: false,
+  unstyled: false,
+})
+const emit = defineEmits<AvenCollapsibleEvents>()
+defineSlots<AvenCollapsibleSlots>()
 const localOpen = ref(props.defaultOpen)
 const isOpen = computed(() => (props.open === undefined ? localOpen.value : props.open))
 const wasOpened = ref(isOpen.value)
@@ -74,6 +65,7 @@ function triggerAttrs() {
 
 <template>
   <section
+    v-bind="ui?.root?.attrs"
     :class="[
       'aven-collapsible',
       { 'is-open': isOpen, 'is-disabled': disabled, 'is-unstyled': unstyled },
@@ -90,7 +82,7 @@ function triggerAttrs() {
         :trigger-ref="setTrigger"
       >
         <button
-          v-bind="triggerAttrs()"
+          v-bind="{ ...ui?.trigger?.attrs, ...triggerAttrs() }"
           :ref="setTrigger"
           :class="['collapsible-trigger', ui?.trigger?.class]"
           :style="ui?.trigger?.style"
@@ -102,6 +94,7 @@ function triggerAttrs() {
       </slot>
     </h3>
     <div
+      v-bind="ui?.panel?.attrs"
       v-if="!unmountOnHide && (isOpen || !lazy || wasOpened)"
       :id="contentId"
       :hidden="!isOpen"
@@ -110,9 +103,10 @@ function triggerAttrs() {
       :class="['collapsible-panel', ui?.panel?.class]"
       :style="ui?.panel?.style"
     >
-      <slot name="content" :open="isOpen"><slot name="panel" /></slot>
+      <slot name="content" :open="isOpen"><slot name="panel" :open="isOpen" /></slot>
     </div>
     <div
+      v-bind="ui?.panel?.attrs"
       v-else-if="unmountOnHide && isOpen"
       :id="contentId"
       role="region"
@@ -120,7 +114,7 @@ function triggerAttrs() {
       :class="['collapsible-panel', ui?.panel?.class]"
       :style="ui?.panel?.style"
     >
-      <slot name="content" :open="true"><slot name="panel" /></slot>
+      <slot name="content" :open="true"><slot name="panel" :open="true" /></slot>
     </div>
   </section>
 </template>

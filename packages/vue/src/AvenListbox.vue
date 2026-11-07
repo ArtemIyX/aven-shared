@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="T extends string | number">
-import { computed, onBeforeUnmount, ref, useAttrs, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, useAttrs, watch } from 'vue'
 import { useAvenId } from './composables.js'
 import type { AvenListboxEvents, AvenListboxProps, AvenListboxSlots } from './types.js'
 
@@ -19,7 +19,11 @@ defineSlots<AvenListboxSlots<T>>()
 const attrs = useAttrs()
 const listId = useAvenId(props.id, 'listbox')
 const localValue = ref<T | T[] | null>(props.defaultValue ?? null)
+const initialValue = Array.isArray(props.defaultValue)
+  ? [...props.defaultValue]
+  : (props.defaultValue ?? null)
 const activeIndex = ref(-1)
+const activeKey = ref<T | null>(null)
 const optionElements = ref<Array<HTMLDivElement | undefined>>([])
 const root = ref<HTMLDivElement>()
 const typeahead = ref('')
@@ -58,11 +62,15 @@ watch(
 watch(
   () => props.options,
   () => {
-    if (
-      activeIndex.value >= props.options.length ||
-      (activeIndex.value >= 0 && props.options[activeIndex.value]?.disabled)
-    ) {
-      activeIndex.value = firstEnabled()
+    if (activeIndex.value >= 0) {
+      const index = props.options.findIndex(
+        (option) => Object.is(option.value, activeKey.value) && !option.disabled,
+      )
+      if (index >= 0 && !props.disabled) activeIndex.value = index
+      else {
+        activeIndex.value = firstEnabled()
+        activeKey.value = props.options[activeIndex.value]?.value ?? null
+      }
     }
   },
   { deep: true },
@@ -83,6 +91,7 @@ function firstEnabled() {
 function setActive(index: number, event: Event) {
   if (index < 0 || index >= props.options.length || isDisabled(index)) return
   activeIndex.value = index
+  activeKey.value = props.options[index]!.value
   emit('highlight', { value: props.options[index]!.value, index, originalEvent: event })
 }
 function commit(index = activeIndex.value) {
@@ -124,9 +133,13 @@ function moveActive(delta: number, event: KeyboardEvent) {
   optionElements.value[next]?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' })
 }
 function onKeydown(event: KeyboardEvent) {
-  if (props.disabled || props.readonly) return
-  const forward = props.orientation === 'vertical' ? 'ArrowDown' : 'ArrowRight'
-  const backward = props.orientation === 'vertical' ? 'ArrowUp' : 'ArrowLeft'
+  if (props.disabled) return
+  const directionElement = root.value?.closest('[dir]')
+  const rtl =
+    directionElement?.getAttribute('dir') === 'rtl' ||
+    (!directionElement && typeof document !== 'undefined' && document.dir === 'rtl')
+  const forward = props.orientation === 'vertical' ? 'ArrowDown' : rtl ? 'ArrowLeft' : 'ArrowRight'
+  const backward = props.orientation === 'vertical' ? 'ArrowUp' : rtl ? 'ArrowRight' : 'ArrowLeft'
   if (event.key === forward || event.key === backward) {
     event.preventDefault()
     moveActive(event.key === forward ? 1 : -1, event)
@@ -136,7 +149,12 @@ function onKeydown(event: KeyboardEvent) {
     event.preventDefault()
     const enabled = props.options.map((_, index) => index).filter((index) => !isDisabled(index))
     const next = event.key === 'Home' ? enabled[0] : enabled.at(-1)
-    if (next !== undefined) setActive(next, event)
+    if (next !== undefined) {
+      const reachedNewEnd = event.key === 'End' && next !== activeIndex.value
+      setActive(next, event)
+      if (reachedNewEnd) emit('endReached', { lastKey: props.options[next]!.value })
+      optionElements.value[next]?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' })
+    }
     return
   }
   if (event.key === 'Enter' || event.key === ' ') {
@@ -155,9 +173,31 @@ function onKeydown(event: KeyboardEvent) {
     const option = ordered.find(
       (item) => !item.disabled && item.label.toLocaleLowerCase().startsWith(typeahead.value),
     )
-    if (option) setActive(props.options.indexOf(option), event)
+    if (option) {
+      const index = props.options.indexOf(option)
+      setActive(index, event)
+      optionElements.value[index]?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' })
+    }
   }
 }
+let form: HTMLFormElement | null = null
+function onReset(event: Event) {
+  queueMicrotask(() => {
+    if (event.defaultPrevented) return
+    const next = Array.isArray(initialValue) ? [...initialValue] : initialValue
+    localValue.value = next
+    if (props.modelValue !== undefined) emit('update:modelValue', next)
+  })
+}
+onMounted(() => {
+  const external =
+    typeof attrs.form === 'string' && typeof document !== 'undefined'
+      ? document.getElementById(attrs.form)
+      : null
+  form = (external as HTMLFormElement | null) ?? root.value?.closest('form') ?? null
+  form?.addEventListener('reset', onReset)
+})
+onBeforeUnmount(() => form?.removeEventListener('reset', onReset))
 function focusRoot() {
   root.value?.focus()
 }
@@ -170,7 +210,9 @@ defineExpose({ focus: focusRoot })
     v-bind="{ ...attrs, ...ui?.root?.attrs }"
     :id="listId"
     role="listbox"
-    :aria-label="label || undefined"
+    :aria-label="
+      label || (typeof attrs['aria-label'] === 'string' ? attrs['aria-label'] : undefined)
+    "
     :aria-multiselectable="multiple || undefined"
     :aria-orientation="orientation"
     :aria-activedescendant="activeId"
@@ -187,18 +229,20 @@ defineExpose({ focus: focusRoot })
     @keydown="onKeydown"
     @focus="
       (event) => {
-        if (activeIndex < 0 && firstEnabled() >= 0) setActive(firstEnabled(), event)
+        if (activeIndex < 0 && firstEnabled() >= 0) {
+          const selected = options.findIndex(
+            (option, index) => !isDisabled(index) && isSelected(option.value),
+          )
+          setActive(selected >= 0 ? selected : firstEnabled(), event)
+        }
       }
     "
   >
     <slot name="header" />
     <slot v-if="options.length === 0" name="empty"
-      ><div :class="ui?.empty?.class">No options</div></slot
+      ><div v-bind="ui?.empty?.attrs" :class="ui?.empty?.class">No options</div></slot
     >
-    <template
-      v-for="group in groups"
-      :key="group.group === undefined ? 'ungrouped' : `${typeof group.group}:${group.group}`"
-    >
+    <template v-for="(group, groupIndex) in groups" :key="groupIndex">
       <div
         v-if="group.group !== undefined"
         role="group"
@@ -246,6 +290,7 @@ defineExpose({ focus: focusRoot })
           >
           <slot name="indicator" :selected="isSelected(entry.option.value)"
             ><span
+              v-bind="ui?.indicator?.attrs"
               v-if="isSelected(entry.option.value)"
               aria-hidden="true"
               :class="ui?.indicator?.class"
@@ -293,6 +338,7 @@ defineExpose({ focus: focusRoot })
           >
           <slot name="indicator" :selected="isSelected(entry.option.value)"
             ><span
+              v-bind="ui?.indicator?.attrs"
               v-if="isSelected(entry.option.value)"
               aria-hidden="true"
               :class="ui?.indicator?.class"
@@ -310,6 +356,7 @@ defineExpose({ focus: focusRoot })
         :key="`${typeof selected}:${String(selected)}`"
         type="hidden"
         :name="name"
+        :form="typeof attrs.form === 'string' ? attrs.form : undefined"
         :value="selected"
         :disabled="disabled"
     /></template>

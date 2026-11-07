@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, ref, watch, useAttrs } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch, useAttrs, useSlots } from 'vue'
 import type { AvenUi } from './types.js'
+import { useAvenId } from './composables.js'
 defineOptions({ inheritAttrs: false })
 const props = withDefaults(
   defineProps<{
@@ -13,11 +14,13 @@ const props = withDefaults(
     disabled?: boolean
     readonly?: boolean
     label?: string
+    description?: string
     invalid?: boolean
     unstyled?: boolean
-    ui?: AvenUi<'root' | 'control' | 'indicator' | 'label'>
+    ui?: AvenUi<'root' | 'control' | 'indicator' | 'label' | 'description'>
   }>(),
   {
+    modelValue: undefined,
     defaultValue: false,
     indeterminate: false,
     required: false,
@@ -34,8 +37,17 @@ const emit = defineEmits<{
   blur: [event: FocusEvent]
 }>()
 const attrs = useAttrs(),
+  slots = useSlots(),
   local = ref(props.defaultValue),
   el = ref<HTMLInputElement>()
+const descriptionId = useAvenId(undefined, 'checkbox-description')
+const labelId = useAvenId(undefined, 'checkbox-label')
+const initialValue = props.defaultValue
+const controlAttrs = computed(() => {
+  const { class: _class, style: _style, ...rest } = attrs
+  return { ...rest, ...props.ui?.control?.attrs }
+})
+let form: HTMLFormElement | null = null
 const checked = computed(() => (props.modelValue !== undefined ? props.modelValue : local.value))
 watch(
   () => props.modelValue,
@@ -57,10 +69,24 @@ function toggle() {
   emit('update:modelValue', next)
   emit('change', next)
 }
+function reset(event: Event) {
+  queueMicrotask(() => {
+    if (event.defaultPrevented) return
+    local.value = initialValue
+    if (props.modelValue !== undefined) emit('update:modelValue', initialValue)
+  })
+}
+onMounted(() => {
+  if (el.value) el.value.indeterminate = props.indeterminate
+  form = el.value?.form ?? null
+  form?.addEventListener('reset', reset)
+})
+onBeforeUnmount(() => form?.removeEventListener('reset', reset))
 defineExpose({ focus: () => el.value?.focus() })
 </script>
 <template>
   <label
+    v-bind="ui?.root?.attrs"
     :class="[
       'aven-checkbox',
       {
@@ -74,8 +100,8 @@ defineExpose({ focus: () => el.value?.focus() })
     ]"
     :style="[attrs.style, ui?.root?.style]"
     ><input
+      v-bind="{ ...ui?.control?.attrs, ...controlAttrs }"
       ref="el"
-      v-bind="{ ...attrs, ...ui?.control?.attrs }"
       :class="['checkbox-native', ui?.control?.class]"
       :style="ui?.control?.style"
       type="checkbox"
@@ -86,19 +112,48 @@ defineExpose({ focus: () => el.value?.focus() })
       :disabled="disabled"
       :readonly="readonly"
       :aria-invalid="invalid || undefined"
+      :aria-labelledby="
+        label || slots.default || slots.label
+          ? labelId
+          : (attrs['aria-labelledby'] as string | undefined)
+      "
+      :aria-describedby="
+        [attrs['aria-describedby'], description || slots.description ? descriptionId : null]
+          .filter(Boolean)
+          .join(' ') || undefined
+      "
       @click.prevent="toggle"
       @focus="emit('focus', $event)"
       @blur="emit('blur', $event)"
     /><span
+      v-bind="ui?.indicator?.attrs"
       aria-hidden="true"
       :class="['checkbox-indicator', ui?.indicator?.class]"
       :style="ui?.indicator?.style"
-      >{{ indeterminate ? '−' : checked ? '✓' : '' }}</span
+      ><slot
+        name="indicator"
+        :checked="checked"
+        :indeterminate="indeterminate"
+        :disabled="disabled"
+        >{{ indeterminate ? '−' : checked ? '✓' : '' }}</slot
+      ></span
     ><span
-      v-if="label || $slots.default"
+      v-if="label || $slots.default || $slots.label || description || $slots.description"
+      v-bind="ui?.label?.attrs"
       :class="['checkbox-label', ui?.label?.class]"
       :style="ui?.label?.style"
-      ><slot>{{ label }}</slot></span
+      ><span :id="labelId"
+        ><slot name="label"
+          ><slot>{{ label }}</slot></slot
+        ></span
+      ><small
+        v-if="description || $slots.description"
+        v-bind="ui?.description?.attrs"
+        :id="descriptionId"
+        :class="ui?.description?.class"
+        :style="ui?.description?.style"
+        ><slot name="description">{{ description }}</slot></small
+      ></span
     ></label
   >
 </template>
@@ -137,6 +192,11 @@ defineExpose({ focus: () => el.value?.focus() })
 .checkbox-native:focus-visible + .checkbox-indicator {
   outline: 2px solid var(--aven-color-focus-ring);
   outline-offset: 2px;
+}
+.checkbox-label small {
+  display: block;
+  color: var(--aven-color-text-secondary);
+  font-size: var(--aven-font-size-sm);
 }
 .is-invalid .checkbox-indicator {
   border-color: var(--aven-color-border-invalid);

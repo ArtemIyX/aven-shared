@@ -1,12 +1,14 @@
 <script setup lang="ts" generic="Key extends string | number">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, useAttrs, watch } from 'vue'
 import AvenMenu from './AvenMenu.vue'
+import { isTopAvenOverlayLayer, registerAvenOverlayLayer } from './composables.js'
 import type { AvenContextMenuEvents, AvenContextMenuProps, AvenContextMenuSlots } from './types.js'
 
 defineOptions({ inheritAttrs: false })
 const props = withDefaults(defineProps<AvenContextMenuProps<Key>>(), {
   defaultOpen: false,
   open: undefined,
+  collisionPadding: 8,
   disabled: false,
   activation: 'contextmenu',
   label: 'Context actions',
@@ -18,10 +20,42 @@ defineSlots<AvenContextMenuSlots<Key>>()
 const attrs = useAttrs()
 const localOpen = ref(props.defaultOpen)
 const isOpen = computed(() => props.open ?? localOpen.value)
+const overlayLayer = {}
+let unregisterOverlay: (() => void) | undefined
 const root = ref<HTMLElement>()
+const content = ref<HTMLElement>()
 const menu = ref<{ focusFirst: () => void } | null>(null)
 const position = ref({ x: 0, y: 0 })
 let returnFocus: HTMLElement | null = null
+function positionMenu() {
+  const rect = content.value?.getBoundingClientRect()
+  if (typeof window === 'undefined' || !rect) return
+  const padding = Math.max(0, props.collisionPadding)
+  const maxX = Math.max(padding, window.innerWidth - rect.width - padding)
+  const maxY = Math.max(padding, window.innerHeight - rect.height - padding)
+  position.value = {
+    x: Math.min(maxX, Math.max(padding, position.value.x)),
+    y: Math.min(maxY, Math.max(padding, position.value.y)),
+  }
+}
+function attachDismissListeners() {
+  if (unregisterOverlay) return
+  unregisterOverlay = registerAvenOverlayLayer(overlayLayer)
+  if (typeof document !== 'undefined') {
+    document.addEventListener('pointerdown', onOutside, true)
+    document.addEventListener('keydown', onDocumentKeydown)
+  }
+  if (typeof window !== 'undefined') window.addEventListener('resize', positionMenu)
+}
+function detachDismissListeners() {
+  if (typeof document !== 'undefined') {
+    document.removeEventListener('pointerdown', onOutside, true)
+    document.removeEventListener('keydown', onDocumentKeydown)
+  }
+  if (typeof window !== 'undefined') window.removeEventListener('resize', positionMenu)
+  unregisterOverlay?.()
+  unregisterOverlay = undefined
+}
 function isHTMLElement(value: EventTarget | null): value is HTMLElement {
   return typeof HTMLElement !== 'undefined' && value instanceof HTMLElement
 }
@@ -32,30 +66,27 @@ watch(
   },
 )
 watch(isOpen, async (open) => {
-  if (typeof document === 'undefined') return
   if (open) {
-    document.addEventListener('pointerdown', onOutside, true)
-    document.addEventListener('keydown', onDocumentKeydown)
+    attachDismissListeners()
     await nextTick()
+    positionMenu()
     menu.value?.focusFirst()
-  } else {
-    document.removeEventListener('pointerdown', onOutside, true)
-    document.removeEventListener('keydown', onDocumentKeydown)
-  }
+  } else detachDismissListeners()
 })
+watch(
+  () => props.collisionPadding,
+  () => void nextTick(positionMenu),
+)
 onMounted(() => {
-  if (isOpen.value && typeof document !== 'undefined') {
-    document.addEventListener('pointerdown', onOutside, true)
-    document.addEventListener('keydown', onDocumentKeydown)
-    void nextTick(() => menu.value?.focusFirst())
+  if (isOpen.value) {
+    attachDismissListeners()
+    void nextTick(() => {
+      positionMenu()
+      menu.value?.focusFirst()
+    })
   }
 })
-onBeforeUnmount(() => {
-  if (typeof document !== 'undefined') {
-    document.removeEventListener('pointerdown', onOutside, true)
-    document.removeEventListener('keydown', onDocumentKeydown)
-  }
-})
+onBeforeUnmount(detachDismissListeners)
 function setOpen(
   next: boolean,
   reason:
@@ -78,11 +109,13 @@ function openAt(
   const currentTarget = event?.currentTarget ?? null
   returnFocus = isHTMLElement(currentTarget) ? currentTarget : (root.value ?? null)
   if (typeof window !== 'undefined') {
-    x = Math.max(8, Math.min(x, window.innerWidth - 220))
-    y = Math.max(8, Math.min(y, window.innerHeight - 260))
+    const padding = Math.max(0, props.collisionPadding)
+    x = Math.min(window.innerWidth - padding, Math.max(padding, x))
+    y = Math.min(window.innerHeight - padding, Math.max(padding, y))
   }
   position.value = { x, y }
   setOpen(true, reason, position.value)
+  void nextTick(positionMenu)
 }
 function onContextMenu(event: MouseEvent) {
   openAt(event.clientX, event.clientY, 'contextmenu', event)
@@ -106,13 +139,18 @@ function onKeydown(event: KeyboardEvent) {
   )
 }
 function onDocumentKeydown(event: KeyboardEvent) {
-  if (!isOpen.value || event.key !== 'Escape') return
+  if (!isTopAvenOverlayLayer(overlayLayer) || !isOpen.value || event.key !== 'Escape') return
   event.stopPropagation()
   setOpen(false, 'escape')
   returnFocus?.focus()
 }
 function onOutside(event: PointerEvent) {
-  if (isOpen.value && !root.value?.contains(event.target as Node)) setOpen(false, 'outside')
+  if (
+    isTopAvenOverlayLayer(overlayLayer) &&
+    isOpen.value &&
+    !root.value?.contains(event.target as Node)
+  )
+    setOpen(false, 'outside')
 }
 function onSelect(payload: { key: Key; item: (typeof props.items)[number]; originalEvent: Event }) {
   emit('select', payload)
@@ -168,6 +206,7 @@ defineExpose({
     </slot>
     <div
       v-if="isOpen"
+      ref="content"
       :class="['context-content', ui?.content?.class]"
       :style="[{ left: `${position.x}px`, top: `${position.y}px` }, ui?.content?.style]"
       v-bind="ui?.content?.attrs"

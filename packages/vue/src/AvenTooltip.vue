@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { AvenOpenReason } from './composables.js'
-import type { AvenUi } from './types.js'
+import { useAvenId } from './composables.js'
+import { isTopAvenOverlayLayer, registerAvenOverlayLayer } from './composables.js'
+import type { AvenTooltipEvents, AvenTooltipSlots, AvenUi } from './types.js'
 const props = withDefaults(
   defineProps<{
     text?: string
@@ -16,6 +18,7 @@ const props = withDefaults(
     ui?: AvenUi<'root' | 'trigger' | 'content' | 'arrow'>
   }>(),
   {
+    open: undefined,
     openDelay: 400,
     closeDelay: 100,
     placement: 'top',
@@ -24,15 +27,16 @@ const props = withDefaults(
     unstyled: false,
   },
 )
-const emit = defineEmits<{
-  'update:open': [open: boolean]
-  openChange: [change: { open: boolean; reason: AvenOpenReason }]
-}>()
+const emit = defineEmits<AvenTooltipEvents>()
+defineSlots<AvenTooltipSlots>()
 const local = ref(props.defaultOpen ?? false),
   isOpen = computed(() => (props.open === undefined ? local.value : props.open)),
+  root = ref<HTMLElement>(),
   trigger = ref<HTMLElement>(),
   timer = ref<ReturnType<typeof setTimeout>>(),
-  id = `aven-tooltip-${Math.random().toString(36).slice(2)}`
+  id = useAvenId(undefined, 'tooltip')
+const overlayLayer = {}
+let unregisterOverlay: (() => void) | undefined
 function setOpen(value: boolean, reason: AvenOpenReason) {
   if (props.disabled || isOpen.value === value) return
   if (props.open === undefined) local.value = value
@@ -44,21 +48,39 @@ function schedule(value: boolean, reason: AvenOpenReason) {
   timer.value = setTimeout(() => setOpen(value, reason), value ? props.openDelay : props.closeDelay)
 }
 function keydown(e: KeyboardEvent) {
-  if (e.key === 'Escape' && isOpen.value) {
+  if (
+    isTopAvenOverlayLayer(overlayLayer) &&
+    e.key === 'Escape' &&
+    isOpen.value &&
+    root.value?.contains(e.target as Node)
+  ) {
     if (timer.value) clearTimeout(timer.value)
     setOpen(false, 'escape')
   }
 }
+function setTrigger(el: unknown) {
+  trigger.value = el instanceof HTMLElement ? el : undefined
+}
+function attachDismissListener() {
+  if (typeof document === 'undefined' || unregisterOverlay) return
+  unregisterOverlay = registerAvenOverlayLayer(overlayLayer)
+  document.addEventListener('keydown', keydown)
+}
+function detachDismissListener() {
+  if (typeof document !== 'undefined') document.removeEventListener('keydown', keydown)
+  unregisterOverlay?.()
+  unregisterOverlay = undefined
+}
 watch(isOpen, (value) => {
-  if (value) document.addEventListener('keydown', keydown)
-  else document.removeEventListener('keydown', keydown)
+  if (value) attachDismissListener()
+  else detachDismissListener()
 })
 onMounted(() => {
-  if (isOpen.value) document.addEventListener('keydown', keydown)
+  if (isOpen.value) attachDismissListener()
 })
 onBeforeUnmount(() => {
   if (timer.value) clearTimeout(timer.value)
-  document.removeEventListener('keydown', keydown)
+  detachDismissListener()
 })
 const triggerAttrs = computed(() => ({
   'aria-describedby': isOpen.value ? id : undefined,
@@ -67,6 +89,8 @@ const triggerAttrs = computed(() => ({
 </script>
 <template>
   <span
+    ref="root"
+    v-bind="ui?.root?.attrs"
     :class="[
       'aven-tooltip',
       `place-${placement}`,
@@ -81,8 +105,9 @@ const triggerAttrs = computed(() => ({
     ><slot
       name="trigger"
       :trigger-attrs="triggerAttrs"
-      :trigger-ref="(el: HTMLElement | null) => (trigger = el ?? undefined)"
+      :trigger-ref="setTrigger"
       :open="isOpen" /><span
+      v-bind="ui?.content?.attrs"
       v-if="isOpen"
       :id="id"
       role="tooltip"
@@ -90,6 +115,7 @@ const triggerAttrs = computed(() => ({
       :style="ui?.content?.style"
       ><slot>{{ text }}</slot
       ><span
+        v-bind="ui?.arrow?.attrs"
         v-if="showArrow"
         aria-hidden="true"
         :class="['tooltip-arrow', ui?.arrow?.class]" /></span

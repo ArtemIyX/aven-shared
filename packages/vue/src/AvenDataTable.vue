@@ -198,6 +198,58 @@ function requestRowAction(row: T, key: Key, action: string, originalEvent: Mouse
 function widthFor(column: AvenTableColumn<T, ColumnKey>) {
   return localWidths.value.get(column.key) ?? column.width
 }
+function pinOffset(column: AvenTableColumn<T, ColumnKey>, side: 'start' | 'end') {
+  const index = orderedColumns.value.findIndex((entry) => Object.is(entry.key, column.key))
+  const pinned =
+    side === 'start'
+      ? orderedColumns.value.slice(0, index).filter((entry) => entry.pinned === 'start')
+      : orderedColumns.value.slice(index + 1).filter((entry) => entry.pinned === 'end')
+  const utilityWidths =
+    side === 'start'
+      ? [props.selectable, props.expandable, Boolean(slots.rowLeading)]
+          .filter(Boolean)
+          .map(() => '3rem')
+      : slots.rowTrailing
+        ? ['3rem']
+        : []
+  const widths = [
+    ...utilityWidths,
+    ...pinned.map((entry) => {
+      const width = widthFor(entry) ?? entry.minWidth ?? 0
+      return typeof width === 'number' ? `${width}px` : width
+    }),
+  ]
+  return widths.length ? `calc(${widths.join(' + ')})` : '0px'
+}
+function hasPinnedSide(side: 'start' | 'end') {
+  return orderedColumns.value.some((column) => column.pinned === side)
+}
+function utilityPinStyle(
+  side: 'start' | 'end',
+  precedingStartColumns = 0,
+): CSSProperties | undefined {
+  if (!hasPinnedSide(side)) return undefined
+  return {
+    position: 'sticky',
+    ...(side === 'start'
+      ? {
+          insetInlineStart:
+            precedingStartColumns === 0
+              ? '0px'
+              : `calc(${Array(precedingStartColumns).fill('3rem').join(' + ')})`,
+        }
+      : { insetInlineEnd: '0px' }),
+  }
+}
+function columnPinClass(column: AvenTableColumn<T, ColumnKey>) {
+  const pinned = orderedColumns.value.filter((entry) => entry.pinned === column.pinned)
+  return {
+    'is-pinned-start': column.pinned === 'start',
+    'is-pinned-end': column.pinned === 'end',
+    'is-pinned-start-edge': column.pinned === 'start' && Object.is(pinned.at(-1)?.key, column.key),
+    'is-pinned-end-edge': column.pinned === 'end' && Object.is(pinned[0]?.key, column.key),
+  }
+}
 function styleForColumn(column: AvenTableColumn<T, ColumnKey>): CSSProperties {
   const width = widthFor(column)
   return {
@@ -205,6 +257,14 @@ function styleForColumn(column: AvenTableColumn<T, ColumnKey>): CSSProperties {
     minWidth: column.minWidth ? `${column.minWidth}px` : undefined,
     maxWidth: column.maxWidth ? `${column.maxWidth}px` : undefined,
     textAlign: column.align === 'center' ? 'center' : column.align === 'end' ? 'end' : 'start',
+    ...(column.pinned
+      ? {
+          position: 'sticky',
+          ...(column.pinned === 'start'
+            ? { insetInlineStart: pinOffset(column, 'start') }
+            : { insetInlineEnd: pinOffset(column, 'end') }),
+        }
+      : {}),
   }
 }
 function applyWidth(key: ColumnKey, width: number) {
@@ -332,9 +392,23 @@ onBeforeUnmount(() => {
       <template #caption
         ><slot name="caption">{{ props.label }}</slot></template
       >
-      <thead :class="props.ui?.header?.class" :style="props.ui?.header?.style">
+      <thead
+        v-bind="props.ui?.header?.attrs"
+        :class="props.ui?.header?.class"
+        :style="props.ui?.header?.style"
+      >
         <tr>
-          <th v-if="props.selectable" scope="col" class="selection-cell">
+          <th
+            v-if="props.selectable"
+            scope="col"
+            v-bind="props.ui?.selection?.attrs"
+            :class="[
+              'selection-cell',
+              props.ui?.selection?.class,
+              { 'utility-pinned': hasPinnedSide('start') },
+            ]"
+            :style="[utilityPinStyle('start'), props.ui?.selection?.style]"
+          >
             <input
               ref="selectAllRef"
               type="checkbox"
@@ -345,16 +419,36 @@ onBeforeUnmount(() => {
               @change="toggleAll"
             />
           </th>
-          <th v-if="props.expandable" scope="col" class="expansion-cell">
+          <th
+            v-if="props.expandable"
+            scope="col"
+            v-bind="props.ui?.expansion?.attrs"
+            :class="[
+              'expansion-cell',
+              props.ui?.expansion?.class,
+              { 'utility-pinned': hasPinnedSide('start') },
+            ]"
+            :style="[
+              utilityPinStyle('start', Number(props.selectable)),
+              props.ui?.expansion?.style,
+            ]"
+          >
             <span class="visually-hidden">Expand row</span>
           </th>
-          <th v-if="$slots.rowLeading" scope="col">
+          <th
+            v-if="$slots.rowLeading"
+            scope="col"
+            v-bind="props.ui?.cell?.attrs"
+            :class="{ 'utility-pinned': hasPinnedSide('start') }"
+            :style="utilityPinStyle('start', Number(props.selectable) + Number(props.expandable))"
+          >
             <span class="visually-hidden">Leading content</span>
           </th>
           <th
             v-for="column in orderedColumns"
             :key="column.key"
             scope="col"
+            v-bind="props.ui?.cell?.attrs"
             :aria-sort="
               sortFor(column)
                 ? sortFor(column)?.direction === 'asc'
@@ -363,6 +457,7 @@ onBeforeUnmount(() => {
                 : 'none'
             "
             :draggable="props.reorderable"
+            :class="columnPinClass(column)"
             :style="styleForColumn(column)"
             @dragstart="onColumnDragStart(column, $event)"
             @dragover="props.reorderable && $event.preventDefault()"
@@ -404,23 +499,33 @@ onBeforeUnmount(() => {
               />
             </span>
           </th>
-          <th v-if="$slots.rowTrailing" scope="col">
+          <th
+            v-if="$slots.rowTrailing"
+            scope="col"
+            v-bind="props.ui?.cell?.attrs"
+            :class="{ 'utility-pinned': hasPinnedSide('end') }"
+            :style="utilityPinStyle('end')"
+          >
             <span class="visually-hidden">Row actions</span>
           </th>
         </tr>
       </thead>
-      <tbody :class="props.ui?.row?.class">
-        <tr v-if="props.loading">
+      <tbody v-bind="props.ui?.row?.attrs" :class="props.ui?.row?.class">
+        <tr v-if="props.loading" v-bind="props.ui?.row?.attrs" :style="props.ui?.row?.style">
           <td :colspan="totalColumns">
             <slot name="loading"><span role="status">Loading rows…</span></slot>
           </td>
         </tr>
-        <tr v-else-if="props.error">
+        <tr v-else-if="props.error" v-bind="props.ui?.row?.attrs" :style="props.ui?.row?.style">
           <td :colspan="totalColumns">
             <slot name="error"><span role="alert">Unable to load rows.</span></slot>
           </td>
         </tr>
-        <tr v-else-if="sortedRows.length === 0">
+        <tr
+          v-else-if="sortedRows.length === 0"
+          v-bind="props.ui?.row?.attrs"
+          :style="props.ui?.row?.style"
+        >
           <td :colspan="totalColumns"><slot name="empty">No rows.</slot></td>
         </tr>
         <template
@@ -429,6 +534,7 @@ onBeforeUnmount(() => {
           :key="rowKeyOf(row, index)"
         >
           <tr
+            v-bind="props.ui?.row?.attrs"
             :class="[
               {
                 'is-selected': isSelected(rowKeyOf(row, index)),
@@ -436,10 +542,20 @@ onBeforeUnmount(() => {
               },
               props.ui?.row?.class,
             ]"
+            :style="props.ui?.row?.style"
             :aria-selected="props.selectable ? isSelected(rowKeyOf(row, index)) : undefined"
             @click="onRowClick(row, rowKeyOf(row, index), $event)"
           >
-            <td v-if="props.selectable" class="selection-cell">
+            <td
+              v-if="props.selectable"
+              v-bind="props.ui?.selection?.attrs"
+              :class="[
+                'selection-cell',
+                props.ui?.selection?.class,
+                { 'utility-pinned': hasPinnedSide('start') },
+              ]"
+              :style="[utilityPinStyle('start'), props.ui?.selection?.style]"
+            >
               <input
                 type="checkbox"
                 :aria-label="`Select ${String(rowKeyOf(row, index))}`"
@@ -449,7 +565,19 @@ onBeforeUnmount(() => {
                 @change="toggleRow(row, rowKeyOf(row, index), index)"
               />
             </td>
-            <td v-if="props.expandable" class="expansion-cell">
+            <td
+              v-if="props.expandable"
+              v-bind="props.ui?.expansion?.attrs"
+              :class="[
+                'expansion-cell',
+                props.ui?.expansion?.class,
+                { 'utility-pinned': hasPinnedSide('start') },
+              ]"
+              :style="[
+                utilityPinStyle('start', Number(props.selectable)),
+                props.ui?.expansion?.style,
+              ]"
+            >
               <button
                 type="button"
                 class="expand-button"
@@ -460,7 +588,19 @@ onBeforeUnmount(() => {
                 {{ isExpanded(rowKeyOf(row, index)) ? '−' : '+' }}
               </button>
             </td>
-            <td v-if="$slots.rowLeading" class="row-leading">
+            <td
+              v-if="$slots.rowLeading"
+              v-bind="props.ui?.cell?.attrs"
+              :class="[
+                'row-leading',
+                props.ui?.cell?.class,
+                { 'utility-pinned': hasPinnedSide('start') },
+              ]"
+              :style="[
+                utilityPinStyle('start', Number(props.selectable) + Number(props.expandable)),
+                props.ui?.cell?.style,
+              ]"
+            >
               <slot
                 name="rowLeading"
                 :row="row"
@@ -471,8 +611,9 @@ onBeforeUnmount(() => {
             <td
               v-for="column in orderedColumns"
               :key="column.key"
-              :class="props.ui?.cell?.class"
-              :style="styleForColumn(column)"
+              v-bind="props.ui?.cell?.attrs"
+              :class="[columnPinClass(column), props.ui?.cell?.class]"
+              :style="[styleForColumn(column), props.ui?.cell?.style]"
             >
               <slot
                 name="cell"
@@ -484,7 +625,16 @@ onBeforeUnmount(() => {
                 >{{ displayValue(valueFor(row, index, column), row, index, column) }}</slot
               >
             </td>
-            <td v-if="$slots.rowTrailing" class="row-trailing">
+            <td
+              v-if="$slots.rowTrailing"
+              v-bind="props.ui?.cell?.attrs"
+              :class="[
+                'row-trailing',
+                props.ui?.cell?.class,
+                { 'utility-pinned': hasPinnedSide('end') },
+              ]"
+              :style="[utilityPinStyle('end'), props.ui?.cell?.style]"
+            >
               <slot
                 name="rowTrailing"
                 :row="row"
@@ -495,7 +645,12 @@ onBeforeUnmount(() => {
               />
             </td>
           </tr>
-          <tr v-if="props.expandable && isExpanded(rowKeyOf(row, index))" class="expanded-row">
+          <tr
+            v-if="props.expandable && isExpanded(rowKeyOf(row, index))"
+            v-bind="props.ui?.row?.attrs"
+            :class="['expanded-row', props.ui?.row?.class]"
+            :style="props.ui?.row?.style"
+          >
             <td :colspan="totalColumns">
               <slot name="expanded" :row="row" :key="rowKeyOf(row, index)" />
             </td>
@@ -552,14 +707,76 @@ onBeforeUnmount(() => {
   white-space: nowrap;
   text-align: center !important;
 }
+.selection-cell.utility-pinned,
+.expansion-cell.utility-pinned {
+  inline-size: 3rem;
+  width: 3rem;
+  min-inline-size: 3rem;
+  max-inline-size: 3rem;
+  box-sizing: border-box;
+}
 .selection-cell input {
   inline-size: 1.25rem;
   block-size: 1.25rem;
   accent-color: var(--aven-color-accent-solid);
 }
+.is-pinned-start,
+.is-pinned-end {
+  z-index: 1;
+  background: var(--aven-color-surface-table-body);
+}
+thead .is-pinned-start,
+thead .is-pinned-end {
+  z-index: 3;
+  background: var(--aven-color-surface-raised);
+}
+.is-pinned-start-edge {
+  box-shadow: 5px 0 8px -7px var(--aven-color-shadow-ambient);
+}
+.is-pinned-end-edge {
+  box-shadow: -5px 0 8px -7px var(--aven-color-shadow-ambient);
+}
+:dir(rtl) .is-pinned-start-edge {
+  box-shadow: -5px 0 8px -7px var(--aven-color-shadow-ambient);
+}
+:dir(rtl) .is-pinned-end-edge {
+  box-shadow: 5px 0 8px -7px var(--aven-color-shadow-ambient);
+}
+.utility-pinned {
+  z-index: 2;
+  background: var(--aven-color-surface-table-body);
+}
+thead .utility-pinned {
+  z-index: 4;
+  background: var(--aven-color-surface-raised);
+}
+tbody tr:nth-child(even) td.is-pinned-start,
+tbody tr:nth-child(even) td.is-pinned-end,
+tbody tr:nth-child(even) td.utility-pinned {
+  background: var(--aven-color-surface-row-alternate);
+}
+tbody tr.is-selected td.is-pinned-start,
+tbody tr.is-selected td.is-pinned-end,
+tbody tr.is-selected td.utility-pinned {
+  background: var(--aven-color-surface-selected);
+}
+tbody tr.is-clickable:hover td.is-pinned-start,
+tbody tr.is-clickable:hover td.is-pinned-end,
+tbody tr.is-clickable:hover td.utility-pinned {
+  background: var(--aven-color-surface-hover);
+}
 .row-leading,
 .row-trailing {
   white-space: nowrap;
+}
+.row-leading.utility-pinned,
+.row-trailing.utility-pinned {
+  inline-size: 3rem;
+  width: 3rem;
+  min-inline-size: 3rem;
+  max-inline-size: 3rem;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 tbody tr.is-selected {
   background: var(--aven-color-surface-selected);

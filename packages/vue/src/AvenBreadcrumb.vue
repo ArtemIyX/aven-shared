@@ -18,16 +18,19 @@ const emit = defineEmits<{
   expand: [payload: { originalEvent: MouseEvent }]
 }>()
 const expanded = ref(false),
-  hidden = computed(() =>
-    props.maxVisible && props.items.length > props.maxVisible
-      ? props.items.slice(1, props.items.length - 1)
-      : [],
-  ),
-  visible = computed(() =>
-    !hidden.value.length || expanded.value
-      ? props.items
-      : [...props.items.slice(0, 1), props.items[props.items.length - 1]].filter(Boolean),
-  )
+  leftCount = computed(() => Math.max(1, Math.ceil((props.maxVisible ?? 2) / 2))),
+  rightCount = computed(() => Math.max(1, Math.floor((props.maxVisible ?? 2) / 2))),
+  hidden = computed(() => {
+    if (!props.maxVisible || props.items.length <= props.maxVisible) return []
+    return props.items.slice(
+      leftCount.value,
+      Math.max(leftCount.value, props.items.length - rightCount.value),
+    )
+  }),
+  visible = computed(() => {
+    if (!hidden.value.length || expanded.value) return props.items
+    return [...props.items.slice(0, leftCount.value), ...props.items.slice(-rightCount.value)]
+  })
 function navigate(item: Crumb<Key>, e: MouseEvent) {
   if (item.href) emit('navigate', { key: item.key, item, originalEvent: e })
 }
@@ -39,12 +42,22 @@ function expand(event: MouseEvent) {
 <template>
   <nav
     :aria-label="label"
+    v-bind="ui?.root?.attrs"
     :class="['aven-breadcrumb', { 'is-unstyled': unstyled }, ui?.root?.class]"
     :style="ui?.root?.style"
   >
-    <ol :class="['breadcrumb-list', ui?.list?.class]" :style="ui?.list?.style">
+    <slot name="leading" />
+    <ol
+      v-bind="ui?.list?.attrs"
+      :class="['breadcrumb-list', ui?.list?.class]"
+      :style="ui?.list?.style"
+    >
       <template v-for="(item, index) in visible" :key="item.key"
-        ><li :class="['breadcrumb-item', ui?.item?.class]" :style="ui?.item?.style">
+        ><li
+          v-bind="ui?.item?.attrs"
+          :class="['breadcrumb-item', ui?.item?.class]"
+          :style="ui?.item?.style"
+        >
           <a v-if="item.href && !item.current" :href="item.href" @click="navigate(item, $event)"
             ><slot name="item" :item="item" :index="items.indexOf(item)" :current="false">{{
               item.label
@@ -61,17 +74,19 @@ function expand(event: MouseEvent) {
             ></span
           >
         </li>
-        <li v-if="hidden.length && index === 0 && !expanded" aria-hidden="true">
+        <li v-if="hidden.length && index === 0 && !expanded">
           <button
+            v-bind="ui?.expand?.attrs"
             type="button"
             :class="['breadcrumb-expand', ui?.expand?.class]"
             aria-label="Show hidden breadcrumb items"
             @click="expand"
           >
-            …
+            <slot name="collapsed" :items="hidden">…</slot>
           </button>
         </li>
         <li
+          v-bind="ui?.separator?.attrs"
           v-if="index < visible.length - 1"
           aria-hidden="true"
           :class="['breadcrumb-separator', ui?.separator?.class]"
@@ -80,6 +95,7 @@ function expand(event: MouseEvent) {
         </li></template
       >
     </ol>
+    <slot name="trailing" />
   </nav>
 </template>
 <style scoped>

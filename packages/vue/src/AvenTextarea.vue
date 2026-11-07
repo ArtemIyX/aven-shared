@@ -22,6 +22,7 @@ const attrs = useAttrs(),
   composing = ref(false)
 let form: HTMLFormElement | null = null
 let skipNextInput = false
+const initialValue = props.defaultValue
 const controlAttrs = computed(() => {
   const { class: _class, style: _style, ...control } = attrs
   return control
@@ -71,11 +72,13 @@ function compositionEnd(e: CompositionEvent) {
   queueMicrotask(() => (skipNextInput = false))
 }
 function reset(event: Event) {
-  queueMicrotask(() => {
+  queueMicrotask(async () => {
     if (event.defaultPrevented) return
-    const next = props.defaultValue ?? ''
+    const next = initialValue
     if (props.modelValue !== undefined) emit('update:modelValue', next)
     else local.value = next
+    await nextTick()
+    if (el.value && props.modelValue !== undefined) el.value.value = props.modelValue
     void size()
   })
 }
@@ -103,7 +106,12 @@ defineExpose({
     :style="[attrs.style, ui?.root?.style]"
   >
     <div class="textarea-shell">
-      <span v-if="$slots.leading" :class="ui?.leading?.class" :style="ui?.leading?.style">
+      <span
+        v-if="$slots.leading"
+        v-bind="ui?.leading?.attrs"
+        :class="ui?.leading?.class"
+        :style="ui?.leading?.style"
+      >
         <slot name="leading" />
       </span>
       <textarea
@@ -133,18 +141,28 @@ defineExpose({
         @focus="emit('focus', $event)"
         @blur="emit('blur', $event)"
       />
-      <span v-if="$slots.trailing" :class="ui?.trailing?.class" :style="ui?.trailing?.style">
+      <span
+        v-if="$slots.trailing"
+        v-bind="ui?.trailing?.attrs"
+        :class="ui?.trailing?.class"
+        :style="ui?.trailing?.style"
+      >
         <slot name="trailing" />
       </span>
     </div>
     <div
       v-if="showCount || $slots.footer"
+      v-bind="ui?.footer?.attrs"
       :class="['textarea-footer', ui?.footer?.class]"
       :style="ui?.footer?.style"
     >
       <slot name="footer" :length="value.length" :maxlength="maxlength"
         ><slot name="count" :length="value.length" :maxlength="maxlength"
-          ><span v-if="showCount" :class="ui?.count?.class"
+          ><span
+            v-if="showCount"
+            v-bind="ui?.count?.attrs"
+            :class="ui?.count?.class"
+            :style="ui?.count?.style"
             >{{ value.length }}{{ maxlength ? ` / ${maxlength}` : '' }}</span
           ></slot
         ></slot

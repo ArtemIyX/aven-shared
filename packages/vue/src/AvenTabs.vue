@@ -1,178 +1,219 @@
-<script setup lang="ts" generic="Key extends string | number">
-import { computed, ref, shallowRef, watch } from 'vue'
-import type { AvenUi } from './types.js'
-type TabItem<K> = { key: K; label: string; disabled?: boolean; closable?: boolean }
-const props = withDefaults(
-  defineProps<{
-    items: TabItem<Key>[]
-    modelValue?: Key
-    defaultValue?: Key
-    id?: string
-    orientation?: 'horizontal' | 'vertical'
-    activation?: 'automatic' | 'manual'
-    variant?: 'underline' | 'pill' | 'boxed'
-    lazy?: boolean
-    loop?: boolean
-    unstyled?: boolean
-    ui?: AvenUi<'root' | 'list' | 'tab' | 'panel' | 'indicator'>
-  }>(),
-  {
-    orientation: 'horizontal',
-    activation: 'automatic',
-    variant: 'underline',
-    lazy: true,
-    loop: true,
-    unstyled: false,
-  },
+<script setup lang="ts" generic="Key extends string | number = string">
+import { computed, nextTick, ref, shallowRef, watch, useAttrs } from 'vue'
+import { useAvenId } from './composables.js'
+import AvenTab from './AvenTab.vue'
+import AvenTabPanel from './AvenTabPanel.vue'
+import type { AvenTabsEvents, AvenTabsProps, AvenTabsSlots } from './types.js'
+
+defineOptions({ inheritAttrs: false })
+const props = withDefaults(defineProps<AvenTabsProps<Key>>(), {
+  orientation: 'horizontal',
+  activation: 'automatic',
+  variant: 'underline',
+  keepAlive: false,
+  lazy: true,
+  loop: true,
+  unstyled: false,
+  label: 'Tabs',
+})
+const emit = defineEmits<AvenTabsEvents<Key>>()
+defineSlots<AvenTabsSlots<Key>>()
+const attrs = useAttrs()
+const root = ref<HTMLElement>()
+const base = useAvenId(props.id, 'tabs')
+const firstEnabled = () => props.items.find((item) => !item.disabled)?.key
+const isEnabled = (key: Key | undefined) =>
+  props.items.some((item) => Object.is(item.key, key) && !item.disabled)
+const requestedDefault = props.defaultValue
+const validDefault = props.items.some(
+  (item) => Object.is(item.key, requestedDefault) && !item.disabled,
 )
-const emit = defineEmits<{
-  'update:modelValue': [value: Key]
-  change: [value: Key]
-  close: [payload: { key: Key; originalEvent: MouseEvent }]
-}>()
-const local = ref<Key | undefined>(props.defaultValue ?? props.items[0]?.key),
-  selected = computed(() => (props.modelValue !== undefined ? props.modelValue : local.value)),
-  focused = ref(selected.value),
-  refs = ref<HTMLButtonElement[]>([]),
-  visited = shallowRef(new Set<Key>(selected.value === undefined ? [] : [selected.value]))
+  ? requestedDefault
+  : undefined
+const local = ref<Key | undefined>(validDefault ?? firstEnabled())
+const selected = computed(() => (props.modelValue !== undefined ? props.modelValue : local.value))
+const focused = ref<Key | undefined>(isEnabled(selected.value) ? selected.value : firstEnabled())
+const refs = ref<Array<{ focus: () => void } | undefined>>([])
+const visited = shallowRef(new Set<Key>(selected.value === undefined ? [] : [selected.value]))
+const rootAttrs = computed(() => {
+  const { class: _class, style: _style, ...rest } = attrs
+  return { ...rest, ...props.ui?.root?.attrs }
+})
+const selectedItem = computed(() => props.items.find((item) => Object.is(item.key, selected.value)))
 watch(
   () => props.modelValue,
-  (v) => {
-    if (v !== undefined) {
-      local.value = v
-      focused.value = v
+  (value) => {
+    if (value !== undefined) {
+      local.value = value
+      focused.value = isEnabled(value) ? value : firstEnabled()
+      visited.value = new Set([...visited.value, value])
     }
   },
 )
+watch(
+  () => props.items.map((item) => item.key),
+  () => {
+    if (
+      selected.value !== undefined &&
+      props.items.some((item) => Object.is(item.key, selected.value))
+    )
+      return
+    const fallback = firstEnabled()
+    if (fallback === undefined) {
+      focused.value = undefined
+      return
+    }
+    if (props.modelValue === undefined) local.value = fallback
+    focused.value = fallback
+    visited.value = new Set([...visited.value, fallback])
+    emit('update:modelValue', fallback)
+    emit('change', fallback)
+    void nextTick(() =>
+      refs.value[props.items.findIndex((item) => Object.is(item.key, fallback))]?.focus(),
+    )
+  },
+)
 function activate(key: Key) {
-  const item = props.items.find((i) => Object.is(i.key, key))
+  const item = props.items.find((candidate) => Object.is(candidate.key, key))
   if (!item || item.disabled || Object.is(selected.value, key)) return
-  local.value = key
-  visited.value.add(key)
+  if (props.modelValue === undefined) local.value = key
+  visited.value = new Set([...visited.value, key])
   emit('update:modelValue', key)
   emit('change', key)
 }
 function setTabRef(index: number, element: unknown) {
   if (element && typeof element === 'object' && 'focus' in element)
-    refs.value[index] = element as HTMLButtonElement
+    refs.value[index] = element as { focus: () => void }
 }
-function onTabFocus(item: TabItem<Key>) {
+function onTabFocus(item: (typeof props.items)[number]) {
   focused.value = item.key
   if (props.activation === 'automatic') activate(item.key)
 }
-function move(index: number) {
-  const enabled = props.items.map((item, i) => ({ item, i })).filter((x) => !x.item.disabled)
+function move(delta: number | 'first' | 'last') {
+  const enabled = props.items.filter((item) => !item.disabled)
   if (!enabled.length) return
-  const current = enabled.findIndex((x) => Object.is(x.item.key, focused.value))
-  let next = index
-  if (props.loop) next = (next + enabled.length) % enabled.length
+  const current = enabled.findIndex((item) => Object.is(item.key, focused.value))
+  let next = delta === 'first' ? 0 : delta === 'last' ? enabled.length - 1 : current + delta
+  if (props.loop && typeof delta === 'number') next = (next + enabled.length) % enabled.length
   else next = Math.max(0, Math.min(enabled.length - 1, next))
-  const item = enabled[next]!.item
+  const item = enabled[next]!
   focused.value = item.key
   refs.value[props.items.indexOf(item)]?.focus()
-  if (props.activation === 'automatic') activate(item.key)
 }
-function keydown(e: KeyboardEvent, index: number) {
+function keydown(event: KeyboardEvent, index: number) {
+  const rtl =
+    root.value?.closest('[dir]')?.getAttribute('dir') === 'rtl' ||
+    (!root.value?.closest('[dir]') && typeof document !== 'undefined' && document.dir === 'rtl')
   const forward =
-      props.orientation === 'horizontal'
-        ? document.dir === 'rtl'
-          ? 'ArrowLeft'
-          : 'ArrowRight'
-        : 'ArrowDown',
-    back =
-      props.orientation === 'horizontal'
-        ? document.dir === 'rtl'
-          ? 'ArrowRight'
-          : 'ArrowLeft'
-        : 'ArrowUp'
-  if (e.key === forward) {
-    e.preventDefault()
-    move(index + 1)
-  } else if (e.key === back) {
-    e.preventDefault()
-    move(index - 1)
-  } else if (e.key === 'Home') {
-    e.preventDefault()
-    move(0)
-  } else if (e.key === 'End') {
-    e.preventDefault()
-    move(props.items.length - 1)
-  } else if (props.activation === 'manual' && (e.key === 'Enter' || e.key === ' ')) {
-    e.preventDefault()
-    activate(props.items[index]!.key)
+    props.orientation === 'horizontal' ? (rtl ? 'ArrowLeft' : 'ArrowRight') : 'ArrowDown'
+  const back = props.orientation === 'horizontal' ? (rtl ? 'ArrowRight' : 'ArrowLeft') : 'ArrowUp'
+  if (event.key === forward) {
+    event.preventDefault()
+    move(1)
+  } else if (event.key === back) {
+    event.preventDefault()
+    move(-1)
+  } else if (event.key === 'Home') {
+    event.preventDefault()
+    move('first')
+  } else if (event.key === 'End') {
+    event.preventDefault()
+    move('last')
+  } else if (props.activation === 'manual' && (event.key === 'Enter' || event.key === ' ')) {
+    event.preventDefault()
+    const item = props.items[index]
+    if (item) activate(item.key)
   }
 }
-const base = props.id ?? 'aven-tabs'
+function close(item: (typeof props.items)[number], event: MouseEvent) {
+  if (!item.closable || item.disabled) return
+  emit('close', { key: item.key, originalEvent: event })
+}
 </script>
 <template>
   <div
+    v-bind="{ ...ui?.root?.attrs, ...rootAttrs }"
+    ref="root"
     :class="[
       'aven-tabs',
       `is-${orientation}`,
       `variant-${variant}`,
       { 'is-unstyled': unstyled },
+      attrs.class,
       ui?.root?.class,
     ]"
-    :style="ui?.root?.style"
+    :style="[attrs.style, ui?.root?.style]"
   >
     <div
+      v-bind="ui?.list?.attrs"
       :id="`${base}-list`"
       role="tablist"
       :aria-orientation="orientation"
+      :aria-label="label"
       :class="['tabs-list', ui?.list?.class]"
       :style="ui?.list?.style"
     >
-      <span v-for="(item, index) in items" class="tab-group" role="presentation" :key="item.key"
-        ><button
-          :id="`${base}-tab-${index}`"
-          :ref="(element) => setTabRef(index, element)"
-          type="button"
-          role="tab"
-          :aria-selected="Object.is(selected, item.key)"
-          :aria-controls="`${base}-panel-${index}`"
-          :tabindex="Object.is(focused, item.key) ? 0 : -1"
-          :disabled="item.disabled"
-          :class="['tabs-tab', { 'is-selected': Object.is(selected, item.key) }, ui?.tab?.class]"
-          :style="ui?.tab?.style"
-          @focus="onTabFocus(item)"
-          @keydown="keydown($event, index)"
-        >
-          <slot
-            name="tab"
-            :item="item"
-            :key="item.key"
-            :selected="Object.is(selected, item.key)"
-            :active="Object.is(focused, item.key)"
-            :disabled="!!item.disabled"
-            ><slot name="leading" :item="item" /><span>{{ item.label }}</span
-            ><slot name="badge" :item="item" /><slot name="trailing" :item="item" /></slot
-          ><button
-            v-if="item.closable"
-            type="button"
-            class="tab-close"
-            :aria-label="`Close ${item.label}`"
-            @click.stop="emit('close', { key: item.key, originalEvent: $event })"
-          >
-            <slot name="close-icon">×</slot>
-          </button>
-        </button></span
+      <AvenTab
+        v-for="(item, index) in items"
+        :key="item.key"
+        :ref="(element) => setTabRef(index, element)"
+        :item="item"
+        :id="`${base}-tab-${index}`"
+        :controls="`${base}-panel-${index}`"
+        :selected="Object.is(selected, item.key)"
+        :active="Object.is(focused, item.key)"
+        :tabindex="Object.is(focused, item.key) ? 0 : -1"
+        :disabled="item.disabled"
+        :unstyled="unstyled"
+        :ui="{ root: ui?.tab }"
+        class="tabs-tab"
+        @activate="activation === 'manual' ? activate(item.key) : undefined"
+        @focus="onTabFocus(item)"
+        @keydown="keydown($event, index)"
       >
+        <template #default="scope">
+          <slot name="tab" v-bind="scope">
+            <slot name="leading" :item="item" /><span>{{ item.label }}</span>
+            <slot name="badge" :item="item" /><slot name="trailing" :item="item" />
+          </slot>
+        </template>
+      </AvenTab>
+    </div>
+    <slot name="overflow" :items="items" :active-key="selected" />
+    <div
+      v-if="selectedItem?.closable"
+      class="tabs-actions"
+      role="group"
+      :aria-label="`${selectedItem.label} tab actions`"
+    >
+      <button
+        type="button"
+        class="tab-close"
+        :disabled="selectedItem.disabled"
+        :class="ui?.close?.class"
+        :style="ui?.close?.style"
+        v-bind="ui?.close?.attrs"
+        :aria-label="`Close ${selectedItem.label}`"
+        @click="close(selectedItem, $event)"
+      >
+        <slot name="close-icon" :item="selectedItem">×</slot>
+      </button>
     </div>
     <template v-for="(item, index) in items" :key="`panel-${item.key}`"
-      ><section
-        v-if="Object.is(selected, item.key) || !lazy || visited.has(item.key)"
+      ><AvenTabPanel
+        v-if="Object.is(selected, item.key) || !lazy || (keepAlive && visited.has(item.key))"
+        :item="item"
         :id="`${base}-panel-${index}`"
-        role="tabpanel"
-        :aria-labelledby="`${base}-tab-${index}`"
-        :hidden="!Object.is(selected, item.key)"
-        :tabindex="0"
-        :class="['tabs-panel', ui?.panel?.class]"
-        :style="ui?.panel?.style"
+        :labelled-by="`${base}-tab-${index}`"
+        :active="Object.is(selected, item.key)"
+        :unstyled="unstyled"
+        :ui="{ root: ui?.panel }"
+        class="tabs-panel"
       >
-        <slot name="panel" :item="item" :key="item.key" :active="Object.is(selected, item.key)">{{
-          item.label
-        }}</slot>
-      </section></template
+        <template #default="scope">
+          <slot name="panel" v-bind="scope">{{ item.label }}</slot>
+        </template>
+      </AvenTabPanel></template
     >
   </div>
 </template>

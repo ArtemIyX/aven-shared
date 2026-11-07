@@ -10,6 +10,8 @@ defineOptions({ inheritAttrs: false })
 const props = withDefaults(defineProps<AvenToggleButtonProps>(), {
   modelValue: undefined as boolean | undefined,
   defaultValue: false,
+  variant: 'outline',
+  tone: 'accent',
   type: 'button',
   disabled: false,
   unstyled: false,
@@ -44,21 +46,51 @@ function toggle() {
     :aria-label="label || undefined"
     :class="[
       'aven-toggle-button',
+      `variant-${variant}`,
       { 'is-pressed': pressed, 'is-disabled': disabled, 'is-unstyled': unstyled },
       attrs.class,
       ui?.root?.class,
     ]"
-    :style="[attrs.style, ui?.root?.style]"
+    :style="[
+      {
+        '--toggle-tone-text': `var(--aven-color-${tone}-text)`,
+        '--toggle-tone-bg': `var(--aven-color-${tone}-subtle)`,
+        '--toggle-tone-border': `var(--aven-color-${tone}-border)`,
+      },
+      attrs.style,
+      ui?.root?.style,
+    ]"
     @click="toggle"
   >
-    <span v-if="$slots.leading" :class="ui?.leading?.class" :style="ui?.leading?.style">
+    <span
+      v-if="$slots.leading"
+      v-bind="ui?.leading?.attrs"
+      :class="ui?.leading?.class"
+      :style="ui?.leading?.style"
+    >
       <slot name="leading" />
     </span>
-    <span :class="['toggle-label', ui?.label?.class]" :style="ui?.label?.style"><slot /></span>
-    <span v-if="$slots.trailing" :class="ui?.trailing?.class" :style="ui?.trailing?.style">
+    <span
+      v-bind="ui?.label?.attrs"
+      :class="['toggle-label', ui?.label?.class]"
+      :style="ui?.label?.style"
+      ><slot
+    /></span>
+    <span
+      v-if="$slots.trailing"
+      v-bind="ui?.trailing?.attrs"
+      :class="ui?.trailing?.class"
+      :style="ui?.trailing?.style"
+    >
       <slot name="trailing" />
     </span>
-    <span v-if="$slots.indicator" aria-hidden="true" :class="ui?.indicator?.class">
+    <span
+      v-if="$slots.indicator"
+      v-bind="ui?.indicator?.attrs"
+      aria-hidden="true"
+      :class="ui?.indicator?.class"
+      :style="ui?.indicator?.style"
+    >
       <slot name="indicator" :pressed="pressed" />
     </span>
   </button>
@@ -83,10 +115,18 @@ function toggle() {
 .aven-toggle-button:hover:not(:disabled) {
   background: var(--aven-color-surface-hover);
 }
+.variant-soft {
+  background: var(--toggle-tone-bg);
+  color: var(--toggle-tone-text);
+}
+.variant-ghost {
+  background: transparent;
+  border-color: transparent;
+}
 .aven-toggle-button.is-pressed {
-  border-color: var(--aven-color-accent-border);
-  background: var(--aven-color-accent-subtle);
-  color: var(--aven-color-accent-text);
+  border-color: var(--toggle-tone-border);
+  background: var(--toggle-tone-bg);
+  color: var(--toggle-tone-text);
 }
 .aven-toggle-button:focus-visible {
   outline: 2px solid var(--aven-color-focus-ring);

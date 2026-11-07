@@ -80,13 +80,13 @@ defineExpose({ focus })
 </script>
 <template>
   <div
+    v-bind="{ ...ui?.root?.attrs, ...rootAttrs }"
     ref="root"
     :id="id"
     role="group"
     :aria-label="label"
     :class="['aven-sort-control', attrs.class, { 'is-unstyled': unstyled }, ui?.root?.class]"
     :style="[attrs.style, ui?.root?.style]"
-    v-bind="rootAttrs"
   >
     <ol :class="['sort-list', ui?.list?.class]" :style="ui?.list?.style" v-bind="ui?.list?.attrs">
       <li

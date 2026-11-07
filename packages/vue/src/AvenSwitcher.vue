@@ -227,6 +227,7 @@ onBeforeUnmount(() => {
     </slot>
     <span v-if="props.loading" class="switcher-status" role="status">Loading…</span>
     <div
+      v-bind="props.ui?.popup?.attrs"
       v-if="open"
       class="switcher-popup"
       :class="props.ui?.popup?.class"

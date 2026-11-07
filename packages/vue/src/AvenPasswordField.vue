@@ -28,6 +28,8 @@ const controlAttrs = computed(() =>
 )
 const localValue = ref(props.defaultValue)
 const localRevealed = ref(props.defaultRevealed)
+const initialValue = props.defaultValue
+const initialRevealed = props.defaultRevealed
 const value = computed(() => (props.modelValue === undefined ? localValue.value : props.modelValue))
 const revealed = computed(() =>
   props.revealed === undefined ? localRevealed.value : props.revealed,
@@ -47,10 +49,10 @@ function onFormReset(event: Event) {
   resetTimer = setTimeout(() => {
     resetTimer = undefined
     if (event.defaultPrevented) return
-    localValue.value = props.defaultValue
-    if (props.modelValue !== undefined) emit('update:modelValue', props.defaultValue)
-    localRevealed.value = props.defaultRevealed
-    if (props.revealed !== undefined) emit('update:revealed', props.defaultRevealed)
+    localValue.value = initialValue
+    if (props.modelValue !== undefined) emit('update:modelValue', initialValue)
+    localRevealed.value = initialRevealed
+    if (props.revealed !== undefined) emit('update:revealed', initialRevealed)
   }, 0)
 }
 onMounted(() => {
@@ -104,6 +106,7 @@ defineExpose({
         :id="controlId"
         :name="name"
         :model-value="value"
+        :reset-on-form="false"
         :type="revealed ? 'text' : 'password'"
         :placeholder="placeholder"
         :disabled="disabled"

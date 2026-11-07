@@ -184,6 +184,10 @@ export default defineConfig({
           new URL('./packages/vue/src/AvenIconButton.vue', import.meta.url),
         ),
         AvenTabs: fileURLToPath(new URL('./packages/vue/src/AvenTabs.vue', import.meta.url)),
+        AvenTab: fileURLToPath(new URL('./packages/vue/src/AvenTab.vue', import.meta.url)),
+        AvenTabPanel: fileURLToPath(
+          new URL('./packages/vue/src/AvenTabPanel.vue', import.meta.url),
+        ),
         AvenSegmentedControl: fileURLToPath(
           new URL('./packages/vue/src/AvenSegmentedControl.vue', import.meta.url),
         ),
@@ -194,6 +198,7 @@ export default defineConfig({
           new URL('./packages/vue/src/AvenPagination.vue', import.meta.url),
         ),
         AvenNavList: fileURLToPath(new URL('./packages/vue/src/AvenNavList.vue', import.meta.url)),
+        AvenNavItem: fileURLToPath(new URL('./packages/vue/src/AvenNavItem.vue', import.meta.url)),
         AvenNumberInput: fileURLToPath(
           new URL('./packages/vue/src/AvenNumberInput.vue', import.meta.url),
         ),

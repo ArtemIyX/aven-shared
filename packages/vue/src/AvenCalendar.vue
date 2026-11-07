@@ -42,11 +42,16 @@ watch(
   },
   { immediate: true },
 )
-const monthLabel = computed(() =>
-  new Intl.DateTimeFormat(props.locale, { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(
-    new Date(Date.UTC(props.year, props.month - 1, 1, 12)),
-  ),
-)
+const monthLabel = computed(() => {
+  const date = new Date(0)
+  date.setUTCFullYear(props.year, props.month - 1, 1)
+  date.setUTCHours(12, 0, 0, 0)
+  return new Intl.DateTimeFormat(props.locale, {
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(date)
+})
 const weekdays = computed(() => {
   const labels = Array.from({ length: 7 }, (_, i) =>
     new Intl.DateTimeFormat(props.locale, { weekday: 'short', timeZone: 'UTC' }).format(
@@ -55,6 +60,16 @@ const weekdays = computed(() => {
   )
   return labels.slice(props.weekStartsOn).concat(labels.slice(0, props.weekStartsOn))
 })
+const fullDateFormatter = computed(
+  () => new Intl.DateTimeFormat(props.locale, { dateStyle: 'full', timeZone: 'UTC' }),
+)
+function dateLabel(value: DateOnly) {
+  const parts = parseDateOnly(value)!
+  const date = new Date(0)
+  date.setUTCFullYear(parts.year, parts.month - 1, parts.day)
+  date.setUTCHours(12, 0, 0, 0)
+  return fullDateFormatter.value.format(date)
+}
 const days = computed(() => {
   const first = toDateOnly(props.year, props.month, 1),
     offset = (dateOnlyWeekday(first) - props.weekStartsOn + 7) % 7
@@ -137,7 +152,6 @@ function onKey(event: KeyboardEvent, date: DateOnly) {
     event.preventDefault()
     const delta = (event.key === 'PageUp' ? -1 : 1) * (event.shiftKey ? 12 : 1)
     const next = shiftMonth(props.year, props.month, delta)
-    emit('moveMonth', next)
     const day = Math.min(parseDateOnly(date)?.day ?? 1, daysInMonth(next.year, next.month))
     focusDate(toDateOnly(next.year, next.month, day))
   }
@@ -146,6 +160,7 @@ function onKey(event: KeyboardEvent, date: DateOnly) {
 <template>
   <section
     ref="calendarRoot"
+    v-bind="ui?.root?.attrs"
     :class="['aven-calendar', { 'is-unstyled': unstyled }, ui?.root?.class]"
     :style="ui?.root?.style"
     :aria-label="monthLabel"
@@ -155,7 +170,13 @@ function onKey(event: KeyboardEvent, date: DateOnly) {
       ><strong aria-live="polite">{{ monthLabel }}</strong
       ><button type="button" aria-label="Next month" @click="changeMonth(1)">›</button>
     </header>
-    <div role="grid" :class="ui?.grid?.class" :style="ui?.grid?.style" :aria-label="monthLabel">
+    <div
+      v-bind="ui?.grid?.attrs"
+      role="grid"
+      :class="ui?.grid?.class"
+      :style="ui?.grid?.style"
+      :aria-label="monthLabel"
+    >
       <div role="row" class="calendar-row">
         <span v-for="(label, index) in weekdays" :key="index" role="columnheader" class="weekday"
           ><slot name="weekday" :label="label" :index="index">{{ label }}</slot></span
@@ -163,11 +184,13 @@ function onKey(event: KeyboardEvent, date: DateOnly) {
       </div>
       <div v-for="(week, weekIndex) in weeks" :key="weekIndex" role="row" class="calendar-row">
         <button
+          v-bind="ui?.day?.attrs"
           v-for="(date, index) in week"
           :key="date"
           :ref="(element) => setButton(date, element as Element | null)"
           type="button"
           role="gridcell"
+          :aria-label="dateLabel(date)"
           :tabindex="date === focusTarget ? 0 : -1"
           :aria-selected="date === modelValue || date === rangeEnd || undefined"
           :aria-current="date === today ? 'date' : undefined"

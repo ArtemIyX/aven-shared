@@ -67,6 +67,7 @@ function segmentValue(next: T) {
     :style="[attrs.style, props.ui?.root?.style]"
   >
     <AvenSegmentedControl
+      v-bind="props.ui?.view?.attrs"
       v-if="displayMode === 'segments'"
       :model-value="value"
       :items="segments"

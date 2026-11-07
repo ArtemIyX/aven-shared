@@ -13,7 +13,7 @@ const attrs = useAttrs()
 const slots = useSlots()
 defineSlots<AvenFieldsetSlots>()
 const descriptionId = computed(() =>
-  props.description || slots.description || props.ui?.description?.attrs?.id
+  props.description || slots.description
     ? ((props.ui?.description?.attrs?.id as string | undefined) ??
       ((attrs.id as string | undefined) ? `${attrs.id}-description` : generatedId))
     : undefined,
@@ -26,10 +26,12 @@ const forwardedAttrs = computed(() => {
 </script>
 <template>
   <fieldset
-    v-bind="forwardedAttrs"
+    v-bind="{ ...ui?.root?.attrs, ...forwardedAttrs }"
     :disabled="disabled"
     :aria-invalid="invalid || undefined"
-    :aria-describedby="descriptionId"
+    :aria-describedby="
+      [attrs['aria-describedby'], descriptionId].filter(Boolean).join(' ') || undefined
+    "
     :class="[
       'aven-fieldset',
       { 'is-invalid': invalid, 'is-unstyled': unstyled },
@@ -38,19 +40,28 @@ const forwardedAttrs = computed(() => {
     ]"
     :style="[attrs.style, ui?.root?.style]"
   >
-    <legend :class="['fieldset-legend', ui?.legend?.class]" :style="ui?.legend?.style">
+    <legend
+      v-bind="ui?.legend?.attrs"
+      :class="['fieldset-legend', ui?.legend?.class]"
+      :style="ui?.legend?.style"
+    >
       <slot name="legend">{{ legend }}</slot
       ><span v-if="required" aria-hidden="true"> *</span>
     </legend>
     <p
       v-if="description || $slots.description"
+      v-bind="ui?.description?.attrs"
       :id="descriptionId"
       :class="['fieldset-description', ui?.description?.class]"
       :style="ui?.description?.style"
     >
       <slot name="description">{{ description }}</slot>
     </p>
-    <div :class="['fieldset-content', ui?.content?.class]" :style="ui?.content?.style">
+    <div
+      v-bind="ui?.content?.attrs"
+      :class="['fieldset-content', ui?.content?.class]"
+      :style="ui?.content?.style"
+    >
       <slot />
     </div>
   </fieldset>

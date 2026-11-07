@@ -23,6 +23,7 @@ const nativeAttrs = computed(() =>
 const localValue = ref(props.defaultValue)
 const input = ref<HTMLInputElement>()
 const dragging = ref(false)
+const focused = ref(false)
 let form: HTMLFormElement | null = null
 const value = computed(() => props.modelValue ?? localValue.value)
 const percentage = computed(() =>
@@ -121,7 +122,12 @@ defineExpose({ focus: () => input.value?.focus(), blur: () => input.value?.blur(
     :class="[
       'aven-slider',
       `is-${orientation}`,
-      { 'is-disabled': disabled, 'is-unstyled': unstyled },
+      {
+        'is-disabled': disabled,
+        'is-inverted': inverted,
+        'is-unstyled': unstyled,
+        'has-custom-thumb': !!$slots.thumb,
+      },
       attrs.class,
       ui?.root?.class,
     ]"
@@ -130,15 +136,24 @@ defineExpose({ focus: () => input.value?.focus(), blur: () => input.value?.blur(
     <slot name="leading" />
     <div class="slider-control">
       <div
+        v-bind="ui?.track?.attrs"
         class="slider-track"
         :class="ui?.track?.class"
-        :style="[
-          ui?.track?.style,
-          { '--aven-slider-value': `${inverted ? 100 - percentage : percentage}%` },
-        ]"
+        :style="[ui?.track?.style, { '--aven-slider-value': `${percentage}%` }]"
         aria-hidden="true"
       >
         <span class="slider-fill" />
+        <span
+          v-if="$slots.thumb"
+          v-bind="ui?.thumb?.attrs"
+          :class="['slider-thumb-slot', ui?.thumb?.class]"
+          :style="[
+            { '--aven-thumb-position': `${inverted ? 100 - percentage : percentage}%` },
+            ui?.thumb?.style,
+          ]"
+        >
+          <slot name="thumb" :index="0" :value="value" :active="dragging || focused" />
+        </span>
       </div>
       <input
         ref="input"
@@ -151,21 +166,32 @@ defineExpose({ focus: () => input.value?.focus(), blur: () => input.value?.blur(
         :disabled="disabled"
         :readonly="readonly || undefined"
         :aria-readonly="readonly || undefined"
-        :aria-label="label || undefined"
+        :aria-label="
+          label ||
+          (typeof nativeAttrs['aria-label'] === 'string' ? nativeAttrs['aria-label'] : undefined)
+        "
         :aria-valuetext="displayValue"
         :class="['slider-input', ui?.input?.class]"
         :style="ui?.input?.style"
         @input="onInput"
         @change="onChange"
         @keydown="readonlyKeydown"
+        @focus="focused = true"
+        @blur="focused = false"
       />
       <div v-if="marks?.length" class="slider-marks">
         <span
+          v-bind="ui?.mark?.attrs"
           v-for="mark in marks"
           :key="mark.value"
           class="slider-mark"
           :class="ui?.mark?.class"
-          :style="[{ insetInlineStart: `${markPercentage(mark.value)}%` }, ui?.mark?.style]"
+          :style="[
+            {
+              '--aven-mark-position': `${inverted ? 100 - markPercentage(mark.value) : markPercentage(mark.value)}%`,
+            },
+            ui?.mark?.style,
+          ]"
           :aria-hidden="mark.label ? undefined : 'true'"
         >
           <span aria-hidden="true">•</span
@@ -210,6 +236,34 @@ defineExpose({ focus: () => input.value?.focus(), blur: () => input.value?.blur(
   border-radius: inherit;
   background: var(--aven-color-accent-solid);
 }
+.slider-thumb-slot {
+  position: absolute;
+  inset-inline-start: var(--aven-thumb-position);
+  inset-block-start: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  pointer-events: none;
+}
+.aven-slider:dir(rtl) .slider-thumb-slot {
+  transform: translate(50%, -50%);
+}
+.has-custom-thumb .slider-input::-webkit-slider-thumb {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+.has-custom-thumb .slider-input::-moz-range-thumb {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+.is-inverted .slider-fill {
+  inset-inline-start: auto;
+  inset-inline-end: 0;
+}
+.is-inverted .slider-input {
+  transform: rotate(180deg);
+}
 .slider-input {
   position: relative;
   z-index: 1;
@@ -237,7 +291,7 @@ defineExpose({ focus: () => input.value?.focus(), blur: () => input.value?.blur(
   border: 2px solid var(--aven-color-accent-solid);
   border-radius: 50%;
   background: var(--aven-color-surface-base);
-  box-shadow: 0 1px 3px rgb(0 0 0 / 0.2);
+  box-shadow: 0 1px 3px var(--aven-color-shadow-ambient);
 }
 .slider-input::-moz-range-thumb {
   inline-size: 0.9rem;
@@ -245,7 +299,7 @@ defineExpose({ focus: () => input.value?.focus(), blur: () => input.value?.blur(
   border: 2px solid var(--aven-color-accent-solid);
   border-radius: 50%;
   background: var(--aven-color-surface-base);
-  box-shadow: 0 1px 3px rgb(0 0 0 / 0.2);
+  box-shadow: 0 1px 3px var(--aven-color-shadow-ambient);
 }
 .slider-input:focus-visible {
   outline: 2px solid var(--aven-color-focus-ring);
@@ -265,6 +319,9 @@ defineExpose({ focus: () => input.value?.focus(), blur: () => input.value?.blur(
   color: var(--aven-color-text-secondary);
 }
 .slider-mark {
+  position: absolute;
+  inset-inline-start: var(--aven-mark-position);
+  transform: translateX(-50%);
   display: grid;
   justify-items: center;
   min-inline-size: 1.5rem;
@@ -287,6 +344,29 @@ defineExpose({ focus: () => input.value?.focus(), blur: () => input.value?.blur(
   inset-inline: 0;
   inline-size: 100%;
   block-size: var(--aven-slider-value);
+}
+.is-vertical .slider-thumb-slot {
+  inset-inline-start: 50%;
+  inset-block-start: auto;
+  inset-block-end: var(--aven-thumb-position);
+  transform: translate(-50%, 50%);
+}
+.aven-slider.is-vertical:dir(rtl) .slider-thumb-slot {
+  transform: translate(50%, 50%);
+}
+.is-vertical.is-inverted .slider-fill {
+  inset-block-start: 0;
+  inset-block-end: auto;
+}
+.is-vertical .slider-marks {
+  inset-inline-start: calc(50% + 1.5rem);
+  inset-inline-end: auto;
+  inset-block: 0.5rem;
+}
+.is-vertical .slider-mark {
+  inset-inline-start: 0;
+  inset-block-end: var(--aven-mark-position);
+  transform: translateY(50%);
 }
 .is-vertical .slider-input {
   inline-size: 2.75rem;

@@ -1,5 +1,14 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, shallowRef, useAttrs, watch } from 'vue'
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  shallowRef,
+  useAttrs,
+  watch,
+} from 'vue'
 import type {
   AvenFileInputEvents,
   AvenFileInputProps,
@@ -23,6 +32,7 @@ const attrs = useAttrs()
 const input = ref<HTMLInputElement>()
 const root = ref<HTMLElement>()
 const localFiles = shallowRef<File[]>([...props.defaultValue])
+const initialFiles = [...props.defaultValue]
 const files = computed(() => props.modelValue ?? localFiles.value)
 const dragging = ref(false)
 const rejected = ref<AvenFileInputEvents['reject'][0]['reasons']>([])
@@ -43,13 +53,21 @@ function open() {
   if (canInteract.value) input.value?.click()
 }
 function syncNativeFiles(nextFiles: File[]) {
-  if (!input.value || typeof DataTransfer === 'undefined') return
+  if (!input.value) return
+  const current = Array.from(input.value.files ?? [])
+  if (
+    current.length === nextFiles.length &&
+    current.every((file, index) => file === nextFiles[index])
+  )
+    return
   try {
+    if (typeof DataTransfer === 'undefined') throw new Error('FileList assignment unavailable')
     const transfer = new DataTransfer()
     nextFiles.forEach((file) => transfer.items.add(file))
     input.value.files = transfer.files
   } catch {
-    // Keep the browser's original FileList when the platform does not allow reassignment.
+    // An incorrect FileList must not be submitted when this platform cannot assign it.
+    input.value.value = ''
   }
 }
 function acceptFile(file: File) {
@@ -71,7 +89,7 @@ function processFiles(filesToCheck: File[], originalEvent: Event) {
         (props.maxFiles ?? Number.POSITIVE_INFINITY) -
           (props.modelValue === undefined ? localFiles.value.length : files.value.length),
       )
-    : 1
+    : Math.max(0, Math.min(1, props.maxFiles ?? 1))
   const accepted: File[] = []
   const reasons: Array<{ file: File; reason: 'type' | 'size' | 'count' }> = []
   for (const file of filesToCheck) {
@@ -89,9 +107,10 @@ function processFiles(filesToCheck: File[], originalEvent: Event) {
   }
   const next = props.multiple ? [...files.value, ...accepted] : [accepted[0]!]
   if (props.modelValue === undefined) localFiles.value = next
-  syncNativeFiles(next)
   emit('update:modelValue', next)
   emit('select', { files: accepted, originalEvent })
+  if (props.modelValue === undefined) syncNativeFiles(next)
+  else void nextTick(() => syncNativeFiles(files.value))
 }
 function onChange(event: Event) {
   const control = event.currentTarget as HTMLInputElement
@@ -129,9 +148,10 @@ function removeFile(key: string) {
   }
   const next = files.value.filter((_, position) => position !== index)
   if (props.modelValue === undefined) localFiles.value = next
-  syncNativeFiles(next)
   emit('update:modelValue', next)
   emit('remove', { key })
+  if (props.modelValue === undefined) syncNativeFiles(next)
+  else void nextTick(() => syncNativeFiles(files.value))
 }
 function uploadAction(event: 'retry' | 'cancel' | 'remove', key: string) {
   if (!canInteract.value) return
@@ -140,16 +160,19 @@ function uploadAction(event: 'retry' | 'cancel' | 'remove', key: string) {
   else emit('remove', { key })
 }
 function reset(event: Event) {
-  queueMicrotask(() => {
+  queueMicrotask(async () => {
     if (event.defaultPrevented) return
-    if (props.modelValue === undefined) localFiles.value = [...props.defaultValue]
-    syncNativeFiles(props.modelValue ?? props.defaultValue)
+    if (props.modelValue === undefined) localFiles.value = [...initialFiles]
+    else emit('update:modelValue', [...initialFiles])
+    await nextTick()
+    syncNativeFiles(files.value)
     rejected.value = []
   })
 }
 onMounted(() => {
-  form = root.value?.closest('form') ?? null
+  form = input.value?.form ?? root.value?.closest('form') ?? null
   form?.addEventListener('reset', reset)
+  syncNativeFiles(files.value)
 })
 onBeforeUnmount(() => form?.removeEventListener('reset', reset))
 defineExpose({ open })
@@ -184,14 +207,16 @@ defineExpose({ open })
       tabindex="-1"
       :accept="props.accept"
       :multiple="props.multiple"
-      :disabled="!canInteract"
+      :disabled="props.disabled"
       :name="props.name"
+      :form="typeof attrs.form === 'string' ? attrs.form : undefined"
       :aria-label="props.label ?? props.browseLabel"
       @change="onChange"
     />
     <slot :dragging="dragging" :open="open" :disabled="!canInteract">
       <div
         v-if="props.dropzone"
+        v-bind="props.ui?.surface?.attrs"
         class="drop-content"
         :class="props.ui?.surface?.class"
         :style="props.ui?.surface?.style"
@@ -211,12 +236,14 @@ defineExpose({ open })
     </slot>
     <ul
       v-if="files.length || uploadItems.length"
+      v-bind="props.ui?.list?.attrs"
       class="file-list"
       :class="props.ui?.list?.class"
       :style="props.ui?.list?.style"
     >
       <li
         v-for="(file, index) in files"
+        v-bind="props.ui?.file?.attrs"
         :key="fileKey(file, index)"
         class="file-row"
         :class="props.ui?.file?.class"
@@ -245,6 +272,7 @@ defineExpose({ open })
       </li>
       <li
         v-for="file in uploadItems"
+        v-bind="props.ui?.file?.attrs"
         :key="file.key"
         class="file-row"
         :class="props.ui?.file?.class"

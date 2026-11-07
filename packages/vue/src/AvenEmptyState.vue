@@ -24,20 +24,28 @@ const attrs = useAttrs()
     :style="[attrs.style, ui?.root?.style]"
     :aria-busy="loading || undefined"
   >
-    <span v-if="$slots.illustration || $slots.icon" :class="['state-icon', ui?.icon?.class]"
+    <span
+      v-bind="ui?.icon?.attrs"
+      v-if="$slots.illustration || $slots.icon"
+      :class="['state-icon', ui?.icon?.class]"
       ><slot name="illustration"><slot name="icon" /></slot
     ></span>
-    <h2 :class="['state-title', ui?.title?.class]">
+    <h2 v-bind="ui?.title?.attrs" :class="['state-title', ui?.title?.class]">
       <slot name="title">{{ title }}</slot>
     </h2>
     <p
+      v-bind="ui?.description?.attrs"
       v-if="description || $slots.description || $slots.default"
       :class="['state-description', ui?.description?.class]"
     >
       <slot name="description">{{ description }}</slot
       ><slot />
     </p>
-    <div v-if="$slots.actions || kind === 'error'" :class="['state-actions', ui?.actions?.class]">
+    <div
+      v-bind="ui?.actions?.attrs"
+      v-if="$slots.actions || kind === 'error'"
+      :class="['state-actions', ui?.actions?.class]"
+    >
       <slot name="actions"
         ><button
           v-if="kind === 'error'"
@@ -48,7 +56,11 @@ const attrs = useAttrs()
         </button></slot
       >
     </div>
-    <div v-if="$slots.footer" :class="['state-footer', ui?.footer?.class]">
+    <div
+      v-bind="ui?.footer?.attrs"
+      v-if="$slots.footer"
+      :class="['state-footer', ui?.footer?.class]"
+    >
       <slot name="footer" />
     </div>
   </section>

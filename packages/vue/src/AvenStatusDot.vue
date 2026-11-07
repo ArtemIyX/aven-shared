@@ -16,7 +16,7 @@ const forwardedAttrs = computed(() => {
 </script>
 <template>
   <span
-    v-bind="forwardedAttrs"
+    v-bind="{ ...ui?.root?.attrs, ...forwardedAttrs }"
     :class="[
       'aven-status-dot',
       `tone-${tone}`,
@@ -42,55 +42,55 @@ const forwardedAttrs = computed(() => {
 </template>
 <style scoped>
 .aven-status-dot {
-  --aven-status-dot-color: var(--aven-color-neutral-solid);
-  --aven-status-dot-size: 0.55rem;
-  --aven-status-dot-gap: 0.4rem;
+  --status-dot-default-color: var(--aven-color-neutral-solid);
+  --status-dot-default-size: 0.55rem;
+  --status-dot-default-gap: 0.4rem;
   display: inline-flex;
   align-items: center;
-  gap: var(--aven-status-dot-gap);
+  gap: var(--aven-status-dot-gap, var(--status-dot-default-gap));
   color: var(--aven-color-text-primary);
 }
 .status-dot {
-  inline-size: var(--aven-status-dot-size);
-  block-size: var(--aven-status-dot-size);
+  inline-size: var(--aven-status-dot-size, var(--status-dot-default-size));
+  block-size: var(--aven-status-dot-size, var(--status-dot-default-size));
   border-radius: 50%;
-  background: var(--aven-status-dot-color);
+  background: var(--aven-status-dot-color, var(--status-dot-default-color));
 }
 .tone-neutral {
-  --aven-status-dot-color: var(--aven-color-neutral-solid);
+  --status-dot-default-color: var(--aven-color-neutral-solid);
 }
 .tone-accent {
-  --aven-status-dot-color: var(--aven-color-accent-solid);
+  --status-dot-default-color: var(--aven-color-accent-solid);
 }
 .tone-secondary {
-  --aven-status-dot-color: var(--aven-color-secondary-solid);
+  --status-dot-default-color: var(--aven-color-secondary-solid);
 }
 .tone-info {
-  --aven-status-dot-color: var(--aven-color-info-solid);
+  --status-dot-default-color: var(--aven-color-info-solid);
 }
 .tone-success {
-  --aven-status-dot-color: var(--aven-color-success-solid);
+  --status-dot-default-color: var(--aven-color-success-solid);
 }
 .tone-warning {
-  --aven-status-dot-color: var(--aven-color-warning-solid);
+  --status-dot-default-color: var(--aven-color-warning-solid);
 }
 .tone-danger {
-  --aven-status-dot-color: var(--aven-color-danger-solid);
+  --status-dot-default-color: var(--aven-color-danger-solid);
 }
 .tone-critical {
-  --aven-status-dot-color: var(--aven-color-critical-solid);
+  --status-dot-default-color: var(--aven-color-critical-solid);
 }
 .size-xs {
-  --aven-status-dot-size: 0.4rem;
+  --status-dot-default-size: 0.4rem;
 }
 .size-sm {
-  --aven-status-dot-size: 0.55rem;
+  --status-dot-default-size: 0.55rem;
 }
 .size-md {
-  --aven-status-dot-size: 0.65rem;
+  --status-dot-default-size: 0.65rem;
 }
 .size-lg {
-  --aven-status-dot-size: 0.75rem;
+  --status-dot-default-size: 0.75rem;
 }
 .is-unstyled .status-dot {
   background: currentColor;

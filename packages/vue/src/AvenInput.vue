@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, ref, watch, useAttrs } from 'vue'
-import type { AvenInputEvents, AvenInputProps } from './types.js'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch, useAttrs } from 'vue'
+import type { AvenInputEvents, AvenInputProps, AvenInputSlots } from './types.js'
 defineOptions({ inheritAttrs: false })
 const props = withDefaults(defineProps<AvenInputProps>(), {
   defaultValue: '',
@@ -11,13 +11,41 @@ const props = withDefaults(defineProps<AvenInputProps>(), {
   required: false,
   clearable: false,
   clearLabel: 'Clear',
+  resetOnForm: true,
   unstyled: false,
 })
 const emit = defineEmits<AvenInputEvents>()
+defineSlots<AvenInputSlots>()
 const attrs = useAttrs()
+const controlAttrs = computed(() => {
+  const { class: _class, style: _style, ...rest } = attrs
+  return { ...rest, ...props.ui?.control?.attrs }
+})
+const initialValue = props.defaultValue
 const local = ref(props.defaultValue)
 const value = computed(() => (props.modelValue !== undefined ? props.modelValue : local.value))
 const inputEl = ref<HTMLInputElement>()
+let form: HTMLFormElement | null = null
+function onReset(event: Event) {
+  queueMicrotask(async () => {
+    if (event.defaultPrevented) return
+    if (!props.resetOnForm) {
+      if (inputEl.value && props.modelValue !== undefined) inputEl.value.value = props.modelValue
+      return
+    }
+    local.value = initialValue
+    if (props.modelValue !== undefined) {
+      emit('update:modelValue', initialValue)
+      await nextTick()
+      if (inputEl.value) inputEl.value.value = props.modelValue
+    }
+  })
+}
+onMounted(() => {
+  form = inputEl.value?.form ?? null
+  form?.addEventListener('reset', onReset)
+})
+onBeforeUnmount(() => form?.removeEventListener('reset', onReset))
 watch(
   () => props.modelValue,
   (v) => {
@@ -54,6 +82,7 @@ defineExpose({
 </script>
 <template>
   <span
+    v-bind="ui?.root?.attrs"
     :class="[
       'aven-input',
       {
@@ -66,13 +95,18 @@ defineExpose({
     ]"
     :style="[attrs.style, ui?.root?.style]"
   >
-    <span v-if="$slots.leading || $slots.prefix" :class="ui?.leading?.class">
+    <span
+      v-if="$slots.leading || $slots.prefix"
+      v-bind="ui?.leading?.attrs"
+      :class="ui?.leading?.class"
+      :style="ui?.leading?.style"
+    >
       <slot name="leading" />
       <slot name="prefix" />
     </span>
     <input
+      v-bind="{ ...ui?.control?.attrs, ...controlAttrs }"
       ref="inputEl"
-      v-bind="{ ...attrs, ...ui?.control?.attrs }"
       :class="['input-control', ui?.control?.class]"
       :style="ui?.control?.style"
       :id="id"
@@ -95,14 +129,21 @@ defineExpose({
     />
     <button
       v-if="clearable && value && !disabled && !readonly"
+      v-bind="ui?.clear?.attrs"
       type="button"
-      class="clear-button"
+      :class="['clear-button', ui?.clear?.class]"
+      :style="ui?.clear?.style"
       :aria-label="clearLabel"
       @click="clear"
     >
       <slot name="clear-icon">×</slot>
     </button>
-    <span v-if="$slots.trailing || $slots.suffix" :class="ui?.trailing?.class">
+    <span
+      v-if="$slots.trailing || $slots.suffix"
+      v-bind="ui?.trailing?.attrs"
+      :class="ui?.trailing?.class"
+      :style="ui?.trailing?.style"
+    >
       <slot name="trailing" />
       <slot name="suffix" />
     </span>

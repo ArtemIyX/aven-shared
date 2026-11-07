@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { useAttrs } from 'vue'
 import AvenFileInput from './AvenFileInput.vue'
-import type { AvenFileInputEvents, AvenFileInputProps, AvenFileInputSlots } from './types.js'
+import type { AvenDropzoneEvents, AvenDropzoneProps, AvenDropzoneSlots } from './types.js'
 
 defineOptions({ inheritAttrs: false })
-const props = withDefaults(defineProps<AvenFileInputProps>(), { dropzone: true })
-const emit = defineEmits<AvenFileInputEvents>()
-defineSlots<AvenFileInputSlots>()
+const props = defineProps<AvenDropzoneProps>()
+const emit = defineEmits<AvenDropzoneEvents>()
+defineSlots<AvenDropzoneSlots>()
 const attrs = useAttrs()
 </script>
 

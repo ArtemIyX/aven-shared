@@ -13,6 +13,7 @@ import type {
 
 defineOptions({ inheritAttrs: false })
 const props = withDefaults(defineProps<AvenCommandPaletteProps<Key>>(), {
+  open: undefined,
   defaultOpen: false,
   defaultQuery: '',
   loading: false,
@@ -101,7 +102,7 @@ defineExpose({
 
 <template>
   <AvenDialog
-    v-bind="attrs"
+    v-bind="{ ...attrs, ...ui?.root?.attrs }"
     :open="isOpen"
     :title="label"
     :initial-focus="'input'"
@@ -164,7 +165,9 @@ defineExpose({
         ><slot name="loading"><span role="status">Loading commands…</span></slot></template
       >
       <template #popup-footer>
-        <div :class="ui?.footer?.class" :style="ui?.footer?.style"><slot name="footer" /></div>
+        <div v-bind="ui?.footer?.attrs" :class="ui?.footer?.class" :style="ui?.footer?.style">
+          <slot name="footer" />
+        </div>
       </template>
     </AvenCombobox>
   </AvenDialog>

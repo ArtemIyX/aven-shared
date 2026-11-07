@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, useAttrs, watch } from 'vue'
 import type { AvenTimePickerEvents, AvenTimePickerProps, AvenTimePickerSlots } from './types.js'
 import { useAvenId } from './composables.js'
 defineOptions({ inheritAttrs: false })
@@ -18,6 +18,11 @@ const props = withDefaults(defineProps<AvenTimePickerProps>(), {
 const emit = defineEmits<AvenTimePickerEvents>(),
   slots = defineSlots<AvenTimePickerSlots>()
 const controlId = useAvenId(props.id, 'time-picker')
+const attrs = useAttrs()
+const nativeAttrs = computed(() =>
+  Object.fromEntries(Object.entries(attrs).filter(([key]) => key !== 'class' && key !== 'style')),
+)
+const initialValue = props.defaultValue ?? null
 const local = ref<string | null>(props.defaultValue ?? null),
   draft = ref(''),
   inputEl = ref<HTMLInputElement>(),
@@ -28,8 +33,10 @@ watch(
   value,
   (v) => {
     draft.value = v ?? ''
-    lastCommitted.value = v ?? null
-    lastRequested.value = v ?? null
+    if ((v ?? null) !== lastRequested.value) {
+      lastCommitted.value = v ?? null
+      lastRequested.value = v ?? null
+    }
   },
   { immediate: true },
 )
@@ -45,7 +52,12 @@ function valid(text: string) {
   if (!new RegExp(`^(?:[01]\\d|2[0-3]):[0-5]\\d${props.seconds ? '(:[0-5]\\d)?' : ''}$`).test(text))
     return false
   const normalized = props.seconds && text.length === 5 ? `${text}:00` : text
-  return (!props.min || normalized >= props.min) && (!props.max || normalized <= props.max)
+  const normalizeBound = (bound: string) =>
+    props.seconds && bound.length === 5 ? `${bound}:00` : bound
+  return (
+    (!props.min || normalized >= normalizeBound(props.min)) &&
+    (!props.max || normalized <= normalizeBound(props.max))
+  )
 }
 function update(text: string) {
   if (props.disabled || props.readonly) return
@@ -55,8 +67,9 @@ function update(text: string) {
     return
   }
   if (valid(text)) {
+    const previous = value.value
     local.value = text
-    if (text !== value.value && text !== lastRequested.value) {
+    if (text !== previous && text !== lastRequested.value) {
       lastRequested.value = text
       emit('update:modelValue', text)
     }
@@ -74,21 +87,27 @@ function commit(next: string | null = draft.value || null) {
     return
   }
   if (next === lastCommitted.value) return
+  const previous = value.value
   lastCommitted.value = next
   local.value = next
   draft.value = next ?? ''
-  if (next !== value.value && next !== lastRequested.value) {
+  if (next !== previous && next !== lastRequested.value) {
     lastRequested.value = next
     emit('update:modelValue', next)
   }
   emit('change', next)
 }
 function reset(event: Event) {
-  if (event.defaultPrevented || props.modelValue !== undefined) return
-  local.value = props.defaultValue ?? null
-  draft.value = local.value ?? ''
-  lastCommitted.value = local.value
-  lastRequested.value = local.value
+  queueMicrotask(async () => {
+    if (event.defaultPrevented) return
+    local.value = initialValue
+    if (props.modelValue !== undefined) emit('update:modelValue', initialValue)
+    await nextTick()
+    draft.value = value.value ?? ''
+    if (inputEl.value && props.modelValue !== undefined) inputEl.value.value = draft.value
+    lastCommitted.value = value.value
+    lastRequested.value = value.value
+  })
 }
 onMounted(() => inputEl.value?.form?.addEventListener('reset', reset))
 onBeforeUnmount(() => inputEl.value?.form?.removeEventListener('reset', reset))
@@ -96,9 +115,10 @@ defineExpose({ focus: () => inputEl.value?.focus(), blur: () => inputEl.value?.b
 </script>
 <template>
   <div
+    v-bind="ui?.root?.attrs"
     class="aven-time-picker"
-    :class="[{ disabled, unstyled }, ui?.root?.class]"
-    :style="ui?.root?.style"
+    :class="[{ disabled, unstyled }, attrs.class, ui?.root?.class]"
+    :style="[attrs.style, ui?.root?.style]"
   >
     <label v-if="label" class="label" :for="controlId"
       >{{ label }}<span v-if="required" aria-hidden="true"> *</span></label
@@ -106,7 +126,7 @@ defineExpose({ focus: () => inputEl.value?.focus(), blur: () => inputEl.value?.b
     <slot name="field" :value="draft" :disabled="disabled"
       ><input
         ref="inputEl"
-        v-bind="{ ...$attrs, ...ui?.input?.attrs }"
+        v-bind="{ ...nativeAttrs, ...ui?.input?.attrs }"
         :id="controlId"
         :lang="inputLocale"
         type="time"
@@ -122,7 +142,11 @@ defineExpose({ focus: () => inputEl.value?.focus(), blur: () => inputEl.value?.b
         :style="ui?.input?.style"
         :aria-invalid="invalid || undefined"
         :aria-describedby="
-          [description ? `${controlId}-description` : null, error ? `${controlId}-error` : null]
+          [
+            nativeAttrs['aria-describedby'],
+            description ? `${controlId}-description` : null,
+            error ? `${controlId}-error` : null,
+          ]
             .filter(Boolean)
             .join(' ') || undefined
         "
@@ -141,6 +165,7 @@ defineExpose({ focus: () => inputEl.value?.focus(), blur: () => inputEl.value?.b
     </button>
     <p v-if="description" :id="`${controlId}-description`" class="help">{{ description }}</p>
     <p
+      v-bind="ui?.error?.attrs"
       v-if="error"
       :id="`${controlId}-error`"
       :class="['error', ui?.error?.class]"

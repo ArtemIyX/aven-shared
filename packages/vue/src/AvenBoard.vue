@@ -175,8 +175,8 @@ function add(columnKey: ColumnKey) {
 </script>
 <template>
   <section
+    v-bind="{ ...ui?.root?.attrs, ...rootAttrs }"
     ref="root"
-    v-bind="rootAttrs"
     :id="id"
     :class="['aven-board', attrs.class, { 'is-unstyled': unstyled }, ui?.root?.class]"
     :style="[attrs.style, ui?.root?.style]"

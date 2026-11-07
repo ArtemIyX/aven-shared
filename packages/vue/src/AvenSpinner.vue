@@ -13,6 +13,7 @@ withDefaults(
 </script>
 <template>
   <span
+    v-bind="ui?.root?.attrs"
     :class="[
       'aven-spinner',
       { 'is-unstyled': unstyled },
@@ -26,6 +27,7 @@ withDefaults(
     role="status"
     :aria-label="label || undefined"
     ><span
+      v-bind="ui?.indicator?.attrs"
       aria-hidden="true"
       :class="['spinner-indicator', ui?.indicator?.class]"
       :style="ui?.indicator?.style"

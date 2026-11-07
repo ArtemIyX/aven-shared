@@ -24,6 +24,7 @@ const controlAttrs = computed(() =>
   Object.fromEntries(Object.entries(attrs).filter(([key]) => key !== 'class' && key !== 'style')),
 )
 const localValue = ref(props.defaultValue)
+const initialValue = props.defaultValue
 const query = computed(() => (props.modelValue === undefined ? localValue.value : props.modelValue))
 const composing = ref(false)
 const input = ref<{ focus: () => void; blur: () => void; select: () => void } | null>(null)
@@ -46,8 +47,9 @@ function onFormReset(event: Event) {
   resetTimer = setTimeout(() => {
     resetTimer = undefined
     if (event.defaultPrevented) return
-    localValue.value = props.defaultValue
-    if (props.modelValue !== undefined) emit('update:modelValue', props.defaultValue)
+    clearSearchTimer()
+    localValue.value = initialValue
+    if (props.modelValue !== undefined) emit('update:modelValue', initialValue)
   }, 0)
 }
 onMounted(() => {
@@ -132,6 +134,7 @@ defineExpose({
         :name="name"
         type="search"
         :model-value="query"
+        :reset-on-form="false"
         :placeholder="placeholder"
         :disabled="disabled"
         :readonly="readonly"

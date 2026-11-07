@@ -1,4 +1,5 @@
 import type { AvenOpenChange, AvenOpenReason } from './composables.js'
+import type { VNodeRef } from 'vue'
 
 export type AvenSize = 'xs' | 'sm' | 'md' | 'lg'
 export type AvenTone =
@@ -440,6 +441,7 @@ export type AvenTableColumn<T, ColumnKey extends string | number = string | numb
   accessor: (row: T, index: number) => unknown
   align?: 'start' | 'center' | 'end'
   width?: string | number
+  pinned?: 'start' | 'end'
   minWidth?: number
   maxWidth?: number
   sortable?: boolean
@@ -926,7 +928,7 @@ export type AvenSliderProps = {
   disabled?: boolean
   readonly?: boolean
   unstyled?: boolean
-  ui?: AvenUi<'root' | 'track' | 'input' | 'mark'>
+  ui?: AvenUi<'root' | 'track' | 'input' | 'mark' | 'thumb'>
 }
 export type AvenSliderEvents = {
   'update:modelValue': [value: number]
@@ -938,6 +940,7 @@ export type AvenSliderSlots = {
   leading?: () => unknown
   trailing?: () => unknown
   mark?: (scope: AvenSliderMark) => unknown
+  thumb?: (scope: { index: 0; value: number; active: boolean }) => unknown
   value?: (scope: { value: number; index: 0 }) => unknown
 }
 export type AvenRangeSliderProps = Omit<
@@ -962,6 +965,7 @@ export type AvenRangeSliderSlots = {
   leading?: () => unknown
   trailing?: () => unknown
   mark?: (scope: AvenSliderMark) => unknown
+  thumb?: (scope: { index: 0 | 1; value: number; active: boolean }) => unknown
   value?: (scope: { value: number; index: 0 | 1 }) => unknown
 }
 export type AvenComboboxProps<T extends string | number = string | number> = {
@@ -1060,6 +1064,7 @@ export type AvenContextMenuProps<Key extends string | number = string | number> 
   items: AvenCommand<Key>[]
   open?: boolean
   defaultOpen?: boolean
+  collisionPadding?: number
   disabled?: boolean
   activation?: 'contextmenu' | 'both'
   label?: string
@@ -1162,6 +1167,60 @@ export type AvenMenuEvents<Key extends string | number = string | number> = {
   highlight: [payload: { key: Key }]
   submenuChange: [payload: { key: Key; open: boolean }]
 }
+export type AvenMenuSlots<Key extends string | number = string | number> = {
+  item?: (scope: {
+    item: AvenCommand<Key>
+    key: Key
+    active: boolean
+    disabled: boolean
+    checked: boolean
+  }) => unknown
+  leading?: (scope: { item: AvenCommand<Key> }) => unknown
+  trailing?: (scope: { item: AvenCommand<Key> }) => unknown
+  shortcut?: (scope: { item: AvenCommand<Key> }) => unknown
+  'group-label'?: (scope: { group: AvenMenuGroupModel }) => unknown
+  'submenu-trigger'?: (scope: { item: AvenCommand<Key>; open: boolean }) => unknown
+  submenu?: (scope: { item: AvenCommand<Key>; close: () => void }) => unknown
+  header?: () => unknown
+  footer?: () => unknown
+  empty?: () => unknown
+}
+export type AvenDropdownMenuProps<Key extends string | number = string | number> = {
+  items: AvenCommand<Key>[]
+  open?: boolean
+  defaultOpen?: boolean
+  placement?: 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end'
+  offset?: number
+  collisionPadding?: number
+  teleportTo?: string | HTMLElement | null
+  strategy?: 'absolute' | 'fixed'
+  closeOnSelect?: boolean
+  disabled?: boolean
+  matchTriggerWidth?: boolean
+  label?: string
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'trigger' | 'content'>
+}
+export type AvenDropdownMenuEvents<Key extends string | number = string | number> =
+  AvenMenuEvents<Key> & {
+    'update:open': [open: boolean]
+    openChange: [change: AvenOpenChange]
+    beforeClose: [
+      payload: { reason: AvenOpenReason; originalEvent?: Event; preventDefault: () => void },
+    ]
+    afterOpen: []
+    afterClose: []
+  }
+export type AvenDropdownMenuSlots<Key extends string | number = string | number> =
+  AvenMenuSlots<Key> & {
+    trigger?: (scope: {
+      triggerAttrs: Record<string, unknown>
+      triggerRef: (element: unknown) => void
+      open: boolean
+    }) => unknown
+    'trigger-leading'?: () => unknown
+    'trigger-trailing'?: () => unknown
+  }
 export type AvenMenuItemProps<Key extends string | number = string | number> = {
   item: AvenCommand<Key>
   id?: string
@@ -1428,6 +1487,482 @@ export type AvenRichTextFieldSlots<Document extends object = AvenRichTextDocumen
   footer?: (scope: { selection: string; wordCount: number }) => unknown
   help?: () => unknown
   error?: (scope: { error: string }) => unknown
+}
+export type AvenTabItem<Key extends string | number = string> = {
+  key: Key
+  label: string
+  disabled?: boolean
+  closable?: boolean
+}
+export type AvenTabsProps<Key extends string | number = string> = {
+  items: AvenTabItem<Key>[]
+  modelValue?: Key
+  defaultValue?: Key
+  id?: string
+  label?: string
+  orientation?: 'horizontal' | 'vertical'
+  activation?: 'automatic' | 'manual'
+  variant?: 'underline' | 'pill' | 'boxed'
+  keepAlive?: boolean
+  lazy?: boolean
+  loop?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'list' | 'tab' | 'panel' | 'close'>
+}
+export type AvenTabsEvents<Key extends string | number = string> = {
+  'update:modelValue': [key: Key]
+  change: [key: Key]
+  close: [payload: { key: Key; originalEvent: MouseEvent }]
+}
+export type AvenTabsSlots<Key extends string | number = string> = {
+  tab?: (scope: {
+    item: AvenTabItem<Key>
+    key: Key
+    selected: boolean
+    active: boolean
+    disabled: boolean
+  }) => unknown
+  leading?: (scope: { item: AvenTabItem<Key> }) => unknown
+  trailing?: (scope: { item: AvenTabItem<Key> }) => unknown
+  badge?: (scope: { item: AvenTabItem<Key> }) => unknown
+  panel?: (scope: { item: AvenTabItem<Key>; key: Key; active: boolean }) => unknown
+  'close-icon'?: (scope: { item: AvenTabItem<Key> }) => unknown
+  overflow?: (scope: { items: readonly AvenTabItem<Key>[]; activeKey: Key | undefined }) => unknown
+}
+export type AvenTabProps<Key extends string | number = string> = {
+  item: AvenTabItem<Key>
+  id: string
+  controls: string
+  selected: boolean
+  active: boolean
+  tabindex: 0 | -1
+  disabled?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root'>
+}
+export type AvenTabEvents = {
+  activate: [payload: { originalEvent: MouseEvent }]
+  focus: [event: FocusEvent]
+  keydown: [event: KeyboardEvent]
+}
+export type AvenTabSlots<Key extends string | number = string> = {
+  default?: (scope: {
+    item: AvenTabItem<Key>
+    key: Key
+    selected: boolean
+    active: boolean
+    disabled: boolean
+  }) => unknown
+  leading?: (scope: { item: AvenTabItem<Key> }) => unknown
+  trailing?: (scope: { item: AvenTabItem<Key> }) => unknown
+  badge?: (scope: { item: AvenTabItem<Key> }) => unknown
+}
+export type AvenTabPanelProps<Key extends string | number = string> = {
+  item: AvenTabItem<Key>
+  id: string
+  labelledBy: string
+  active: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root'>
+}
+export type AvenTabPanelSlots<Key extends string | number = string> = {
+  default?: (scope: { item: AvenTabItem<Key>; key: Key; active: boolean }) => unknown
+}
+export type AvenNumberInputProps = {
+  modelValue?: number | null
+  defaultValue?: number | null
+  min?: number
+  max?: number
+  step?: number
+  precision?: number
+  locale?: string
+  formatOptions?: Intl.NumberFormatOptions
+  controls?: boolean
+  clampOnCommit?: boolean
+  allowEmpty?: boolean
+  name?: string
+  id?: string
+  disabled?: boolean
+  readonly?: boolean
+  required?: boolean
+  invalid?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'control' | 'prefix' | 'suffix' | 'stepper'>
+}
+export type AvenNumberInputEvents = {
+  'update:modelValue': [value: number | null]
+  'update:inputValue': [value: string]
+  change: [value: number | null]
+  invalidInput: [payload: { text: string; reason: 'incomplete' | 'invalid' }]
+  step: [
+    payload: {
+      direction: 'increment' | 'decrement'
+      value: number
+      originalEvent: MouseEvent | KeyboardEvent
+    },
+  ]
+  focus: [event: FocusEvent]
+  blur: [event: FocusEvent]
+}
+export type AvenNumberInputSlots = {
+  prefix?: () => unknown
+  suffix?: () => unknown
+  'increment-icon'?: () => unknown
+  'decrement-icon'?: () => unknown
+}
+export type AvenCheckboxProps = {
+  modelValue?: boolean
+  defaultValue?: boolean
+  indeterminate?: boolean
+  value?: string
+  name?: string
+  required?: boolean
+  disabled?: boolean
+  readonly?: boolean
+  label?: string
+  description?: string
+  invalid?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'control' | 'indicator' | 'label' | 'description'>
+}
+export type AvenCheckboxEvents = {
+  'update:modelValue': [value: boolean]
+  change: [value: boolean]
+  focus: [event: FocusEvent]
+  blur: [event: FocusEvent]
+}
+export type AvenCheckboxSlots = {
+  default?: () => unknown
+  label?: () => unknown
+  description?: () => unknown
+  indicator?: (scope: { checked: boolean; indeterminate: boolean; disabled: boolean }) => unknown
+}
+export type AvenCheckboxGroupProps<Value extends string | number = string | number> = {
+  modelValue?: Value[]
+  defaultValue?: Value[]
+  items: AvenOption<Value>[]
+  name?: string
+  label?: string
+  description?: string
+  error?: string
+  min?: number
+  max?: number
+  orientation?: 'vertical' | 'horizontal'
+  disabled?: boolean
+  invalid?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'legend' | 'description' | 'error' | 'item' | 'control' | 'label'>
+}
+export type AvenCheckboxGroupEvents<Value extends string | number = string | number> = {
+  'update:modelValue': [value: Value[]]
+  change: [value: Value[]]
+  limit: [payload: { kind: 'min' | 'max'; value: Value }]
+}
+export type AvenCheckboxGroupSlots<Value extends string | number = string | number> = {
+  label?: () => unknown
+  description?: () => unknown
+  error?: (scope: { message?: string }) => unknown
+  item?: (scope: {
+    item: AvenOption<Value>
+    key: Value
+    selected: boolean
+    disabled: boolean
+  }) => unknown
+}
+export type AvenSwitchProps = {
+  modelValue?: boolean
+  defaultValue?: boolean
+  label: string
+  labelPosition?: 'start' | 'end'
+  name?: string
+  checkedValue?: string
+  disabled?: boolean
+  readonly?: boolean
+  loading?: boolean
+  description?: string
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'control' | 'track' | 'thumb' | 'label'>
+}
+export type AvenSwitchEvents = {
+  'update:modelValue': [value: boolean]
+  change: [value: boolean]
+  focus: [event: FocusEvent]
+  blur: [event: FocusEvent]
+}
+export type AvenSwitchSlots = {
+  label?: () => unknown
+  description?: () => unknown
+  thumb?: (scope: { checked: boolean }) => unknown
+  'checked-icon'?: () => unknown
+  'unchecked-icon'?: () => unknown
+  'checked-label'?: () => unknown
+  'unchecked-label'?: () => unknown
+}
+export type AvenSelectProps<Value extends string | number = string | number> = {
+  modelValue?: Value | null
+  defaultValue?: Value | null
+  options: AvenOption<Value>[]
+  placeholder?: string
+  name?: string
+  id?: string
+  required?: boolean
+  disabled?: boolean
+  readonly?: boolean
+  invalid?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'control' | 'leading' | 'trailing'>
+}
+export type AvenSelectEvents<Value extends string | number = string | number> = {
+  'update:modelValue': [value: Value | null]
+  change: [value: Value | null]
+  focus: [event: FocusEvent]
+  blur: [event: FocusEvent]
+}
+export type AvenSelectSlots = { leading?: () => unknown; trailing?: () => unknown }
+export type AvenPopoverProps = {
+  open?: boolean
+  defaultOpen?: boolean
+  label?: string
+  placement?: 'top' | 'bottom' | 'left' | 'right'
+  offset?: number
+  showArrow?: boolean
+  dismissible?: boolean
+  matchTriggerWidth?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'trigger' | 'content' | 'header' | 'footer' | 'arrow'>
+}
+export type AvenPopoverEvents = {
+  'update:open': [open: boolean]
+  openChange: [change: AvenOpenChange]
+  dismiss: [payload: { reason: AvenOpenReason; originalEvent?: Event }]
+}
+export type AvenPopoverSlots = {
+  trigger?: (scope: {
+    triggerAttrs: Record<string, unknown>
+    triggerRef: VNodeRef
+    open: boolean
+  }) => unknown
+  default?: (scope: { close: () => void }) => unknown
+  header?: (scope: { close: () => void }) => unknown
+  footer?: (scope: { close: () => void }) => unknown
+}
+export type AvenTooltipProps = {
+  text?: string
+  open?: boolean
+  defaultOpen?: boolean
+  openDelay?: number
+  closeDelay?: number
+  placement?: 'top' | 'bottom' | 'left' | 'right'
+  disabled?: boolean
+  showArrow?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'trigger' | 'content' | 'arrow'>
+}
+export type AvenTooltipEvents = {
+  'update:open': [open: boolean]
+  openChange: [change: AvenOpenChange]
+}
+export type AvenTooltipSlots = {
+  trigger?: (scope: {
+    triggerAttrs: Record<string, unknown>
+    triggerRef: VNodeRef
+    open: boolean
+  }) => unknown
+  default?: () => unknown
+}
+export type AvenSpinnerProps = {
+  size?: AvenSize | number
+  label?: string
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'indicator'>
+}
+export type AvenSpinnerSlots = { default?: () => unknown }
+export type AvenProgressProps = {
+  value: number | null
+  min?: number
+  max?: number
+  label?: string
+  showValue?: boolean
+  formatValue?: (value: number, percent: number) => string
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'track' | 'fill' | 'value'>
+}
+export type AvenProgressSlots = {
+  label?: (scope: { value: number | null; percent: number | null }) => unknown
+  value?: (scope: { value: number; percent: number }) => unknown
+}
+export type AvenSkeletonProps = {
+  width?: string | number
+  height?: string | number
+  lines?: number
+  shape?: 'rectangle' | 'circle' | 'rounded'
+  animated?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'line'>
+}
+export type AvenSkeletonSlots = { default?: () => unknown }
+export type AvenSegmentedControlProps<Value extends string | number = string | number> = {
+  modelValue?: Value | null
+  defaultValue?: Value | null
+  items: AvenOption<Value>[]
+  allowEmpty?: boolean
+  block?: boolean
+  orientation?: 'horizontal' | 'vertical'
+  size?: AvenSize
+  name?: string
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'item' | 'indicator' | 'leading' | 'trailing'>
+}
+export type AvenSegmentedControlEvents<Value extends string | number = string | number> = {
+  'update:modelValue': [value: Value | null]
+  change: [value: Value | null]
+}
+export type AvenSegmentedControlSlots<Value extends string | number = string | number> = {
+  item?: (scope: {
+    item: AvenOption<Value>
+    key: Value
+    selected: boolean
+    disabled: boolean
+  }) => unknown
+  leading?: (scope: { item: AvenOption<Value> }) => unknown
+  trailing?: (scope: { item: AvenOption<Value> }) => unknown
+}
+export type AvenBreadcrumbItem<Key extends string | number = string | number> = {
+  key: Key
+  label: string
+  href?: string
+  current?: boolean
+}
+export type AvenBreadcrumbProps<Key extends string | number = string | number> = {
+  items: AvenBreadcrumbItem<Key>[]
+  maxVisible?: number
+  collapseFrom?: 'middle'
+  label?: string
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'list' | 'item' | 'separator' | 'expand'>
+}
+export type AvenBreadcrumbEvents<Key extends string | number = string | number> = {
+  navigate: [payload: { key: Key; item: AvenBreadcrumbItem<Key>; originalEvent: MouseEvent }]
+  expand: [payload: { originalEvent: MouseEvent }]
+}
+export type AvenBreadcrumbSlots<Key extends string | number = string | number> = {
+  item?: (scope: { item: AvenBreadcrumbItem<Key>; index: number; current: boolean }) => unknown
+  separator?: (scope: { index: number }) => unknown
+  collapsed?: (scope: { items: AvenBreadcrumbItem<Key>[] }) => unknown
+  leading?: () => unknown
+  trailing?: () => unknown
+}
+export type AvenPaginationProps = {
+  modelValue?: number
+  defaultValue?: number
+  total: number
+  pageSize?: number
+  defaultPageSize?: number
+  pageSizeOptions?: number[]
+  siblingCount?: number
+  boundaryCount?: number
+  showSizeChanger?: boolean
+  disabled?: boolean
+  loading?: boolean
+  label?: string
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'list' | 'item' | 'summary' | 'size'>
+}
+export type AvenPaginationEvents = {
+  'update:modelValue': [page: number]
+  change: [payload: { page: number; pageSize: number }]
+  'update:pageSize': [pageSize: number]
+}
+export type AvenPaginationSlots = {
+  summary?: (scope: { start: number; end: number; total: number }) => unknown
+  previous?: () => unknown
+  next?: () => unknown
+  page?: (scope: { page: number; current: boolean; disabled: boolean }) => unknown
+  ellipsis?: () => unknown
+}
+export type AvenNavItemModel<Key extends string | number = string | number> = {
+  key: Key
+  label: string
+  href?: string
+  children?: AvenNavItemModel<Key>[]
+  disabled?: boolean
+  badge?: string | number
+}
+export type AvenNavItemProps<Key extends string | number = string | number> = {
+  item: AvenNavItemModel<Key>
+  active?: boolean
+  expanded?: boolean
+  depth?: number
+  density?: 'compact' | 'comfortable' | 'spacious'
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'link' | 'disclosure' | 'badge'>
+}
+export type AvenNavItemEvents<Key extends string | number = string | number> = {
+  navigate: [payload: { key: Key; item: AvenNavItemModel<Key>; originalEvent: MouseEvent }]
+  'update:expanded': [payload: { key: Key; expanded: boolean; originalEvent: MouseEvent }]
+}
+export type AvenNavItemSlots<Key extends string | number = string | number> = {
+  default?: (scope: {
+    item: AvenNavItemModel<Key>
+    key: Key
+    active: boolean
+    expanded: boolean
+    depth: number
+  }) => unknown
+  leading?: (scope: { item: AvenNavItemModel<Key> }) => unknown
+  trailing?: (scope: { item: AvenNavItemModel<Key> }) => unknown
+  badge?: (scope: { item: AvenNavItemModel<Key> }) => unknown
+  'group-label'?: (scope: { item: AvenNavItemModel<Key> }) => unknown
+  children?: (scope: { item: AvenNavItemModel<Key>; depth: number }) => unknown
+}
+export type AvenNavListProps<Key extends string | number = string | number> = {
+  items: AvenNavItemModel<Key>[]
+  activeKey?: Key
+  expandedKeys?: Key[]
+  defaultExpandedKeys?: Key[]
+  density?: 'compact' | 'comfortable' | 'spacious'
+  label?: string
+  depth?: number
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'list' | 'item' | 'link' | 'disclosure' | 'badge'>
+}
+export type AvenNavListEvents<Key extends string | number = string | number> = {
+  navigate: [payload: { key: Key; item: AvenNavItemModel<Key>; originalEvent: MouseEvent }]
+  'update:expandedKeys': [keys: Key[]]
+}
+export type AvenNavListSlots<Key extends string | number = string | number> = {
+  item?: (scope: {
+    item: AvenNavItemModel<Key>
+    key: Key
+    active: boolean
+    expanded: boolean
+    depth: number
+  }) => unknown
+  badge?: (scope: { item: AvenNavItemModel<Key> }) => unknown
+  'item-leading'?: (scope: { item: AvenNavItemModel<Key> }) => unknown
+  'item-trailing'?: (scope: { item: AvenNavItemModel<Key> }) => unknown
+  'group-label'?: (scope: { item: AvenNavItemModel<Key> }) => unknown
+}
+export type AvenSidebarProps<Key extends string | number = string | number> = {
+  items: AvenNavItemModel<Key>[]
+  activeKey?: Key
+  collapsed?: boolean
+  defaultCollapsed?: boolean
+  width?: string
+  label?: string
+  collapsible?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'header' | 'nav' | 'footer' | 'toggle'>
+}
+export type AvenSidebarEvents<Key extends string | number = string | number> = {
+  'update:collapsed': [value: boolean]
+  navigate: [payload: { key: Key; item: AvenNavItemModel<Key>; originalEvent: MouseEvent }]
+}
+export type AvenSidebarSlots = {
+  header?: () => unknown
+  brand?: () => unknown
+  footer?: () => unknown
+  'collapse-trigger'?: (scope: { collapsed: boolean }) => unknown
 }
 export type AvenTreeNode<Key extends string | number = string | number> = {
   key: Key
@@ -2076,8 +2611,16 @@ export type AvenInputProps = {
   inputmode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search'
   clearable?: boolean
   clearLabel?: string
+  resetOnForm?: boolean
   unstyled?: boolean
-  ui?: AvenUi<'root' | 'control' | 'leading' | 'trailing'>
+  ui?: AvenUi<'root' | 'control' | 'leading' | 'trailing' | 'clear'>
+}
+export type AvenInputSlots = {
+  leading?: () => unknown
+  trailing?: () => unknown
+  prefix?: () => unknown
+  suffix?: () => unknown
+  'clear-icon'?: () => unknown
 }
 export type AvenInputEvents = {
   'update:modelValue': [value: string]
@@ -2089,7 +2632,7 @@ export type AvenInputEvents = {
   compositionstart: [event: CompositionEvent]
   compositionend: [event: CompositionEvent]
 }
-export type AvenSearchFieldProps = Omit<AvenInputProps, 'type' | 'ui'> & {
+export type AvenSearchFieldProps = Omit<AvenInputProps, 'type' | 'ui' | 'resetOnForm'> & {
   debounce?: number
   label?: string
   description?: string
@@ -2105,7 +2648,7 @@ export type AvenSearchFieldEvents = Omit<
   search: [payload: AvenSearchPayload]
   submit: [payload: AvenSearchSubmitPayload]
 }
-export type AvenPasswordFieldProps = Omit<AvenInputProps, 'type' | 'ui'> & {
+export type AvenPasswordFieldProps = Omit<AvenInputProps, 'type' | 'ui' | 'resetOnForm'> & {
   revealed?: boolean
   defaultRevealed?: boolean
   revealable?: boolean
@@ -2187,6 +2730,8 @@ export type AvenRadioSlots = {
 export type AvenToggleButtonProps = {
   modelValue?: boolean
   defaultValue?: boolean
+  variant?: 'outline' | 'soft' | 'ghost'
+  tone?: AvenTone
   label?: string
   type?: 'button' | 'submit' | 'reset'
   disabled?: boolean
@@ -2434,3 +2979,144 @@ export type AvenFieldsetSlots = {
   legend?: () => unknown
   description?: () => unknown
 }
+
+export type AvenAccordionItem<Key extends string | number = string | number> = {
+  key: Key
+  label: string
+  disabled?: boolean
+}
+export type AvenAccordionProps<Key extends string | number = string | number> = {
+  items: AvenAccordionItem<Key>[]
+  modelValue?: Key | Key[] | null
+  defaultValue?: Key | Key[] | null
+  multiple?: boolean
+  collapsible?: boolean
+  lazy?: boolean
+  unmountOnHide?: boolean
+  id?: string
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'item' | 'trigger' | 'panel' | 'indicator'>
+}
+export type AvenAccordionEvents<Key extends string | number = string | number> = {
+  'update:modelValue': [value: Key | Key[] | null]
+  change: [value: Key | Key[] | null]
+}
+export type AvenAccordionSlots<Key extends string | number = string | number> = {
+  trigger?: (scope: {
+    item: AvenAccordionItem<Key>
+    open: boolean
+    disabled: boolean
+    triggerAttrs: Record<string, unknown>
+    triggerRef: (element: HTMLElement | null) => void
+  }) => unknown
+  leading?: (scope: { item: AvenAccordionItem<Key> }) => unknown
+  trailing?: (scope: { item: AvenAccordionItem<Key> }) => unknown
+  indicator?: (scope: { open: boolean }) => unknown
+  content?: (scope: { item: AvenAccordionItem<Key>; open: boolean }) => unknown
+}
+export type AvenCollapsibleProps = {
+  open?: boolean
+  defaultOpen?: boolean
+  disabled?: boolean
+  lazy?: boolean
+  unmountOnHide?: boolean
+  id?: string
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'trigger' | 'panel' | 'indicator'>
+}
+export type AvenCollapsibleEvents = {
+  'update:open': [value: boolean]
+  openChange: [value: boolean]
+  afterOpen: []
+  afterClose: []
+}
+export type AvenCollapsibleSlots = {
+  trigger?: (scope: {
+    open: boolean
+    disabled: boolean
+    triggerAttrs: Record<string, unknown>
+    triggerRef: (element: unknown) => void
+  }) => unknown
+  default?: () => unknown
+  leading?: () => unknown
+  trailing?: () => unknown
+  indicator?: (scope: { open: boolean }) => unknown
+  content?: (scope: { open: boolean }) => unknown
+  panel?: (scope: { open: boolean }) => unknown
+}
+export type AvenStackProps = {
+  as?: 'div' | 'section' | 'article' | 'ul' | 'ol'
+  gap?: string | number
+  align?: 'start' | 'center' | 'end' | 'stretch'
+  justify?: 'start' | 'center' | 'end' | 'between'
+  unstyled?: boolean
+  ui?: AvenUi<'root'>
+}
+export type AvenStackSlots = { default?: () => unknown }
+export type AvenInlineProps = {
+  as?: 'div' | 'section' | 'nav' | 'ul' | 'ol'
+  gap?: string | number
+  align?: 'start' | 'center' | 'end' | 'stretch'
+  justify?: 'start' | 'center' | 'end' | 'between'
+  wrap?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root'>
+}
+export type AvenInlineSlots = { default?: () => unknown }
+export type AvenGridResponsiveColumns = { base?: number; sm?: number; md?: number; lg?: number }
+export type AvenGridProps = {
+  as?: 'div' | 'section' | 'ul'
+  columns?: number | AvenGridResponsiveColumns
+  gap?: string | number
+  unstyled?: boolean
+  ui?: AvenUi<'root'>
+}
+export type AvenGridSlots = { default?: () => unknown }
+export type AvenContainerProps = {
+  as?: 'div' | 'main' | 'section' | 'article'
+  maxWidth?: string
+  gutter?: string | number
+  centered?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root'>
+}
+export type AvenContainerSlots = { default?: () => unknown }
+export type AvenStatProps = {
+  label: string
+  value: string | number
+  tone?: AvenTone
+  trend?: 'up' | 'down' | 'flat'
+  trendLabel?: string
+  description?: string
+  format?: 'number' | 'currency' | 'percent'
+  currency?: string
+  locale?: string
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'label' | 'value' | 'description' | 'trend'>
+}
+export type AvenStatSlots = {
+  default?: (scope: { value: string | number }) => unknown
+  trend?: (scope: { trend: 'up' | 'down' | 'flat' }) => unknown
+}
+export type AvenFormattedValueProps = {
+  value: number | string | Date
+  kind?: 'number' | 'currency' | 'percent' | 'date' | 'datetime' | 'relative' | 'duration'
+  locale?: string
+  currency?: string
+  unit?: string
+  digits?: number
+  unstyled?: boolean
+  ui?: AvenUi<'root'>
+}
+export type AvenFormattedValueSlots = { default?: () => unknown }
+export type AvenDropzoneProps = Omit<AvenFileInputProps, 'dropzone'>
+export type AvenDropzoneEvents = AvenFileInputEvents
+export type AvenDropzoneSlots = AvenFileInputSlots
+export type AvenActivityListItem<Key extends string | number = string | number> =
+  AvenTimelineItem<Key>
+export type AvenActivityListProps<Key extends string | number = string | number> =
+  AvenTimelineProps<Key>
+export type AvenActivityListEvents<Key extends string | number = string | number> =
+  AvenTimelineEvents<Key>
+export type AvenActivityListSlots<Key extends string | number = string | number> =
+  AvenTimelineSlots<Key>

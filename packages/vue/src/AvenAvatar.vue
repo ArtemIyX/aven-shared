@@ -32,6 +32,7 @@ function onError(e: Event) {
 </script>
 <template>
   <span
+    v-bind="ui?.root?.attrs"
     :role="src && !failed ? undefined : alt === '' ? undefined : 'img'"
     :aria-label="src && !failed ? undefined : (alt ?? name ?? (initials || undefined))"
     :class="[
@@ -44,6 +45,7 @@ function onError(e: Event) {
     :style="ui?.root?.style"
     ><img
       v-if="src && !failed"
+      v-bind="ui?.image?.attrs"
       :src="src"
       :alt="alt ?? name ?? ''"
       :loading="loading"
@@ -52,12 +54,18 @@ function onError(e: Event) {
       @load="emit('load', $event)"
       @error="onError" /><span
       v-else
+      v-bind="ui?.fallback?.attrs"
+      :aria-hidden="alt === '' || undefined"
       :class="['avatar-fallback', ui?.fallback?.class]"
       :style="ui?.fallback?.style"
       ><slot name="fallback" :name="name" :initials="initials">{{
         initials || name?.trim().slice(0, 1).toLocaleUpperCase() || '?'
       }}</slot></span
-    ><span v-if="$slots.status" :class="['avatar-status', ui?.status?.class]"
+    ><span
+      v-if="$slots.status"
+      v-bind="ui?.status?.attrs"
+      :class="['avatar-status', ui?.status?.class]"
+      :style="ui?.status?.style"
       ><slot name="status" /></span
   ></span>
 </template>

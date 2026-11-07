@@ -30,7 +30,7 @@ const attrs = useAttrs()
 const emit = defineEmits<AvenChipEvents<T>>()
 defineSlots<AvenChipSlots>()
 function requestRemove(originalEvent: MouseEvent) {
-  emit('remove', { value: props.value, originalEvent })
+  if (!props.disabled) emit('remove', { value: props.value, originalEvent })
 }
 </script>
 <template>
@@ -54,25 +54,49 @@ function requestRemove(originalEvent: MouseEvent) {
     ><button
       v-if="interactive"
       type="button"
+      v-bind="ui?.content?.attrs"
       :disabled="disabled"
       :aria-pressed="selected"
       :class="['chip-main', ui?.content?.class]"
       :style="ui?.content?.style"
       @click="emit('click', $event)"
     >
-      <span v-if="$slots.leading" :class="ui?.leading?.class"><slot name="leading" /></span
-      ><slot /><span v-if="$slots.trailing" :class="ui?.trailing?.class"
+      <span
+        v-if="$slots.leading"
+        v-bind="ui?.leading?.attrs"
+        :class="ui?.leading?.class"
+        :style="ui?.leading?.style"
+        ><slot name="leading" /></span
+      ><slot /><span
+        v-if="$slots.trailing"
+        v-bind="ui?.trailing?.attrs"
+        :class="ui?.trailing?.class"
+        :style="ui?.trailing?.style"
         ><slot name="trailing"
       /></span></button
-    ><span v-else :class="['chip-main', ui?.content?.class]" :style="ui?.content?.style"
-      ><span v-if="$slots.leading" :class="ui?.leading?.class"><slot name="leading" /></span
-      ><slot /><span v-if="$slots.trailing" :class="ui?.trailing?.class"
+    ><span
+      v-else
+      v-bind="ui?.content?.attrs"
+      :class="['chip-main', ui?.content?.class]"
+      :style="ui?.content?.style"
+      ><span
+        v-if="$slots.leading"
+        v-bind="ui?.leading?.attrs"
+        :class="ui?.leading?.class"
+        :style="ui?.leading?.style"
+        ><slot name="leading" /></span
+      ><slot /><span
+        v-if="$slots.trailing"
+        v-bind="ui?.trailing?.attrs"
+        :class="ui?.trailing?.class"
+        :style="ui?.trailing?.style"
         ><slot name="trailing" /></span></span
     ><button
       v-if="removable"
+      v-bind="ui?.remove?.attrs"
       type="button"
       :disabled="disabled"
-      :aria-label="`${removeLabel} ${$slots.default ? 'item' : ''}`.trim()"
+      :aria-label="removeLabel"
       :class="['chip-remove', ui?.remove?.class]"
       :style="ui?.remove?.style"
       @click="requestRemove($event)"
@@ -83,14 +107,17 @@ function requestRemove(originalEvent: MouseEvent) {
 </template>
 <style scoped>
 .aven-chip {
+  --chip-default-bg: var(--tone-bg);
+  --chip-default-fg: var(--tone-text);
+  --chip-default-border: transparent;
   display: inline-flex;
   align-items: center;
-  gap: 0.15rem;
+  gap: var(--aven-chip-gap, 0.15rem);
   max-inline-size: 100%;
-  border: 1px solid transparent;
-  border-radius: 999px;
-  color: var(--tone-text);
-  background: var(--tone-bg);
+  border: 1px solid var(--aven-chip-border, var(--chip-default-border));
+  border-radius: var(--aven-chip-radius, 999px);
+  color: var(--aven-chip-fg, var(--chip-default-fg));
+  background: var(--aven-chip-bg, var(--chip-default-bg));
   font-size: var(--aven-font-size-sm);
   line-height: 1.3;
   overflow: hidden;
@@ -123,6 +150,13 @@ function requestRemove(originalEvent: MouseEvent) {
   --tone-solid: var(--aven-color-success-solid);
   --tone-on: var(--aven-color-success-on-solid);
 }
+.tone-info {
+  --tone-text: var(--aven-color-info-text);
+  --tone-bg: var(--aven-color-info-subtle);
+  --tone-border: var(--aven-color-info-border);
+  --tone-solid: var(--aven-color-info-solid);
+  --tone-on: var(--aven-color-info-on-solid);
+}
 .tone-warning {
   --tone-text: var(--aven-color-warning-text);
   --tone-bg: var(--aven-color-warning-subtle);
@@ -130,21 +164,30 @@ function requestRemove(originalEvent: MouseEvent) {
   --tone-solid: var(--aven-color-warning-solid);
   --tone-on: var(--aven-color-warning-on-solid);
 }
-.tone-danger,
-.tone-critical {
+.tone-danger {
   --tone-text: var(--aven-color-danger-text);
   --tone-bg: var(--aven-color-danger-subtle);
   --tone-border: var(--aven-color-danger-border);
   --tone-solid: var(--aven-color-danger-solid);
   --tone-on: var(--aven-color-danger-on-solid);
 }
+.tone-critical {
+  --tone-text: var(--aven-color-critical-text);
+  --tone-bg: var(--aven-color-critical-subtle);
+  --tone-border: var(--aven-color-critical-border);
+  --tone-solid: var(--aven-color-critical-solid);
+  --tone-on: var(--aven-color-critical-on-solid);
+}
+.is-selected {
+  box-shadow: inset 0 0 0 2px var(--tone-border);
+}
 .is-outline {
-  background: transparent;
-  border-color: var(--tone-border);
+  --chip-default-bg: transparent;
+  --chip-default-border: var(--tone-border);
 }
 .is-solid {
-  background: var(--tone-solid);
-  color: var(--tone-on);
+  --chip-default-bg: var(--tone-solid);
+  --chip-default-fg: var(--tone-on);
 }
 .size-xs {
   font-size: var(--aven-font-size-xs);
@@ -177,7 +220,7 @@ function requestRemove(originalEvent: MouseEvent) {
   display: inline-grid;
   place-items: center;
   align-self: stretch;
-  min-inline-size: 1.75rem;
+  min-inline-size: var(--aven-chip-remove-hit-size, 1.75rem);
   padding: 0 0.25rem;
   border: 0;
   border-inline-start: 1px solid color-mix(in srgb, var(--tone-border), transparent 55%);
@@ -197,5 +240,6 @@ function requestRemove(originalEvent: MouseEvent) {
   border: 0;
   border-radius: 0;
   background: transparent;
+  box-shadow: none;
 }
 </style>

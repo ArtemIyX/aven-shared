@@ -66,8 +66,13 @@ function requestStep(index: number, originalEvent: MouseEvent) {
     ]"
     :style="[attrs.style, props.ui?.root?.style]"
   >
-    <ol :class="['stepper-list', props.ui?.list?.class]" :style="props.ui?.list?.style">
+    <ol
+      v-bind="props.ui?.list?.attrs"
+      :class="['stepper-list', props.ui?.list?.class]"
+      :style="props.ui?.list?.style"
+    >
       <li
+        v-bind="props.ui?.step?.attrs"
         v-for="(item, index) in props.items"
         :key="item.key"
         :class="[
@@ -88,6 +93,7 @@ function requestStep(index: number, originalEvent: MouseEvent) {
         >
           <slot name="step" v-bind="scopeFor(index)">
             <span
+              v-bind="props.ui?.indicator?.attrs"
               :class="['stepper-indicator', props.ui?.indicator?.class]"
               :style="props.ui?.indicator?.style"
             >
@@ -99,12 +105,14 @@ function requestStep(index: number, originalEvent: MouseEvent) {
             </span>
             <span class="stepper-copy">
               <span
+                v-bind="props.ui?.label?.attrs"
                 :class="['stepper-label', props.ui?.label?.class]"
                 :style="props.ui?.label?.style"
               >
                 <slot name="label" v-bind="scopeFor(index)">{{ item.label }}</slot>
               </span>
               <span
+                v-bind="props.ui?.description?.attrs"
                 v-if="item.description || $slots.description"
                 :class="['stepper-description', props.ui?.description?.class]"
                 :style="props.ui?.description?.style"
@@ -122,6 +130,7 @@ function requestStep(index: number, originalEvent: MouseEvent) {
         >
           <slot name="step" v-bind="scopeFor(index)">
             <span
+              v-bind="props.ui?.indicator?.attrs"
               :class="['stepper-indicator', props.ui?.indicator?.class]"
               :style="props.ui?.indicator?.style"
             >
@@ -133,12 +142,14 @@ function requestStep(index: number, originalEvent: MouseEvent) {
             </span>
             <span class="stepper-copy">
               <span
+                v-bind="props.ui?.label?.attrs"
                 :class="['stepper-label', props.ui?.label?.class]"
                 :style="props.ui?.label?.style"
               >
                 <slot name="label" v-bind="scopeFor(index)">{{ item.label }}</slot>
               </span>
               <span
+                v-bind="props.ui?.description?.attrs"
                 v-if="item.description || $slots.description"
                 :class="['stepper-description', props.ui?.description?.class]"
                 :style="props.ui?.description?.style"
@@ -150,6 +161,7 @@ function requestStep(index: number, originalEvent: MouseEvent) {
           </slot>
         </div>
         <span
+          v-bind="props.ui?.connector?.attrs"
           v-if="index < props.items.length - 1"
           :class="['stepper-connector', props.ui?.connector?.class]"
           :style="props.ui?.connector?.style"

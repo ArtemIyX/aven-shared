@@ -131,8 +131,14 @@ defineExpose({ scrollToKey, focus })
     <slot v-else-if="entries.length === 0" name="empty"
       ><div class="list-state">No items.</div></slot
     >
-    <ul v-else :class="['list-content', props.ui?.list?.class]" :style="props.ui?.list?.style">
+    <ul
+      v-bind="props.ui?.list?.attrs"
+      v-else
+      :class="['list-content', props.ui?.list?.class]"
+      :style="props.ui?.list?.style"
+    >
       <AvenListItem
+        v-bind="props.ui?.item?.attrs"
         v-for="entry in entries"
         :key="entry.key"
         :data-aven-list-key="String(entry.key)"
@@ -156,6 +162,7 @@ defineExpose({ scrollToKey, focus })
             @keydown="onItemKeydown"
           >
             <span
+              v-bind="props.ui?.leading?.attrs"
               v-if="$slots.leading"
               :class="['list-leading', props.ui?.leading?.class]"
               :style="props.ui?.leading?.style"
@@ -163,6 +170,7 @@ defineExpose({ scrollToKey, focus })
               <slot name="leading" v-bind="scopeFor(entry.item, entry.key, entry.index)" />
             </span>
             <span
+              v-bind="props.ui?.content?.attrs"
               :class="['list-item-content', props.ui?.content?.class]"
               :style="props.ui?.content?.style"
             >
@@ -174,6 +182,7 @@ defineExpose({ scrollToKey, focus })
         </template>
         <template v-else>
           <span
+            v-bind="props.ui?.leading?.attrs"
             v-if="$slots.leading"
             :class="['list-leading', props.ui?.leading?.class]"
             :style="props.ui?.leading?.style"
@@ -181,6 +190,7 @@ defineExpose({ scrollToKey, focus })
             <slot name="leading" v-bind="scopeFor(entry.item, entry.key, entry.index)" />
           </span>
           <span
+            v-bind="props.ui?.content?.attrs"
             :class="['list-item-content', props.ui?.content?.class]"
             :style="props.ui?.content?.style"
           >
@@ -189,6 +199,7 @@ defineExpose({ scrollToKey, focus })
             }}</slot>
           </span>
           <span
+            v-bind="props.ui?.trailing?.attrs"
             v-if="$slots.trailing"
             :class="['list-trailing', props.ui?.trailing?.class]"
             :style="props.ui?.trailing?.style"
@@ -198,6 +209,7 @@ defineExpose({ scrollToKey, focus })
         </template>
         <template #trailing>
           <span
+            v-bind="props.ui?.trailing?.attrs"
             v-if="props.selectable && $slots.trailing"
             :class="['list-trailing', props.ui?.trailing?.class]"
             :style="props.ui?.trailing?.style"

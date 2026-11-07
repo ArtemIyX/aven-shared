@@ -123,8 +123,8 @@ onBeforeUnmount(() => {
         <slot name="leading" />
       </span>
       <input
+        v-bind="{ ...ui?.search?.attrs, ...inputAttrs }"
         ref="input"
-        v-bind="inputAttrs"
         type="search"
         :value="query"
         :disabled="disabled"

@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="T extends string | number">
-import { computed, onBeforeUnmount, onMounted, ref, watch, useAttrs } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch, useAttrs } from 'vue'
 import type { AvenOption, AvenUi } from './types.js'
 defineOptions({ inheritAttrs: false })
 const props = withDefaults(
@@ -35,6 +35,24 @@ const emit = defineEmits<{
 const attrs = useAttrs(),
   local = ref<T | null>(props.defaultValue),
   control = ref<HTMLSelectElement>()
+const initialValue = props.defaultValue
+const controlAttrs = computed(() => {
+  const { class: _class, style: _style, ...rest } = attrs
+  return { ...rest, ...props.ui?.control?.attrs }
+})
+const groups = computed(() => {
+  const result: Array<{
+    group?: string | number
+    options: Array<{ option: AvenOption<T>; index: number }>
+  }> = []
+  props.options.forEach((option, index) => {
+    const last = result[result.length - 1]
+    if (option.group !== undefined && last && Object.is(last.group, option.group))
+      last.options.push({ option, index })
+    else result.push({ group: option.group, options: [{ option, index }] })
+  })
+  return result
+})
 const value = computed(() => (props.modelValue !== undefined ? props.modelValue : local.value))
 const optionsMap = computed(() => new Map(props.options.map((o, i) => [String(i), o.value])))
 const selectedKey = computed(() => {
@@ -59,8 +77,15 @@ function changed(e: Event) {
   emit('update:modelValue', next)
   emit('change', next)
 }
-function reset() {
-  if (props.modelValue === undefined) local.value = props.defaultValue ?? null
+function reset(event: Event) {
+  queueMicrotask(async () => {
+    if (event.defaultPrevented) return
+    const next = initialValue ?? null
+    local.value = next
+    if (props.modelValue !== undefined) emit('update:modelValue', next)
+    await nextTick()
+    if (control.value && props.modelValue !== undefined) control.value.value = selectedKey.value
+  })
 }
 let form: HTMLFormElement | null = null
 onMounted(() => {
@@ -72,6 +97,7 @@ defineExpose({ focus: () => control.value?.focus(), blur: () => control.value?.b
 </script>
 <template>
   <div
+    v-bind="ui?.root?.attrs"
     :class="[
       'aven-select',
       { 'is-invalid': invalid, 'is-disabled': disabled, 'is-unstyled': unstyled },
@@ -80,10 +106,15 @@ defineExpose({ focus: () => control.value?.focus(), blur: () => control.value?.b
     ]"
     :style="[attrs.style, ui?.root?.style]"
   >
-    <span v-if="$slots.leading" :class="ui?.leading?.class"><slot name="leading" /></span
+    <span
+      v-if="$slots.leading"
+      v-bind="ui?.leading?.attrs"
+      :class="ui?.leading?.class"
+      :style="ui?.leading?.style"
+      ><slot name="leading" /></span
     ><select
+      v-bind="{ ...ui?.control?.attrs, ...controlAttrs }"
       ref="control"
-      v-bind="{ ...attrs, ...ui?.control?.attrs }"
       :id="id"
       :class="['select-control', ui?.control?.class]"
       :style="ui?.control?.style"
@@ -97,15 +128,42 @@ defineExpose({ focus: () => control.value?.focus(), blur: () => control.value?.b
       @focus="emit('focus', $event)"
       @blur="emit('blur', $event)"
     >
-      <option value="" :disabled="required">{{ placeholder ?? 'Select an option' }}</option>
-      <template v-for="(option, index) in options" :key="String(option.value)"
-        ><option :value="String(index)" :disabled="option.disabled">
-          {{ option.label }}
-        </option></template
-      ></select
-    ><input v-if="name" type="hidden" :name="name" :value="value ?? ''" :disabled="disabled" /><span
+      <option value="" :disabled="required" :selected="selectedKey === ''">
+        {{ placeholder ?? 'Select an option' }}
+      </option>
+      <template v-for="(group, groupIndex) in groups" :key="groupIndex">
+        <optgroup v-if="group.group !== undefined" :label="String(group.group)">
+          <option
+            v-for="entry in group.options"
+            :key="entry.index"
+            :value="String(entry.index)"
+            :disabled="entry.option.disabled"
+            :selected="selectedKey === String(entry.index)"
+          >
+            {{ entry.option.label }}
+          </option>
+        </optgroup>
+        <option
+          v-else
+          :value="String(group.options[0]!.index)"
+          :disabled="group.options[0]!.option.disabled"
+          :selected="selectedKey === String(group.options[0]!.index)"
+        >
+          {{ group.options[0]!.option.label }}
+        </option>
+      </template></select
+    ><input
+      v-if="name"
+      type="hidden"
+      :name="name"
+      :form="typeof attrs.form === 'string' ? attrs.form : undefined"
+      :value="value ?? ''"
+      :disabled="disabled"
+    /><span
       v-if="$slots.trailing"
+      v-bind="ui?.trailing?.attrs"
       :class="ui?.trailing?.class"
+      :style="ui?.trailing?.style"
       ><slot name="trailing"
     /></span>
   </div>

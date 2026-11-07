@@ -27,7 +27,7 @@ function onClick(event: MouseEvent) {
 
 <template>
   <a
-    v-bind="forwardedAttrs"
+    v-bind="{ ...ui?.root?.attrs, ...forwardedAttrs }"
     :href="href"
     :target="target"
     :rel="rel"
@@ -65,52 +65,52 @@ function onClick(event: MouseEvent) {
 
 <style scoped>
 .aven-link {
-  --aven-link-color: var(--aven-color-link-default);
-  --aven-link-hover-color: var(--aven-color-link-hover);
-  --aven-link-pressed-color: var(--aven-color-link-pressed);
-  --aven-link-visited-color: var(--aven-color-link-visited);
+  --link-default-color: var(--aven-color-link-default);
+  --link-default-hover-color: var(--aven-color-link-hover);
+  --link-default-pressed-color: var(--aven-color-link-pressed);
+  --link-default-visited-color: var(--aven-color-link-visited);
   display: inline-flex;
   align-items: baseline;
   gap: var(--aven-link-gap, 0.25em);
-  color: var(--aven-link-color);
+  color: var(--aven-link-color, var(--link-default-color));
   text-underline-offset: var(--aven-link-underline-offset, 0.15em);
   text-decoration-thickness: var(--aven-link-underline-thickness, 0.08em);
   overflow-wrap: anywhere;
 }
 .aven-link.variant-subtle {
-  --aven-link-color: var(--aven-color-text-secondary);
+  --link-default-color: var(--aven-color-text-secondary);
 }
 .variant-standalone {
   font-weight: 600;
 }
 .tone-neutral {
-  --aven-link-color: var(--aven-color-neutral-text);
-  --aven-link-hover-color: var(--aven-color-neutral-solid);
+  --link-default-color: var(--aven-color-neutral-text);
+  --link-default-hover-color: var(--aven-color-neutral-solid);
 }
 .tone-accent {
-  --aven-link-color: var(--aven-color-accent-text);
-  --aven-link-hover-color: var(--aven-color-accent-solid);
+  --link-default-color: var(--aven-color-accent-text);
+  --link-default-hover-color: var(--aven-color-accent-solid);
 }
 .tone-secondary {
-  --aven-link-color: var(--aven-color-secondary-text);
-  --aven-link-hover-color: var(--aven-color-secondary-solid);
+  --link-default-color: var(--aven-color-secondary-text);
+  --link-default-hover-color: var(--aven-color-secondary-solid);
 }
 .tone-info {
-  --aven-link-color: var(--aven-color-info-text);
-  --aven-link-hover-color: var(--aven-color-info-solid);
+  --link-default-color: var(--aven-color-info-text);
+  --link-default-hover-color: var(--aven-color-info-solid);
 }
 .tone-success {
-  --aven-link-color: var(--aven-color-success-text);
-  --aven-link-hover-color: var(--aven-color-success-solid);
+  --link-default-color: var(--aven-color-success-text);
+  --link-default-hover-color: var(--aven-color-success-solid);
 }
 .tone-warning {
-  --aven-link-color: var(--aven-color-warning-text);
-  --aven-link-hover-color: var(--aven-color-warning-solid);
+  --link-default-color: var(--aven-color-warning-text);
+  --link-default-hover-color: var(--aven-color-warning-solid);
 }
 .tone-danger,
 .tone-critical {
-  --aven-link-color: var(--aven-color-danger-text);
-  --aven-link-hover-color: var(--aven-color-danger-solid);
+  --link-default-color: var(--aven-color-danger-text);
+  --link-default-hover-color: var(--aven-color-danger-solid);
 }
 .underline-hover {
   text-decoration: none;
@@ -123,13 +123,13 @@ function onClick(event: MouseEvent) {
   text-decoration: none;
 }
 .aven-link:hover {
-  color: var(--aven-link-hover-color);
+  color: var(--aven-link-hover-color, var(--link-default-hover-color));
 }
 .aven-link:active {
-  color: var(--aven-link-pressed-color);
+  color: var(--aven-link-pressed-color, var(--link-default-pressed-color));
 }
 .aven-link:visited {
-  color: var(--aven-link-visited-color, var(--aven-link-color));
+  color: var(--aven-link-visited-color, var(--aven-link-color, var(--link-default-color)));
 }
 .aven-link:focus-visible {
   outline: 2px solid var(--aven-color-focus-ring);

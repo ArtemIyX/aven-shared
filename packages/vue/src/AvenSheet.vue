@@ -5,9 +5,15 @@ import type { AvenSheetEvents, AvenSheetProps, AvenSheetSlots } from './types.js
 
 defineOptions({ inheritAttrs: false })
 const props = withDefaults(defineProps<AvenSheetProps>(), {
+  open: undefined,
+  defaultOpen: false,
   side: 'bottom',
   defaultSize: '24rem',
   modal: true,
+  closeOnEscape: true,
+  closeOnOutside: true,
+  showClose: true,
+  restoreFocus: true,
 })
 const emit = defineEmits<AvenSheetEvents>()
 defineSlots<AvenSheetSlots>()

@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="T extends string | number">
-import { computed, onBeforeUnmount, onMounted, ref, watch, useAttrs, useSlots } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch, useAttrs, useSlots } from 'vue'
 import { useAvenId } from './composables.js'
 import type { AvenRadioGroupEvents, AvenRadioGroupProps, AvenRadioGroupSlots } from './types.js'
 
@@ -17,8 +17,10 @@ defineSlots<AvenRadioGroupSlots<T>>()
 const attrs = useAttrs()
 const slots = useSlots()
 const localValue = ref<T | null>(props.defaultValue ?? null)
+const initialValue = props.defaultValue ?? null
 const activeValue = ref<T | null>(null)
 const group = ref<HTMLFieldSetElement>()
+const inputs = ref<Array<HTMLInputElement | undefined>>([])
 const generatedId = useAvenId(props.id, 'radio-group')
 const groupId = computed(() => props.id ?? generatedId)
 const descriptionId = computed(() =>
@@ -27,7 +29,9 @@ const descriptionId = computed(() =>
 const errorId = computed(() => (props.error || slots.error ? `${groupId.value}-error` : undefined))
 const value = computed(() => (props.modelValue !== undefined ? props.modelValue : localValue.value))
 const describedBy = computed(
-  () => [descriptionId.value, errorId.value].filter(Boolean).join(' ') || undefined,
+  () =>
+    [attrs['aria-describedby'], descriptionId.value, errorId.value].filter(Boolean).join(' ') ||
+    undefined,
 )
 const radioName = computed(() => props.name ?? `${groupId.value}-options`)
 
@@ -38,11 +42,18 @@ watch(
   },
 )
 
-function choose(item: (typeof props.items)[number]) {
+function syncInputs() {
+  props.items.forEach((item, index) => {
+    if (inputs.value[index]) inputs.value[index]!.checked = Object.is(value.value, item.value)
+  })
+}
+async function choose(item: (typeof props.items)[number]) {
   if (props.disabled || item.disabled || Object.is(value.value, item.value)) return
   localValue.value = item.value
   emit('update:modelValue', item.value)
   emit('change', item.value)
+  await nextTick()
+  if (props.modelValue !== undefined) syncInputs()
 }
 
 function onFocus(item: (typeof props.items)[number], event: FocusEvent) {
@@ -60,14 +71,18 @@ function onReset(event: Event) {
   if (resetTimer !== undefined) clearTimeout(resetTimer)
   resetTimer = setTimeout(() => {
     resetTimer = undefined
-    if (event.defaultPrevented || props.modelValue !== undefined) return
-    localValue.value = props.defaultValue ?? null
+    if (event.defaultPrevented) return
+    localValue.value = initialValue
+    if (props.modelValue !== undefined) {
+      emit('update:modelValue', initialValue)
+      void nextTick(syncInputs)
+    }
   }, 0)
 }
 
 let form: HTMLFormElement | null = null
 onMounted(() => {
-  form = group.value?.closest('form') ?? null
+  form = group.value?.form ?? group.value?.closest('form') ?? null
   form?.addEventListener('reset', onReset)
 })
 onBeforeUnmount(() => {
@@ -79,7 +94,7 @@ onBeforeUnmount(() => {
 <template>
   <fieldset
     ref="group"
-    v-bind="attrs"
+    v-bind="{ ...attrs, ...ui?.root?.attrs }"
     :id="groupId"
     :disabled="disabled"
     :aria-invalid="invalid || !!error || undefined"
@@ -93,11 +108,16 @@ onBeforeUnmount(() => {
     ]"
     :style="[attrs.style, ui?.root?.style]"
   >
-    <legend :class="['radio-legend', ui?.legend?.class]" :style="ui?.legend?.style">
+    <legend
+      v-bind="ui?.legend?.attrs"
+      :class="['radio-legend', ui?.legend?.class]"
+      :style="ui?.legend?.style"
+    >
       <slot name="label" :required="required" :invalid="invalid || !!error">{{ label }}</slot>
     </legend>
     <div
       v-if="description || $slots.description"
+      v-bind="ui?.description?.attrs"
       :id="descriptionId"
       :class="['radio-description', ui?.description?.class]"
       :style="ui?.description?.style"
@@ -106,7 +126,8 @@ onBeforeUnmount(() => {
     </div>
     <label
       v-for="(item, index) in items"
-      :key="String(item.value)"
+      :key="`${typeof item.value}:${String(item.value)}`"
+      v-bind="ui?.item?.attrs"
       :class="[
         'radio-item',
         { 'is-disabled': disabled || item.disabled, 'is-selected': Object.is(value, item.value) },
@@ -115,12 +136,18 @@ onBeforeUnmount(() => {
       :style="ui?.item?.style"
     >
       <input
+        :ref="
+          (element) => {
+            inputs[index] = element as HTMLInputElement | undefined
+          }
+        "
         v-bind="ui?.control?.attrs"
         :id="`${groupId}-option-${index}`"
         :class="['radio-control', ui?.control?.class]"
         :style="ui?.control?.style"
         type="radio"
         :name="radioName"
+        :form="typeof attrs.form === 'string' ? attrs.form : undefined"
         :value="String(item.value)"
         :checked="Object.is(value, item.value)"
         :disabled="disabled || item.disabled"
@@ -131,7 +158,12 @@ onBeforeUnmount(() => {
         @blur="onBlur($event)"
       />
       <slot name="indicator" :checked="Object.is(value, item.value)" :item="item" :key="item.value">
-        <span aria-hidden="true" class="radio-indicator" />
+        <span
+          v-bind="ui?.indicator?.attrs"
+          aria-hidden="true"
+          :class="['radio-indicator', ui?.indicator?.class]"
+          :style="ui?.indicator?.style"
+        />
       </slot>
       <slot
         name="item"
@@ -141,7 +173,7 @@ onBeforeUnmount(() => {
         :active="Object.is(activeValue, item.value)"
         :disabled="disabled || !!item.disabled"
       >
-        <span :class="ui?.label?.class" :style="ui?.label?.style">
+        <span v-bind="ui?.label?.attrs" :class="ui?.label?.class" :style="ui?.label?.style">
           {{ item.label }}
           <small v-if="item.description">{{ item.description }}</small>
         </span>
@@ -149,6 +181,7 @@ onBeforeUnmount(() => {
     </label>
     <div
       v-if="error || $slots.error"
+      v-bind="ui?.error?.attrs"
       :id="errorId"
       role="alert"
       :class="['radio-error', ui?.error?.class]"

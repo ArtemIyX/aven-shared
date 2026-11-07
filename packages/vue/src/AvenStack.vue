@@ -1,16 +1,13 @@
 <script setup lang="ts">
-import type { AvenUi } from './types.js'
-withDefaults(
-  defineProps<{
-    as?: 'div' | 'section' | 'article' | 'ul' | 'ol'
-    gap?: string | number
-    align?: 'start' | 'center' | 'end' | 'stretch'
-    justify?: 'start' | 'center' | 'end' | 'between'
-    unstyled?: boolean
-    ui?: AvenUi<'root'>
-  }>(),
-  { as: 'div', gap: 'space-4', align: 'stretch', justify: 'start', unstyled: false },
-)
+import type { AvenStackProps, AvenStackSlots } from './types.js'
+withDefaults(defineProps<AvenStackProps>(), {
+  as: 'div',
+  gap: 'space-4',
+  align: 'stretch',
+  justify: 'start',
+  unstyled: false,
+})
+defineSlots<AvenStackSlots>()
 function gapValue(value: string | number): string {
   return typeof value === 'number'
     ? `${value}px`
@@ -22,6 +19,7 @@ function gapValue(value: string | number): string {
 <template>
   <component
     :is="as"
+    v-bind="ui?.root?.attrs"
     :class="['aven-stack', { 'is-unstyled': unstyled }, ui?.root?.class]"
     :style="[
       {

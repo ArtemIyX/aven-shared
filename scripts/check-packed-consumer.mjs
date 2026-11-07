@@ -16,6 +16,14 @@ try {
   const archives = JSON.parse(
     run(['pack', '--json', '--workspaces', '--pack-destination', directory]),
   )
+  const entrySource = await readFile(
+    new URL('../packages/vue/src/index.ts', import.meta.url),
+    'utf8',
+  )
+  const requiredRootExports = [
+    ...[...entrySource.matchAll(/default as (Aven[A-Za-z0-9]+)/g)].map((match) => match[1]),
+    ...[...entrySource.matchAll(/export const (Aven[A-Za-z0-9]+)/g)].map((match) => match[1]),
+  ]
   assert.equal(archives.length, 2)
   const archive = (name) =>
     path.join(directory, archives.find((item) => item.name === name).filename)
@@ -65,6 +73,7 @@ try {
       assert(paths.includes('dist/AvenMenu.js'))
       assert(paths.includes('dist/AvenMenuItem.js'))
       assert(paths.includes('dist/AvenMenuGroup.js'))
+      assert(paths.includes('dist/AvenDropdownMenu.js'))
       assert(paths.includes('dist/AvenCodeBlock.js'))
       assert(paths.includes('dist/AvenTree.js'))
       assert(paths.includes('dist/AvenTreeItem.js'))
@@ -127,7 +136,7 @@ try {
     [
       '--input-type=module',
       '-e',
-      "const root = await import('@wellsaik/aven-vue'); const charts = await import('@wellsaik/aven-vue/charts'); const rich = await import('@wellsaik/aven-vue/rich-text'); if ('AvenChartFrame' in root || 'AvenRichTextField' in root || !charts.AvenChartFrame || !rich.AvenRichTextField) process.exit(1)",
+      `const root = await import('@wellsaik/aven-vue'); const charts = await import('@wellsaik/aven-vue/charts'); const rich = await import('@wellsaik/aven-vue/rich-text'); const expected = ${JSON.stringify(requiredRootExports)}; if (expected.some((name) => !root[name]) || ['AvenChartFrame', 'AvenChartLegend', 'AvenChartTooltip', 'AvenRichTextField'].some((name) => name in root) || !charts.AvenChartFrame || !charts.AvenChartLegend || !charts.AvenChartTooltip || !rich.AvenRichTextField) process.exit(1)`,
     ],
     { cwd: directory, encoding: 'utf8' },
   )
@@ -171,12 +180,24 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
     `import { h } from 'vue'\nimport { AvenDatePicker, AvenDateRangePicker, AvenTimePicker, type AvenDateOnly, type AvenDatePickerProps, type AvenDateRangePickerProps, type AvenTimePickerProps } from '@wellsaik/aven-vue'\nconst date: AvenDateOnly = '2024-02-29'\nconst dateProps: AvenDatePickerProps = { modelValue: date, locale: 'en-GB', weekStartsOn: 1 }\nconst rangeProps: AvenDateRangePickerProps = { defaultValue: { start: date, end: null }, months: 2 }\nconst timeProps: AvenTimePickerProps = { defaultValue: '09:30', timeStep: 15, hourCycle: 'h23' }\nh(AvenDatePicker, dateProps); h(AvenDateRangePicker, rangeProps); h(AvenTimePicker, timeProps)\n`,
   )
   await writeFile(
+    path.join(directory, 'pinned-table-consumer.ts'),
+    `import { h } from 'vue'\nimport { AvenDataTable, type AvenTableColumn } from '@wellsaik/aven-vue'\ntype Row = { id: string; name: string; amount: number }\nconst columns: AvenTableColumn<Row, 'name' | 'amount'>[] = [{ key: 'name', header: 'Name', accessor: row => row.name, width: 160, pinned: 'start' }, { key: 'amount', header: 'Amount', accessor: row => row.amount, width: 120, pinned: 'end' }]\nh(AvenDataTable<Row, string, 'name' | 'amount'>, { rows: [{ id: 'one', name: 'One', amount: 1 }], rowKey: row => row.id, columns })\n`,
+  )
+  await writeFile(
     path.join(directory, 'form-consumer.ts'),
     `import { h } from 'vue'\nimport { AvenForm, AvenFormActions, type AvenFormError, type AvenFormProps, type AvenFormEvents, type AvenFormActionsProps } from '@wellsaik/aven-vue'\nconst errors: AvenFormError[] = [{ controlId: 'email', message: 'Required' }]\nconst form: AvenFormProps = { action: '/save', method: 'post', novalidate: true, errors, columns: 2 }\nconst submit: AvenFormEvents['submit'][0] = new SubmitEvent('submit')\nconst actions: AvenFormActionsProps = { align: 'between', sticky: true }\nvoid submit; h(AvenForm, form); h(AvenFormActions, actions)\n`,
   )
   await writeFile(
     path.join(directory, 'menu-consumer.ts'),
     `import { h } from 'vue'\nimport { AvenMenu, AvenMenuItem, AvenMenuGroup, type AvenMenuProps, type AvenMenuEvents, type AvenMenuItemSlots } from '@wellsaik/aven-vue'\ntype Key = 'rename' | 'pin' | 'archive'\nconst props: AvenMenuProps<Key> = { items: [{ key: 'rename', label: 'Rename' }, { key: 'pin', label: 'Pin', kind: 'checkbox', checked: false, group: 'project' }, { key: 'archive', label: 'Archive', kind: 'submenu', children: [{ key: 'rename', label: 'Rename' }] }], groups: [{ key: 'project', label: 'Project' }] }\nconst selected: AvenMenuEvents<Key>['select'][0] = { key: 'rename', item: { key: 'rename', label: 'Rename' }, originalEvent: new Event('click') }\nconst slots: AvenMenuItemSlots<Key> = { default: ({ item, checked }) => checked ? item.label : item.label }\nvoid selected; void slots; h(AvenMenu, props); h(AvenMenuItem, { item: props.items[0]! }); h(AvenMenuGroup, { label: 'Actions' })\n`,
+  )
+  await writeFile(
+    path.join(directory, 'dropdown-consumer.ts'),
+    `import { h } from 'vue'\nimport { AvenDropdownMenu, type AvenDropdownMenuProps, type AvenDropdownMenuEvents, type AvenDropdownMenuSlots } from '@wellsaik/aven-vue'\ntype Key = 'rename' | 'pin'\nconst props: AvenDropdownMenuProps<Key> = { items: [{ key: 'rename', label: 'Rename' }, { key: 'pin', label: 'Pin', kind: 'checkbox' }], placement: 'bottom-end', collisionPadding: 12, teleportTo: '#overlay-root', strategy: 'fixed' }\nconst beforeClose: AvenDropdownMenuEvents<Key>['beforeClose'][0] = { reason: 'escape', preventDefault() {} }\nconst trigger: AvenDropdownMenuSlots<Key>['trigger'] = ({ triggerAttrs, triggerRef, open }) => { void triggerAttrs; void triggerRef; return open }\nvoid beforeClose; void trigger; h(AvenDropdownMenu<Key>, props)\n`,
+  )
+  await writeFile(
+    path.join(directory, 'compound-types-consumer.ts'),
+    `import { h } from 'vue'\nimport { AvenAccordion, AvenCollapsible, AvenStack, AvenInline, AvenGrid, AvenContainer, AvenStat, AvenFormattedValue, AvenDropzone, AvenActivityList, type AvenAccordionItem, type AvenAccordionProps, type AvenAccordionEvents, type AvenAccordionSlots, type AvenCollapsibleProps, type AvenCollapsibleEvents, type AvenCollapsibleSlots, type AvenStackProps, type AvenStackSlots, type AvenInlineProps, type AvenInlineSlots, type AvenGridProps, type AvenGridResponsiveColumns, type AvenGridSlots, type AvenContainerProps, type AvenContainerSlots, type AvenStatProps, type AvenStatSlots, type AvenFormattedValueProps, type AvenFormattedValueSlots, type AvenDropzoneProps, type AvenDropzoneEvents, type AvenDropzoneSlots, type AvenActivityListItem, type AvenActivityListProps, type AvenActivityListEvents, type AvenActivityListSlots } from '@wellsaik/aven-vue'\ntype Key = 'setup' | 'review'\nconst item: AvenAccordionItem<Key> = { key: 'setup', label: 'Setup' }\nconst accordion: AvenAccordionProps<Key> = { items: [item], multiple: true }\nconst accordionEvent: AvenAccordionEvents<Key>['change'][0] = ['setup']\nconst accordionSlots: AvenAccordionSlots<Key>['trigger'] = ({ item: value, open }) => open ? value.label : ''\nconst collapsible: AvenCollapsibleProps = { defaultOpen: true }\nconst collapsibleEvent: AvenCollapsibleEvents['openChange'][0] = true\nconst collapsibleSlots: AvenCollapsibleSlots['indicator'] = ({ open }) => String(open)\nconst stack: AvenStackProps = { gap: 8, align: 'start' }; const stackSlot: AvenStackSlots['default'] = () => ''\nconst inline: AvenInlineProps = { wrap: false }; const inlineSlot: AvenInlineSlots['default'] = () => ''\nconst columns: AvenGridResponsiveColumns = { base: 1, md: 2 }; const grid: AvenGridProps = { columns }; const gridSlot: AvenGridSlots['default'] = () => ''\nconst container: AvenContainerProps = { maxWidth: '60rem' }; const containerSlot: AvenContainerSlots['default'] = () => ''\nconst stat: AvenStatProps = { label: 'Revenue', value: 42 }; const statSlot: AvenStatSlots['default'] = ({ value }) => String(value)\nconst formatted: AvenFormattedValueProps = { value: 42, kind: 'currency' }; const formattedSlot: AvenFormattedValueSlots['default'] = () => ''\nconst dropzone: AvenDropzoneProps = { accept: 'image/*', multiple: true }; const dropzoneEvent: AvenDropzoneEvents['select'][0] = { files: [], originalEvent: new Event('change') }; const dropzoneSlot: AvenDropzoneSlots['default'] = ({ open }) => { void open }\nconst activity: AvenActivityListProps<Key> = { items: [{ key: 'setup', timestamp: '2026-11-07T12:00:00Z', label: 'Setup complete' }] }; const activityItem: AvenActivityListItem<Key> = activity.items[0]!; const activityEvent: AvenActivityListEvents<Key>['expand'][0] = { key: 'setup', expanded: true }; const activitySlot: AvenActivityListSlots<Key>['item'] = ({ item: value }) => value.label\nvoid [accordionEvent, accordionSlots, collapsibleEvent, collapsibleSlots, stackSlot, inlineSlot, gridSlot, containerSlot, statSlot, formattedSlot, dropzoneEvent, dropzoneSlot, activityItem, activityEvent, activitySlot]; h(AvenAccordion<Key>, accordion); h(AvenCollapsible, collapsible); h(AvenStack, stack); h(AvenInline, inline); h(AvenGrid, grid); h(AvenContainer, container); h(AvenStat, stat); h(AvenFormattedValue, formatted); h(AvenDropzone, dropzone); h(AvenActivityList<Key>, activity)\n`,
   )
   await writeFile(
     path.join(directory, 'surface-consumer.ts'),
@@ -201,6 +222,22 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
   await writeFile(
     path.join(directory, 'board-consumer.ts'),
     `import { h } from 'vue'\nimport { AvenBoard, AvenBoardColumn, type AvenBoardColumnData, type AvenBoardProps, type AvenBoardEvents, type AvenBoardColumnProps } from '@wellsaik/aven-vue'\ntype ItemKey = 'task'\ntype ColumnKey = 'todo' | 'done'\ntype Item = { title: string; owner: string }\nconst columns: AvenBoardColumnData<ColumnKey, ItemKey>[] = [{ key: 'todo', label: 'To do', itemKeys: ['task'] }, { key: 'done', label: 'Done', itemKeys: [] }]\nconst itemsByKey = new Map<ItemKey, Item>([['task', { title: 'Release', owner: 'Ava' }]])\nconst props: AvenBoardProps<Item, ItemKey, ColumnKey> = { columns, itemsByKey, draggable: true, canMove: request => request.toColumn === 'done' }\nconst move: AvenBoardEvents<Item, ItemKey, ColumnKey>['moveRequest'][0] = { itemKey: 'task', fromColumn: 'todo', toColumn: 'done', fromIndex: 0, toIndex: 0, originalEvent: new Event('drop') }\nconst column: AvenBoardColumnProps<Item, ItemKey, ColumnKey> = { column: columns[0]!, entries: [{ key: 'task', item: { title: 'Release', owner: 'Ava' }, index: 0, loading: false }] }\nvoid move; h(AvenBoard<Item, ItemKey, ColumnKey>, props); h(AvenBoardColumn<Item, ItemKey, ColumnKey>, column)\n`,
+  )
+  await writeFile(
+    path.join(directory, 'checkbox-group-consumer.ts'),
+    `import { h } from 'vue'\nimport { AvenCheckboxGroup, type AvenCheckboxGroupProps, type AvenCheckboxGroupSlots } from '@wellsaik/aven-vue'\ntype Key = 'a' | 'b'\nconst props: AvenCheckboxGroupProps<Key> = { items: [{ value: 'a', label: 'A' }], description: 'Choose', error: 'Required' }\nconst slot: AvenCheckboxGroupSlots<Key>['item'] = ({ item, selected }) => selected ? item.label : ''\nh(AvenCheckboxGroup<Key>, props, { item: slot })\n`,
+  )
+  await writeFile(
+    path.join(directory, 'tabs-consumer.ts'),
+    `import { h } from 'vue'\nimport { AvenTabs, AvenTab, AvenTabPanel, type AvenTabItem, type AvenTabsProps, type AvenTabsEvents, type AvenTabProps, type AvenTabEvents, type AvenTabPanelProps } from '@wellsaik/aven-vue'\ntype Key = 'overview' | 'settings'\nconst items: AvenTabItem<Key>[] = [{ key: 'overview', label: 'Overview', closable: true }, { key: 'settings', label: 'Settings' }]\nconst props: AvenTabsProps<Key> = { items, activation: 'manual', keepAlive: true }\nconst event: AvenTabsEvents<Key>['close'][0] = { key: 'overview', originalEvent: new MouseEvent('click') }\nconst tab: AvenTabProps<Key> = { item: items[0]!, id: 'tab', controls: 'panel', selected: true, active: true, tabindex: 0 }\nconst activate: AvenTabEvents['activate'][0] = { originalEvent: new MouseEvent('click') }\nconst panel: AvenTabPanelProps<Key> = { item: items[0]!, id: 'panel', labelledBy: 'tab', active: true }\nvoid event; void activate; h(AvenTabs<Key>, props); h(AvenTab<Key>, tab); h(AvenTabPanel<Key>, panel)\n`,
+  )
+  await writeFile(
+    path.join(directory, 'controls-consumer.ts'),
+    `import { h } from 'vue'\nimport { AvenNumberInput, AvenCheckbox, AvenCheckboxGroup, AvenSwitch, AvenSelect, AvenPopover, AvenTooltip, AvenSpinner, AvenProgress, AvenSkeleton, AvenSegmentedControl, AvenBreadcrumb, AvenPagination, AvenNavList, AvenSidebar, type AvenNumberInputProps, type AvenCheckboxProps, type AvenCheckboxGroupProps, type AvenSwitchProps, type AvenSelectProps, type AvenPopoverProps, type AvenPopoverSlots, type AvenTooltipProps, type AvenSpinnerProps, type AvenProgressProps, type AvenSkeletonProps, type AvenSegmentedControlProps, type AvenBreadcrumbProps, type AvenPaginationProps, type AvenNavItemModel, type AvenNavListProps, type AvenSidebarProps } from '@wellsaik/aven-vue'\nconst numeric: AvenNumberInputProps = { defaultValue: 2.5, precision: 1, locale: 'en-US' }\nconst checkbox: AvenCheckboxProps = { defaultValue: true, indeterminate: true, label: 'Enabled' }\nconst checks: AvenCheckboxGroupProps<'a'|'b'> = { items: [{ value: 'a', label: 'A' }, { value: 'b', label: 'B' }], max: 1 }\nconst toggle: AvenSwitchProps = { label: 'Notifications', loading: true }\nconst select: AvenSelectProps<number> = { options: [{ value: 1, label: 'One' }] }\nconst popover: AvenPopoverProps = { defaultOpen: true, dismissible: false }\nconst popoverSlots: AvenPopoverSlots['trigger'] = ({ triggerAttrs, triggerRef }) => { void triggerAttrs; void triggerRef }\nconst tooltip: AvenTooltipProps = { text: 'Help', openDelay: 0 }\nconst spinner: AvenSpinnerProps = { label: 'Loading' }\nconst progress: AvenProgressProps = { value: null, label: 'Upload' }\nconst skeleton: AvenSkeletonProps = { lines: 3, animated: false }\nconst segments: AvenSegmentedControlProps<'grid'|'list'> = { items: [{ value: 'grid', label: 'Grid' }, { value: 'list', label: 'List' }], name: 'view' }\nconst crumbs: AvenBreadcrumbProps<'home'|'detail'> = { items: [{ key: 'home', label: 'Home' }, { key: 'detail', label: 'Detail', current: true }] }\nconst pagination: AvenPaginationProps = { total: 200, pageSize: 20, showSizeChanger: true }\nconst nav: AvenNavItemModel<'group'|'child'>[] = [{ key: 'group', label: 'Group', children: [{ key: 'child', label: 'Child' }] }]\nconst navList: AvenNavListProps<'group'|'child'> = { items: nav, defaultExpandedKeys: ['group'] }\nconst sidebar: AvenSidebarProps<'group'|'child'> = { items: nav, defaultCollapsed: true }\nvoid popoverSlots; h(AvenNumberInput, numeric); h(AvenCheckbox, checkbox); h(AvenCheckboxGroup<'a'|'b'>, checks); h(AvenSwitch, toggle); h(AvenSelect<number>, select); h(AvenPopover, popover); h(AvenTooltip, tooltip); h(AvenSpinner, spinner); h(AvenProgress, progress); h(AvenSkeleton, skeleton); h(AvenSegmentedControl<'grid'|'list'>, segments); h(AvenBreadcrumb<'home'|'detail'>, crumbs); h(AvenPagination, pagination); h(AvenNavList<'group'|'child'>, navList); h(AvenSidebar<'group'|'child'>, sidebar)\n`,
+  )
+  await writeFile(
+    path.join(directory, 'nav-item-consumer.ts'),
+    `import { h } from 'vue'\nimport { AvenNavItem, type AvenNavItemModel, type AvenNavItemProps, type AvenNavItemEvents, type AvenNavItemSlots } from '@wellsaik/aven-vue'\ntype Key = 'group' | 'child'\nconst item: AvenNavItemModel<Key> = { key: 'group', label: 'Group', href: '/group', badge: 2, children: [{ key: 'child', label: 'Child' }] }\nconst props: AvenNavItemProps<Key> = { item, active: true, expanded: true, depth: 1, density: 'compact' }\nconst navigate: AvenNavItemEvents<Key>['navigate'][0] = { key: 'group', item, originalEvent: new MouseEvent('click') }\nconst slot: AvenNavItemSlots<Key>['default'] = scope => scope.item.label\nvoid navigate; void slot; h(AvenNavItem<Key>, props, { default: slot })\n`,
   )
   await writeFile(
     path.join(directory, 'charts-consumer.ts'),
@@ -228,14 +265,21 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
         'overlay-consumer.ts',
         'primitive-consumer.ts',
         'date-consumer.ts',
+        'pinned-table-consumer.ts',
         'form-consumer.ts',
         'menu-consumer.ts',
+        'dropdown-consumer.ts',
+        'compound-types-consumer.ts',
         'surface-consumer.ts',
         'code-consumer.ts',
         'tree-consumer.ts',
         'search-consumer.ts',
         'filter-builder-consumer.ts',
         'board-consumer.ts',
+        'tabs-consumer.ts',
+        'checkbox-group-consumer.ts',
+        'controls-consumer.ts',
+        'nav-item-consumer.ts',
         'charts-consumer.ts',
         'rich-text-consumer.ts',
       ],
@@ -260,14 +304,21 @@ h(AvenColorPicker, colorPicker)\nh(AvenStepper, { items: [{ key: 'one', label: '
         'overlay-consumer.ts',
         'primitive-consumer.ts',
         'date-consumer.ts',
+        'pinned-table-consumer.ts',
         'form-consumer.ts',
         'menu-consumer.ts',
+        'dropdown-consumer.ts',
+        'compound-types-consumer.ts',
         'surface-consumer.ts',
         'code-consumer.ts',
         'tree-consumer.ts',
         'search-consumer.ts',
         'filter-builder-consumer.ts',
         'board-consumer.ts',
+        'tabs-consumer.ts',
+        'checkbox-group-consumer.ts',
+        'controls-consumer.ts',
+        'nav-item-consumer.ts',
         'charts-consumer.ts',
         'rich-text-consumer.ts',
       ],

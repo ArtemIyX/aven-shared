@@ -1,35 +1,38 @@
 <script setup lang="ts">
-import type { AvenUi, AvenTone } from './types.js'
+import type { AvenStatProps, AvenStatSlots } from './types.js'
 import AvenFormattedValue from './AvenFormattedValue.vue'
-withDefaults(
-  defineProps<{
-    label: string
-    value: string | number
-    tone?: AvenTone
-    trend?: 'up' | 'down' | 'flat'
-    trendLabel?: string
-    description?: string
-    format?: 'number' | 'currency' | 'percent'
-    currency?: string
-    locale?: string
-    unstyled?: boolean
-    ui?: AvenUi<'root' | 'label' | 'value' | 'description' | 'trend'>
-  }>(),
-  { tone: 'neutral', trend: 'flat', format: 'number', unstyled: false },
-)
+withDefaults(defineProps<AvenStatProps>(), {
+  tone: 'neutral',
+  trend: 'flat',
+  format: 'number',
+  unstyled: false,
+})
+defineSlots<AvenStatSlots>()
 </script>
 <template>
   <article
+    v-bind="ui?.root?.attrs"
     :class="['aven-stat', `tone-${tone}`, { 'is-unstyled': unstyled }, ui?.root?.class]"
     :style="ui?.root?.style"
   >
-    <p :class="['stat-label', ui?.label?.class]" :style="ui?.label?.style">{{ label }}</p>
-    <p :class="['stat-value', ui?.value?.class]" :style="ui?.value?.style">
+    <p
+      v-bind="ui?.label?.attrs"
+      :class="['stat-label', ui?.label?.class]"
+      :style="ui?.label?.style"
+    >
+      {{ label }}
+    </p>
+    <p
+      v-bind="ui?.value?.attrs"
+      :class="['stat-value', ui?.value?.class]"
+      :style="ui?.value?.style"
+    >
       <slot :value="value"
         ><AvenFormattedValue :value="value" :kind="format" :currency="currency" :locale="locale"
       /></slot>
     </p>
     <p
+      v-bind="ui?.trend?.attrs"
       v-if="trendLabel || $slots.trend"
       :class="['stat-trend', ui?.trend?.class]"
       :style="ui?.trend?.style"
@@ -40,6 +43,7 @@ withDefaults(
       >
     </p>
     <p
+      v-bind="ui?.description?.attrs"
       v-if="description"
       :class="['stat-description', ui?.description?.class]"
       :style="ui?.description?.style"

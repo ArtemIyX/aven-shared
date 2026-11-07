@@ -32,7 +32,7 @@ function retry(originalEvent: MouseEvent) {
 </script>
 <template>
   <figure
-    v-bind="rootAttrs"
+    v-bind="{ ...ui?.root?.attrs, ...rootAttrs }"
     :class="['aven-chart-frame', { 'is-unstyled': unstyled }, attrs.class, ui?.root?.class]"
     :style="[{ '--aven-chart-frame-ratio': ratio }, attrs.style, ui?.root?.style]"
     :aria-busy="loading || undefined"

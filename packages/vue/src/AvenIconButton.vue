@@ -33,7 +33,7 @@ defineExpose({
 <template>
   <AvenButton
     ref="buttonRef"
-    v-bind="attrs"
+    v-bind="{ ...attrs, ...ui?.root?.attrs }"
     :aria-label="label"
     :title="tooltip ?? attrs.title"
     :variant="variant"
@@ -61,7 +61,7 @@ defineExpose({
         <slot name="icon"><slot /></slot>
       </span>
     </template>
-    <template #loading="scope">
+    <template v-if="$slots.loading" #loading="scope">
       <slot name="loading" v-bind="scope" />
     </template>
   </AvenButton>
@@ -69,15 +69,14 @@ defineExpose({
 
 <style scoped>
 .aven-icon-button {
-  --aven-icon-button-size: 1.125rem;
   inline-size: 2.75rem;
   min-inline-size: 2.75rem;
   padding-inline: 0;
 }
 .icon-button-glyph {
   display: inline-flex;
-  inline-size: var(--aven-icon-button-size);
-  block-size: var(--aven-icon-button-size);
+  inline-size: var(--aven-icon-button-size, 1.125rem);
+  block-size: var(--aven-icon-button-size, 1.125rem);
   align-items: center;
   justify-content: center;
 }

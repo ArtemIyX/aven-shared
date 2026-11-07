@@ -18,6 +18,7 @@ function dim(value?: string | number) {
 </script>
 <template>
   <div
+    v-bind="ui?.root?.attrs"
     :class="[
       'aven-skeleton',
       `shape-${shape}`,
@@ -29,6 +30,7 @@ function dim(value?: string | number) {
   >
     <template v-for="i in Math.max(1, lines)" :key="i"
       ><span
+        v-bind="ui?.line?.attrs"
         :class="['skeleton-line', ui?.line?.class]"
         :style="[
           i === lines && lines > 1 ? { inlineSize: '72%' } : undefined,

@@ -41,6 +41,10 @@ import {
   AvenMultiSelect,
   AvenContextMenu,
   AvenMenu,
+  AvenMenuGroup,
+  AvenMenuItem,
+  AvenDialog,
+  AvenToast,
   AvenMenubar,
   AvenAlertDialog,
   AvenAlert,
@@ -63,12 +67,14 @@ import {
   AvenPropertyRow,
   AvenCodeBlock,
   AvenTree,
+  AvenTreeItem,
   AvenSearchBar,
   AvenFilterBar,
   AvenFilterChip,
   AvenFilterBuilder,
   AvenSortControl,
   AvenBoard,
+  AvenBoardColumn,
   AvenPasswordField,
   AvenRadio,
   AvenRadioGroup,
@@ -78,14 +84,32 @@ import {
   AvenStatusDot,
   AvenStack,
   AvenStat,
+  AvenNumberInput,
+  AvenCheckboxGroup,
+  AvenSwitch,
+  AvenSelect,
+  AvenPopover,
+  AvenTooltip,
+  AvenSpinner,
+  AvenProgress,
+  AvenSkeleton,
+  AvenSegmentedControl,
+  AvenBreadcrumb,
+  AvenPagination,
+  AvenNavList,
+  AvenNavItem,
+  AvenSidebar,
+  AvenTabs,
+  AvenTab,
+  AvenTabPanel,
   AvenSplitButton,
   AvenText,
-  AvenToast,
   AvenToaster,
   AvenTextarea,
   AvenToggleButton,
   AvenToggleGroup,
   AvenToolbar,
+  AvenDropdownMenu,
   type AvenToastItem,
   type AvenTableColumn,
   type AvenDateOnly,
@@ -99,6 +123,52 @@ import { AvenChartFrame, AvenChartLegend, AvenChartTooltip } from '@wellsaik/ave
 import { AvenRichTextField, type AvenRichTextDocument } from '@wellsaik/aven-vue/rich-text'
 
 const userName = ref('Avery')
+const playgroundSections = [
+  { id: 'icon-examples', label: 'Icons' },
+  { id: 'link-examples', label: 'Links' },
+  { id: 'status-examples', label: 'Status and progress' },
+  { id: 'field-examples', label: 'Fields and validation' },
+  { id: 'form-examples', label: 'Forms' },
+  { id: 'type-examples', label: 'Typography' },
+  { id: 'customization-examples', label: 'Themes and customization' },
+  { id: 'button-examples', label: 'Buttons and actions' },
+  { id: 'theme-example', label: 'Nested theme' },
+  { id: 'code-example', label: 'Code block' },
+  { id: 'remaining-components-example', label: 'Inputs, overlays and feedback' },
+  { id: 'tabs-example', label: 'Tabs' },
+  { id: 'tree-example', label: 'Tree' },
+  { id: 'filter-example', label: 'Search, filters and sorting' },
+  { id: 'board-example', label: 'Board' },
+  { id: 'chart-examples', label: 'Charts' },
+  { id: 'rich-text-example', label: 'Rich text' },
+  { id: 'surface-examples', label: 'Cards and surfaces' },
+  { id: 'data-display-examples', label: 'Data display' },
+  { id: 'specialized-input-examples', label: 'Specialized inputs' },
+  { id: 'radio-examples', label: 'Radio controls' },
+  { id: 'listbox-examples', label: 'Listbox' },
+  { id: 'slider-examples', label: 'Sliders' },
+  { id: 'combobox-examples', label: 'Combobox and multiselect' },
+  { id: 'menu-navigation-examples', label: 'Menus and navigation' },
+  { id: 'alert-examples', label: 'Alerts and banners' },
+  { id: 'identity-examples', label: 'Avatar and identity' },
+  { id: 'result-examples', label: 'Empty and result states' },
+  { id: 'toolbar-examples', label: 'Toolbar and action bar' },
+  { id: 'toast-examples', label: 'Toasts' },
+  { id: 'scroll-area-examples', label: 'Scroll area' },
+  { id: 'app-shell-examples', label: 'Application shell' },
+  { id: 'stepper-examples', label: 'Stepper' },
+  { id: 'split-pane-examples', label: 'Split panes' },
+  { id: 'list-examples', label: 'Lists' },
+  { id: 'virtual-list-examples', label: 'Virtual list' },
+  { id: 'table-examples', label: 'Tables' },
+  { id: 'timeline-examples', label: 'Timeline' },
+  { id: 'color-picker-examples', label: 'Color picker' },
+  { id: 'date-picker-examples', label: 'Date and time pickers' },
+  { id: 'file-input-examples', label: 'File input and dropzone' },
+  { id: 'switcher-examples', label: 'View switchers' },
+  { id: 'toggle-examples', label: 'Toggle controls' },
+  { id: 'split-button-examples', label: 'Split button' },
+]
 const sampleCode = 'const answer = 42\nconsole.log(answer)'
 const fileTree = [
   {
@@ -110,6 +180,12 @@ const fileTree = [
     ],
   },
   { key: 'readme', label: 'README.md' },
+]
+const standaloneTreeNode = { key: 'preview', label: 'Standalone tree row' }
+const standaloneTreeIndexes = new Map([['preview', 0]])
+const standaloneBoardColumn = { key: 'review', label: 'Review', itemKeys: ['task-review'] }
+const standaloneBoardEntries = [
+  { key: 'task-review', item: { title: 'Review API', owner: 'Avery' }, index: 0, loading: false },
 ]
 const filterQuery = ref('')
 const activeFilters = ref<AvenFilterValue[]>([
@@ -229,6 +305,7 @@ const menuCommands = computed(() => [
   },
 ])
 const confirmOpen = ref(false)
+const dialogOpen = ref(false)
 const paletteOpen = ref(false)
 const drawerOpen = ref(false)
 const sheetOpen = ref(false)
@@ -247,6 +324,7 @@ const toastItems = ref<AvenToastItem<string>[]>([
 ])
 let nextToastId = 1
 const toastActivity = ref('')
+const directToastVisible = ref(true)
 const projectNote = ref('')
 const scrollPosition = ref('Scroll the release notes.')
 const shellState = ref('Navigation expanded; inspector closed.')
@@ -346,14 +424,23 @@ const transactions = [
 ]
 type Transaction = (typeof transactions)[number]
 const transactionColumns: AvenTableColumn<Transaction, 'name' | 'owner' | 'amount'>[] = [
-  { key: 'name', header: 'Transaction', accessor: (row) => row.name, sortable: true },
-  { key: 'owner', header: 'Owner', accessor: (row) => row.owner, sortable: true },
+  {
+    key: 'name',
+    header: 'Transaction',
+    accessor: (row) => row.name,
+    sortable: true,
+    width: 220,
+    pinned: 'start',
+  },
+  { key: 'owner', header: 'Owner', accessor: (row) => row.owner, sortable: true, width: 180 },
   {
     key: 'amount',
     header: 'Amount',
     accessor: (row) => row.amount,
     align: 'end' as const,
     sortable: true,
+    width: 160,
+    pinned: 'end',
     format: (value) => `€${Number(value).toFixed(2)}`,
   },
 ]
@@ -447,6 +534,34 @@ const buttonTones = [
   'danger',
   'critical',
 ] as const
+const workspaceTabs = ref([
+  { key: 'overview', label: 'Overview', closable: true },
+  { key: 'activity', label: 'Activity', closable: true },
+  { key: 'settings', label: 'Settings', disabled: true },
+])
+const activeWorkspaceTab = ref('overview')
+const quantity = ref<number | null>(2.5)
+const checkedFeatures = ref(['keyboard'])
+const selectedPlan = ref<string | null>('monthly')
+const selectedView = ref<string | null>('list')
+const currentPage = ref(3)
+const sidebarCollapsed = ref(false)
+const navExpanded = ref<string[]>(['components'])
+const demoNavItems = [
+  { key: 'home', label: 'Home', href: '#home' },
+  {
+    key: 'components',
+    label: 'Components',
+    children: [
+      { key: 'fields', label: 'Fields', href: '#field-examples' },
+      { key: 'overlays', label: 'Overlays', href: '#overlay-examples' },
+    ],
+  },
+  { key: 'settings', label: 'Settings', href: '#settings', badge: '2' },
+]
+function closeWorkspaceTab({ key }: { key: string }) {
+  workspaceTabs.value = workspaceTabs.value.filter((item) => item.key !== key)
+}
 </script>
 
 <template>
@@ -454,9 +569,19 @@ const buttonTones = [
     <section class="playground-intro">
       <AvenText type="title">Aven shared design system</AvenText>
       <AvenText class="intro-copy">
-        A small text component with semantic markup, themeable tokens, and ordinary Vue slots.
+        Live Vue examples for the component catalog, with theme variants, compound parts, and
+        customization hooks.
       </AvenText>
     </section>
+
+    <nav class="playground-index" aria-label="Jump to component examples">
+      <AvenText type="header2">Browse the playground</AvenText>
+      <ul>
+        <li v-for="section in playgroundSections" :key="section.id">
+          <a :href="`#${section.id}`">{{ section.label }}</a>
+        </li>
+      </ul>
+    </nav>
 
     <section class="playground-card" aria-labelledby="icon-examples">
       <AvenText id="icon-examples" type="header1">Icons and accessible names</AvenText>
@@ -522,7 +647,12 @@ const buttonTones = [
         </template>
       </AvenField>
       <AvenFieldset legend="Notification preferences" description="Choose any that apply.">
-        <AvenCheckbox name="notifications" value="product" label="Product updates" />
+        <AvenCheckbox
+          name="notifications"
+          value="product"
+          label="Product updates"
+          description="Receive product news by email."
+        />
         <AvenCheckbox name="notifications" value="security" label="Security notices" />
       </AvenFieldset>
     </section>
@@ -718,6 +848,175 @@ const buttonTones = [
         </template>
       </AvenCodeBlock>
     </section>
+    <section class="playground-card" aria-labelledby="remaining-components-example">
+      <h2 id="remaining-components-example">Inputs, overlays, navigation and feedback</h2>
+      <AvenInline>
+        <label
+          >Quantity
+          <AvenNumberInput
+            v-model="quantity"
+            name="quantity"
+            :min="0"
+            :max="20"
+            :step="0.5"
+            :precision="1"
+            locale="en-US"
+          />
+        </label>
+        <label
+          >Billing plan
+          <AvenSelect
+            v-model="selectedPlan"
+            name="billing"
+            :options="[
+              { value: 'monthly', label: 'Monthly', group: 'Plans' },
+              { value: 'annual', label: 'Annual', group: 'Plans' },
+            ]"
+          />
+        </label>
+      </AvenInline>
+      <AvenCheckboxGroup
+        v-model="checkedFeatures"
+        label="Included features"
+        description="Choose up to two features."
+        :max="2"
+        name="features"
+        :items="[
+          { value: 'keyboard', label: 'Keyboard support' },
+          { value: 'themes', label: 'Multiple themes' },
+          { value: 'experimental', label: 'Experimental', disabled: true },
+        ]"
+        orientation="horizontal"
+      />
+      <AvenSwitch
+        label="Enable notifications"
+        description="Receive product updates."
+        name="notifications"
+      />
+      <AvenPopover label="Contextual help">
+        <template #trigger="{ triggerAttrs, triggerRef }"
+          ><button v-bind="triggerAttrs" :ref="triggerRef" type="button">
+            Open contextual help
+          </button></template
+        >
+        <template #header>Contextual help</template>
+        <p>Popover content remains in the component subtree and inherits its active theme.</p>
+        <template #footer="{ close }"
+          ><button type="button" @click="close">Close help</button></template
+        >
+      </AvenPopover>
+      <AvenTooltip text="A delayed, dismissible hint">
+        <template #trigger="{ triggerAttrs, triggerRef }"
+          ><button v-bind="triggerAttrs" :ref="triggerRef" type="button">
+            Focus or hover for a tooltip
+          </button></template
+        >
+      </AvenTooltip>
+      <AvenInline>
+        <AvenSpinner label="Loading records" />
+        <AvenProgress :value="62" label="Upload progress" show-value>
+          <template #value="{ percent }">{{ Math.round(percent ?? 0) }} percent</template>
+        </AvenProgress>
+        <AvenProgress :value="null" label="Indeterminate progress" />
+        <AvenSkeleton width="12rem" :lines="3" />
+      </AvenInline>
+      <AvenSegmentedControl
+        v-model="selectedView"
+        name="view"
+        :items="[
+          { value: 'list', label: 'List' },
+          { value: 'grid', label: 'Grid' },
+          { value: 'timeline', label: 'Timeline', disabled: true },
+        ]"
+      />
+      <AvenBreadcrumb
+        :items="[
+          { key: 'home', label: 'Home', href: '#home' },
+          { key: 'library', label: 'Library', href: '#library' },
+          { key: 'components', label: 'Components', href: '#components' },
+          { key: 'fields', label: 'Fields', current: true },
+        ]"
+        :max-visible="3"
+        ><template #collapsed="{ items }">+{{ items.length }}</template></AvenBreadcrumb
+      >
+      <AvenPagination v-model="currentPage" :total="245" :page-size="20" show-size-changer />
+      <AvenSidebar
+        v-model:collapsed="sidebarCollapsed"
+        :items="demoNavItems"
+        active-key="fields"
+        label="Component playground navigation"
+      >
+        <template #header
+          ><strong>{{ sidebarCollapsed ? 'A' : 'Aven playground' }}</strong></template
+        >
+        <template #footer><small>Nested navigation with app-owned state</small></template>
+      </AvenSidebar>
+      <AvenNavList
+        v-model:expanded-keys="navExpanded"
+        :items="demoNavItems"
+        active-key="fields"
+        label="Standalone navigation list"
+        ><template #item="{ item, active, depth }"
+          ><span :style="{ paddingInlineStart: `${depth}rem` }"
+            >{{ item.label }}<span v-if="active"> (current)</span></span
+          ></template
+        ></AvenNavList
+      >
+      <ul aria-label="Standalone compound navigation item">
+        <AvenNavItem
+          :item="{ key: 'docs', label: 'Documentation', href: '#docs', badge: 'New' }"
+          active
+        >
+          <template #leading><span aria-hidden="true">▤</span></template>
+          <template #default="{ item }">{{ item.label }}</template>
+        </AvenNavItem>
+      </ul>
+    </section>
+    <section class="playground-card" aria-labelledby="tabs-example">
+      <h2 id="tabs-example">Tabs and compound parts</h2>
+      <p>
+        Arrow keys move focus past disabled tabs. Close requests leave item ownership in this
+        application.
+      </p>
+      <AvenTabs
+        v-model="activeWorkspaceTab"
+        :items="workspaceTabs"
+        variant="pill"
+        activation="manual"
+        @close="closeWorkspaceTab"
+      >
+        <template #tab="{ item, selected }">
+          <span>{{ item.label }}</span
+          ><span v-if="selected" aria-hidden="true"> · active</span>
+        </template>
+        <template #panel="{ item, active }">
+          <strong>{{ item.label }} panel</strong>
+          <p>Active: {{ active }}. The panel scope stays typed to the item key.</p>
+        </template>
+        <template #close-icon>×</template>
+      </AvenTabs>
+      <details>
+        <summary>Standalone compound parts</summary>
+        <div role="tablist" aria-label="Standalone tab sample">
+          <AvenTab
+            :item="{ key: 'sample', label: 'Sample' }"
+            id="sample-tab"
+            controls="sample-panel"
+            :selected="true"
+            :active="true"
+            :tabindex="0"
+            >Custom tab</AvenTab
+          >
+        </div>
+        <AvenTabPanel
+          :item="{ key: 'sample', label: 'Sample' }"
+          id="sample-panel"
+          labelled-by="sample-tab"
+          :active="true"
+          >Composed panel</AvenTabPanel
+        >
+      </details>
+    </section>
     <section class="playground-card" aria-labelledby="tree-example">
       <AvenText id="tree-example" type="header1">Tree navigation and checks</AvenText>
       <AvenTree
@@ -733,6 +1032,22 @@ const buttonTones = [
           ><span v-if="node.key === 'app'">Vue component</span></template
         >
       </AvenTree>
+      <div role="tree" aria-label="Standalone tree row part">
+        <AvenTreeItem
+          :node="standaloneTreeNode"
+          tree-id="standalone-tree"
+          :level="1"
+          :position="1"
+          :set-size="1"
+          :index="0"
+          :index-by-key="standaloneTreeIndexes"
+          :selected-keys="[]"
+          :expanded-keys="[]"
+          :checked-keys="[]"
+          :loading-keys="[]"
+          :active-index="0"
+        />
+      </div>
     </section>
     <section class="playground-card" aria-labelledby="filter-example">
       <AvenText id="filter-example" type="header1">Search and filter bar</AvenText>
@@ -844,6 +1159,13 @@ const buttonTones = [
         </template>
       </AvenBoard>
       <p v-if="lastBoardRequest" aria-live="polite">{{ lastBoardRequest }}</p>
+      <AvenBoardColumn
+        :column="standaloneBoardColumn"
+        :entries="standaloneBoardEntries"
+        aria-label="Standalone board column part"
+      >
+        <template #default="{ entry }">{{ entry.item.title }} · {{ entry.item.owner }}</template>
+      </AvenBoardColumn>
     </section>
     <section class="playground-card" aria-labelledby="chart-examples">
       <AvenText id="chart-examples" type="header1">Chart adapter surfaces</AvenText>
@@ -1193,6 +1515,9 @@ const buttonTones = [
         <template #value="{ value }"
           ><output>{{ value }}%</output></template
         >
+        <template #thumb="{ active }"
+          ><span class="example-slider-thumb" :class="{ 'is-active': active }"
+        /></template>
       </AvenSlider>
       <AvenRangeSlider
         v-model="priceRange"
@@ -1297,6 +1622,11 @@ const buttonTones = [
           }}</span></template
         >
       </AvenMenu>
+      <div role="menu" aria-label="Standalone menu compound parts">
+        <AvenMenuGroup label="Standalone actions">
+          <AvenMenuItem :item="menuCommands[0]" @select="menuAction = $event.item.label" />
+        </AvenMenuGroup>
+      </div>
       <p>Pin: {{ menuPinned ? 'on' : 'off' }}; sort: {{ menuSort }}.</p>
       <AvenMenubar
         :items="menubarItems"
@@ -1317,6 +1647,15 @@ const buttonTones = [
         This change cannot be undone. Confirm only after checking that the project is no longer
         needed.
       </AvenAlertDialog>
+      <AvenButton variant="outline" @click="dialogOpen = true">Open basic dialog</AvenButton>
+      <AvenDialog
+        v-model:open="dialogOpen"
+        title="Project details"
+        description="A non-destructive dialog example."
+      >
+        <p>Dialog content stays in the native modal layer.</p>
+        <template #footer="{ close }"><AvenButton @click="close">Done</AvenButton></template>
+      </AvenDialog>
       <AvenButton variant="outline" @click="paletteOpen = true">Open command palette</AvenButton>
       <AvenCommandPalette
         v-model:open="paletteOpen"
@@ -1443,6 +1782,19 @@ const buttonTones = [
           <AvenButton size="sm" variant="ghost" @click="dismiss">Dismiss from content</AvenButton>
         </template>
       </AvenToaster>
+      <AvenToast
+        v-if="directToastVisible"
+        id="standalone-toast"
+        title="Standalone toast"
+        :duration="0"
+        closable
+        @dismiss="directToastVisible = false"
+      >
+        A single notification can be composed without a toaster.
+      </AvenToast>
+      <AvenButton variant="outline" @click="directToastVisible = !directToastVisible">
+        {{ directToastVisible ? 'Hide' : 'Show' }} standalone toast
+      </AvenButton>
       <p aria-live="polite">{{ toastActivity }}</p>
     </section>
     <section class="playground-card" aria-labelledby="scroll-area-examples">
@@ -1892,6 +2244,10 @@ const buttonTones = [
         <template #leading>{{ quietMode ? '◉' : '○' }}</template>
         Quiet mode
       </AvenToggleButton>
+      <AvenToggleButton variant="soft" tone="warning" default-value
+        >Flag for review</AvenToggleButton
+      >
+      <AvenToggleButton variant="ghost">Pin</AvenToggleButton>
       <p aria-live="polite">Quiet mode is {{ quietMode ? 'on' : 'off' }}.</p>
       <AvenToggleGroup
         v-model="textFormat"
@@ -1933,6 +2289,22 @@ const buttonTones = [
         <template #menu-footer><small>Keyboard: open the menu, then use arrows.</small></template>
       </AvenSplitButton>
       <p v-if="lastSplitAction" aria-live="polite">Last action: {{ lastSplitAction }}</p>
+      <AvenDropdownMenu
+        :items="menuCommands"
+        label="Project command menu"
+        @select="menuAction = $event.item.label"
+        @update:checked="menuPinned = $event.checked"
+        @update:value="menuSort = $event.value"
+      >
+        <template #trigger-leading><span aria-hidden="true">⋯</span></template>
+        <template #item="{ item, active, disabled }">
+          <span :aria-disabled="disabled"
+            >{{ item.label }}<small v-if="active"> · focused</small></span
+          >
+        </template>
+        <template #footer><small>Commands use the same accessible menu behavior.</small></template>
+      </AvenDropdownMenu>
+      <p aria-live="polite">Menu selection: {{ menuAction || 'none' }}</p>
     </section>
   </main>
 </template>

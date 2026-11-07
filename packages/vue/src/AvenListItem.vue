@@ -32,6 +32,7 @@ const attrs = useAttrs()
     :style="[attrs.style, props.ui?.root?.style]"
   >
     <span
+      v-bind="props.ui?.leading?.attrs"
       v-if="$slots.leading"
       :class="['list-item-leading', props.ui?.leading?.class]"
       :style="props.ui?.leading?.style"
@@ -39,12 +40,14 @@ const attrs = useAttrs()
       <slot name="leading" />
     </span>
     <span
+      v-bind="props.ui?.content?.attrs"
       :class="['list-item-content', props.ui?.content?.class]"
       :style="props.ui?.content?.style"
     >
       <slot />
     </span>
     <span
+      v-bind="props.ui?.trailing?.attrs"
       v-if="$slots.trailing"
       :class="['list-item-trailing', props.ui?.trailing?.class]"
       :style="props.ui?.trailing?.style"
@@ -52,6 +55,7 @@ const attrs = useAttrs()
       <slot name="trailing" />
     </span>
     <span
+      v-bind="props.ui?.separator?.attrs"
       v-if="$slots.separator"
       :class="['list-item-separator', props.ui?.separator?.class]"
       :style="props.ui?.separator?.style"

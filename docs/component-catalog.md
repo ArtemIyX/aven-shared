@@ -241,18 +241,18 @@ Slot notation `item{item,key,...}` means a scoped named slot. A slot without bra
 ### 28. AvenDropdownMenu — P1
 
 - **Styles:** Menu recipes; icon-only, button or custom trigger; placement/collision options.
-- **Props:** items Command[], open/defaultOpen, placement='bottom-start', offset=4, closeOnSelect=true, disabled=false, matchTriggerWidth=false, teleportTo?.
+- **Props:** items Command[], open/defaultOpen, placement='bottom-start', offset=4, collisionPadding=8, closeOnSelect=true, disabled=false, matchTriggerWidth=false, teleportTo?, strategy='fixed' for teleported content and 'absolute' when requested.
 - **Events:** Menu selection events plus update:open, openChange, beforeClose, afterOpen/afterClose.
 - **Slots:** trigger{triggerAttrs,triggerRef,open}, item scopes and menu regions, trigger-leading/trailing.
-- **Hooks/behavior:** overlay/menu/button hooks; Enter/Space/ArrowDown opens with correct focus, Escape returns focus, outside press closes. It executes commands; it does not serve as a form select.
+- **Hooks/behavior:** overlay/menu/button hooks; Enter/Space/ArrowDown opens with correct focus, Escape returns focus, outside press closes, teleported content flips/shifts within the viewport and remains inside its overlay layer. Theme variables inherit from the physical teleport target, which should be inside the active theme subtree. It executes commands; it does not serve as a form select.
 
 ### 29. AvenContextMenu / AvenMenubar — P1
 
 - **Styles:** shared Menu skin; anchored context panel; horizontal menubar with active trigger.
-- **Props:** context items/open, disabled, `activation:'contextmenu'|'both'='contextmenu'`; menubar items, loop=true, label, density; overlay placement options.
+- **Props:** context items/open, disabled, `activation:'contextmenu'|'both'='contextmenu'`, collisionPadding=8; menubar items, loop=true, label, density; overlay placement options.
 - **Events:** select and menu state events; context `openChange({open,reason,point?})`; menubar `update:activeKey(Key|null)`.
 - **Slots:** context default{openAt}, item/group scopes; menubar trigger{item,open,triggerAttrs,triggerRef}, item and submenu regions.
-- **Hooks/behavior:** shared menu hooks; support Shift+F10/context-menu key and a visible alternate action for touch. Menubar has its own arrow navigation; do not replace ordinary website navigation with menubar roles.
+- **Hooks/behavior:** shared menu hooks; support Shift+F10/context-menu key and a visible alternate action for touch. Context content is measured and shifted inside the viewport; resize repositions it. Menubar has its own arrow navigation; do not replace ordinary website navigation with menubar roles.
 
 ### 30. AvenPopover — P1
 
@@ -436,8 +436,8 @@ Slot notation `item{item,key,...}` means a scoped named slot. A slot without bra
 
 ### 52. AvenTable primitives / AvenDataTable — P2
 
-- **Styles:** plain/bordered/striped, density, sticky header, numeric alignment, selected row, pinned columns, scroll shadow.
-- **Props:** primitives compose native table/head/body/row/cell; DataTable rows:T[], columns:Column<T>[], rowKey, sort?:{key,direction}[], selectedKeys?:Key[], expandedKeys?:Key[], loading=false, rowCount?, stickyHeader=false, manualSort=false. Column includes key/header/accessor/align/width/minWidth/sortable/cell formatter. Virtual rows and editable grid are later opt-ins.
+- **Styles:** plain/bordered/striped, density, sticky header, horizontal scroll-edge shadows, numeric alignment, selected row, pinned columns.
+- **Props:** primitives compose native table/head/body/row/cell; DataTable rows:T[], columns:Column<T>[], rowKey, sort?:{key,direction}[], selectedKeys?:Key[], expandedKeys?:Key[], loading=false, rowCount?, stickyHeader=false, manualSort=false. Column includes key/header/accessor/align/width/minWidth/sortable/cell formatter and `pinned?:'start'|'end'`; pinned columns require explicit widths for correct stacked offsets. When pinning, selection/expansion/leading/trailing utility cells reserve 3rem. Virtual rows and editable grid are later opt-ins.
 - **Events:** update:sort, update:selectedKeys, update:expandedKeys; `rowClick({row,key,originalEvent})`, `rowAction({row,key,action,originalEvent})`, `columnResize({key,width})`, `columnReorder({keys})` only when enabled. Sort events describe state; app/server sorting is explicit in manual mode.
 - **Slots:** header{column,sort}, cell{row,rowKey,column,value,index}, row-leading/trailing, expanded{row,key}, caption, footer, toolbar{selectedKeys}, empty/loading/error, pagination.
 - **Hooks/behavior:** surface-table-body/row-alternate, separators, selected/hover-bg, cell-padding; real table semantics with caption and aria-sort. Interactive cells must remain reachable; row click must not hijack inner buttons/links. Header checkbox announces partial selection. A grid keyboard model requires separate deliberate design.

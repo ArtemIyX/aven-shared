@@ -11,6 +11,7 @@ import type {
 
 defineOptions({ inheritAttrs: false })
 const props = withDefaults(defineProps<AvenDrawerProps>(), {
+  open: undefined,
   defaultOpen: false,
   side: 'end',
   defaultSize: '24rem',
@@ -154,7 +155,7 @@ defineExpose({
   <div ref="root" :class="['aven-drawer-host', { 'is-unstyled': unstyled }]">
     <AvenDialog
       ref="dialog"
-      v-bind="attrs"
+      v-bind="{ ...attrs, ...props.ui?.root?.attrs }"
       :modal="modal"
       :open="open"
       :default-open="defaultOpen"

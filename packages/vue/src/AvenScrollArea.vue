@@ -70,6 +70,7 @@ function onScroll(event: Event) {
   >
     <div class="scroll-content"><slot /></div>
     <div
+      v-bind="props.ui?.corner?.attrs"
       v-if="$slots.corner"
       :class="['scroll-corner', props.ui?.corner?.class]"
       :style="props.ui?.corner?.style"

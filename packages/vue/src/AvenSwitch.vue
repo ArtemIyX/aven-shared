@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, ref, useAttrs } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, useAttrs, watch } from 'vue'
 import type { AvenUi } from './types.js'
+import { useAvenId } from './composables.js'
 defineOptions({ inheritAttrs: false })
 const props = withDefaults(
   defineProps<{
@@ -18,6 +19,7 @@ const props = withDefaults(
     ui?: AvenUi<'root' | 'control' | 'track' | 'thumb' | 'label'>
   }>(),
   {
+    modelValue: undefined,
     defaultValue: false,
     labelPosition: 'end',
     checkedValue: 'on',
@@ -35,7 +37,22 @@ const emit = defineEmits<{
 }>()
 const attrs = useAttrs(),
   local = ref(props.defaultValue),
+  input = ref<HTMLInputElement>(),
   checked = computed(() => (props.modelValue !== undefined ? props.modelValue : local.value))
+const initialValue = props.defaultValue
+const descriptionId = useAvenId(undefined, 'switch-description')
+const labelId = useAvenId(undefined, 'switch-label')
+const controlAttrs = computed(() => {
+  const { class: _class, style: _style, ...rest } = attrs
+  return { ...rest, ...props.ui?.control?.attrs }
+})
+watch(
+  () => props.modelValue,
+  (next) => {
+    if (next !== undefined) local.value = next
+  },
+)
+let form: HTMLFormElement | null = null
 function toggle() {
   if (props.disabled || props.readonly || props.loading) return
   const next = !checked.value
@@ -43,9 +60,22 @@ function toggle() {
   emit('update:modelValue', next)
   emit('change', next)
 }
+function reset(event: Event) {
+  queueMicrotask(() => {
+    if (event.defaultPrevented) return
+    local.value = initialValue
+    if (props.modelValue !== undefined) emit('update:modelValue', initialValue)
+  })
+}
+onMounted(() => {
+  form = input.value?.form ?? null
+  form?.addEventListener('reset', reset)
+})
+onBeforeUnmount(() => form?.removeEventListener('reset', reset))
 </script>
 <template>
   <label
+    v-bind="ui?.root?.attrs"
     :class="[
       'aven-switch',
       `label-${labelPosition}`,
@@ -61,11 +91,15 @@ function toggle() {
     :style="[attrs.style, ui?.root?.style]"
     ><span
       v-if="labelPosition === 'start' || $slots.label"
+      :id="labelId"
       class="switch-label"
+      v-bind="ui?.label?.attrs"
       :class="ui?.label?.class"
+      :style="ui?.label?.style"
       ><slot name="label">{{ label }}</slot></span
     ><input
-      v-bind="{ ...attrs, ...ui?.control?.attrs }"
+      ref="input"
+      v-bind="controlAttrs"
       type="checkbox"
       role="switch"
       class="switch-native"
@@ -75,23 +109,41 @@ function toggle() {
       :disabled="disabled || loading"
       :aria-checked="checked"
       :aria-readonly="readonly || undefined"
-      :aria-label="$slots.label ? undefined : label"
-      :aria-describedby="description ? `${attrs.id ?? 'aven-switch'}-description` : undefined"
+      :aria-labelledby="labelId"
+      :aria-describedby="
+        [attrs['aria-describedby'], description || $slots.description ? descriptionId : null]
+          .filter(Boolean)
+          .join(' ') || undefined
+      "
       @click.prevent="toggle"
       @focus="emit('focus', $event)"
       @blur="emit('blur', $event)"
-    /><span aria-hidden="true" :class="['switch-track', ui?.track?.class]" :style="ui?.track?.style"
-      ><span :class="['switch-thumb', ui?.thumb?.class]" :style="ui?.thumb?.style" /></span
+    /><span
+      v-bind="ui?.track?.attrs"
+      aria-hidden="true"
+      :class="['switch-track', ui?.track?.class]"
+      :style="ui?.track?.style"
+      ><span
+        v-bind="ui?.thumb?.attrs"
+        :class="['switch-thumb', ui?.thumb?.class]"
+        :style="ui?.thumb?.style"
+        ><slot name="thumb" :checked="checked"
+          ><slot :name="checked ? 'checked-icon' : 'unchecked-icon'" /></slot></span></span
     ><span
       v-if="labelPosition === 'end' && !$slots.label"
+      :id="labelId"
       class="switch-label"
+      v-bind="ui?.label?.attrs"
       :class="ui?.label?.class"
+      :style="ui?.label?.style"
       >{{ label }}</span
     ><span
-      v-if="description"
-      :id="`${attrs.id ?? 'aven-switch'}-description`"
-      class="switch-description"
-      >{{ description }}</span
+      v-if="checked ? $slots['checked-label'] : $slots['unchecked-label']"
+      aria-hidden="true"
+      class="switch-state-label"
+      ><slot :name="checked ? 'checked-label' : 'unchecked-label'" /></span
+    ><span v-if="description || $slots.description" :id="descriptionId" class="switch-description"
+      ><slot name="description">{{ description }}</slot></span
     ></label
   >
 </template>
@@ -138,6 +190,9 @@ function toggle() {
 }
 .is-checked .switch-thumb {
   transform: translateX(1.125rem);
+}
+.is-checked:dir(rtl) .switch-thumb {
+  transform: translateX(-1.125rem);
 }
 .switch-native:focus-visible + .switch-track {
   outline: 2px solid var(--aven-color-focus-ring);

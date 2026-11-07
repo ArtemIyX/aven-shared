@@ -20,8 +20,8 @@ const coordinates = computed(() => ({
 </script>
 <template>
   <div
+    v-bind="{ ...ui?.root?.attrs, ...rootAttrs }"
     v-if="open && items.length"
-    v-bind="rootAttrs"
     role="tooltip"
     :class="[
       'aven-chart-tooltip',

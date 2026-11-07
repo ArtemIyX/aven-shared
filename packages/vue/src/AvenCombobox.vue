@@ -1,6 +1,11 @@
 <script setup lang="ts" generic="T extends string | number">
 import { computed, onBeforeUnmount, onMounted, ref, useAttrs, watch } from 'vue'
-import { useAvenId, type AvenOpenReason } from './composables.js'
+import {
+  isTopAvenOverlayLayer,
+  registerAvenOverlayLayer,
+  useAvenId,
+  type AvenOpenReason,
+} from './composables.js'
 import type { AvenOption } from './types.js'
 import type { AvenComboboxEvents, AvenComboboxProps, AvenComboboxSlots } from './types.js'
 
@@ -36,6 +41,8 @@ const descriptionId = `${inputId}-description`
 const errorId = `${inputId}-error`
 const localValue = ref<T | T[] | null>(props.defaultValue ?? (props.multiple ? [] : null))
 const localQuery = ref(props.defaultQuery)
+const initialValue = Array.isArray(localValue.value) ? [...localValue.value] : localValue.value
+const initialQuery = props.defaultQuery
 const localOpen = ref(props.defaultOpen)
 const input = ref<HTMLInputElement>()
 const root = ref<HTMLDivElement>()
@@ -44,6 +51,7 @@ const activeIndex = ref(
     ? -1
     : props.options.findIndex((option) => Object.is(option.value, props.defaultActiveKey)),
 )
+const internalActiveKey = ref<T | null>(props.defaultActiveKey ?? null)
 const currentActiveIndex = computed(() =>
   props.activeKey === undefined
     ? activeIndex.value
@@ -100,9 +108,33 @@ const activeItem = computed(() =>
   filteredOptions.value.find((item) => props.options.indexOf(item) === currentActiveIndex.value),
 )
 const activeId = computed(() =>
-  activeItem.value ? `${listId}-option-${props.options.indexOf(activeItem.value)}` : undefined,
+  activeItem.value && !activeItem.value.disabled && !props.loading && !props.error
+    ? `${listId}-option-${props.options.indexOf(activeItem.value)}`
+    : undefined,
 )
-let form: HTMLFormElement | null = null
+watch(
+  () => props.options,
+  (options) => {
+    for (const option of options)
+      if (selectedValues.value.some((key) => Object.is(key, option.value)))
+        selectedCache.set(option.value, option)
+    if (props.activeKey === undefined && internalActiveKey.value !== null) {
+      activeIndex.value = options.findIndex(
+        (option) => Object.is(option.value, internalActiveKey.value) && !option.disabled,
+      )
+      if (activeIndex.value < 0) internalActiveKey.value = null
+    }
+  },
+  { immediate: true, deep: true },
+)
+watch(
+  selectedValues,
+  (keys) => {
+    for (const option of props.options)
+      if (keys.some((key) => Object.is(key, option.value))) selectedCache.set(option.value, option)
+  },
+  { deep: true },
+)
 watch(
   () => props.modelValue,
   (next) => {
@@ -122,21 +154,28 @@ watch(
   },
 )
 watch(value, updateValidity, { deep: true })
-watch(isOpen, (open) => {
-  if (typeof document === 'undefined') return
-  if (open) {
-    document.addEventListener('pointerdown', onOutside, true)
-    document.addEventListener('keydown', onDocumentKeydown)
-  } else {
+const overlayLayer = {}
+let unregisterOverlay: (() => void) | undefined
+function attachOverlay() {
+  if (typeof document === 'undefined' || unregisterOverlay) return
+  unregisterOverlay = registerAvenOverlayLayer(overlayLayer)
+  document.addEventListener('pointerdown', onOutside, true)
+  document.addEventListener('keydown', onDocumentKeydown)
+}
+function detachOverlay() {
+  if (typeof document !== 'undefined') {
     document.removeEventListener('pointerdown', onOutside, true)
     document.removeEventListener('keydown', onDocumentKeydown)
   }
+  unregisterOverlay?.()
+  unregisterOverlay = undefined
+}
+watch(isOpen, (open) => {
+  if (open) attachOverlay()
+  else detachOverlay()
 })
 onMounted(() => {
-  if (typeof document !== 'undefined' && isOpen.value) {
-    document.addEventListener('pointerdown', onOutside, true)
-    document.addEventListener('keydown', onDocumentKeydown)
-  }
+  if (isOpen.value) attachOverlay()
   const form = input.value?.form
   if (form) {
     form.addEventListener('reset', resetFromForm)
@@ -146,10 +185,7 @@ onMounted(() => {
 })
 onBeforeUnmount(() => {
   resetForm?.removeEventListener('reset', resetFromForm)
-  if (typeof document !== 'undefined') {
-    document.removeEventListener('pointerdown', onOutside, true)
-    document.removeEventListener('keydown', onDocumentKeydown)
-  }
+  detachOverlay()
 })
 let resetForm: HTMLFormElement | null = null
 function setValue(next: T | T[] | null) {
@@ -172,12 +208,14 @@ function setQuery(next: string) {
 function setActiveIndex(next: number) {
   if (currentActiveIndex.value === next) return
   const item = props.options[next]
-  if (props.activeKey === undefined) activeIndex.value = next
-  else emit('update:activeKey', item?.value ?? null)
+  if (props.activeKey === undefined) {
+    activeIndex.value = next
+    internalActiveKey.value = item?.value ?? null
+  } else emit('update:activeKey', item?.value ?? null)
   if (item && !item.disabled) emit('highlight', { key: item.value, item })
 }
 function setOpen(next: boolean, reason: AvenOpenReason, event?: Event) {
-  if (props.disabled || props.readonly || isOpen.value === next) return
+  if ((next && (props.disabled || props.readonly)) || isOpen.value === next) return
   if (props.open === undefined) localOpen.value = next
   emit('update:open', next)
   emit('openChange', { open: next, reason })
@@ -185,6 +223,12 @@ function setOpen(next: boolean, reason: AvenOpenReason, event?: Event) {
   if (next && currentActiveIndex.value < 0) setActiveIndex(firstEnabledIndex())
   event?.stopPropagation?.()
 }
+watch(
+  () => [props.disabled, props.readonly],
+  ([disabled, readonly]) => {
+    if ((disabled || readonly) && isOpen.value) setOpen(false, 'programmatic')
+  },
+)
 function firstEnabledIndex() {
   const item = filteredOptions.value.find((option) => !option.disabled)
   return item ? props.options.indexOf(item) : -1
@@ -251,7 +295,14 @@ function onKeydown(event: KeyboardEvent) {
   }
   if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
     event.preventDefault()
-    if (!isOpen.value) setOpen(true, 'trigger', event)
+    if (!isOpen.value) {
+      setOpen(true, 'trigger', event)
+      if (event.key === 'ArrowUp') {
+        const last = [...filteredOptions.value].reverse().find((item) => !item.disabled)
+        if (last) setActiveIndex(props.options.indexOf(last))
+      }
+      return
+    }
     const previousIndex = currentActiveIndex.value
     const enabled = filteredOptions.value
       .map((item) => props.options.indexOf(item))
@@ -283,10 +334,15 @@ function onKeydown(event: KeyboardEvent) {
   } else if (event.key === 'Tab' && isOpen.value) setOpen(false, 'programmatic')
 }
 function onOutside(event: PointerEvent) {
-  if (isOpen.value && !root.value?.contains(event.target as Node)) setOpen(false, 'outside', event)
+  if (
+    isTopAvenOverlayLayer(overlayLayer) &&
+    isOpen.value &&
+    !root.value?.contains(event.target as Node)
+  )
+    setOpen(false, 'outside', event)
 }
 function onDocumentKeydown(event: KeyboardEvent) {
-  if (event.key === 'Escape' && isOpen.value) {
+  if (isTopAvenOverlayLayer(overlayLayer) && event.key === 'Escape' && isOpen.value) {
     event.preventDefault()
     event.stopPropagation()
     setOpen(false, 'escape', event)
@@ -295,13 +351,13 @@ function onDocumentKeydown(event: KeyboardEvent) {
 function resetFromForm(event: Event) {
   queueMicrotask(() => {
     if (event.defaultPrevented) return
-    const next = props.defaultValue ?? (props.multiple ? [] : null)
+    const next = Array.isArray(initialValue) ? [...initialValue] : initialValue
     localValue.value = next
-    localQuery.value = props.defaultQuery
+    localQuery.value = initialQuery
     setActiveIndex(-1)
     setOpen(false, 'programmatic')
     if (props.modelValue !== undefined) emit('update:modelValue', next)
-    if (props.query !== undefined) emit('update:query', props.defaultQuery)
+    if (props.query !== undefined) emit('update:query', initialQuery)
   })
 }
 function focus() {
@@ -340,8 +396,15 @@ defineExpose({ focus, blur, select: () => input.value?.select(), clear })
         >{{ label }}<span v-if="required" aria-hidden="true"> *</span></slot
       ></label
     >
-    <div class="combobox-control" :class="ui?.control?.class" :style="ui?.control?.style">
-      <span v-if="$slots.leading" :class="ui?.leading?.class"><slot name="leading" /></span>
+    <div
+      v-bind="ui?.control?.attrs"
+      class="combobox-control"
+      :class="ui?.control?.class"
+      :style="ui?.control?.style"
+    >
+      <span v-bind="ui?.leading?.attrs" v-if="$slots.leading" :class="ui?.leading?.class"
+        ><slot name="leading"
+      /></span>
       <div v-if="multiple && selectedValues.length" class="combobox-chips" role="list">
         <slot name="selected" :items="allSelectedItems">
           <span
@@ -391,7 +454,11 @@ defineExpose({ focus, blur, select: () => input.value?.select(), clear })
         :aria-required="required || undefined"
         :aria-invalid="invalid || !!error || (required && !selectedValues.length) || undefined"
         :aria-describedby="
-          [description || $slots.description ? descriptionId : '', error ? errorId : '']
+          [
+            nativeAttrs['aria-describedby'],
+            description || $slots.description ? descriptionId : '',
+            error || $slots.error ? errorId : '',
+          ]
             .filter(Boolean)
             .join(' ') || undefined
         "
@@ -404,7 +471,9 @@ defineExpose({ focus, blur, select: () => input.value?.select(), clear })
         @compositionstart="composing = true"
         @compositionend="onCompositionEnd"
       />
-      <span v-if="$slots.trailing" :class="ui?.trailing?.class"><slot name="trailing" /></span>
+      <span v-bind="ui?.trailing?.attrs" v-if="$slots.trailing" :class="ui?.trailing?.class"
+        ><slot name="trailing"
+      /></span>
       <button
         v-if="clearable && selectedValues.length"
         type="button"
@@ -422,6 +491,7 @@ defineExpose({ focus, blur, select: () => input.value?.select(), clear })
         :key="`${typeof selected}:${String(selected)}`"
         type="hidden"
         :name="name"
+        :form="typeof nativeAttrs.form === 'string' ? nativeAttrs.form : undefined"
         :value="selected"
         :disabled="disabled"
       />
@@ -429,8 +499,8 @@ defineExpose({ focus, blur, select: () => input.value?.select(), clear })
     <p v-if="description || $slots.description" :id="descriptionId" class="combobox-description">
       <slot name="description">{{ description }}</slot>
     </p>
-    <p v-if="error" :id="errorId" class="combobox-error" role="alert">
-      <slot name="error" :error="error">{{ error }}</slot>
+    <p v-if="error || $slots.error" :id="errorId" class="combobox-error" role="alert">
+      <slot name="error" :error="error ?? ''">{{ error }}</slot>
     </p>
     <div
       :hidden="!isOpen"
@@ -453,10 +523,7 @@ defineExpose({ focus, blur, select: () => input.value?.select(), clear })
           ><div class="combobox-empty" role="status">{{ error }}</div></template
         >
         <template v-else>
-          <template
-            v-for="group in groupedOptions"
-            :key="group.group === undefined ? 'ungrouped' : `${typeof group.group}:${group.group}`"
-          >
+          <template v-for="(group, groupIndex) in groupedOptions" :key="groupIndex">
             <div
               v-if="group.group !== undefined"
               role="group"

@@ -164,6 +164,7 @@ onBeforeUnmount(() => {
   >
     <template v-for="(index, position) in paneIndexes" :key="`pane-${index}`">
       <section
+        v-bind="props.ui?.pane?.attrs"
         :aria-label="props.labels?.[index]"
         :class="['split-pane-region', props.ui?.pane?.class]"
         :style="[{ flexBasis: `${sizes[index]}%` }, props.ui?.pane?.style]"
@@ -171,6 +172,7 @@ onBeforeUnmount(() => {
         <slot name="pane" :index="index" :sizes="sizes" />
       </section>
       <div
+        v-bind="props.ui?.handle?.attrs"
         v-if="position < paneIndexes.length - 1"
         role="separator"
         tabindex="0"

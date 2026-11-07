@@ -104,14 +104,20 @@ defineExpose({ dismiss: () => requestDismiss('programmatic') })
     @focusout="onFocusOut"
   >
     <span
+      v-bind="props.ui?.icon?.attrs"
       v-if="$slots.icon"
       :class="['toast-icon', props.ui?.icon?.class]"
       :style="props.ui?.icon?.style"
     >
       <slot name="icon" />
     </span>
-    <div :class="['toast-content', props.ui?.content?.class]" :style="props.ui?.content?.style">
+    <div
+      v-bind="props.ui?.content?.attrs"
+      :class="['toast-content', props.ui?.content?.class]"
+      :style="props.ui?.content?.style"
+    >
       <strong
+        v-bind="props.ui?.title?.attrs"
         v-if="props.title || $slots.title"
         :class="props.ui?.title?.class"
         :style="props.ui?.title?.style"
@@ -119,6 +125,7 @@ defineExpose({ dismiss: () => requestDismiss('programmatic') })
         <slot name="title">{{ props.title }}</slot>
       </strong>
       <p
+        v-bind="props.ui?.description?.attrs"
         v-if="props.description"
         :class="props.ui?.description?.class"
         :style="props.ui?.description?.style"
@@ -128,6 +135,7 @@ defineExpose({ dismiss: () => requestDismiss('programmatic') })
       <div v-if="$slots.default" class="toast-extra"><slot /></div>
     </div>
     <div
+      v-bind="props.ui?.actions?.attrs"
       v-if="props.action || props.closable"
       :class="['toast-actions', props.ui?.actions?.class]"
       :style="props.ui?.actions?.style"
@@ -138,6 +146,7 @@ defineExpose({ dismiss: () => requestDismiss('programmatic') })
         </slot>
       </button>
       <button
+        v-bind="props.ui?.close?.attrs"
         v-if="props.closable"
         type="button"
         :aria-label="`Dismiss ${props.title || 'notification'}`"

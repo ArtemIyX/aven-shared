@@ -10,6 +10,7 @@ export type AvenTextProps = {
   tone?: AvenTone
   truncate?: boolean
   lineClamp?: number
+  unstyled?: boolean
   ui?: AvenUi<'root'>
 }
 const tags: Record<AvenTextType, AvenTextElement> = {
@@ -31,6 +32,7 @@ export const AvenText = defineComponent({
     tone: { type: String as PropType<AvenTone> },
     truncate: Boolean,
     lineClamp: { type: Number, validator: (n: number) => n > 0 },
+    unstyled: Boolean,
     ui: Object as PropType<AvenUi<'root'>>,
   },
   setup(props, { slots, attrs }) {
@@ -41,10 +43,10 @@ export const AvenText = defineComponent({
           ...attrs,
           ...props.ui?.root?.attrs,
           class: [
-            'aven-text',
-            `aven-text--${props.type}`,
+            !props.unstyled && 'aven-text',
+            !props.unstyled && `aven-text--${props.type}`,
             props.align && `aven-text--${props.align}`,
-            props.tone && `aven-text--${props.tone}`,
+            !props.unstyled && props.tone && `aven-text--${props.tone}`,
             { 'aven-text--truncate': props.truncate, 'aven-text--clamp': !!props.lineClamp },
             attrs.class,
             props.ui?.root?.class,

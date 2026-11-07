@@ -131,6 +131,7 @@ defineExpose({ apply, reset, focus })
 </script>
 <template>
   <div
+    v-bind="{ ...ui?.root?.attrs, ...rootAttrs }"
     ref="root"
     :id="generatedId"
     role="group"
@@ -138,7 +139,6 @@ defineExpose({ apply, reset, focus })
     :aria-busy="loading || undefined"
     :class="['aven-filter-builder', attrs.class, { 'is-unstyled': unstyled }, ui?.root?.class]"
     :style="[attrs.style, ui?.root?.style]"
-    v-bind="rootAttrs"
   >
     <AvenFilterGroupEditor
       :group="value"

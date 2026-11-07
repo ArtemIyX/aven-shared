@@ -29,12 +29,13 @@ const forwardedAttrs = computed(() => {
 </script>
 <template>
   <span
-    v-bind="forwardedAttrs"
+    v-bind="{ ...ui?.root?.attrs, ...forwardedAttrs }"
     :class="[
       'aven-icon',
       typeof size === 'string' ? `size-${size}` : null,
       tone && `tone-${tone}`,
       { 'is-spinning': spin, 'is-unstyled': unstyled },
+      attrs.class,
       ui?.root?.class,
     ]"
     :style="style"

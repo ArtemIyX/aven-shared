@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, useAttrs, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, useAttrs, watch } from 'vue'
 import type { AvenRangeSliderEvents, AvenRangeSliderProps, AvenRangeSliderSlots } from './types.js'
 
 defineOptions({ inheritAttrs: false })
@@ -26,6 +26,7 @@ const nativeAttrs = computed(() =>
 const localValue = ref<[number, number]>([...props.defaultValue])
 const inputs = ref<Array<HTMLInputElement | undefined>>([])
 const activeThumb = ref<0 | 1 | null>(null)
+const focusedThumb = ref<0 | 1 | null>(null)
 let form: HTMLFormElement | null = null
 const value = computed<[number, number]>(() => {
   const [rawLow, rawHigh] = props.modelValue ?? localValue.value
@@ -46,7 +47,9 @@ watch(
   },
 )
 function percent(current: number) {
-  return props.max <= props.min ? 0 : ((current - props.min) / (props.max - props.min)) * 100
+  return props.max <= props.min
+    ? 0
+    : Math.min(100, Math.max(0, ((current - props.min) / (props.max - props.min)) * 100))
 }
 function precision() {
   return Math.max(0, (String(props.step).split('.')[1] ?? '').length)
@@ -63,10 +66,14 @@ function update(index: 0 | 1, next: number) {
   localValue.value = adjusted
   emit('update:modelValue', adjusted)
 }
-function onInput(index: 0 | 1, event: Event) {
+async function onInput(index: 0 | 1, event: Event) {
   const target = event.target as HTMLInputElement
   if (props.readonly) target.value = String(value.value[index])
-  else update(index, Number(target.value))
+  else {
+    update(index, Number(target.value))
+    await nextTick()
+    target.value = String(value.value[index])
+  }
 }
 function onChange() {
   if (!props.disabled && !props.readonly) emit('change', [...value.value])
@@ -142,11 +149,18 @@ defineExpose({
   <div
     v-bind="ui?.root?.attrs"
     role="group"
-    :aria-label="label || undefined"
+    :aria-label="
+      label || (typeof attrs['aria-label'] === 'string' ? attrs['aria-label'] : undefined)
+    "
     :class="[
       'aven-range-slider',
       `is-${orientation}`,
-      { 'is-disabled': disabled, 'is-unstyled': unstyled },
+      {
+        'is-disabled': disabled,
+        'is-inverted': inverted,
+        'is-unstyled': unstyled,
+        'has-custom-thumb': !!$slots.thumb,
+      },
       attrs.class,
       ui?.root?.class,
     ]"
@@ -155,6 +169,7 @@ defineExpose({
     <slot name="leading" />
     <div class="slider-control">
       <div
+        v-bind="ui?.track?.attrs"
         class="slider-track"
         :class="ui?.track?.class"
         :style="[
@@ -167,6 +182,26 @@ defineExpose({
         aria-hidden="true"
       >
         <span class="slider-fill" />
+        <span
+          v-for="index in [0, 1] as const"
+          v-if="$slots.thumb"
+          :key="index"
+          v-bind="ui?.thumb?.attrs"
+          :class="['slider-thumb-slot', ui?.thumb?.class]"
+          :style="[
+            {
+              '--aven-thumb-position': `${inverted ? 100 - percent(value[index]) : percent(value[index])}%`,
+            },
+            ui?.thumb?.style,
+          ]"
+        >
+          <slot
+            name="thumb"
+            :index="index"
+            :value="value[index]"
+            :active="activeThumb === index || focusedThumb === index"
+          />
+        </span>
       </div>
       <input
         :ref="(element) => setInputRef(0, element)"
@@ -175,6 +210,7 @@ defineExpose({
         type="range"
         :min="min"
         :max="max"
+        :aria-valuemax="value[1] - safeGap"
         :step="step"
         :value="value[0]"
         :disabled="disabled"
@@ -187,6 +223,8 @@ defineExpose({
         @change="onChange"
         @pointerdown="startDrag($event, 0)"
         @keydown="readonlyKeydown"
+        @focus="focusedThumb = 0"
+        @blur="focusedThumb = null"
       />
       <input
         :ref="(element) => setInputRef(1, element)"
@@ -194,6 +232,7 @@ defineExpose({
         :id="nativeAttrs.id ? `${nativeAttrs.id}-end` : undefined"
         type="range"
         :min="min"
+        :aria-valuemin="value[0] + safeGap"
         :max="max"
         :step="step"
         :value="value[1]"
@@ -207,14 +246,22 @@ defineExpose({
         @change="onChange"
         @pointerdown="startDrag($event, 1)"
         @keydown="readonlyKeydown"
+        @focus="focusedThumb = 1"
+        @blur="focusedThumb = null"
       />
       <div v-if="marks?.length" class="slider-marks">
         <span
+          v-bind="ui?.mark?.attrs"
           v-for="mark in marks"
           :key="mark.value"
           class="slider-mark"
           :class="ui?.mark?.class"
-          :style="ui?.mark?.style"
+          :style="[
+            {
+              '--aven-mark-position': `${inverted ? 100 - percent(mark.value) : percent(mark.value)}%`,
+            },
+            ui?.mark?.style,
+          ]"
           ><span aria-hidden="true">•</span
           ><slot name="mark" :value="mark.value" :label="mark.label">{{ mark.label }}</slot></span
         >
@@ -267,6 +314,27 @@ defineExpose({
   border-radius: inherit;
   background: var(--aven-color-accent-solid);
 }
+.slider-thumb-slot {
+  position: absolute;
+  inset-inline-start: var(--aven-thumb-position);
+  inset-block-start: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  pointer-events: none;
+}
+.aven-range-slider:dir(rtl) .slider-thumb-slot {
+  transform: translate(50%, -50%);
+}
+.has-custom-thumb .slider-input::-webkit-slider-thumb {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+.has-custom-thumb .slider-input::-moz-range-thumb {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
 .slider-input {
   position: absolute;
   z-index: 1;
@@ -279,6 +347,9 @@ defineExpose({
   cursor: pointer;
   touch-action: none;
   pointer-events: none;
+}
+.is-inverted .slider-input {
+  transform: rotate(180deg);
 }
 .slider-input::-webkit-slider-runnable-track {
   block-size: 0.35rem;
@@ -296,7 +367,7 @@ defineExpose({
   border: 2px solid var(--aven-color-accent-solid);
   border-radius: 50%;
   background: var(--aven-color-surface-base);
-  box-shadow: 0 1px 3px rgb(0 0 0 / 0.2);
+  box-shadow: 0 1px 3px var(--aven-color-shadow-ambient);
   pointer-events: auto;
 }
 .slider-input::-moz-range-thumb {
@@ -305,7 +376,7 @@ defineExpose({
   border: 2px solid var(--aven-color-accent-solid);
   border-radius: 50%;
   background: var(--aven-color-surface-base);
-  box-shadow: 0 1px 3px rgb(0 0 0 / 0.2);
+  box-shadow: 0 1px 3px var(--aven-color-shadow-ambient);
   pointer-events: auto;
 }
 .slider-input:focus-visible {
@@ -326,6 +397,9 @@ defineExpose({
   color: var(--aven-color-text-secondary);
 }
 .slider-mark {
+  position: absolute;
+  inset-inline-start: var(--aven-mark-position);
+  transform: translateX(-50%);
   display: grid;
   justify-items: center;
   min-inline-size: 1.5rem;
@@ -350,9 +424,19 @@ defineExpose({
 }
 .is-vertical .slider-fill {
   inset-block-start: auto;
+  inset-block-end: var(--aven-range-start);
   inset-inline: 0;
   inline-size: 100%;
   block-size: var(--aven-range-width);
+}
+.is-vertical .slider-thumb-slot {
+  inset-inline-start: 50%;
+  inset-block-start: auto;
+  inset-block-end: var(--aven-thumb-position);
+  transform: translate(-50%, 50%);
+}
+.aven-range-slider.is-vertical:dir(rtl) .slider-thumb-slot {
+  transform: translate(50%, 50%);
 }
 .is-vertical .slider-input {
   inset-inline: auto;
@@ -360,6 +444,16 @@ defineExpose({
   block-size: 10rem;
   writing-mode: vertical-lr;
   direction: rtl;
+}
+.is-vertical .slider-marks {
+  inset-inline-start: calc(50% + 1.5rem);
+  inset-inline-end: auto;
+  inset-block: 0.5rem;
+}
+.is-vertical .slider-mark {
+  inset-inline-start: 0;
+  inset-block-end: var(--aven-mark-position);
+  transform: translateY(50%);
 }
 .is-disabled {
   color: var(--aven-color-text-disabled);

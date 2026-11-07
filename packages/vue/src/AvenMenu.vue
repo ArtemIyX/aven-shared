@@ -3,7 +3,7 @@ import { computed, nextTick, onBeforeUnmount, ref } from 'vue'
 import AvenMenuGroup from './AvenMenuGroup.vue'
 import AvenMenuItem from './AvenMenuItem.vue'
 import { useAvenId } from './composables.js'
-import type { AvenCommand, AvenMenuEvents, AvenMenuProps } from './types.js'
+import type { AvenCommand, AvenMenuEvents, AvenMenuProps, AvenMenuSlots } from './types.js'
 const props = withDefaults(defineProps<AvenMenuProps<Key>>(), {
   loop: false,
   orientation: 'vertical',
@@ -11,24 +11,7 @@ const props = withDefaults(defineProps<AvenMenuProps<Key>>(), {
   unstyled: false,
 })
 const emit = defineEmits<AvenMenuEvents<Key>>()
-const slots = defineSlots<{
-  item?: (scope: {
-    item: AvenCommand<Key>
-    key: Key
-    active: boolean
-    disabled: boolean
-    checked: boolean
-  }) => unknown
-  leading?: (scope: { item: AvenCommand<Key> }) => unknown
-  trailing?: (scope: { item: AvenCommand<Key> }) => unknown
-  shortcut?: (scope: { item: AvenCommand<Key> }) => unknown
-  'group-label'?: (scope: { group: { key: string | number; label: string } }) => unknown
-  'submenu-trigger'?: (scope: { item: AvenCommand<Key>; open: boolean }) => unknown
-  submenu?: (scope: { item: AvenCommand<Key>; close: () => void }) => unknown
-  header?: () => unknown
-  footer?: () => unknown
-  empty?: () => unknown
-}>()
+const slots = defineSlots<AvenMenuSlots<Key>>()
 const active = ref(props.items.findIndex((item) => !item.disabled)),
   itemEls = ref<Array<{ focus: () => void; activate: (event: Event) => void }>>([]),
   query = ref(''),
@@ -76,6 +59,16 @@ function focus(index: number) {
   const item = props.items[target]
   if (item) emit('highlight', { key: item.key })
 }
+function move(delta: 1 | -1) {
+  const candidates = enabled.value.map((entry) => entry.index)
+  if (!candidates.length) return
+  let position = candidates.indexOf(active.value)
+  if (position < 0) position = delta > 0 ? -1 : candidates.length
+  let next = position + delta
+  if (props.loop) next = (next + candidates.length) % candidates.length
+  else next = Math.max(0, Math.min(candidates.length - 1, next))
+  focus(candidates[next]!)
+}
 function keydown(e: KeyboardEvent) {
   const rtl =
     root.value &&
@@ -85,10 +78,10 @@ function keydown(e: KeyboardEvent) {
     back = props.orientation === 'vertical' ? 'ArrowUp' : rtl ? 'ArrowRight' : 'ArrowLeft'
   if (e.key === forward) {
     e.preventDefault()
-    focus(active.value + 1)
+    move(1)
   } else if (e.key === back) {
     e.preventDefault()
-    focus(active.value - 1)
+    move(-1)
   } else if (e.key === 'Home') {
     e.preventDefault()
     focus(0)
@@ -109,13 +102,13 @@ function keydown(e: KeyboardEvent) {
       (it, i) =>
         i > active.value && !it.disabled && it.label.toLocaleLowerCase().startsWith(query.value),
     )
-    focus(
+    const match =
       index >= 0
         ? index
         : props.items.findIndex(
             (it) => !it.disabled && it.label.toLocaleLowerCase().startsWith(query.value),
-          ),
-    )
+          )
+    if (match >= 0) focus(match)
   }
 }
 function setItemRef(index: number, element: unknown) {
@@ -124,6 +117,7 @@ function setItemRef(index: number, element: unknown) {
 }
 function onHighlight(payload: { key: Key }) {
   const index = props.items.findIndex((item) => Object.is(item.key, payload.key))
+  if (index === active.value) return
   if (index >= 0) active.value = index
   emit('highlight', payload)
 }

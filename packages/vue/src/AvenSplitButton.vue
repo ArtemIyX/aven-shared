@@ -60,7 +60,7 @@ function onSelect(payload: { key: Key; item: AvenCommand<Key>; originalEvent: Ev
 
 <template>
   <AvenButtonGroup
-    v-bind="attrs"
+    v-bind="{ ...attrs, ...props.ui?.root?.attrs }"
     :label="label"
     :attached="attached"
     orientation="horizontal"
@@ -69,6 +69,7 @@ function onSelect(payload: { key: Key; item: AvenCommand<Key>; originalEvent: Ev
     :style="groupStyle"
   >
     <AvenButton
+      v-bind="props.ui?.primary?.attrs"
       :type="type"
       :variant="variant"
       :tone="tone"

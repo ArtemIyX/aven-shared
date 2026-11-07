@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { computed, toRefs, useAttrs } from 'vue'
+import { computed, onMounted, ref, toRefs, useAttrs } from 'vue'
 import type { AvenKbdProps, AvenKbdSlots } from './types.js'
 defineOptions({ inheritAttrs: false })
 const props = withDefaults(defineProps<AvenKbdProps>(), { platform: 'auto', unstyled: false })
 const { keys, unstyled, ui } = toRefs(props)
 defineSlots<AvenKbdSlots>()
 const attrs = useAttrs()
+const autoMac = ref(false)
+onMounted(() => {
+  autoMac.value = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform)
+})
 const mapped = computed(() => {
-  const mac =
-    props.platform === 'mac' ||
-    (props.platform === 'auto' &&
-      typeof navigator !== 'undefined' &&
-      /Mac|iPhone|iPad/.test(navigator.platform))
+  const mac = props.platform === 'mac' || (props.platform === 'auto' && autoMac.value)
   const labels: Record<string, string> = mac
     ? {
         Alt: '⌥',
@@ -53,7 +53,9 @@ const mapped = computed(() => {
     :style="[attrs.style, ui?.root?.style]"
     ><template v-for="(key, index) in mapped" :key="index"
       ><span v-if="index" aria-hidden="true" class="key-separator">+</span
-      ><kbd :class="['keycap', ui?.key?.class]" :style="ui?.key?.style">{{ key }}</kbd></template
+      ><kbd v-bind="ui?.key?.attrs" :class="['keycap', ui?.key?.class]" :style="ui?.key?.style">{{
+        key
+      }}</kbd></template
     ><slot v-if="!keys?.length"
   /></kbd>
 </template>

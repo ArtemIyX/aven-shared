@@ -1,34 +1,22 @@
 <script setup lang="ts" generic="Key extends string | number">
 import { computed, ref, shallowRef, watch } from 'vue'
-import type { AvenUi } from './types.js'
+import type {
+  AvenAccordionEvents,
+  AvenAccordionItem,
+  AvenAccordionProps,
+  AvenAccordionSlots,
+} from './types.js'
 import { useAvenId } from './composables.js'
-export type AccordionItem<K> = { key: K; label: string; disabled?: boolean }
-const props = withDefaults(
-  defineProps<{
-    items: AccordionItem<Key>[]
-    modelValue?: Key | Key[] | null
-    defaultValue?: Key | Key[] | null
-    multiple?: boolean
-    collapsible?: boolean
-    lazy?: boolean
-    unmountOnHide?: boolean
-    id?: string
-    unstyled?: boolean
-    ui?: AvenUi<'root' | 'item' | 'trigger' | 'panel' | 'indicator'>
-  }>(),
-  {
-    defaultValue: null,
-    multiple: false,
-    collapsible: true,
-    lazy: true,
-    unmountOnHide: false,
-    unstyled: false,
-  },
-)
-const emit = defineEmits<{
-  'update:modelValue': [value: Key | Key[] | null]
-  change: [value: Key | Key[] | null]
-}>()
+const props = withDefaults(defineProps<AvenAccordionProps<Key>>(), {
+  defaultValue: null,
+  multiple: false,
+  collapsible: true,
+  lazy: true,
+  unmountOnHide: false,
+  unstyled: false,
+})
+const emit = defineEmits<AvenAccordionEvents<Key>>()
+defineSlots<AvenAccordionSlots<Key>>()
 const local = shallowRef<Key | Key[] | null>(props.defaultValue ?? null),
   opened = computed(() => (props.modelValue !== undefined ? props.modelValue : local.value)),
   headers = ref<HTMLButtonElement[]>([]),
@@ -88,7 +76,7 @@ function keydown(e: KeyboardEvent, index: number) {
 }
 const generatedId = useAvenId(undefined, 'accordion'),
   base = computed(() => props.id ?? generatedId)
-function triggerAttrs(item: AccordionItem<Key>, index: number) {
+function triggerAttrs(item: AvenAccordionItem<Key>, index: number) {
   return {
     id: `${base.value}-trigger-${index}`,
     type: 'button' as const,
@@ -105,10 +93,12 @@ function setTrigger(index: number, el: HTMLElement | null) {
 </script>
 <template>
   <div
+    v-bind="ui?.root?.attrs"
     :class="['aven-accordion', { 'is-unstyled': unstyled }, ui?.root?.class]"
     :style="ui?.root?.style"
   >
     <section
+      v-bind="ui?.item?.attrs"
       v-for="(item, index) in items"
       :key="item.key"
       :class="[
@@ -127,7 +117,7 @@ function setTrigger(index: number, el: HTMLElement | null) {
           :trigger-attrs="triggerAttrs(item, index)"
           :trigger-ref="(el: HTMLElement | null) => setTrigger(index, el)"
           ><button
-            v-bind="triggerAttrs(item, index)"
+            v-bind="{ ...ui?.trigger?.attrs, ...triggerAttrs(item, index) }"
             :ref="(el) => setTrigger(index, el as HTMLElement | null)"
             :class="['accordion-trigger', ui?.trigger?.class]"
             :style="ui?.trigger?.style"
@@ -142,6 +132,7 @@ function setTrigger(index: number, el: HTMLElement | null) {
         >
       </h3>
       <div
+        v-bind="ui?.panel?.attrs"
         v-if="!unmountOnHide && (isOpen(item.key) || !lazy || visited.has(item.key))"
         :id="`${base}-panel-${index}`"
         role="region"
@@ -153,6 +144,7 @@ function setTrigger(index: number, el: HTMLElement | null) {
         <slot name="content" :item="item" :open="isOpen(item.key)" />
       </div>
       <div
+        v-bind="ui?.panel?.attrs"
         v-else-if="unmountOnHide && isOpen(item.key)"
         :id="`${base}-panel-${index}`"
         role="region"

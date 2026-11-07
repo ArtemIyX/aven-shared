@@ -58,8 +58,8 @@ function add() {
 </script>
 <template>
   <section
+    v-bind="{ ...ui?.root?.attrs, ...rootAttrs }"
     ref="root"
-    v-bind="rootAttrs"
     :id="id"
     :class="['aven-board-column', attrs.class, { 'is-unstyled': unstyled }, ui?.root?.class]"
     :style="[attrs.style, ui?.root?.style]"

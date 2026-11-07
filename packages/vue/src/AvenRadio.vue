@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="T extends string | number = string">
-import { computed, useAttrs, useSlots } from 'vue'
+import { computed, nextTick, ref, useAttrs, useSlots } from 'vue'
 import type { AvenRadioEvents, AvenRadioProps, AvenRadioSlots } from './types.js'
 import { useAvenId } from './composables.js'
 
@@ -16,6 +16,7 @@ const emit = defineEmits<AvenRadioEvents<T>>()
 defineSlots<AvenRadioSlots>()
 const attrs = useAttrs()
 const slots = useSlots()
+const input = ref<HTMLInputElement>()
 const inputAttrs = computed(() =>
   Object.fromEntries(Object.entries(attrs).filter(([key]) => key !== 'class' && key !== 'style')),
 )
@@ -24,16 +25,19 @@ const descriptionId = computed(() =>
   props.description || slots.description ? `${inputId}-description` : undefined,
 )
 
-function onChange(event: Event) {
-  const input = event.target as HTMLInputElement
-  if (!input.checked) return
+async function onChange(event: Event) {
+  const target = event.target as HTMLInputElement
+  if (!target.checked) return
   emit('update:checked', true)
   emit('change', { value: props.value, checked: true, originalEvent: event })
+  await nextTick()
+  if (props.checked !== undefined && input.value) input.value.checked = props.checked
 }
 </script>
 
 <template>
   <label
+    v-bind="ui?.root?.attrs"
     :for="inputId"
     :class="[
       'aven-radio',
@@ -49,6 +53,7 @@ function onChange(event: Event) {
     :style="[attrs.style, ui?.root?.style]"
   >
     <input
+      ref="input"
       v-bind="{ ...inputAttrs, ...ui?.control?.attrs }"
       :id="inputId"
       :class="['radio-control', ui?.control?.class]"
@@ -60,20 +65,28 @@ function onChange(event: Event) {
       :disabled="disabled"
       :required="required"
       :aria-invalid="invalid || undefined"
-      :aria-describedby="descriptionId"
+      :aria-describedby="
+        [attrs['aria-describedby'], descriptionId].filter(Boolean).join(' ') || undefined
+      "
       @change="onChange"
       @focus="emit('focus', $event)"
       @blur="emit('blur', $event)"
     />
     <span
+      v-bind="ui?.indicator?.attrs"
       aria-hidden="true"
       :class="['radio-indicator', ui?.indicator?.class]"
       :style="ui?.indicator?.style"
     />
-    <span :class="['radio-copy', ui?.label?.class]" :style="ui?.label?.style">
+    <span
+      v-bind="ui?.label?.attrs"
+      :class="['radio-copy', ui?.label?.class]"
+      :style="ui?.label?.style"
+    >
       <slot name="label">{{ label }}</slot>
       <span
         v-if="description || $slots.description"
+        v-bind="ui?.description?.attrs"
         :id="descriptionId"
         :class="['radio-description', ui?.description?.class]"
         :style="ui?.description?.style"
@@ -114,7 +127,7 @@ function onChange(event: Event) {
   border-radius: 50%;
   background: var(--aven-color-surface-base);
 }
-.is-checked .radio-indicator::after {
+.radio-control:checked + .radio-indicator::after {
   content: '';
   inline-size: 0.55rem;
   block-size: 0.55rem;

@@ -50,7 +50,7 @@ function seriesStyle(item: AvenChartLegendItem<Key>) {
 </script>
 <template>
   <ul
-    v-bind="rootAttrs"
+    v-bind="{ ...ui?.root?.attrs, ...rootAttrs }"
     :class="[
       'aven-chart-legend',
       `is-${orientation}`,

@@ -1,8 +1,7 @@
 <script setup lang="ts" generic="Key extends string | number">
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import AvenNavList from './AvenNavList.vue'
-import type { AvenNavItemModel } from './AvenNavList.vue'
-import type { AvenUi } from './types.js'
+import type { AvenNavItemModel, AvenUi } from './types.js'
 const props = withDefaults(
   defineProps<{
     items: AvenNavItemModel<Key>[]
@@ -15,17 +14,37 @@ const props = withDefaults(
     unstyled?: boolean
     ui?: AvenUi<'root' | 'header' | 'nav' | 'footer' | 'toggle'>
   }>(),
-  { defaultCollapsed: false, width: '16rem', label: 'Sidebar', collapsible: true, unstyled: false },
+  {
+    collapsed: undefined,
+    defaultCollapsed: false,
+    width: '16rem',
+    label: 'Sidebar',
+    collapsible: true,
+    unstyled: false,
+  },
 )
 const emit = defineEmits<{
   'update:collapsed': [value: boolean]
   navigate: [payload: { key: Key; item: AvenNavItemModel<Key>; originalEvent: MouseEvent }]
 }>()
-const isCollapsed = computed(() => props.collapsed ?? props.defaultCollapsed)
+const localCollapsed = ref(props.defaultCollapsed)
+const isCollapsed = computed(() => props.collapsed ?? localCollapsed.value)
+watch(
+  () => props.collapsed,
+  (value) => {
+    if (value !== undefined) localCollapsed.value = value
+  },
+)
+function toggleCollapsed() {
+  const next = !isCollapsed.value
+  if (props.collapsed === undefined) localCollapsed.value = next
+  emit('update:collapsed', next)
+}
 </script>
 <template>
   <aside
     :aria-label="props.label"
+    v-bind="props.ui?.root?.attrs"
     :class="[
       'aven-sidebar',
       { 'is-collapsed': isCollapsed, 'is-unstyled': props.unstyled },
@@ -33,20 +52,21 @@ const isCollapsed = computed(() => props.collapsed ?? props.defaultCollapsed)
     ]"
     :style="[{ inlineSize: isCollapsed ? '4rem' : props.width }, props.ui?.root?.style]"
   >
-    <header :class="['sidebar-header', props.ui?.header?.class]">
+    <header v-bind="props.ui?.header?.attrs" :class="['sidebar-header', props.ui?.header?.class]">
       <slot name="header"><slot name="brand" /></slot
       ><button
+        v-bind="props.ui?.toggle?.attrs"
         v-if="props.collapsible"
         type="button"
         :class="['sidebar-toggle', props.ui?.toggle?.class]"
         :aria-label="isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'"
         :aria-expanded="!isCollapsed"
-        @click="emit('update:collapsed', !isCollapsed)"
+        @click="toggleCollapsed"
       >
-        <slot name="collapse-trigger">{{ isCollapsed ? '›' : '‹' }}</slot>
+        <slot name="collapse-trigger" :collapsed="isCollapsed">{{ isCollapsed ? '›' : '‹' }}</slot>
       </button>
     </header>
-    <div class="sidebar-nav" :class="props.ui?.nav?.class">
+    <div v-bind="props.ui?.nav?.attrs" class="sidebar-nav" :class="props.ui?.nav?.class">
       <slot
         ><AvenNavList
           :items="props.items"
@@ -55,7 +75,11 @@ const isCollapsed = computed(() => props.collapsed ?? props.defaultCollapsed)
           @navigate="emit('navigate', $event)"
       /></slot>
     </div>
-    <footer v-if="$slots.footer" :class="['sidebar-footer', props.ui?.footer?.class]">
+    <footer
+      v-bind="props.ui?.footer?.attrs"
+      v-if="$slots.footer"
+      :class="['sidebar-footer', props.ui?.footer?.class]"
+    >
       <slot name="footer" />
     </footer>
   </aside>

@@ -26,14 +26,47 @@ const messages = computed(() =>
 const hasDescription = computed(() => !!props.description || !!slots.description)
 const hasError = computed(() => messages.value.length > 0 || !!slots.error)
 const invalidState = computed(() => props.invalid || hasError.value)
+const isControlAttr = (key: string) =>
+  key.startsWith('aria-') ||
+  [
+    'name',
+    'form',
+    'autocomplete',
+    'inputmode',
+    'min',
+    'max',
+    'minlength',
+    'maxlength',
+    'pattern',
+    'placeholder',
+  ].includes(key)
 const forwardedAttrs = computed(() => {
   const { class: _class, style: _style, ...rest } = attrs
-  return { ...rest, ...props.ui?.root?.attrs }
+  return {
+    ...Object.fromEntries(Object.entries(rest).filter(([key]) => !isControlAttr(key))),
+    ...props.ui?.root?.attrs,
+  }
 })
+const controlAttrs = computed(() => ({
+  ...Object.fromEntries(Object.entries(attrs).filter(([key]) => isControlAttr(key))),
+  id: controlId.value,
+  required: props.required,
+  disabled: props.disabled,
+  readonly: props.readonly,
+  'aria-describedby':
+    [
+      attrs['aria-describedby'],
+      hasDescription.value ? descId.value : null,
+      hasError.value ? errorId.value : null,
+    ]
+      .filter(Boolean)
+      .join(' ') || undefined,
+  'aria-invalid': invalidState.value || attrs['aria-invalid'] || undefined,
+}))
 </script>
 <template>
   <div
-    v-bind="forwardedAttrs"
+    v-bind="{ ...ui?.root?.attrs, ...forwardedAttrs }"
     :class="[
       'aven-field',
       `is-${orientation}`,
@@ -46,8 +79,8 @@ const forwardedAttrs = computed(() => {
     <slot name="before" />
     <label
       v-if="label || $slots.label"
-      :for="controlId"
       v-bind="ui?.label?.attrs"
+      :for="controlId"
       :class="['field-label', ui?.label?.class]"
       :style="ui?.label?.style"
       ><slot name="label" :required="required" :invalid="invalidState">{{ label }}</slot
@@ -65,22 +98,13 @@ const forwardedAttrs = computed(() => {
         :description-id="hasDescription ? descId : undefined"
         :error-id="hasError ? errorId : undefined"
         :invalid="invalidState"
-        :control-attrs="{
-          id: controlId,
-          required,
-          disabled,
-          readonly,
-          'aria-describedby':
-            [hasDescription ? descId : null, hasError ? errorId : null].filter(Boolean).join(' ') ||
-            undefined,
-          'aria-invalid': invalidState || undefined,
-        }"
+        :control-attrs="controlAttrs"
       />
     </div>
     <div
       v-if="hasDescription"
-      :id="descId"
       v-bind="ui?.description?.attrs"
+      :id="descId"
       :class="['field-description', ui?.description?.class]"
       :style="ui?.description?.style"
     >
@@ -88,9 +112,9 @@ const forwardedAttrs = computed(() => {
     </div>
     <div
       v-if="hasError"
+      v-bind="ui?.error?.attrs"
       :id="errorId"
       role="alert"
-      v-bind="ui?.error?.attrs"
       :class="['field-error', ui?.error?.class]"
       :style="ui?.error?.style"
     >

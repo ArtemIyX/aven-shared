@@ -1,5 +1,6 @@
 <script setup lang="ts" generic="Key extends string | number">
 import { computed, nextTick, ref, useAttrs } from 'vue'
+import { useAvenId } from './composables.js'
 import AvenMenu from './AvenMenu.vue'
 import type {
   AvenMenuEvents,
@@ -19,6 +20,7 @@ const button = ref<HTMLButtonElement>(),
   wrapper = ref<HTMLElement>(),
   nested = ref<{ focusFirst: () => void } | null>(null),
   submenuOpen = ref(false)
+const submenuId = useAvenId(props.id ? `${props.id}-submenu` : undefined, 'menu-item-submenu')
 const rtl = computed(
   () =>
     !!wrapper.value &&
@@ -98,6 +100,7 @@ defineExpose({
   <div
     ref="wrapper"
     role="presentation"
+    v-bind="ui?.root?.attrs"
     :class="['aven-menu-item-wrap', { 'is-submenu-open': submenuOpen }, ui?.root?.class]"
     :style="ui?.root?.style"
     @keydown.esc.stop.prevent="closeFromEscape"
@@ -116,6 +119,9 @@ defineExpose({
       "
       :aria-checked="item.kind === 'checkbox' || item.kind === 'radio' ? checked() : undefined"
       :aria-haspopup="item.kind === 'submenu' ? 'menu' : undefined"
+      :aria-controls="
+        item.kind === 'submenu' && item.children?.length && submenuOpen ? submenuId : undefined
+      "
       :aria-expanded="item.kind === 'submenu' ? submenuOpen : undefined"
       :tabindex="active ? 0 : -1"
       :disabled="item.disabled"
@@ -131,7 +137,7 @@ defineExpose({
       @click="activate($event)"
       @focus="emit('highlight', { key: item.key })"
     >
-      <span v-if="$slots.leading" :class="ui?.leading?.class"
+      <span v-bind="ui?.leading?.attrs" v-if="$slots.leading" :class="ui?.leading?.class"
         ><slot name="leading" :item="item"
       /></span>
       <span class="item-label"
@@ -140,7 +146,7 @@ defineExpose({
         }}</slot
         ><small v-if="item.description">{{ item.description }}</small></span
       >
-      <span v-if="item.shortcut" :class="ui?.shortcut?.class"
+      <span v-bind="ui?.shortcut?.attrs" v-if="item.shortcut" :class="ui?.shortcut?.class"
         ><slot name="shortcut" :item="item">{{ item.shortcut }}</slot></span
       >
       <span v-if="item.kind === 'submenu'" class="submenu-indicator" aria-hidden="true"
@@ -148,11 +154,12 @@ defineExpose({
           rtl ? '‹' : '›'
         }}</slot></span
       >
-      <span v-if="$slots.trailing" :class="ui?.trailing?.class"
+      <span v-bind="ui?.trailing?.attrs" v-if="$slots.trailing" :class="ui?.trailing?.class"
         ><slot name="trailing" :item="item"
       /></span>
     </button>
     <div
+      v-bind="ui?.submenu?.attrs"
       v-if="item.kind === 'submenu' && submenuOpen && item.children?.length"
       class="submenu-surface"
       :class="ui?.submenu?.class"
@@ -161,6 +168,7 @@ defineExpose({
       <slot name="submenu" :item="item" :close="() => setSubmenu(false)"
         ><AvenMenu
           ref="nested"
+          :id="submenuId"
           :items="item.children"
           :loop="false"
           @select="relaySelect"

@@ -25,20 +25,32 @@ defineSlots<AvenTagSlots>()
       ui?.root?.class,
     ]"
     :style="[attrs.style, ui?.root?.style]"
-    ><span v-if="$slots.leading" :class="ui?.leading?.class"><slot name="leading" /></span
-    ><slot /><span v-if="$slots.trailing" :class="ui?.trailing?.class"
+    ><span
+      v-if="$slots.leading"
+      v-bind="ui?.leading?.attrs"
+      :class="ui?.leading?.class"
+      :style="ui?.leading?.style"
+      ><slot name="leading" /></span
+    ><slot /><span
+      v-if="$slots.trailing"
+      v-bind="ui?.trailing?.attrs"
+      :class="ui?.trailing?.class"
+      :style="ui?.trailing?.style"
       ><slot name="trailing" /></span
   ></span>
 </template>
 <style scoped>
 .aven-tag {
+  --tag-default-bg: var(--bg);
+  --tag-default-fg: var(--text);
+  --tag-default-border: transparent;
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: var(--aven-tag-gap, 0.35rem);
   max-inline-size: 100%;
   padding: 0.2rem 0.55rem;
-  border: 1px solid transparent;
-  border-radius: 999px;
+  border: 1px solid var(--aven-tag-border, var(--tag-default-border));
+  border-radius: var(--aven-tag-radius, 999px);
   font-size: var(--aven-font-size-sm);
   line-height: 1.4;
   overflow-wrap: anywhere;
@@ -71,13 +83,19 @@ defineSlots<AvenTagSlots>()
   --solid: var(--aven-color-warning-solid);
   --on: var(--aven-color-warning-on-solid);
 }
-.tone-danger,
-.tone-critical {
+.tone-danger {
   --text: var(--aven-color-danger-text);
   --bg: var(--aven-color-danger-subtle);
   --border: var(--aven-color-danger-border);
   --solid: var(--aven-color-danger-solid);
   --on: var(--aven-color-danger-on-solid);
+}
+.tone-critical {
+  --text: var(--aven-color-critical-text);
+  --bg: var(--aven-color-critical-subtle);
+  --border: var(--aven-color-critical-border);
+  --solid: var(--aven-color-critical-solid);
+  --on: var(--aven-color-critical-on-solid);
 }
 .tone-info {
   --text: var(--aven-color-info-text);
@@ -94,16 +112,16 @@ defineSlots<AvenTagSlots>()
   --on: var(--aven-color-secondary-on-solid);
 }
 .aven-tag {
-  color: var(--text);
-  background: var(--bg);
+  color: var(--aven-tag-fg, var(--tag-default-fg));
+  background: var(--aven-tag-bg, var(--tag-default-bg));
 }
 .is-outline {
-  background: transparent;
-  border-color: var(--border);
+  --tag-default-bg: transparent;
+  --tag-default-border: var(--border);
 }
 .is-solid {
-  background: var(--solid);
-  color: var(--on);
+  --tag-default-bg: var(--solid);
+  --tag-default-fg: var(--on);
 }
 .size-xs {
   font-size: var(--aven-font-size-xs);

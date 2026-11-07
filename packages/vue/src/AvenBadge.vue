@@ -36,8 +36,8 @@ const forwardedAttrs = computed(() => {
 
 <template>
   <span
+    v-bind="{ ...ui?.root?.attrs, ...forwardedAttrs }"
     v-if="visible"
-    v-bind="forwardedAttrs"
     :class="[
       'aven-badge',
       `tone-${tone}`,
@@ -91,20 +91,20 @@ const forwardedAttrs = computed(() => {
 
 <style scoped>
 .aven-badge {
-  --aven-badge-bg: var(--tone-subtle);
-  --aven-badge-fg: var(--tone-text);
-  --aven-badge-border: transparent;
-  --aven-badge-radius: 999px;
-  --aven-badge-dot-size: 0.5em;
+  --badge-default-bg: var(--tone-subtle);
+  --badge-default-fg: var(--tone-text);
+  --badge-default-border: transparent;
+  --badge-default-radius: 999px;
+  --badge-default-dot-size: 0.5em;
   display: inline-flex;
   align-items: center;
   gap: var(--aven-badge-gap, 0.3em);
   max-inline-size: 100%;
-  border: 1px solid var(--aven-badge-border);
-  border-radius: var(--aven-badge-radius);
+  border: 1px solid var(--aven-badge-border, var(--badge-default-border));
+  border-radius: var(--aven-badge-radius, var(--badge-default-radius));
   padding: var(--aven-badge-padding, 0.125rem 0.5rem);
-  color: var(--aven-badge-fg);
-  background: var(--aven-badge-bg);
+  color: var(--aven-badge-fg, var(--badge-default-fg));
+  background: var(--aven-badge-bg, var(--badge-default-bg));
   font-size: var(--aven-font-size-sm);
   font-weight: 600;
   line-height: 1.4;
@@ -175,16 +175,16 @@ const forwardedAttrs = computed(() => {
   --tone-on-solid: var(--aven-color-critical-on-solid);
 }
 .is-outline {
-  --aven-badge-bg: transparent;
-  --aven-badge-border: var(--tone-border);
+  --badge-default-bg: transparent;
+  --badge-default-border: var(--tone-border);
 }
 .is-solid {
-  --aven-badge-bg: var(--tone-solid);
-  --aven-badge-fg: var(--tone-on-solid);
+  --badge-default-bg: var(--tone-solid);
+  --badge-default-fg: var(--tone-on-solid);
 }
 .badge-dot {
-  inline-size: var(--aven-badge-dot-size);
-  block-size: var(--aven-badge-dot-size);
+  inline-size: var(--aven-badge-dot-size, var(--badge-default-dot-size));
+  block-size: var(--aven-badge-dot-size, var(--badge-default-dot-size));
   flex: none;
   border-radius: 50%;
   background: var(--tone-solid);

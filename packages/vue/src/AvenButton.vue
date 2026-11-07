@@ -101,28 +101,28 @@ defineExpose({
   --button-soft-bg: var(--aven-color-accent-subtle);
   --button-soft-border: var(--aven-color-accent-border);
   --button-outline-border: var(--aven-color-accent-border);
-  --aven-button-bg: var(--button-bg);
-  --aven-button-fg: var(--button-fg);
-  --aven-button-border: transparent;
-  --aven-button-hover-bg: var(--button-hover);
-  --aven-button-pressed-bg: var(--button-pressed);
-  --aven-button-radius: var(--aven-radius-md);
-  --aven-button-padding-inline: var(--aven-space-4);
-  --aven-button-min-block-size: 2.75rem;
-  --aven-button-gap: var(--aven-space-2);
+  --button-default-bg: var(--button-bg);
+  --button-default-fg: var(--button-fg);
+  --button-default-border: transparent;
+  --button-default-hover-bg: var(--button-hover);
+  --button-default-pressed-bg: var(--button-pressed);
+  --button-default-radius: var(--aven-radius-md);
+  --button-default-padding-inline: var(--aven-space-4);
+  --button-default-min-block-size: 2.75rem;
+  --button-default-gap: var(--aven-space-2);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--aven-button-gap);
+  gap: var(--aven-button-gap, var(--button-default-gap));
   min-inline-size: 2.75rem;
-  min-block-size: var(--aven-button-min-block-size);
-  padding-inline: var(--aven-button-padding-inline);
-  border: 1px solid var(--aven-button-border);
-  border-radius: var(--aven-button-radius);
+  min-block-size: var(--aven-button-min-block-size, var(--button-default-min-block-size));
+  padding-inline: var(--aven-button-padding-inline, var(--button-default-padding-inline));
+  border: 1px solid var(--aven-button-border, var(--button-default-border));
+  border-radius: var(--aven-button-radius, var(--button-default-radius));
   font: inherit;
   font-weight: 600;
-  color: var(--aven-button-fg);
-  background: var(--aven-button-bg);
+  color: var(--aven-button-fg, var(--button-default-fg));
+  background: var(--aven-button-bg, var(--button-default-bg));
   cursor: pointer;
   transition:
     background-color 0.15s ease,
@@ -200,62 +200,62 @@ defineExpose({
   --button-outline-border: var(--aven-color-critical-border);
 }
 .is-soft {
-  --aven-button-bg: var(--button-soft-bg);
-  --aven-button-fg: var(--button-text);
-  --aven-button-border: var(--button-soft-border);
-  --aven-button-hover-bg: var(--button-soft-bg);
-  --aven-button-pressed-bg: var(--button-soft-bg);
+  --button-default-bg: var(--button-soft-bg);
+  --button-default-fg: var(--button-text);
+  --button-default-border: var(--button-soft-border);
+  --button-default-hover-bg: var(--button-soft-bg);
+  --button-default-pressed-bg: var(--button-soft-bg);
 }
 .is-outline {
-  --aven-button-bg: var(--aven-color-surface-base);
-  --aven-button-fg: var(--button-text);
-  --aven-button-border: var(--button-outline-border);
-  --aven-button-hover-bg: var(--button-soft-bg);
-  --aven-button-pressed-bg: var(--button-soft-bg);
+  --button-default-bg: var(--aven-color-surface-base);
+  --button-default-fg: var(--button-text);
+  --button-default-border: var(--button-outline-border);
+  --button-default-hover-bg: var(--button-soft-bg);
+  --button-default-pressed-bg: var(--button-soft-bg);
 }
 .is-ghost,
 .is-link {
-  --aven-button-bg: transparent;
-  --aven-button-fg: var(--button-text);
-  --aven-button-hover-bg: var(--button-soft-bg);
-  --aven-button-pressed-bg: var(--button-soft-bg);
+  --button-default-bg: transparent;
+  --button-default-fg: var(--button-text);
+  --button-default-hover-bg: var(--button-soft-bg);
+  --button-default-pressed-bg: var(--button-soft-bg);
 }
 .is-link {
   text-decoration: underline;
   text-underline-offset: 0.15em;
 }
 .size-xs {
-  --aven-button-min-block-size: 2.75rem;
-  padding-inline: var(--aven-space-2);
+  --button-default-min-block-size: 2.75rem;
+  --button-default-padding-inline: var(--aven-space-2);
   font-size: var(--aven-font-size-xs);
 }
 .size-sm {
-  --aven-button-min-block-size: 2.75rem;
-  padding-inline: var(--aven-space-3);
+  --button-default-min-block-size: 2.75rem;
+  --button-default-padding-inline: var(--aven-space-3);
   font-size: var(--aven-font-size-sm);
 }
 .size-md {
-  --aven-button-min-block-size: 2.75rem;
+  --button-default-min-block-size: 2.75rem;
 }
 .size-lg {
-  --aven-button-min-block-size: 3rem;
-  padding-inline: var(--aven-space-6);
+  --button-default-min-block-size: 3rem;
+  --button-default-padding-inline: var(--aven-space-6);
 }
 .shape-pill {
-  --aven-button-radius: 999px;
+  --button-default-radius: 999px;
 }
 .shape-square {
-  --aven-button-radius: 0;
+  --button-default-radius: 0;
 }
 .is-block {
   display: flex;
   inline-size: 100%;
 }
 .aven-button:not(:disabled):hover {
-  background: var(--aven-button-hover-bg);
+  background: var(--aven-button-hover-bg, var(--button-default-hover-bg));
 }
 .aven-button:not(:disabled):active {
-  background: var(--aven-button-pressed-bg);
+  background: var(--aven-button-pressed-bg, var(--button-default-pressed-bg));
 }
 .aven-button:focus-visible {
   outline: 2px solid var(--aven-color-focus-ring);

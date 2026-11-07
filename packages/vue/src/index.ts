@@ -165,6 +165,10 @@ export type {
   AvenMenuGroupModel,
   AvenMenuProps,
   AvenMenuEvents,
+  AvenMenuSlots,
+  AvenDropdownMenuProps,
+  AvenDropdownMenuEvents,
+  AvenDropdownMenuSlots,
   AvenMenuItemProps,
   AvenMenuItemEvents,
   AvenMenuItemSlots,
@@ -220,9 +224,66 @@ export type {
   AvenBoardColumnProps,
   AvenBoardColumnEvents,
   AvenBoardColumnSlots,
+  AvenTabItem,
+  AvenTabsProps,
+  AvenTabsEvents,
+  AvenTabsSlots,
+  AvenTabProps,
+  AvenTabEvents,
+  AvenTabSlots,
+  AvenTabPanelProps,
+  AvenTabPanelSlots,
+  AvenNumberInputProps,
+  AvenNumberInputEvents,
+  AvenNumberInputSlots,
+  AvenCheckboxProps,
+  AvenCheckboxEvents,
+  AvenCheckboxSlots,
+  AvenCheckboxGroupProps,
+  AvenCheckboxGroupEvents,
+  AvenCheckboxGroupSlots,
+  AvenSwitchProps,
+  AvenSwitchEvents,
+  AvenSwitchSlots,
+  AvenSelectProps,
+  AvenSelectEvents,
+  AvenSelectSlots,
+  AvenPopoverProps,
+  AvenPopoverEvents,
+  AvenPopoverSlots,
+  AvenTooltipProps,
+  AvenTooltipEvents,
+  AvenTooltipSlots,
+  AvenSpinnerProps,
+  AvenSpinnerSlots,
+  AvenProgressProps,
+  AvenProgressSlots,
+  AvenSkeletonProps,
+  AvenSkeletonSlots,
+  AvenSegmentedControlProps,
+  AvenSegmentedControlEvents,
+  AvenSegmentedControlSlots,
+  AvenBreadcrumbItem,
+  AvenBreadcrumbProps,
+  AvenBreadcrumbEvents,
+  AvenBreadcrumbSlots,
+  AvenPaginationProps,
+  AvenPaginationEvents,
+  AvenPaginationSlots,
+  AvenNavItemModel,
+  AvenNavItemProps,
+  AvenNavItemEvents,
+  AvenNavItemSlots,
+  AvenNavListProps,
+  AvenNavListEvents,
+  AvenNavListSlots,
+  AvenSidebarProps,
+  AvenSidebarEvents,
+  AvenSidebarSlots,
   AvenSearchFieldProps,
   AvenInputProps,
   AvenInputEvents,
+  AvenInputSlots,
   AvenSearchPayload,
   AvenSearchSubmitPayload,
   AvenSearchFieldEvents,
@@ -325,7 +386,12 @@ export { default as AvenBoardColumn } from './AvenBoardColumn.vue'
 export { default as AvenCard } from './AvenCard.vue'
 export { default as AvenPropertyRow } from './AvenPropertyRow.vue'
 export type { AvenTextProps } from './AvenText.js'
-export { useOpenState, useAvenId } from './composables.js'
+export {
+  useOpenState,
+  useAvenId,
+  registerAvenOverlayLayer,
+  isTopAvenOverlayLayer,
+} from './composables.js'
 export type { AvenOpenReason, AvenOpenChange } from './composables.js'
 export { default as AvenDialog } from './AvenDialog.vue'
 export { default as AvenAlertDialog } from './AvenAlertDialog.vue'
@@ -358,11 +424,13 @@ export { default as AvenIconButton } from './AvenIconButton.vue'
 export { default as AvenButtonGroup } from './AvenButtonGroup.vue'
 export { default as AvenSplitButton } from './AvenSplitButton.vue'
 export { default as AvenTabs } from './AvenTabs.vue'
+export { default as AvenTab } from './AvenTab.vue'
+export { default as AvenTabPanel } from './AvenTabPanel.vue'
 export { default as AvenSegmentedControl } from './AvenSegmentedControl.vue'
 export { default as AvenBreadcrumb } from './AvenBreadcrumb.vue'
 export { default as AvenPagination } from './AvenPagination.vue'
 export { default as AvenNavList } from './AvenNavList.vue'
-export type { AvenNavItemModel } from './AvenNavList.vue'
+export { default as AvenNavItem } from './AvenNavItem.vue'
 export { default as AvenSidebar } from './AvenSidebar.vue'
 export { default as AvenNumberInput } from './AvenNumberInput.vue'
 export { default as AvenForm } from './AvenForm.vue'
@@ -373,7 +441,6 @@ export { default as AvenAvatar } from './AvenAvatar.vue'
 export { default as AvenAvatarGroup } from './AvenAvatarGroup.vue'
 export { default as AvenPanel } from './AvenPanel.vue'
 export { default as AvenAccordion } from './AvenAccordion.vue'
-export type { AccordionItem as AvenAccordionItem } from './AvenAccordion.vue'
 export { default as AvenCollapsible } from './AvenCollapsible.vue'
 export { default as AvenStack } from './AvenStack.vue'
 export { default as AvenInline } from './AvenInline.vue'
@@ -381,3 +448,32 @@ export { default as AvenGrid } from './AvenGrid.vue'
 export { default as AvenContainer } from './AvenContainer.vue'
 export { default as AvenFormattedValue } from './AvenFormattedValue.vue'
 export { default as AvenStat } from './AvenStat.vue'
+export type {
+  AvenAccordionItem,
+  AvenAccordionProps,
+  AvenAccordionEvents,
+  AvenAccordionSlots,
+  AvenCollapsibleProps,
+  AvenCollapsibleEvents,
+  AvenCollapsibleSlots,
+  AvenStackProps,
+  AvenStackSlots,
+  AvenInlineProps,
+  AvenInlineSlots,
+  AvenGridResponsiveColumns,
+  AvenGridProps,
+  AvenGridSlots,
+  AvenContainerProps,
+  AvenContainerSlots,
+  AvenStatProps,
+  AvenStatSlots,
+  AvenFormattedValueProps,
+  AvenFormattedValueSlots,
+  AvenDropzoneProps,
+  AvenDropzoneEvents,
+  AvenDropzoneSlots,
+  AvenActivityListItem,
+  AvenActivityListProps,
+  AvenActivityListEvents,
+  AvenActivityListSlots,
+} from './types.js'

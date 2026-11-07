@@ -260,6 +260,7 @@ onBeforeUnmount(() => {
     <slot v-if="props.loading" name="loading"><div role="status">Loading…</div></slot>
     <slot v-else-if="entries.length === 0" name="empty"><div>No items.</div></slot>
     <ul
+      v-bind="props.ui?.list?.attrs"
       v-else
       :class="['virtual-list-track', props.ui?.list?.class]"
       :style="[
@@ -271,6 +272,7 @@ onBeforeUnmount(() => {
       role="list"
     >
       <li
+        v-bind="props.ui?.item?.attrs"
         v-for="entry in renderedEntries"
         :key="entry.key"
         :ref="(element) => setRowRef(entry.key, element as Element | null)"

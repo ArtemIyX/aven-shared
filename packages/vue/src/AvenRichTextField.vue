@@ -207,7 +207,7 @@ defineExpose({ focus })
 </script>
 <template>
   <div
-    v-bind="rootAttrs"
+    v-bind="{ ...ui?.root?.attrs, ...rootAttrs }"
     ref="root"
     :class="[
       'aven-rich-text-field',
@@ -272,6 +272,7 @@ defineExpose({ focus })
       :update-word-count="updateWordCount"
     />
     <textarea
+      v-bind="{ ...ui?.editor?.attrs, ...textareaAttrs }"
       v-else-if="supportsBasicSchema"
       ref="editor"
       :name="name"
@@ -280,7 +281,6 @@ defineExpose({ focus })
       :disabled="disabled"
       :readonly="readonly"
       :required="required"
-      v-bind="textareaAttrs"
       :class="['rich-editor', ui?.editor?.class]"
       :style="ui?.editor?.style"
       @input="onInput"

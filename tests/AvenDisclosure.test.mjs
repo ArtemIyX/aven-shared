@@ -12,6 +12,7 @@ import {
   AvenIcon,
   AvenField,
   AvenFieldset,
+  AvenInput,
   AvenListbox,
   AvenSlider,
   AvenRangeSlider,
@@ -40,6 +41,10 @@ import {
   AvenVirtualList,
   AvenTable,
   AvenDataTable,
+  AvenStack,
+  AvenInline,
+  AvenGrid,
+  AvenContainer,
   AvenTimeline,
   AvenActivityList,
   AvenSwitcher,
@@ -58,6 +63,26 @@ import {
   AvenCodeBlock,
   AvenTree,
   AvenTreeItem,
+  AvenTabs,
+  AvenNumberInput,
+  AvenSelect,
+  AvenPopover,
+  AvenDropdownMenu,
+  AvenTooltip,
+  AvenCheckboxGroup,
+  AvenCheckbox,
+  AvenSwitch,
+  AvenSegmentedControl,
+  AvenPagination,
+  AvenBreadcrumb,
+  AvenNavList,
+  AvenNavItem,
+  AvenSidebar,
+  AvenProgress,
+  AvenSpinner,
+  AvenSkeleton,
+  registerAvenOverlayLayer,
+  isTopAvenOverlayLayer,
   AvenSearchBar,
   AvenFilterBar,
   AvenFilterChip,
@@ -107,7 +132,16 @@ test('accordion links headings and panels with unique provider-scoped ids', asyn
           default: () => [
             h(
               AvenAccordion,
-              { items: [{ key: 'one', label: 'One' }], defaultValue: 'one' },
+              {
+                items: [{ key: 'one', label: 'One' }],
+                defaultValue: 'one',
+                ui: {
+                  root: { attrs: { 'data-ui-root': 'accordion' } },
+                  item: { attrs: { 'data-ui-item': 'accordion' } },
+                  trigger: { attrs: { 'data-ui-trigger': 'accordion' } },
+                  panel: { attrs: { 'data-ui-panel': 'accordion' } },
+                },
+              },
               { content: ({ item }) => item.label },
             ),
             h(
@@ -120,6 +154,10 @@ test('accordion links headings and panels with unique provider-scoped ids', asyn
       ),
   })
   assert.match(html, /id="test-accordion-1-trigger-0"/)
+  assert.match(html, /data-ui-root="accordion"/)
+  assert.match(html, /data-ui-item="accordion"/)
+  assert.match(html, /data-ui-trigger="accordion"/)
+  assert.match(html, /data-ui-panel="accordion"/)
   assert.match(html, /aria-controls="test-accordion-1-panel-0"/)
   assert.match(html, /aria-labelledby="test-accordion-1-trigger-0"/)
   assert.match(html, /id="test-accordion-2-trigger-0"/)
@@ -210,6 +248,48 @@ test('fieldset links its description and preserves native disabled behavior', as
   assert.match(html, /type="checkbox" name="updates"/)
 })
 
+test('field routes native attributes to its control and combines description references', async () => {
+  const html = await render({
+    render: () =>
+      h(
+        AvenField,
+        {
+          id: 'email',
+          label: 'Email',
+          name: 'email',
+          autocomplete: 'email',
+          description: 'Use work email',
+          'aria-describedby': 'external-help',
+          'data-wrapper': 'field',
+          ui: { description: { attrs: { id: 'ignored-id' } } },
+        },
+        { default: ({ controlAttrs }) => h('input', controlAttrs) },
+      ),
+  })
+  assert.match(html, /<div[^>]*data-wrapper="field"/)
+  assert.match(html, /<input[^>]*name="email"[^>]*autocomplete="email"/)
+  assert.match(html, /aria-describedby="external-help email-description"/)
+  assert.match(html, /id="email-description"/)
+  assert.doesNotMatch(html, /ignored-id/)
+})
+
+test('fieldset preserves external descriptions without referencing absent content', async () => {
+  const html = await render({
+    render: () =>
+      h(AvenFieldset, {
+        legend: 'Preferences',
+        'aria-describedby': 'external-help',
+        ui: {
+          description: { attrs: { id: 'unused' } },
+          legend: { attrs: { 'data-part': 'legend' } },
+        },
+      }),
+  })
+  assert.match(html, /aria-describedby="external-help"/)
+  assert.doesNotMatch(html, /unused/)
+  assert.match(html, /data-part="legend"/)
+})
+
 test('collapsible reflects controlled open state and keeps the panel linked', async () => {
   const html = await render({
     render: () =>
@@ -270,6 +350,7 @@ test('icon button requires an accessible label and keeps a large target while bu
   assert.match(html, /data-action="close"/)
   assert.match(html, /icon-button-glyph[^>]*>[\s\S]*?×/)
   assert.match(html, /shape-pill/)
+  assert.match(html, /class="spinner"/)
 })
 
 test('icon supports decorative and labeled graphics without injecting SVG strings', async () => {
@@ -280,13 +361,14 @@ test('icon supports decorative and labeled graphics without injecting SVG string
     render: () =>
       h(
         AvenIcon,
-        { decorative: false, label: 'Warning', size: 24, tone: 'warning' },
+        { decorative: false, label: 'Warning', size: 24, tone: 'warning', class: 'custom-icon' },
         { default: () => h('svg', { viewBox: '0 0 24 24' }, [h('path', { d: 'M12 3 2 21h20z' })]) },
       ),
   })
   assert.match(decorative, /aria-hidden="true"/)
   assert.match(named, /role="img" aria-label="Warning"/)
   assert.match(named, /--aven-icon-size:\s*24px/)
+  assert.match(named, /class="[^"]*custom-icon/)
   assert.match(named, /<svg[^>]*viewBox="0 0 24 24"/)
 })
 
@@ -310,6 +392,64 @@ test('link keeps native navigation, safe blank target defaults, and explicit rel
   assert.match(overridden, /rel="nofollow"/)
 })
 
+test('layout primitives expose semantic tags, responsive props, and root UI hooks', async () => {
+  const html = await render({
+    render: () =>
+      h('div', [
+        h(
+          AvenStack,
+          {
+            as: 'section',
+            gap: 'space-5',
+            align: 'start',
+            justify: 'between',
+            ui: {
+              root: {
+                attrs: { 'data-layout': 'stack' },
+                class: 'stack-hook',
+                style: { outline: '1px solid currentColor' },
+              },
+            },
+          },
+          { default: () => 'Stack content' },
+        ),
+        h(
+          AvenInline,
+          { gap: 7, wrap: false, ui: { root: { attrs: { 'data-layout': 'inline' } } } },
+          { default: () => 'Inline content' },
+        ),
+        h(
+          AvenGrid,
+          {
+            columns: { base: 1, sm: 2, md: 3, lg: 4 },
+            ui: { root: { attrs: { 'data-layout': 'grid' } } },
+          },
+          { default: () => 'Grid content' },
+        ),
+        h(
+          AvenContainer,
+          {
+            as: 'main',
+            maxWidth: '60rem',
+            gutter: 20,
+            centered: false,
+            ui: { root: { attrs: { 'data-layout': 'container' } } },
+          },
+          { default: () => 'Container content' },
+        ),
+      ]),
+  })
+  assert.match(html, /<section[^>]*data-layout="stack"/)
+  assert.match(html, /class="aven-stack stack-hook"/)
+  assert.match(html, /outline:1px solid currentColor/)
+  assert.match(html, /data-layout="inline"/)
+  assert.match(html, /flex-wrap:nowrap/)
+  assert.match(html, /data-layout="grid"/)
+  assert.match(html, /--aven-grid-columns-sm:2/)
+  assert.match(html, /<main[^>]*data-layout="container"/)
+  assert.match(html, /padding-inline:20px/)
+})
+
 test('badge preserves capped visible count and announces the full count and label', async () => {
   const html = await render({
     render: () => h(AvenBadge, { count: 147, max: 99, label: 'notifications', variant: 'dot' }),
@@ -328,6 +468,24 @@ test('status dot supplies text in addition to its semantic color', async () => {
   assert.match(html, /tone-critical/)
   assert.match(html, /aria-hidden="true"[^>]*class="status-dot"/)
   assert.match(html, /sr-only[^>]*>critical status/)
+})
+
+test('icon resolves provider assets and keeps its accessible SVG wrapper contract', async () => {
+  const resolved = await render({
+    render: () =>
+      h(
+        AvenProvider,
+        { config: { resolveIcon: (name) => (name === 'warning' ? 'svg' : undefined) } },
+        { default: () => h(AvenIcon, { name: 'warning', decorative: false, label: 'Warning' }) },
+      ),
+  })
+  assert.match(resolved, /<span[^>]*role="img"[^>]*aria-label="Warning"/)
+  assert.match(resolved, /<svg[^>]*><\/svg>/)
+  const fallback = await render({
+    render: () =>
+      h(AvenIcon, { name: 'missing' }, { default: () => h('svg', [h('title', 'Fallback')]) }),
+  })
+  assert.match(fallback, /<svg><title>Fallback<\/title><\/svg>/)
 })
 
 test('icon button forwards one native action, blocks disabled action, and exposes focus methods', async () => {
@@ -512,6 +670,19 @@ test('formatted value localizes valid values and preserves invalid input', async
   })
   assert.match(html, /€1,234\.50/)
   assert.match(html, /not-a-number/)
+
+  for (const locale of ['de-DE', 'fr-FR', 'ar-EG']) {
+    const localized = await render({
+      render: () =>
+        h(AvenFormattedValue, { value: 1234.5, kind: 'currency', currency: 'EUR', locale }),
+    })
+    const expected = new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency: 'EUR',
+      maximumFractionDigits: 2,
+    }).format(1234.5)
+    assert.ok(localized.includes(expected), `${locale} should use its localized currency format`)
+  }
 })
 
 test('stat preserves descriptive trend text alongside its value', async () => {
@@ -529,6 +700,12 @@ test('stat preserves descriptive trend text alongside its value', async () => {
   assert.match(html, /120/)
   assert.match(html, /12% higher/)
   assert.match(html, /This month/)
+  const german = await render({
+    render: () => h(AvenStat, { label: 'Users', value: 1234.5, locale: 'de-DE' }),
+  })
+  assert.ok(
+    german.includes(new Intl.NumberFormat('de-DE', { maximumFractionDigits: 2 }).format(1234.5)),
+  )
 })
 
 test('specialized input fields connect labels and help text to their native inputs', async () => {
@@ -566,6 +743,22 @@ function makeRenderer() {
       children: [],
       listeners,
       focused: false,
+      getBoundingClientRect() {
+        const rect = this.rect ?? { left: 0, top: 0, width: 200, height: 100 }
+        return {
+          ...rect,
+          right: rect.left + rect.width,
+          bottom: rect.top + rect.height,
+        }
+      },
+      contains(target) {
+        let current = target
+        while (current) {
+          if (current === this) return true
+          current = current.parent
+        }
+        return false
+      },
       querySelector(selector) {
         const predicate = selector === 'input' ? (node) => node.type === 'input' : () => false
         return this.children
@@ -657,7 +850,11 @@ function makeRenderer() {
     })
     return element
   }
+  const teleportBody = { type: 'body', children: [] }
+  const overlayRoot = { type: 'overlay-root', children: [] }
   const renderer = createRenderer({
+    querySelector: (selector) =>
+      selector === 'body' ? teleportBody : selector === '#overlay-root' ? overlayRoot : null,
     createElement,
     createText: (text) => ({ text }),
     createComment: (text) => ({ comment: text }),
@@ -684,14 +881,17 @@ function makeRenderer() {
         child.parent.children = child.parent.children.filter((item) => item !== child)
     },
     parentNode: (node) => node.parent ?? null,
-    nextSibling: () => null,
+    nextSibling: (node) => {
+      const siblings = node.parent?.children ?? []
+      return siblings[siblings.indexOf(node) + 1] ?? null
+    },
   })
   const root = { type: 'root', children: [] }
   const find = (node, predicate) =>
     predicate(node)
       ? node
       : (node.children ?? []).map((child) => find(child, predicate)).find(Boolean)
-  return { renderer, root, find }
+  return { renderer, root, find, overlayRoot }
 }
 
 function dispatchHandler(handler, event) {
@@ -759,6 +959,78 @@ test('listbox keyboard movement skips disabled options and commits once', async 
   assert.equal(list.props['aria-activedescendant']?.endsWith('-option-0'), true)
 })
 
+test('readonly listbox navigates and preserves its active key when options reorder', async () => {
+  const { renderer, root, find } = makeRenderer()
+  const options = ref([
+    { value: 'a', label: 'A' },
+    { value: 'b', label: 'B' },
+    { value: 'c', label: 'C' },
+  ])
+  const updates = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenListbox, {
+          options: options.value,
+          readonly: true,
+          defaultValue: 'b',
+          'aria-label': 'Choice',
+          'onUpdate:modelValue': (value) => updates.push(value),
+        }),
+    })
+    .mount(root)
+  const list = find(root, (node) => node.props?.role === 'listbox')
+  list.props.onFocus({ type: 'focus' })
+  await nextTick()
+  assert.equal(list.props['aria-label'], 'Choice')
+  assert.match(list.props['aria-activedescendant'], /-option-1$/)
+  list.props.onKeydown({ key: 'ArrowDown', preventDefault() {} })
+  await nextTick()
+  assert.match(list.props['aria-activedescendant'], /-option-2$/)
+  options.value = [options.value[2], options.value[0], options.value[1]]
+  await nextTick()
+  assert.match(list.props['aria-activedescendant'], /-option-0$/)
+  list.props.onKeydown({ key: 'Enter', preventDefault() {} })
+  assert.deepEqual(updates, [])
+})
+
+test('listbox resets uncontrolled selection and preserves canceled changes', async () => {
+  const { renderer, root, find } = makeRenderer()
+  renderer
+    .createApp({
+      render: () =>
+        h('form', [
+          h(AvenListbox, {
+            name: 'choice',
+            defaultValue: 'a',
+            options: [
+              { value: 'a', label: 'A' },
+              { value: 'b', label: 'B' },
+            ],
+          }),
+        ]),
+    })
+    .mount(root)
+  const list = find(root, (node) => node.props?.role === 'listbox')
+  list.props.onFocus({ type: 'focus' })
+  list.props.onKeydown({ key: 'ArrowDown', preventDefault() {} })
+  list.props.onKeydown({ key: 'Enter', preventDefault() {} })
+  await nextTick()
+  const hidden = find(root, (node) => node.type === 'input' && node.props.name === 'choice')
+  assert.equal(hidden.props.value, 'b')
+  const form = find(root, (node) => node.type === 'form')
+  form.dispatchEvent({ type: 'reset', defaultPrevented: true })
+  await Promise.resolve()
+  assert.equal(hidden.props.value, 'b')
+  form.dispatchEvent({ type: 'reset', defaultPrevented: false })
+  await Promise.resolve()
+  await nextTick()
+  assert.equal(
+    find(root, (node) => node.type === 'input' && node.props.name === 'choice').props.value,
+    'a',
+  )
+})
+
 test('sliders render named native range controls, marks, and thumb-specific values', async () => {
   const html = await render({
     render: () =>
@@ -786,6 +1058,55 @@ test('sliders render named native range controls, marks, and thumb-specific valu
   assert.match(html, /id="price-start"[^>]*aria-label="Minimum price"/)
   assert.match(html, /id="price-end"[^>]*aria-label="Maximum price"/)
   assert.equal((html.match(/type="range"/g) ?? []).length, 3)
+})
+
+test('sliders expose inverted direction and numeric mark positions', async () => {
+  const html = await render({
+    render: () =>
+      h('div', [
+        h(AvenSlider, {
+          label: 'Level',
+          modelValue: 25,
+          inverted: true,
+          marks: [{ value: 20, label: 'Low' }],
+        }),
+        h(AvenRangeSlider, {
+          label: 'Range',
+          modelValue: [20, 70],
+          inverted: true,
+          orientation: 'vertical',
+          marks: [{ value: 25, label: 'Quarter' }],
+        }),
+      ]),
+  })
+  assert.match(html, /is-inverted/)
+  assert.match(html, /--aven-slider-value:\s*25%/)
+  assert.match(html, /--aven-range-start:\s*30%/)
+  assert.match(html, /--aven-mark-position:\s*80%/)
+  assert.match(html, /--aven-mark-position:\s*75%/)
+})
+
+test('sliders expose decorative custom thumb slots with value and index', async () => {
+  const html = await render({
+    render: () =>
+      h('div', [
+        h(
+          AvenSlider,
+          { label: 'Level', modelValue: 25, ui: { thumb: { attrs: { 'data-thumb': 'single' } } } },
+          { thumb: ({ value, active }) => `${value}:${active}` },
+        ),
+        h(
+          AvenRangeSlider,
+          { label: 'Range', modelValue: [20, 70] },
+          { thumb: ({ index, value }) => `${index}:${value}` },
+        ),
+      ]),
+  })
+  assert.match(html, /has-custom-thumb/)
+  assert.match(html, /data-thumb="single"/)
+  assert.match(html, /25:false/)
+  assert.match(html, /0:20/)
+  assert.match(html, /1:70/)
 })
 
 test('slider clamps native values and range slider preserves thumb gap', async () => {
@@ -830,6 +1151,38 @@ test('slider clamps native values and range slider preserves thumb gap', async (
   assert.deepEqual(singleChanges, [100])
   assert.deepEqual(rangeUpdates, [[70, 80]])
   assert.deepEqual(rangeChanges, [[70, 80]])
+})
+
+test('range slider exposes thumb-specific limits and corrects a rejected native value', async () => {
+  const { renderer, root, find } = makeRenderer()
+  const updates = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenRangeSlider, {
+          modelValue: [20, 80],
+          min: 0,
+          max: 100,
+          minGap: 10,
+          'aria-label': 'Price',
+          'onUpdate:modelValue': (value) => updates.push(value),
+        }),
+    })
+    .mount(root)
+  const group = find(root, (node) => node.props?.role === 'group')
+  const inputs = []
+  const visit = (node) => {
+    if (node.type === 'input') inputs.push(node)
+    for (const child of node.children ?? []) visit(child)
+  }
+  visit(group)
+  assert.equal(group.props['aria-label'], 'Price')
+  assert.equal(inputs[0].props['aria-valuemax'], 70)
+  assert.equal(inputs[1].props['aria-valuemin'], 30)
+  const target = { value: '90' }
+  await inputs[0].props.onInput({ target })
+  assert.deepEqual(updates, [[70, 80]])
+  assert.equal(target.value, '20')
 })
 
 test('uncontrolled sliders restore defaults on native form reset and respect canceled reset', async () => {
@@ -995,6 +1348,94 @@ test('combobox keyboard selection emits one commit and IME Enter cannot commit e
   assert.deepEqual(updates, ['beta'])
 })
 
+test('combobox preserves loaded selection labels and avoids dangling active descendants', async () => {
+  const { renderer, root, find } = makeRenderer()
+  const options = ref([
+    { value: 'a', label: 'Alpha' },
+    { value: 'b', label: 'Beta' },
+  ])
+  const loading = ref(false)
+  const open = ref(true)
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenCombobox, {
+          options: options.value,
+          modelValue: 'a',
+          open: open.value,
+          defaultActiveKey: 'b',
+          loading: loading.value,
+          'aria-describedby': 'external-help',
+        }),
+    })
+    .mount(root)
+  const input = find(root, (node) => node.props?.role === 'combobox')
+  assert.match(input.props['aria-activedescendant'], /-option-1$/)
+  assert.equal(input.props['aria-describedby'], 'external-help')
+  loading.value = true
+  await nextTick()
+  assert.equal(input.props['aria-activedescendant'], undefined)
+  loading.value = false
+  options.value = [{ value: 'b', label: 'Beta' }]
+  await nextTick()
+  assert.match(input.props['aria-activedescendant'], /-option-0$/)
+  open.value = false
+  await nextTick()
+  assert.equal(input.props.value, 'Alpha')
+})
+
+test('combobox registers its overlay layer and cleans up listeners on unmount', () => {
+  const previousDocument = globalThis.document
+  const listeners = new Map()
+  globalThis.document = {
+    addEventListener(name, handler) {
+      const entries = listeners.get(name) ?? new Set()
+      entries.add(handler)
+      listeners.set(name, entries)
+    },
+    removeEventListener(name, handler) {
+      listeners.get(name)?.delete(handler)
+    },
+  }
+  const parent = {}
+  const removeParent = registerAvenOverlayLayer(parent)
+  try {
+    const { renderer, root } = makeRenderer()
+    const app = renderer.createApp({
+      render: () => h(AvenCombobox, { defaultOpen: true, options: [] }),
+    })
+    app.mount(root)
+    assert.equal(isTopAvenOverlayLayer(parent), false)
+    assert.equal(listeners.get('keydown').size, 1)
+    app.unmount()
+    assert.equal(isTopAvenOverlayLayer(parent), true)
+    assert.equal(listeners.get('keydown').size, 0)
+  } finally {
+    removeParent()
+    if (previousDocument === undefined) delete globalThis.document
+    else globalThis.document = previousDocument
+  }
+})
+
+test('opening a closed combobox with an arrow starts at the first enabled option', async () => {
+  const { renderer, root, find } = makeRenderer()
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenCombobox, {
+          options: [
+            { value: 'a', label: 'A' },
+            { value: 'b', label: 'B' },
+          ],
+        }),
+    })
+    .mount(root)
+  const input = find(root, (node) => node.props?.role === 'combobox')
+  input.props.onKeydown({ key: 'ArrowDown', preventDefault() {}, stopPropagation() {} })
+  await nextTick()
+  assert.match(input.props['aria-activedescendant'], /-option-0$/)
+})
+
 test('combobox required validity checks selection rather than query text', async () => {
   const { renderer, root, find } = makeRenderer()
   renderer
@@ -1077,6 +1518,63 @@ test('multi-select enforces its limit and removes a selected chip through the li
   assert.deepEqual(removals, ['alpha'])
 })
 
+test('multi-select forwards controlled async query, active-key, highlight, and selection events', async () => {
+  const { renderer, root, find } = makeRenderer()
+  const options = ref([{ value: 'local', label: 'Local result' }])
+  const query = ref('')
+  const activeKey = ref(null)
+  const selected = ref([])
+  const queries = []
+  const activeRequests = []
+  const highlights = []
+  const selections = []
+  const changes = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenMultiSelect, {
+          options: options.value,
+          query: query.value,
+          activeKey: activeKey.value,
+          modelValue: selected.value,
+          remote: true,
+          defaultOpen: true,
+          'onUpdate:query': (value) => {
+            queries.push(value)
+            query.value = value
+          },
+          'onUpdate:activeKey': (value) => {
+            activeRequests.push(value)
+            activeKey.value = value
+          },
+          'onUpdate:modelValue': (value) => (selected.value = value),
+          onHighlight: (payload) => highlights.push(payload.key),
+          onSelect: (payload) => selections.push(payload.key),
+          onChange: (value) => changes.push(value),
+        }),
+    })
+    .mount(root)
+  const input = find(root, (node) => node.props?.role === 'combobox')
+  input.props.onInput({ target: { value: 'remote' } })
+  assert.deepEqual(queries, ['remote'])
+  options.value = [{ value: 'remote', label: 'Remote result' }]
+  await nextTick()
+  const updatedInput = find(root, (node) => node.props?.role === 'combobox')
+  dispatchHandler(updatedInput.props.onKeydown, { key: 'ArrowDown', preventDefault() {} })
+  assert.deepEqual(activeRequests, ['remote'])
+  assert.deepEqual(highlights, ['remote'])
+  await nextTick()
+  const activeInput = find(root, (node) => node.props?.role === 'combobox')
+  dispatchHandler(activeInput.props.onKeydown, {
+    key: 'Enter',
+    preventDefault() {},
+    stopPropagation() {},
+  })
+  assert.deepEqual(selections, ['remote'])
+  assert.deepEqual(changes, [['remote']])
+  assert.deepEqual(selected.value, ['remote'])
+})
+
 test('search waits for IME composition, debounces once, and submits without a duplicate search', async () => {
   const { renderer, root, find } = makeRenderer()
   const searches = []
@@ -1134,6 +1632,69 @@ test('password reveal is a single button action and disabled state blocks it', a
   assert.equal(disabledEmits, 0)
 })
 
+test('base input resets its value and routes wrapper and control attributes', async () => {
+  const { renderer, root, find } = makeRenderer()
+  const updates = []
+  renderer
+    .createApp({
+      render: () =>
+        h('form', [
+          h(AvenInput, {
+            defaultValue: 'initial',
+            class: 'outer',
+            'data-input': 'control',
+            ui: { root: { attrs: { 'data-part': 'root' } } },
+            'onUpdate:modelValue': (value) => updates.push(value),
+          }),
+        ]),
+    })
+    .mount(root)
+  const input = find(root, (node) => node.type === 'input')
+  const wrapper = input.parent
+  assert.equal(wrapper.props['data-part'], 'root')
+  assert.match(wrapper.props.class, /outer/)
+  assert.doesNotMatch(input.props.class, /outer/)
+  assert.equal(input.props['data-input'], 'control')
+  input.props.onInput({ target: { value: 'edited' } })
+  await nextTick()
+  const form = find(root, (node) => node.type === 'form')
+  form.dispatchEvent({ type: 'reset', defaultPrevented: true })
+  await Promise.resolve()
+  assert.equal(input.props.value, 'edited')
+  form.dispatchEvent({ type: 'reset', defaultPrevented: false })
+  await Promise.resolve()
+  await nextTick()
+  assert.equal(input.props.value, 'initial')
+  assert.deepEqual(updates, ['edited'])
+})
+
+test('controlled input requests its initial value on reset and retains parent state', async () => {
+  const { renderer, root, find } = makeRenderer()
+  const updates = []
+  renderer
+    .createApp({
+      render: () =>
+        h('form', [
+          h(AvenInput, {
+            modelValue: 'controlled',
+            defaultValue: 'initial',
+            'onUpdate:modelValue': (value) => updates.push(value),
+          }),
+        ]),
+    })
+    .mount(root)
+  const input = find(root, (node) => node.type === 'input')
+  find(root, (node) => node.type === 'form').dispatchEvent({
+    type: 'reset',
+    defaultPrevented: false,
+  })
+  await Promise.resolve()
+  await nextTick()
+  await Promise.resolve()
+  assert.deepEqual(updates, ['initial'])
+  assert.equal(input.value, 'controlled')
+})
+
 test('specialized fields restore their default values on native form reset', async () => {
   const { renderer, root, find } = makeRenderer()
   const searchValues = []
@@ -1161,12 +1722,39 @@ test('specialized fields restore their default values on native form reset', asy
     .mount(root)
   const form = find(root, (node) => node.type === 'form')
   assert.equal(find(root, (node) => node.type === 'input').form, form)
-  assert.equal(form.listeners.get('reset')?.length, 2)
+  assert.equal(form.listeners.get('reset')?.length, 4)
   form.dispatchEvent({ type: 'reset', defaultPrevented: false })
   await new Promise((resolve) => setTimeout(resolve, 5))
   assert.deepEqual(searchValues, ['initial query'])
   assert.deepEqual(passwordValues, ['initial secret'])
   assert.deepEqual(revealedValues, [false])
+})
+
+test('reset cancels a pending debounced search', async () => {
+  const { renderer, root, find } = makeRenderer()
+  const searches = []
+  renderer
+    .createApp({
+      render: () =>
+        h('form', [
+          h(AvenSearchField, {
+            defaultValue: 'initial',
+            debounce: 30,
+            onSearch: (payload) => searches.push(payload),
+          }),
+        ]),
+    })
+    .mount(root)
+  const input = find(root, (node) => node.type === 'input')
+  input.props.onInput({ target: { value: 'stale' } })
+  await nextTick()
+  find(root, (node) => node.type === 'form').dispatchEvent({
+    type: 'reset',
+    defaultPrevented: false,
+  })
+  await new Promise((resolve) => setTimeout(resolve, 45))
+  assert.deepEqual(searches, [])
+  assert.equal(input.props.value, 'initial')
 })
 
 test('radio group exposes native fieldset semantics, described errors, slots, and form values', async () => {
@@ -1373,6 +1961,26 @@ test('toggle button updates pressed state once and blocks disabled activation', 
     .mount(disabled.root)
   disabled.find(disabled.root, (node) => node.type === 'button').props.onClick({})
   assert.equal(disabledUpdates, 0)
+})
+
+test('toggle button applies variant, tone and part attributes', async () => {
+  const html = await render({
+    render: () =>
+      h(
+        AvenToggleButton,
+        {
+          variant: 'soft',
+          tone: 'warning',
+          defaultValue: true,
+          ui: { label: { attrs: { 'data-part': 'label' } } },
+        },
+        () => 'Pin',
+      ),
+  })
+  assert.match(html, /variant-soft/)
+  assert.match(html, /--aven-color-warning-text/)
+  assert.match(html, /data-part="label"/)
+  assert.match(html, /aria-pressed="true"/)
 })
 
 test('toggle group supports multiple values, native form fields, disabled items, and allowEmpty', async () => {
@@ -1663,6 +2271,107 @@ test('context menu opens from pointer and keyboard with a visible touch trigger'
   )
 })
 
+test('context menu measures its surface and keeps it inside collision padding', async () => {
+  const originalWindow = globalThis.window
+  globalThis.window = {
+    innerWidth: 300,
+    innerHeight: 220,
+    addEventListener() {},
+    removeEventListener() {},
+  }
+  try {
+    const mounted = makeRenderer()
+    const component = ref(null)
+    const app = mounted.renderer.createApp({
+      render: () =>
+        h(AvenContextMenu, {
+          ref: component,
+          collisionPadding: 12,
+          items: [{ key: 'copy', label: 'Copy' }],
+        }),
+    })
+    app.mount(mounted.root)
+    component.value.openAt(290, 210)
+    await nextTick()
+    await nextTick()
+    const surface = mounted.find(mounted.root, (node) =>
+      node.props?.class?.includes?.('context-content'),
+    )
+    assert.deepEqual(surface.props.style, { left: '88px', top: '108px' })
+    app.unmount()
+  } finally {
+    globalThis.window = originalWindow
+  }
+})
+
+test('context menu leaves dismissal to a nested overlay and unregisters on close', async () => {
+  const previousDocument = globalThis.document
+  const previousWindow = globalThis.window
+  const listeners = new Map()
+  const resizeListeners = new Set()
+  globalThis.document = {
+    addEventListener(name, handler) {
+      const entries = listeners.get(name) ?? new Set()
+      entries.add(handler)
+      listeners.set(name, entries)
+    },
+    removeEventListener(name, handler) {
+      listeners.get(name)?.delete(handler)
+    },
+  }
+  globalThis.window = {
+    innerWidth: 500,
+    innerHeight: 400,
+    addEventListener: (_name, handler) => resizeListeners.add(handler),
+    removeEventListener: (_name, handler) => resizeListeners.delete(handler),
+  }
+  const parentLayer = {}
+  const removeParent = registerAvenOverlayLayer(parentLayer)
+  try {
+    const mounted = makeRenderer()
+    const component = ref(null)
+    const updates = []
+    const app = mounted.renderer.createApp({
+      render: () =>
+        h(AvenContextMenu, {
+          ref: component,
+          items: [{ key: 'copy', label: 'Copy' }],
+          'onUpdate:open': (value) => updates.push(value),
+        }),
+    })
+    app.mount(mounted.root)
+    assert.equal(isTopAvenOverlayLayer(parentLayer), true)
+    component.value.openAt(40, 50)
+    await nextTick()
+    await nextTick()
+    assert.equal(isTopAvenOverlayLayer(parentLayer), false)
+    assert.deepEqual(updates, [true])
+    const removeNested = registerAvenOverlayLayer({})
+    listeners.get('pointerdown').values().next().value({ target: {} })
+    listeners
+      .get('keydown')
+      .values()
+      .next()
+      .value({ key: 'Escape', stopPropagation() {} })
+    assert.deepEqual(updates, [true])
+    removeNested()
+    listeners.get('pointerdown').values().next().value({ target: {} })
+    assert.deepEqual(updates, [true, false])
+    await nextTick()
+    assert.equal(isTopAvenOverlayLayer(parentLayer), true)
+    app.unmount()
+    assert.equal(listeners.get('pointerdown').size, 0)
+    assert.equal(listeners.get('keydown').size, 0)
+    assert.equal(resizeListeners.size, 0)
+  } finally {
+    removeParent()
+    if (previousDocument === undefined) delete globalThis.document
+    else globalThis.document = previousDocument
+    if (previousWindow === undefined) delete globalThis.window
+    else globalThis.window = previousWindow
+  }
+})
+
 test('menubar moves active items and opens/selects a submenu with one selection event', async () => {
   const mounted = makeRenderer()
   const activeRequests = []
@@ -1723,6 +2432,72 @@ test('menubar moves active items and opens/selects a submenu with one selection 
   assert.deepEqual(openRequests, ['file', 'edit', null])
 })
 
+test('menubar supports nested submenu depth and reports its controls and state changes', async () => {
+  const { renderer, root, find } = makeRenderer()
+  const nestedChanges = []
+  const selections = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenMenubar, {
+          label: 'File actions',
+          items: [
+            {
+              key: 'file',
+              label: 'File',
+              children: [
+                {
+                  key: 'new',
+                  label: 'New',
+                  kind: 'submenu',
+                  children: [{ key: 'text', label: 'Text document' }],
+                },
+              ],
+            },
+          ],
+          onSubmenuChange: (change) => nestedChanges.push(change),
+          onSelect: (selection) => selections.push(selection.key),
+        }),
+    })
+    .mount(root)
+  const menubar = find(root, (node) => node.props?.role === 'menubar')
+  const fileTrigger = find(
+    menubar,
+    (node) => node.type === 'button' && node.props?.role === 'menuitem',
+  )
+  dispatchHandler(fileTrigger.props.onClick, new Event('click'))
+  await nextTick()
+  const outerMenu = find(root, (node) => node.props?.role === 'menu')
+  const newTrigger = find(
+    outerMenu,
+    (node) => node.type === 'button' && node.props?.role === 'menuitem',
+  )
+  assert.equal(newTrigger.props['aria-haspopup'], 'menu')
+  dispatchHandler(newTrigger.props.onClick, new Event('click'))
+  await nextTick()
+  await nextTick()
+  const updatedNewTrigger = find(
+    outerMenu,
+    (node) => node.type === 'button' && node.props?.role === 'menuitem',
+  )
+  const nestedMenu = find(
+    root,
+    (node) =>
+      node.props?.role === 'menu' && node.props?.id === updatedNewTrigger.props['aria-controls'],
+  )
+  assert.ok(nestedMenu)
+  assert.deepEqual(nestedChanges, [
+    { key: 'file', open: true },
+    { key: 'new', open: true },
+  ])
+  const textAction = find(
+    nestedMenu,
+    (node) => node.type === 'button' && node.props?.role === 'menuitem',
+  )
+  dispatchHandler(textAction.props.onClick, new Event('click'))
+  assert.deepEqual(selections, ['text'])
+})
+
 test('dialog links its accessible title and description and alert dialog requests actions once', async () => {
   const dialogHtml = await render({
     render: () => h(AvenDialog, { title: 'Preferences', description: 'Choose your defaults.' }),
@@ -1781,6 +2556,34 @@ test('dialog links its accessible title and description and alert dialog request
   dispatchHandler(actionButtons[0].props.onClick, actionEvent)
   assert.deepEqual(confirms, [{ originalEvent: actionEvent }])
   assert.deepEqual(cancels, [{ originalEvent: actionEvent }])
+})
+
+test('dialog wrappers preserve uncontrolled default-open state', () => {
+  for (const component of [
+    AvenDialog,
+    AvenAlertDialog,
+    AvenDrawer,
+    AvenSheet,
+    AvenCommandPalette,
+  ]) {
+    const { renderer, root } = makeRenderer()
+    const control = ref(null)
+    const updates = []
+    renderer
+      .createApp({
+        render: () =>
+          h(component, {
+            ref: control,
+            title: 'Example',
+            items: [],
+            defaultOpen: true,
+            'onUpdate:open': (value) => updates.push(value),
+          }),
+      })
+      .mount(root)
+    control.value.close()
+    assert.deepEqual(updates, [false], component.name)
+  }
 })
 
 test('command palette opens as a grouped search dialog and requests one command', async () => {
@@ -1911,20 +2714,32 @@ test('chips, tags, avatars, keyboard hints, and separators preserve semantic con
       h('div', [
         h(
           AvenChip,
-          { value: 'vue', interactive: true, selected: true, removable: true },
+          {
+            value: 'vue',
+            interactive: true,
+            selected: true,
+            removable: true,
+            removeLabel: 'Remove Vue',
+            tone: 'info',
+            ui: { content: { attrs: { 'data-part': 'content' } } },
+          },
           {
             default: () => 'Vue',
           },
         ),
         h(AvenTag, { 'data-tone': 'release' }, { default: () => 'Stable' }),
         h(AvenAvatar, { name: 'Ava Chen' }),
+        h(AvenAvatar, { name: 'Ava Chen', alt: '' }),
         h(AvenAvatar, { src: '/avatar.png', alt: '', name: 'Ava Chen' }),
         h(AvenKbd, { keys: ['Control', 'K'], platform: 'windows' }),
         h(AvenSeparator, { decorative: false, orientation: 'vertical' }, { label: () => 'or' }),
       ]),
   })
   assert.match(html, /aria-pressed="true"/)
-  assert.match(html, /aria-label="Remove item"/)
+  assert.match(html, /aria-label="Remove Vue"/)
+  assert.match(html, /tone-info/)
+  assert.match(html, /data-part="content"/)
+  assert.match(html, /aria-hidden="true"[^>]*class="avatar-fallback"/)
   assert.match(html, /data-tone="release"/)
   assert.match(html, /Ava Chen/)
   assert.match(html, /src="\/avatar\.png" alt(?:="")? loading=/)
@@ -2055,6 +2870,22 @@ test('avatar groups preserve item generics and report overflow requests once', a
   assert.equal(requests.length, 1)
   assert.deepEqual(requests[0].hiddenItems, [people[1]])
   assert.equal(requests[0].originalEvent, originalEvent)
+})
+
+test('keyboard hints use deterministic server markup for auto platform', async () => {
+  const previous = Object.getOwnPropertyDescriptor(globalThis, 'navigator')
+  try {
+    Object.defineProperty(globalThis, 'navigator', {
+      configurable: true,
+      value: { platform: 'MacIntel' },
+    })
+    const html = await render({ render: () => h(AvenKbd, { keys: ['Meta', 'K'] }) })
+    assert.match(html, />Win</)
+    assert.doesNotMatch(html, /⌘/)
+  } finally {
+    if (previous) Object.defineProperty(globalThis, 'navigator', previous)
+    else delete globalThis.navigator
+  }
 })
 
 test('empty and result states keep loading and retry behavior explicit', async () => {
@@ -2425,6 +3256,47 @@ test('app shell preserves landmarks and controlled and uncontrolled layout reque
   assert.equal(controlled.value.toggleSidebar(), true)
   assert.deepEqual(controlledUpdates, [true])
   assert.ok(controlledMount.find(controlledMount.root, (node) => node.type === 'aside'))
+
+  const uncontrolledMount = makeRenderer()
+  const uncontrolled = ref(null)
+  const requests = []
+  uncontrolledMount.renderer
+    .createApp({
+      render: () =>
+        h(
+          AvenAppShell,
+          {
+            ref: uncontrolled,
+            'onUpdate:sidebarCollapsed': (value) => requests.push(['sidebar', value]),
+            'onUpdate:inspectorOpen': (value) => requests.push(['inspector', value]),
+          },
+          { sidebar: () => 'Navigation', default: () => 'Main', inspector: () => 'Details' },
+        ),
+    })
+    .mount(uncontrolledMount.root)
+  assert.ok(uncontrolledMount.find(uncontrolledMount.root, (node) => node.type === 'aside'))
+  assert.equal(uncontrolled.value.toggleInspector(), true)
+  assert.deepEqual(requests, [['inspector', true]])
+  assert.equal(uncontrolled.value.toggleSidebar(), true)
+  assert.deepEqual(requests, [
+    ['inspector', true],
+    ['sidebar', true],
+  ])
+  await nextTick()
+  await nextTick()
+  const shell = uncontrolledMount.find(uncontrolledMount.root, (node) =>
+    node.props?.class?.includes?.('aven-app-shell'),
+  )
+  assert.ok(shell?.props?.class?.includes?.('is-sidebar-collapsed'))
+  assert.ok(shell.props.class.includes('is-inspector-open'))
+  const sidebars = []
+  const visitAside = (node) => {
+    if (node.type === 'aside') sidebars.push(node)
+    for (const child of node.children ?? []) visitAside(child)
+  }
+  visitAside(uncontrolledMount.root)
+  assert.equal(sidebars.length, 1)
+  assert.equal(sidebars[0].props['aria-label'], 'Inspector')
 })
 
 test('stepper uses ordered step semantics and gates controlled navigation through completion', async () => {
@@ -2694,12 +3566,27 @@ test('data table keeps native table semantics and emits controlled sort, select,
   assert.match(html, /aria-sort="ascending"/)
   assert.ok(html.indexOf('Alpha') < html.indexOf('Beta'))
   const primitiveHtml = await render({
-    render: () => h(AvenTable, { caption: 'Simple report' }, { default: () => h('tbody') }),
+    render: () =>
+      h(
+        AvenTable,
+        {
+          caption: 'Simple report',
+          ui: {
+            root: { attrs: { 'data-root-ui': 'table' } },
+            table: { attrs: { 'data-table-ui': 'table' } },
+            caption: { attrs: { 'data-caption-ui': 'table' } },
+          },
+        },
+        { default: () => h('tbody') },
+      ),
   })
   assert.match(
     primitiveHtml,
-    /<table[^>]*><caption[^>]*>[\s\S]*Simple report[\s\S]*<\/caption>[\s\S]*<tbody/,
+    /<div[^>]*class="aven-table-scroll"[^>]*>[\s\S]*<table[^>]*><caption[^>]*>[\s\S]*Simple report[\s\S]*<\/caption>[\s\S]*<tbody/,
   )
+  assert.match(primitiveHtml, /data-root-ui="table"/)
+  assert.match(primitiveHtml, /data-table-ui="table"/)
+  assert.match(primitiveHtml, /data-caption-ui="table"/)
 
   const mounted = makeRenderer()
   const sortUpdates = []
@@ -2749,6 +3636,255 @@ test('data table keeps native table semantics and emits controlled sort, select,
   assert.deepEqual(rowClicks, [
     { row: rows[0], key: 'b', originalEvent: { target: {}, type: 'click' } },
   ])
+})
+
+test('data table resizes columns by pointer and keyboard and reorders them on drop', async () => {
+  const previousWindow = globalThis.window
+  const windowListeners = new Map()
+  globalThis.window = {
+    addEventListener(name, handler) {
+      const handlers = windowListeners.get(name) ?? new Set()
+      handlers.add(handler)
+      windowListeners.set(name, handlers)
+    },
+    removeEventListener(name, handler) {
+      windowListeners.get(name)?.delete(handler)
+    },
+  }
+  try {
+    const mounted = makeRenderer()
+    const resizeRequests = []
+    const reorderRequests = []
+    const columns = [
+      {
+        key: 'name',
+        header: 'Name',
+        accessor: (row) => row.name,
+        width: 120,
+        minWidth: 80,
+        maxWidth: 180,
+      },
+      { key: 'amount', header: 'Amount', accessor: (row) => row.amount, width: 100 },
+    ]
+    const app = mounted.renderer.createApp({
+      render: () =>
+        h(AvenDataTable, {
+          rows: [{ id: 'a', name: 'Alpha', amount: 20 }],
+          columns,
+          rowKey: (row) => row.id,
+          resizable: true,
+          reorderable: true,
+          onColumnResize: (request) => resizeRequests.push(request),
+          onColumnReorder: (request) => reorderRequests.push(request.keys),
+        }),
+    })
+    app.mount(mounted.root)
+    const resizeHandle = mounted.find(mounted.root, (node) =>
+      node.props?.class?.includes?.('column-resize-handle'),
+    )
+    resizeHandle.parentElement = { getBoundingClientRect: () => ({ width: 120 }) }
+    let pointerPrevented = false
+    resizeHandle.props.onPointerdown({
+      button: 0,
+      pointerId: 9,
+      clientX: 10,
+      currentTarget: resizeHandle,
+      preventDefault: () => (pointerPrevented = true),
+    })
+    assert.equal(pointerPrevented, true)
+    for (const move of windowListeners.get('pointermove') ?? [])
+      move({ pointerId: 9, clientX: 100 })
+    await nextTick()
+    const nameHeader = mounted.find(
+      mounted.root,
+      (node) => node.type === 'th' && node.props?.draggable === true,
+    )
+    assert.equal(nameHeader.props.style.width, '180px')
+    for (const up of windowListeners.get('pointerup') ?? []) up({ pointerId: 9 })
+    assert.deepEqual(resizeRequests, [{ key: 'name', width: 180 }])
+    assert.equal(windowListeners.get('pointermove').size, 0)
+
+    const currentHandle = mounted.find(mounted.root, (node) =>
+      node.props?.class?.includes?.('column-resize-handle'),
+    )
+    const keyboardWidths = []
+    for (const key of ['ArrowLeft', 'Home', 'End']) {
+      let prevented = false
+      currentHandle.props.onKeydown({
+        key,
+        currentTarget: currentHandle,
+        preventDefault: () => (prevented = true),
+      })
+      assert.equal(prevented, true)
+      keyboardWidths.push(resizeRequests.at(-1).width)
+    }
+    assert.deepEqual(keyboardWidths, [172, 80, 180])
+
+    const dataTransfer = { setData() {} }
+    const headerCells = []
+    const visitHeaders = (node) => {
+      if (node.type === 'th' && node.props?.draggable === true) headerCells.push(node)
+      for (const child of node.children ?? []) visitHeaders(child)
+    }
+    visitHeaders(mounted.root)
+    headerCells[0].props.onDragstart({ dataTransfer })
+    headerCells[1].props.onDrop({ preventDefault() {} })
+    assert.deepEqual(reorderRequests, [['amount', 'name']])
+    app.unmount()
+    assert.equal(
+      [...windowListeners.values()].every((handlers) => handlers.size === 0),
+      true,
+    )
+  } finally {
+    if (previousWindow === undefined) delete globalThis.window
+    else globalThis.window = previousWindow
+  }
+})
+
+test('data table pins start and end columns with cumulative logical offsets', async () => {
+  const mounted = makeRenderer()
+  const columns = [
+    { key: 'first', header: 'First', accessor: (row) => row.first, width: 120, pinned: 'start' },
+    { key: 'second', header: 'Second', accessor: (row) => row.second, width: 80, pinned: 'start' },
+    { key: 'middle', header: 'Middle', accessor: (row) => row.middle, width: 150 },
+    {
+      key: 'next-to-last',
+      header: 'Next to last',
+      accessor: (row) => row.last,
+      width: 60,
+      pinned: 'end',
+    },
+    { key: 'last', header: 'Last', accessor: (row) => row.last, width: 100, pinned: 'end' },
+  ]
+  mounted.renderer
+    .createApp({
+      render: () =>
+        h(
+          AvenDataTable,
+          {
+            rows: [{ id: 'row', first: 1, second: 2, middle: 3, last: 4 }],
+            columns,
+            rowKey: (row) => row.id,
+            selectable: true,
+            expandable: true,
+            ui: {
+              selection: {
+                attrs: { 'data-selection-ui': 'true' },
+                class: 'selection-hook',
+                style: { outline: '1px solid currentColor' },
+              },
+              expansion: { attrs: { 'data-expansion-ui': 'true' }, class: 'expansion-hook' },
+              row: { attrs: { 'data-row-ui': 'true' }, class: 'row-hook' },
+              cell: {
+                attrs: { 'data-cell-ui': 'true' },
+                class: 'cell-hook',
+                style: { color: 'var(--aven-color-text-secondary)' },
+              },
+            },
+          },
+          { rowLeading: () => 'Lead', rowTrailing: () => 'Action' },
+        ),
+    })
+    .mount(mounted.root)
+  const pinnedHeaders = []
+  const pinnedCells = []
+  const utilityHeaders = []
+  const visit = (node) => {
+    if (
+      node.type === 'th' &&
+      node.props?.style?.position === 'sticky' &&
+      (node.props?.class?.includes?.('is-pinned-start') ||
+        node.props?.class?.includes?.('is-pinned-end'))
+    )
+      pinnedHeaders.push(node.props.style)
+    if (
+      node.type === 'td' &&
+      node.props?.style?.position === 'sticky' &&
+      (node.props?.class?.includes?.('is-pinned-start') ||
+        node.props?.class?.includes?.('is-pinned-end'))
+    )
+      pinnedCells.push(node.props.style)
+    if (node.type === 'th' && node.props?.class?.includes?.('utility-pinned'))
+      utilityHeaders.push(node.props)
+    for (const child of node.children ?? []) visit(child)
+  }
+  visit(mounted.root)
+  assert.deepEqual(
+    pinnedHeaders.map((style) => [style.insetInlineStart, style.insetInlineEnd]),
+    [
+      ['calc(3rem + 3rem + 3rem)', undefined],
+      ['calc(3rem + 3rem + 3rem + 120px)', undefined],
+      [undefined, 'calc(3rem + 100px)'],
+      [undefined, 'calc(3rem)'],
+    ],
+  )
+  assert.deepEqual(
+    pinnedCells.map((style) => [style.insetInlineStart, style.insetInlineEnd]),
+    pinnedHeaders.map((style) => [style.insetInlineStart, style.insetInlineEnd]),
+  )
+  assert.deepEqual(
+    utilityHeaders.map(({ style }) => [style.insetInlineStart, style.insetInlineEnd]),
+    [
+      ['0px', undefined],
+      ['calc(3rem)', undefined],
+      ['calc(3rem + 3rem)', undefined],
+      [undefined, '0px'],
+    ],
+  )
+  const selectionHeader = mounted.find(
+    mounted.root,
+    (node) => node.type === 'th' && node.props['data-selection-ui'] === 'true',
+  )
+  assert.equal(selectionHeader.props.class.includes('selection-hook'), true)
+  assert.equal(selectionHeader.props.style.outline, '1px solid currentColor')
+  assert.ok(mounted.find(mounted.root, (node) => node.props?.['data-expansion-ui'] === 'true'))
+  assert.ok(mounted.find(mounted.root, (node) => node.props?.['data-row-ui'] === 'true'))
+  const cell = mounted.find(
+    mounted.root,
+    (node) => node.type === 'td' && node.props['data-cell-ui'],
+  )
+  assert.equal(cell.props.class.includes('cell-hook'), true)
+  assert.equal(cell.props.style.color, 'var(--aven-color-text-secondary)')
+})
+
+test('table scroll shadows follow horizontal overflow and clear at each scroll edge', async () => {
+  const mounted = makeRenderer()
+  mounted.renderer
+    .createApp({
+      render: () => h(AvenTable, { label: 'Scrollable report' }, { default: () => h('tbody') }),
+    })
+    .mount(mounted.root)
+  const viewport = mounted.find(mounted.root, (node) =>
+    node.props?.class?.includes?.('aven-table-viewport'),
+  )
+  viewport.clientWidth = 200
+  viewport.scrollWidth = 500
+  viewport.scrollLeft = 0
+  const shadows = () => {
+    const found = []
+    const visit = (node) => {
+      if (node.props?.class?.includes?.('scroll-shadow')) found.push(node.props.class)
+      for (const child of node.children ?? []) visit(child)
+    }
+    visit(mounted.root)
+    return found
+  }
+  viewport.props.onScroll({ currentTarget: viewport })
+  await nextTick()
+  assert.deepEqual(shadows(), ['scroll-shadow scroll-shadow-end'])
+
+  viewport.scrollLeft = 140
+  viewport.props.onScroll({ currentTarget: viewport })
+  await nextTick()
+  assert.deepEqual(shadows(), [
+    'scroll-shadow scroll-shadow-start',
+    'scroll-shadow scroll-shadow-end',
+  ])
+
+  viewport.scrollLeft = 300
+  viewport.props.onScroll({ currentTarget: viewport })
+  await nextTick()
+  assert.deepEqual(shadows(), ['scroll-shadow scroll-shadow-start'])
 })
 
 test('timeline exposes ordered semantic dates, status, expansion and load-more contracts', async () => {
@@ -2891,6 +4027,38 @@ test('file input enforces client limits, emits selection once, and keeps the dro
   assert.match(html, /type="file"/)
 })
 
+test('controlled file input restores native files when the parent declines a selection', async () => {
+  const previousTransfer = globalThis.DataTransfer
+  globalThis.DataTransfer = class {
+    files = []
+    items = { add: (file) => this.files.push(file) }
+  }
+  try {
+    const { renderer, root, find } = makeRenderer()
+    const original = { name: 'old.txt', type: 'text/plain', size: 2, lastModified: 1 }
+    const proposed = { name: 'new.txt', type: 'text/plain', size: 3, lastModified: 2 }
+    const updates = []
+    renderer
+      .createApp({
+        render: () =>
+          h(AvenFileInput, {
+            modelValue: [original],
+            'onUpdate:modelValue': (files) => updates.push(files),
+          }),
+      })
+      .mount(root)
+    const input = find(root, (node) => node.type === 'input' && node.props.type === 'file')
+    input.files = [proposed]
+    input.props.onChange({ currentTarget: input })
+    await nextTick()
+    assert.deepEqual(updates, [[proposed]])
+    assert.deepEqual(input.files, [original])
+  } finally {
+    if (previousTransfer === undefined) delete globalThis.DataTransfer
+    else globalThis.DataTransfer = previousTransfer
+  }
+})
+
 test('color picker retains named swatches, emits one controlled commit, and reports invalid drafts', async () => {
   const swatches = [
     { key: 'blue', label: 'Ocean blue', value: '#2457d6' },
@@ -2939,6 +4107,38 @@ test('color picker retains named swatches, emits one controlled commit, and repo
   assert.deepEqual(invalid, [{ text: 'invalid' }])
 })
 
+test('color picker opens uncontrolled and commits after its parent accepts an edit', async () => {
+  const { renderer, root, find } = makeRenderer()
+  const color = ref('#112233')
+  const changes = []
+  renderer
+    .createApp({
+      render: () =>
+        h(
+          AvenColorPicker,
+          {
+            modelValue: color.value,
+            defaultOpen: true,
+            label: 'Accent',
+            'onUpdate:modelValue': (value) => {
+              color.value = value
+            },
+            onChange: (value) => changes.push(value),
+          },
+          { description: () => 'Choose a color' },
+        ),
+    })
+    .mount(root)
+  const dialog = find(root, (node) => node.props?.role === 'dialog')
+  assert.ok(dialog)
+  const input = find(root, (node) => node.type === 'input' && node.props.type === 'text')
+  assert.match(input.props['aria-describedby'], /-description$/)
+  input.props.onInput({ currentTarget: { value: '#445566' } })
+  await nextTick()
+  input.props.onChange({ currentTarget: { value: '#445566' } })
+  assert.deepEqual(changes, ['#445566'])
+})
+
 test('date picker preserves date-only values, calendar semantics, and one completed commit', async () => {
   const html = await render({
     render: () => h(AvenDatePicker, { defaultValue: '2024-02-29', label: 'Leap day' }),
@@ -2970,6 +4170,139 @@ test('date picker preserves date-only values, calendar semantics, and one comple
   assert.deepEqual(invalid, [])
   input.props.onBlur()
   assert.deepEqual(invalid, [{ text: '2024-02-31', reason: 'invalid' }])
+})
+
+test('calendar announces full dates and emits one month navigation request', async () => {
+  const html = await render({
+    render: () =>
+      h(AvenDatePicker, { defaultValue: '2024-02-29', label: 'Date', open: true, locale: 'en-US' }),
+  })
+  assert.match(html, /aria-label="Thursday, February 29, 2024"/)
+  const earlyYear = await render({
+    render: () =>
+      h(AvenDatePicker, { defaultValue: '0024-02-29', label: 'Date', open: true, locale: 'en-US' }),
+  })
+  assert.match(earlyYear, /February 24/)
+  assert.doesNotMatch(earlyYear, /February 1924/)
+  const { renderer, root, find } = makeRenderer()
+  const months = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenDatePicker, {
+          defaultValue: '2024-02-29',
+          label: 'Date',
+          open: true,
+          onMonthChange: (month) => months.push(month),
+        }),
+    })
+    .mount(root)
+  const day = find(
+    root,
+    (node) => node.props?.role === 'gridcell' && node.props['aria-selected'] === true,
+  )
+  day.props.onKeydown({ key: 'PageDown', preventDefault() {}, shiftKey: false })
+  assert.deepEqual(months, [{ year: 2024, month: 3 }])
+})
+
+test('date and time fields honor canceled resets and request controlled defaults', async () => {
+  const { renderer, root, find } = makeRenderer()
+  const dates = [],
+    ranges = [],
+    times = []
+  renderer
+    .createApp({
+      render: () =>
+        h('form', [
+          h(AvenDatePicker, {
+            label: 'Date',
+            modelValue: '2024-03-01',
+            defaultValue: '2024-02-01',
+            'onUpdate:modelValue': (value) => dates.push(value),
+          }),
+          h(AvenDateRangePicker, {
+            label: 'Range',
+            modelValue: { start: '2024-03-01', end: '2024-03-02' },
+            defaultValue: { start: '2024-02-01', end: '2024-02-02' },
+            'onUpdate:modelValue': (value) => ranges.push(value),
+          }),
+          h(AvenTimePicker, {
+            label: 'Time',
+            modelValue: '10:00',
+            defaultValue: '09:00',
+            'onUpdate:modelValue': (value) => times.push(value),
+          }),
+        ]),
+    })
+    .mount(root)
+  const form = find(root, (node) => node.type === 'form')
+  form.dispatchEvent({ type: 'reset', defaultPrevented: true })
+  await Promise.resolve()
+  assert.deepEqual([dates, ranges, times], [[], [], []])
+  form.dispatchEvent({ type: 'reset', defaultPrevented: false })
+  await Promise.resolve()
+  await nextTick()
+  assert.deepEqual(dates, ['2024-02-01'])
+  assert.deepEqual(ranges, [{ start: '2024-02-01', end: '2024-02-02' }])
+  assert.deepEqual(times, ['09:00'])
+})
+
+test('date fields route wrapper styling and external form attributes to their controls', async () => {
+  const html = await render({
+    render: () =>
+      h('div', [
+        h(AvenDatePicker, {
+          name: 'date',
+          form: 'booking',
+          label: 'Date',
+          class: 'date-wrapper',
+          'aria-describedby': 'external-help',
+        }),
+        h(AvenDateRangePicker, { name: 'range', form: 'booking', label: 'Range' }),
+        h(AvenTimePicker, { name: 'time', form: 'booking', label: 'Time', class: 'time-wrapper' }),
+      ]),
+  })
+  assert.match(html, /class="aven-date-picker date-wrapper"/)
+  assert.match(html, /class="aven-time-picker time-wrapper"/)
+  assert.match(html, /aria-describedby="external-help"/)
+  assert.match(html, /type="hidden" name="date" form="booking"/)
+  assert.match(html, /name="range\[start\]" form="booking"/)
+  assert.match(html, /name="range\[end\]" form="booking"/)
+})
+
+test('open date picker registers and cleans up its overlay layer', async () => {
+  const previousDocument = globalThis.document
+  const listeners = new Map()
+  globalThis.document = {
+    addEventListener(name, handler) {
+      const entries = listeners.get(name) ?? new Set()
+      entries.add(handler)
+      listeners.set(name, entries)
+    },
+    removeEventListener(name, handler) {
+      listeners.get(name)?.delete(handler)
+    },
+  }
+  const parent = {}
+  const removeParent = registerAvenOverlayLayer(parent)
+  try {
+    const { renderer, root } = makeRenderer()
+    const app = renderer.createApp({
+      render: () =>
+        h(AvenDatePicker, { label: 'Date', defaultOpen: true, defaultValue: '2024-02-29' }),
+    })
+    app.mount(root)
+    assert.equal(isTopAvenOverlayLayer(parent), false)
+    assert.equal(listeners.get('pointerdown').size, 1)
+    app.unmount()
+    await nextTick()
+    assert.equal(isTopAvenOverlayLayer(parent), true)
+    assert.equal(listeners.get('pointerdown').size, 0)
+  } finally {
+    removeParent()
+    if (previousDocument === undefined) delete globalThis.document
+    else globalThis.document = previousDocument
+  }
 })
 
 test('date range commits only complete calendar ranges and time picker emits valid native values once', async () => {
@@ -3004,6 +4337,34 @@ test('date range commits only complete calendar ranges and time picker emits val
   input.props.onBlur()
   assert.deepEqual(updates, ['09:30'])
   assert.deepEqual(changes, ['09:30'])
+})
+
+test('uncontrolled time input emits edits and later commits exactly once', async () => {
+  const { renderer, root, find } = makeRenderer()
+  const updates = [],
+    changes = [],
+    invalid = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenTimePicker, {
+          defaultValue: '09:00',
+          seconds: true,
+          max: '09:30',
+          'onUpdate:modelValue': (value) => updates.push(value),
+          onChange: (value) => changes.push(value),
+          onInvalidInput: (event) => invalid.push(event),
+        }),
+    })
+    .mount(root)
+  const input = find(root, (node) => node.type === 'input' && node.props.type === 'time')
+  input.props.onInput({ target: { value: '09:30:00' } })
+  await nextTick()
+  input.props.onChange({ target: { value: '09:30:00' } })
+  input.props.onBlur()
+  assert.deepEqual(updates, ['09:30:00'])
+  assert.deepEqual(changes, ['09:30:00'])
+  assert.deepEqual(invalid, [])
 })
 
 test('form keeps native submit and reset events, disabled fieldset propagation, and linked errors', async () => {
@@ -3145,6 +4506,190 @@ test('menu actions, checkbox and radio items, groups, and nested submenu request
     render: () => h(AvenMenuItem, { item: { key: 'open', label: 'Open' } }),
   })
   assert.match(itemHtml, /role="menuitem"/)
+})
+
+test('menu arrow navigation skips disabled items in the requested direction', async () => {
+  const { renderer, root, find } = makeRenderer()
+  const highlights = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenMenu, {
+          items: [
+            { key: 'a', label: 'Alpha' },
+            { key: 'b', label: 'Blocked', disabled: true },
+            { key: 'c', label: 'Charlie' },
+          ],
+          onHighlight: (event) => highlights.push(event.key),
+        }),
+    })
+    .mount(root)
+  const menu = find(root, (node) => node.props?.role === 'menu')
+  menu.props.onKeydown({ key: 'ArrowDown', preventDefault() {} })
+  await nextTick()
+  menu.props.onKeydown({ key: 'ArrowUp', preventDefault() {} })
+  await nextTick()
+  menu.props.onKeydown({ key: 'z', preventDefault() {} })
+  assert.deepEqual(highlights, ['c', 'a'])
+})
+
+test('dropdown menu forwards checkbox requests and honors canceled closure', async () => {
+  const { renderer, root, find } = makeRenderer()
+  const checks = [],
+    closes = [],
+    updates = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenDropdownMenu, {
+          defaultOpen: true,
+          items: [{ key: 'pin', label: 'Pin', kind: 'checkbox', checked: false }],
+          'onUpdate:checked': (payload) => checks.push(payload),
+          'onUpdate:open': (value) => updates.push(value),
+          onBeforeClose: (event) => {
+            closes.push(event.reason)
+            event.preventDefault()
+          },
+        }),
+    })
+    .mount(root)
+  const checkbox = find(root, (node) => node.props?.role === 'menuitemcheckbox')
+  checkbox.props.onClick(new Event('click'))
+  await nextTick()
+  assert.deepEqual(checks, [{ key: 'pin', checked: true }])
+  assert.deepEqual(closes, ['select'])
+  assert.deepEqual(updates, [])
+  assert.ok(find(root, (node) => node.props?.role === 'menu'))
+})
+
+test('dropdown menu links its trigger, forwards menu slots, and emits settled lifecycle events once', async () => {
+  const { renderer, root, find } = makeRenderer()
+  const lifecycle = []
+  const app = renderer.createApp({
+    render: () =>
+      h(AvenDropdownMenu, {
+        items: [{ key: 'rename', label: 'Rename' }],
+        label: 'Project actions',
+        unstyled: true,
+        onAfterOpen: () => lifecycle.push('open'),
+        onAfterClose: () => lifecycle.push('close'),
+      }),
+  })
+  app.mount(root)
+  const trigger = find(root, (node) => node.type === 'button')
+  assert.equal(trigger.props['aria-haspopup'], 'menu')
+  assert.equal(trigger.props['aria-expanded'], false)
+  assert.equal(trigger.props['aria-controls'], undefined)
+  let prevented = false
+  trigger.props.onKeydown({ key: 'ArrowDown', preventDefault: () => (prevented = true) })
+  await nextTick()
+  await nextTick()
+  await nextTick()
+  assert.equal(prevented, true)
+  const menu = find(root, (node) => node.props?.role === 'menu')
+  assert.ok(menu)
+  assert.equal(trigger.props['aria-expanded'], true)
+  assert.equal(trigger.props['aria-controls'], menu.props.id)
+  assert.match(menu.props.class, /is-unstyled/)
+  assert.deepEqual(lifecycle, ['open'])
+  const item = find(root, (node) => node.props?.role === 'menuitem')
+  item.props.onClick(new Event('click'))
+  await nextTick()
+  await nextTick()
+  await nextTick()
+  assert.deepEqual(lifecycle, ['open', 'close'])
+  assert.equal(trigger.props['aria-controls'], undefined)
+  app.unmount()
+})
+
+test('dropdown menu waits for controlled closure before restoring focus and suppresses lifecycle after unmount', async () => {
+  const controlled = makeRenderer()
+  const closeRequests = []
+  const controlledApp = controlled.renderer.createApp({
+    render: () =>
+      h(AvenDropdownMenu, {
+        open: true,
+        items: [{ key: 'open', label: 'Open' }],
+        'onUpdate:open': (value) => closeRequests.push(value),
+      }),
+  })
+  controlledApp.mount(controlled.root)
+  await nextTick()
+  await nextTick()
+  const trigger = controlled.find(controlled.root, (node) => node.type === 'button')
+  const item = controlled.find(controlled.root, (node) => node.props?.role === 'menuitem')
+  item.props.onClick(new Event('click'))
+  await nextTick()
+  assert.deepEqual(closeRequests, [false])
+  assert.equal(trigger.focused, false)
+  assert.ok(controlled.find(controlled.root, (node) => node.props?.role === 'menu'))
+  controlledApp.unmount()
+
+  const pendingOpen = makeRenderer()
+  const lifecycle = []
+  const pendingApp = pendingOpen.renderer.createApp({
+    render: () =>
+      h(AvenDropdownMenu, {
+        defaultOpen: true,
+        items: [{ key: 'open', label: 'Open' }],
+        onAfterOpen: () => lifecycle.push('open'),
+        onAfterClose: () => lifecycle.push('close'),
+      }),
+  })
+  pendingApp.mount(pendingOpen.root)
+  pendingApp.unmount()
+  await nextTick()
+  await nextTick()
+  assert.deepEqual(lifecycle, [])
+})
+
+test('teleported dropdown measures, flips, and shifts inside the viewport', async () => {
+  const previousWindow = globalThis.window
+  globalThis.window = {
+    innerWidth: 300,
+    innerHeight: 220,
+    scrollX: 0,
+    scrollY: 0,
+    addEventListener() {},
+    removeEventListener() {},
+  }
+  try {
+    const mounted = makeRenderer()
+    const app = mounted.renderer.createApp({
+      render: () =>
+        h(AvenDropdownMenu, {
+          items: [{ key: 'open', label: 'Open' }],
+          teleportTo: '#overlay-root',
+          placement: 'bottom-start',
+          offset: 4,
+          collisionPadding: 8,
+        }),
+    })
+    app.mount(mounted.root)
+    const trigger = mounted.find(mounted.root, (node) => node.type === 'button')
+    trigger.rect = { left: 260, top: 180, width: 30, height: 30 }
+    trigger.props.onKeydown({ key: 'ArrowDown', preventDefault() {} })
+    await nextTick()
+    await nextTick()
+    await nextTick()
+    const content = mounted.find(mounted.overlayRoot, (node) =>
+      node.props?.class?.includes?.('dropdown-content'),
+    )
+    assert.deepEqual(content.props.style, {
+      position: 'fixed',
+      insetBlockStart: '76px',
+      insetBlockEnd: 'auto',
+      insetInlineStart: '92px',
+      insetInlineEnd: 'auto',
+      minInlineSize: '12rem',
+      maxBlockSize: '204px',
+      overflowY: 'auto',
+    })
+    app.unmount()
+  } finally {
+    if (previousWindow === undefined) delete globalThis.window
+    else globalThis.window = previousWindow
+  }
 })
 
 test('card surfaces and editable property rows preserve heading, list, customization, and edit contracts', async () => {
@@ -4007,4 +5552,895 @@ test('rich text field supports native forms, controlled commits, custom schemas,
     render: () => h(AvenRichTextField, { label: 'Notes', disabled: true }),
   })
   assert.match(disabled, /<textarea[^>]*disabled/)
+})
+
+test('tabs expose linked tab and panel semantics without nested interactive controls', async () => {
+  const html = await render({
+    render: () =>
+      h(AvenTabs, {
+        id: 'workspace-tabs',
+        label: 'Workspace views',
+        defaultValue: 'overview',
+        items: [
+          { key: 'overview', label: 'Overview', closable: true },
+          { key: 'activity', label: 'Activity', disabled: true },
+          { key: 'settings', label: 'Settings' },
+        ],
+      }),
+  })
+  assert.match(html, /role="tablist"[^>]*aria-label="Workspace views"/)
+  assert.match(
+    html,
+    /role="tab"[^>]*aria-selected="true"[^>]*aria-controls="workspace-tabs-panel-0"/,
+  )
+  assert.match(html, /role="tabpanel"[^>]*aria-labelledby="workspace-tabs-tab-0"/)
+  assert.match(html, /Close Overview/)
+  const tabMarkup = html.match(/<button[^>]*role="tab"[^>]*>[\s\S]*?<\/button>/g) ?? []
+  assert.equal(tabMarkup.length, 3)
+  assert.ok(tabMarkup.every((button) => (button.match(/<button/g) ?? []).length === 1))
+})
+
+test('tabs keyboard navigation skips disabled items and manual activation commits once', async () => {
+  const { renderer, root } = makeRenderer()
+  const updates = []
+  const changes = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenTabs, {
+          items: [
+            { key: 'one', label: 'One' },
+            { key: 'blocked', label: 'Blocked', disabled: true },
+            { key: 'three', label: 'Three' },
+          ],
+          defaultValue: 'one',
+          activation: 'manual',
+          'onUpdate:modelValue': (key) => updates.push(key),
+          onChange: (key) => changes.push(key),
+        }),
+    })
+    .mount(root)
+  const tabs = () => {
+    const result = []
+    const visit = (node) => {
+      if (node.props?.role === 'tab') result.push(node)
+      for (const child of node.children ?? []) visit(child)
+    }
+    visit(root)
+    return result
+  }
+  const first = tabs()[0]
+  first.props.onKeydown({ key: 'ArrowRight', preventDefault() {} })
+  await nextTick()
+  assert.equal(tabs()[2].props.tabindex, 0)
+  assert.deepEqual(updates, [])
+  tabs()[2].props.onKeydown({ key: 'Enter', preventDefault() {} })
+  assert.deepEqual(updates, ['three'])
+  assert.deepEqual(changes, ['three'])
+})
+
+test('number input steps decimal values using its locale and resets the form', async () => {
+  const { renderer, root, find } = makeRenderer()
+  const updates = []
+  const changes = []
+  renderer
+    .createApp({
+      render: () =>
+        h('form', [
+          h(AvenNumberInput, {
+            defaultValue: 1,
+            step: 0.5,
+            locale: 'de-DE',
+            name: 'amount',
+            'onUpdate:modelValue': (value) => updates.push(value),
+            onChange: (value) => changes.push(value),
+          }),
+        ]),
+    })
+    .mount(root)
+  const input = find(root, (node) => node.props?.role === 'spinbutton')
+  const increment = find(root, (node) => node.props?.['aria-label'] === 'Increase value')
+  increment.props.onClick({ type: 'click' })
+  await nextTick()
+  assert.deepEqual(updates, [1.5])
+  assert.deepEqual(changes, [1.5])
+  assert.equal(input.props.value, '1,5')
+  find(root, (node) => node.type === 'form').dispatchEvent({
+    type: 'reset',
+    defaultPrevented: false,
+  })
+  await Promise.resolve()
+  await nextTick()
+  await Promise.resolve()
+  await nextTick()
+  assert.equal(input.props.value, '1')
+})
+
+test('number input keeps incomplete drafts and commits one semantic change on blur', async () => {
+  const { renderer, root, find } = makeRenderer()
+  const updates = []
+  const changes = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenNumberInput, {
+          label: 'Amount',
+          defaultValue: 1,
+          locale: 'en-US',
+          'onUpdate:modelValue': (value) => updates.push(value),
+          'onUpdate:inputValue': (value) => drafts.push(value),
+          onChange: (value) => changes.push(value),
+        }),
+    })
+    .mount(root)
+  const input = find(root, (node) => node.type === 'input')
+  const drafts = []
+  input.props.onInput({ target: { value: '1.' } })
+  assert.deepEqual(drafts, ['1.'])
+  assert.deepEqual(updates, [])
+  input.props.onInput({ target: { value: '1.5' } })
+  assert.deepEqual(updates, [1.5])
+  input.props.onBlur({ target: input })
+  assert.deepEqual(updates, [1.5])
+  assert.deepEqual(changes, [1.5])
+  input.props.onBlur({ target: input })
+  assert.deepEqual(changes, [1.5])
+})
+
+test('number input parses localized numerals and signs across decimal numbering systems', async () => {
+  const { renderer, root, find } = makeRenderer()
+  const updates = []
+  const drafts = []
+  const invalid = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenNumberInput, {
+          locale: 'ar-EG',
+          'onUpdate:modelValue': (value) => updates.push(value),
+          'onUpdate:inputValue': (value) => drafts.push(value),
+          onInvalidInput: (value) => invalid.push(value),
+        }),
+    })
+    .mount(root)
+  const input = find(root, (node) => node.props?.role === 'spinbutton')
+  input.props.onInput({ target: { value: '١٢٫٥' } })
+  input.props.onInput({ target: { value: '\u061c-٣٫٥' } })
+  assert.deepEqual(drafts, ['١٢٫٥', '\u061c-٣٫٥'])
+  assert.deepEqual(invalid, [])
+  assert.deepEqual(updates, [12.5, -3.5])
+})
+
+test('formatted number inputs switch to a parseable local draft while focused', async () => {
+  const { renderer, root, find } = makeRenderer()
+  const updates = []
+  const changes = []
+  const invalid = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenNumberInput, {
+          defaultValue: 1234.5,
+          locale: 'de-DE',
+          formatOptions: { style: 'currency', currency: 'EUR' },
+          'onUpdate:modelValue': (value) => updates.push(value),
+          onChange: (value) => changes.push(value),
+          onInvalidInput: (event) => invalid.push(event),
+        }),
+    })
+    .mount(root)
+  const input = find(root, (node) => node.props?.role === 'spinbutton')
+  assert.equal(input.props.value, '1.234,50 €')
+  input.props.onFocus({ target: input })
+  await nextTick()
+  assert.equal(input.props.value, '1234,5')
+  input.props.onInput({ target: { value: '1234,75' } })
+  input.props.onBlur({ target: input })
+  assert.deepEqual(updates, [1234.75])
+  assert.deepEqual(changes, [1234.75])
+  assert.deepEqual(invalid, [])
+  await nextTick()
+  assert.equal(input.props.value, '1.234,75 €')
+})
+
+test('native select renders option groups and maps numeric values without losing form ownership', async () => {
+  const options = [
+    { value: 1, label: 'One', group: 'Numbers' },
+    { value: 2, label: 'Two', group: 'Numbers' },
+    { value: 3, label: 'Three' },
+  ]
+  const html = await render({
+    render: () => h(AvenSelect, { options, name: 'choice', form: 'external', defaultValue: 2 }),
+  })
+  assert.match(html, /<optgroup label="Numbers"/)
+  assert.match(html, /<option value="1" selected[^>]*>Two<\/option>/)
+  assert.match(html, /<input type="hidden" name="choice" form="external" value="2"/)
+  const { renderer, root, find } = makeRenderer()
+  const updates = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenSelect, { options, 'onUpdate:modelValue': (value) => updates.push(value) }),
+    })
+    .mount(root)
+  find(root, (node) => node.type === 'select').props.onChange({ target: { value: '1' } })
+  assert.deepEqual(updates, [2])
+})
+
+test('native select values, popover relationships, and tooltip IDs are stable and semantic', async () => {
+  const html = await render({
+    render: () =>
+      h('form', null, [
+        h(AvenSelect, {
+          label: 'Priority',
+          name: 'priority',
+          defaultValue: 2,
+          options: [
+            { value: 1, label: 'Normal' },
+            { value: 2, label: 'High' },
+          ],
+        }),
+        h(
+          AvenPopover,
+          { defaultOpen: true },
+          {
+            trigger: ({ triggerAttrs, triggerRef }) =>
+              h('button', { ...triggerAttrs, ref: triggerRef, type: 'button' }, 'Details'),
+            default: () => 'Popover body',
+          },
+        ),
+        h(
+          AvenTooltip,
+          { text: 'Hint', defaultOpen: true },
+          { trigger: ({ triggerAttrs }) => h('button', triggerAttrs, 'Hint target') },
+        ),
+      ]),
+  })
+  assert.match(html, /<select[^>]*value="1"/)
+  assert.match(html, /<input type="hidden" name="priority" value="2"/)
+  assert.match(html, /aria-haspopup="dialog"[^>]*aria-controls="aven-popover-\d+"/)
+  assert.match(html, /id="aven-popover-\d+" role="dialog"/)
+  assert.match(html, /aria-describedby="aven-tooltip-\d+"/)
+  assert.match(html, /id="aven-tooltip-\d+" role="tooltip"/)
+  assert.doesNotMatch(html, /Math\.random|NaN/)
+})
+
+test('optional Boolean props preserve uncontrolled defaults when controlled values are absent', async () => {
+  const html = await render({
+    render: () =>
+      h('main', null, [
+        h(AvenCheckbox, { label: 'Remember', defaultValue: true }),
+        h(AvenSwitch, { label: 'Enabled', defaultValue: true }),
+        h(
+          AvenCollapsible,
+          { defaultOpen: true },
+          {
+            trigger: ({ triggerAttrs }) => h('button', triggerAttrs, 'Toggle'),
+            content: () => 'Initially expanded',
+          },
+        ),
+        h(
+          AvenPopover,
+          { defaultOpen: true },
+          {
+            trigger: ({ triggerAttrs }) => h('button', triggerAttrs, 'Open'),
+            default: () => 'Initially visible',
+          },
+        ),
+        h(
+          AvenTooltip,
+          { text: 'Initially visible', defaultOpen: true },
+          {
+            trigger: ({ triggerAttrs }) => h('button', triggerAttrs, 'Target'),
+          },
+        ),
+        h(
+          AvenDropdownMenu,
+          { items: [{ key: 'new', label: 'New' }], defaultOpen: true },
+          {
+            trigger: ({ triggerAttrs, triggerRef }) =>
+              h('button', { ...triggerAttrs, ref: triggerRef, type: 'button' }, 'Actions'),
+          },
+        ),
+        h(AvenSidebar, { items: [], defaultCollapsed: true }),
+      ]),
+  })
+  assert.match(html, /type="checkbox"[^>]*checked/)
+  assert.match(html, /role="switch"[^>]*aria-checked="true"/)
+  assert.match(html, /Initially expanded/)
+  assert.match(html, /Initially visible/)
+  assert.match(html, /aria-expanded="true"/)
+  assert.match(html, /is-collapsed/)
+  assert.match(html, /role="menu"/)
+})
+
+test('segmented control skips disabled options on RTL keyboard navigation and preserves form values', async () => {
+  const previousDocument = globalThis.document
+  globalThis.document = { dir: 'rtl' }
+  const { renderer, root } = makeRenderer()
+  const updates = []
+  const changes = []
+  renderer
+    .createApp({
+      render: () =>
+        h(
+          'div',
+          { dir: 'rtl' },
+          h(AvenSegmentedControl, {
+            name: 'layout',
+            items: [
+              { value: 'list', label: 'List' },
+              { value: 'grid', label: 'Grid', disabled: true },
+              { value: 'timeline', label: 'Timeline' },
+            ],
+            defaultValue: 'list',
+            'onUpdate:modelValue': (value) => updates.push(value),
+            onChange: (value) => changes.push(value),
+          }),
+        ),
+    })
+    .mount(root)
+  const radios = []
+  const visit = (node) => {
+    if (node.props?.role === 'radio') radios.push(node)
+    for (const child of node.children ?? []) visit(child)
+  }
+  visit(root)
+  radios[0].props.onKeydown({ key: 'ArrowLeft', preventDefault() {} })
+  await nextTick()
+  assert.equal(radios[2].props['aria-checked'], true)
+  assert.deepEqual(updates, ['timeline'])
+  assert.deepEqual(changes, ['timeline'])
+  if (previousDocument === undefined) delete globalThis.document
+  else globalThis.document = previousDocument
+})
+
+test('segmented control maintains a tab stop, navigates backwards and resets its value', async () => {
+  const { renderer, root, find } = makeRenderer()
+  const updates = []
+  renderer
+    .createApp({
+      render: () =>
+        h('form', {}, [
+          h(AvenSegmentedControl, {
+            name: 'view',
+            allowEmpty: true,
+            items: [
+              { value: 'a', label: 'A', disabled: true },
+              { value: 'b', label: 'B' },
+              { value: 'c', label: 'C', disabled: true },
+              { value: 'd', label: 'D' },
+            ],
+            'onUpdate:modelValue': (value) => updates.push(value),
+          }),
+        ]),
+    })
+    .mount(root)
+  const form = find(root, (node) => node.type === 'form')
+  const group = find(root, (node) => node.props?.role === 'radiogroup')
+  const radios = group.children.filter((node) => node.props?.role === 'radio')
+  assert.equal(radios[1].props.tabindex, 0)
+  radios[1].props.onKeydown({ key: 'ArrowLeft', preventDefault() {} })
+  await nextTick()
+  assert.equal(radios[3].props['aria-checked'], true)
+  radios[3].props.onClick()
+  await nextTick()
+  assert.equal(radios[3].props['aria-checked'], false)
+  radios[1].props.onClick()
+  await nextTick()
+  form.dispatchEvent({ type: 'reset', defaultPrevented: false })
+  await Promise.resolve()
+  await nextTick()
+  assert.equal(radios[1].props['aria-checked'], false)
+  assert.deepEqual(updates, ['d', null, 'b'])
+})
+
+test('toggle group restores a tab stop when its focused item is removed', async () => {
+  const { renderer, root, find } = makeRenderer()
+  const items = ref([
+    { value: 'a', label: 'A' },
+    { value: 'b', label: 'B' },
+  ])
+  renderer.createApp({ render: () => h(AvenToggleGroup, { items: items.value }) }).mount(root)
+  let group = find(root, (node) => node.props?.role === 'toolbar')
+  group.children.filter((node) => node.type === 'button')[1].props.onFocus()
+  items.value = [{ value: 'a', label: 'A' }]
+  await nextTick()
+  group = find(root, (node) => node.props?.role === 'toolbar')
+  assert.equal(group.children.find((node) => node.type === 'button').props.tabindex, 0)
+})
+
+test('toggle group respects canceled resets and requests a controlled default', async () => {
+  const { renderer, root, find } = makeRenderer()
+  const changes = []
+  const updates = []
+  renderer
+    .createApp({
+      render: () =>
+        h('form', {}, [
+          h(AvenToggleGroup, {
+            modelValue: ['b'],
+            defaultValue: ['a'],
+            multiple: true,
+            items: [
+              { value: 'a', label: 'A' },
+              { value: 'b', label: 'B' },
+            ],
+            'onUpdate:modelValue': (value) => updates.push(value),
+            onChange: (value) => changes.push(value),
+          }),
+        ]),
+    })
+    .mount(root)
+  const form = find(root, (node) => node.type === 'form')
+  form.dispatchEvent({ type: 'reset', defaultPrevented: true })
+  await Promise.resolve()
+  assert.deepEqual(updates, [])
+  form.dispatchEvent({ type: 'reset', defaultPrevented: false })
+  await Promise.resolve()
+  assert.deepEqual(updates, [['a']])
+  assert.deepEqual(changes, [])
+  const buttons = find(root, (node) => node.props?.role === 'toolbar').children.filter(
+    (node) => node.type === 'button',
+  )
+  assert.equal(buttons[1].props['aria-pressed'], true)
+})
+
+test('toggle group follows RTL arrow direction without changing selection', () => {
+  const previousDocument = globalThis.document
+  try {
+    globalThis.document = { dir: 'rtl' }
+    const { renderer, root, find } = makeRenderer()
+    const updates = []
+    renderer
+      .createApp({
+        render: () =>
+          h(AvenToggleGroup, {
+            defaultValue: 'a',
+            items: [
+              { value: 'a', label: 'A' },
+              { value: 'b', label: 'B' },
+            ],
+            'onUpdate:modelValue': (value) => updates.push(value),
+          }),
+      })
+      .mount(root)
+    const buttons = find(root, (node) => node.props?.role === 'toolbar').children.filter(
+      (node) => node.type === 'button',
+    )
+    buttons[0].props.onKeydown({ key: 'ArrowLeft', preventDefault() {} })
+    assert.equal(buttons[1].focused, true)
+    assert.deepEqual(updates, [])
+  } finally {
+    if (previousDocument === undefined) delete globalThis.document
+    else globalThis.document = previousDocument
+  }
+})
+
+test('pagination clamps requests, updates page size once, and exposes progress status semantics', async () => {
+  const html = await render({
+    render: () =>
+      h('main', null, [
+        h(AvenPagination, { total: 45, defaultValue: 2, pageSize: 10, showSizeChanger: true }),
+        h(AvenSpinner, { label: 'Loading' }),
+        h(AvenProgress, { value: null, label: 'Upload progress' }),
+        h(AvenSkeleton, { lines: 3, animated: false }),
+      ]),
+  })
+  assert.match(html, /aria-label="Pagination"/)
+  assert.match(html, /aria-current="page"/)
+  assert.match(html, /role="status"[^>]*aria-label="Loading"/)
+  assert.match(html, /role="progressbar"[^>]*aria-label="Upload progress"/)
+  assert.match(html, /aria-hidden="true"/)
+  assert.match(html, /Rows per page<select/)
+})
+
+test('pagination emits one controlled page request and resets once when its size changes', () => {
+  const { renderer, root } = makeRenderer()
+  const pages = []
+  const sizes = []
+  const changes = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenPagination, {
+          modelValue: 2,
+          total: 220,
+          pageSize: 20,
+          showSizeChanger: true,
+          'onUpdate:modelValue': (page) => pages.push(page),
+          'onUpdate:pageSize': (size) => sizes.push(size),
+          onChange: (change) => changes.push(change),
+        }),
+    })
+    .mount(root)
+  const controls = []
+  const findAll = (node) => {
+    if (node.type === 'button') controls.push(node)
+    for (const child of node.children ?? []) findAll(child)
+  }
+  findAll(root)
+  controls.at(-1).props.onClick()
+  const select = []
+  const collectSelects = (node) => {
+    if (node.type === 'select') select.push(node)
+    for (const child of node.children ?? []) collectSelects(child)
+  }
+  collectSelects(root)
+  select[0].props.onChange({ target: { value: '50' } })
+  assert.deepEqual(pages, [3, 1])
+  assert.deepEqual(sizes, [50])
+  assert.deepEqual(changes, [
+    { page: 3, pageSize: 20 },
+    { page: 1, pageSize: 50 },
+  ])
+})
+
+test('breadcrumb expansion and recursive navigation preserve landmarks and owned state', async () => {
+  const html = await render({
+    render: () =>
+      h('main', null, [
+        h(AvenBreadcrumb, {
+          items: [
+            { key: 'home', label: 'Home', href: '/' },
+            { key: 'library', label: 'Library', href: '/library' },
+            { key: 'widgets', label: 'Widgets', href: '/widgets' },
+            { key: 'tabs', label: 'Tabs', current: true },
+          ],
+          maxVisible: 3,
+        }),
+        h(AvenNavList, {
+          items: [
+            {
+              key: 'group',
+              label: 'Group',
+              children: [{ key: 'child', label: 'Child', href: '/child' }],
+            },
+          ],
+          defaultExpandedKeys: ['group'],
+          activeKey: 'child',
+        }),
+      ]),
+  })
+  assert.match(html, /aria-label="Breadcrumb"/)
+  assert.match(html, /aria-current="page"/)
+  assert.match(html, /Show hidden breadcrumb items/)
+  assert.match(html, /aria-label="Navigation"/)
+  assert.match(html, /aria-label="Group submenu"/)
+  assert.match(html, /href="\/child" aria-current="page"/)
+})
+
+test('standalone navigation items preserve link semantics and request disclosure state', async () => {
+  const html = await render({
+    render: () =>
+      h(
+        AvenNavItem,
+        {
+          item: { key: 'docs', label: 'Documentation', href: '/docs', badge: 'New', children: [] },
+          active: true,
+        },
+        {
+          default: ({ item, key }) => `${item.label}:${key}`,
+          leading: () => 'Book',
+          badge: () => 'Updated',
+        },
+      ),
+  })
+  assert.match(html, /<li[^>]*aven-nav-item[^>]*is-active/)
+  assert.match(html, /href="\/docs" aria-current="page"/)
+  assert.match(html, /Book/)
+  assert.match(html, /Documentation:docs/)
+  assert.match(html, /Updated/)
+
+  const { renderer, root } = makeRenderer()
+  const expanded = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenNavItem, {
+          item: { key: 'group', label: 'Group', children: [{ key: 'child', label: 'Child' }] },
+          'onUpdate:expanded': (payload) => expanded.push(payload),
+        }),
+    })
+    .mount(root)
+  const disclosure = []
+  const visit = (node) => {
+    if (node.props?.['aria-expanded'] !== undefined) disclosure.push(node)
+    for (const child of node.children ?? []) visit(child)
+  }
+  visit(root)
+  disclosure[0].props.onClick({})
+  assert.equal(expanded.length, 1)
+  assert.deepEqual(expanded[0].key, 'group')
+  assert.equal(expanded[0].expanded, true)
+})
+
+test('checkbox group blocks limits without leaving native state out of sync', async () => {
+  const { renderer, root, find } = makeRenderer()
+  const limits = []
+  const updates = []
+  renderer
+    .createApp({
+      render: () =>
+        h(AvenCheckboxGroup, {
+          label: 'Features',
+          min: 1,
+          max: 1,
+          defaultValue: ['a'],
+          items: [
+            { value: 'a', label: 'A' },
+            { value: 'b', label: 'B' },
+          ],
+          onLimit: (event) => limits.push(event),
+          'onUpdate:modelValue': (value) => updates.push(value),
+        }),
+    })
+    .mount(root)
+  const group = find(root, (node) => node.type === 'fieldset')
+  const inputs = group.children
+    .filter((node) => node.type === 'label')
+    .map((node) => node.children.find((child) => child.type === 'input'))
+  const a = { checked: false },
+    b = { checked: true }
+  inputs[0].props.onChange({ target: a })
+  inputs[1].props.onChange({ target: b })
+  await nextTick()
+  assert.equal(a.checked, true)
+  assert.equal(b.checked, false)
+  assert.deepEqual(limits, [
+    { kind: 'min', value: 'a' },
+    { kind: 'max', value: 'b' },
+  ])
+  assert.deepEqual(updates, [])
+})
+
+test('checkbox group links messages, renders item slots and omits disabled form values', async () => {
+  const html = await render({
+    render: () =>
+      h(
+        AvenCheckboxGroup,
+        {
+          id: 'features',
+          label: 'Features',
+          description: 'Choose one',
+          error: 'Required',
+          name: 'feature',
+          defaultValue: ['a', 'b'],
+          items: [
+            { value: 'a', label: 'A' },
+            { value: 'b', label: 'B', disabled: true },
+          ],
+        },
+        { item: ({ item, selected }) => `${item.label}:${selected}` },
+      ),
+  })
+  assert.match(html, /aria-describedby="features-description features-error"/)
+  assert.match(html, /id="features-error" role="alert"/)
+  assert.match(html, /A:true/)
+  assert.match(html, /type="hidden" name="feature" value="a"/)
+  assert.doesNotMatch(html, /type="hidden" name="feature" value="b"/)
+})
+
+test('controlled radio groups restore native selection and request the initial value on reset', async () => {
+  const { renderer, root, find } = makeRenderer()
+  const updates = []
+  renderer
+    .createApp({
+      render: () =>
+        h('form', [
+          h(AvenRadioGroup, {
+            modelValue: 'a',
+            defaultValue: 'b',
+            label: 'Choice',
+            items: [
+              { value: 'a', label: 'A' },
+              { value: 'b', label: 'B' },
+            ],
+            'onUpdate:modelValue': (value) => updates.push(value),
+          }),
+        ]),
+    })
+    .mount(root)
+  const group = find(root, (node) => node.type === 'fieldset')
+  const radios = group.children
+    .filter((node) => node.type === 'label')
+    .map((node) => node.children.find((child) => child.type === 'input'))
+  radios[0].checked = false
+  radios[1].checked = true
+  radios[1].props.onChange()
+  await nextTick()
+  assert.equal(radios[0].checked, true)
+  assert.equal(radios[1].checked, false)
+  find(root, (node) => node.type === 'form').dispatchEvent({
+    type: 'reset',
+    defaultPrevented: false,
+  })
+  await new Promise((resolve) => setTimeout(resolve, 5))
+  assert.deepEqual(updates, ['b', 'b'])
+  assert.equal(radios[0].checked, true)
+})
+
+test('checkbox sets the native indeterminate property on mount', () => {
+  const { renderer, root, find } = makeRenderer()
+  renderer
+    .createApp({ render: () => h(AvenCheckbox, { indeterminate: true, label: 'All' }) })
+    .mount(root)
+  assert.equal(find(root, (node) => node.type === 'input').indeterminate, true)
+})
+
+test('checkbox description is separate from its accessible label', async () => {
+  const html = await render({
+    render: () =>
+      h(AvenCheckbox, {
+        label: 'Notify me',
+        description: 'Email updates',
+        'aria-describedby': 'external',
+      }),
+  })
+  const label = html.match(/aria-labelledby="([^"]+)"/)[1]
+  const description = html.match(/aria-describedby="external ([^"]+)"/)[1]
+  assert.match(html, new RegExp(`id="${label}"[^>]*>.*Notify me`))
+  assert.match(html, new RegExp(`id="${description}"[^>]*>.*Email updates`))
+})
+
+test('switches use unique label and description references and expose state slots', async () => {
+  const html = await render({
+    render: () =>
+      h('div', [
+        h(
+          AvenSwitch,
+          { label: 'First', description: 'First help', defaultValue: true },
+          { thumb: ({ checked }) => (checked ? 'on' : 'off') },
+        ),
+        h(AvenSwitch, { label: 'Second', description: 'Second help' }),
+      ]),
+  })
+  const descriptions = [...html.matchAll(/aria-describedby="([^"]+)"/g)].map((match) => match[1])
+  const labels = [...html.matchAll(/aria-labelledby="([^"]+)"/g)].map((match) => match[1])
+  assert.equal(new Set(descriptions).size, 2)
+  assert.equal(new Set(labels).size, 2)
+  for (const id of [...descriptions, ...labels]) assert.ok(html.includes(`id="${id}"`))
+  assert.match(html, /on<!--\]--><\/span>/)
+})
+
+test('readonly switches keep their checked form value and block toggles', async () => {
+  const { renderer, root, find } = makeRenderer()
+  const updates = []
+  const changes = []
+  renderer
+    .createApp({
+      render: () =>
+        h('form', null, [
+          h(AvenSwitch, {
+            label: 'Alerts',
+            name: 'alerts',
+            checkedValue: 'enabled',
+            defaultValue: true,
+            readonly: true,
+            'onUpdate:modelValue': (value) => updates.push(value),
+            onChange: (value) => changes.push(value),
+          }),
+        ]),
+    })
+    .mount(root)
+  const input = find(root, (node) => node.props?.role === 'switch')
+  assert.equal(input.props.checked, true)
+  assert.equal(input.props.disabled, false)
+  assert.equal(input.props['aria-readonly'], true)
+  dispatchHandler(input.props.onClick, { preventDefault() {} })
+  assert.deepEqual(updates, [])
+  assert.deepEqual(changes, [])
+  assert.equal(input.props.checked, true)
+  assert.equal(input.props.name, 'alerts')
+  assert.equal(input.props.value, 'enabled')
+})
+
+test('checkboxes, switches, checkbox groups, and selects restore native form defaults', async () => {
+  const { renderer, root, find } = makeRenderer()
+  renderer
+    .createApp({
+      render: () =>
+        h('form', null, [
+          h(AvenCheckbox, { label: 'Remember', name: 'remember', defaultValue: true }),
+          h(AvenSwitch, { label: 'Alerts', name: 'alerts', defaultValue: true }),
+          h(AvenCheckboxGroup, {
+            label: 'Features',
+            name: 'feature',
+            items: [
+              { value: 'one', label: 'One' },
+              { value: 'two', label: 'Two' },
+            ],
+            defaultValue: ['one'],
+          }),
+          h(AvenSelect, {
+            name: 'priority',
+            options: [
+              { value: 1, label: 'Normal' },
+              { value: 2, label: 'High' },
+            ],
+            defaultValue: 1,
+          }),
+        ]),
+    })
+    .mount(root)
+  const form = find(root, (node) => node.type === 'form')
+  const inputs = []
+  const visit = (node) => {
+    if (node.type === 'input') inputs.push(node)
+    for (const child of node.children ?? []) visit(child)
+  }
+  visit(form)
+  inputs[0].props.onClick({ preventDefault() {} })
+  inputs[1].props.onClick({ preventDefault() {} })
+  inputs[2].props.onChange({ target: { checked: false } })
+  const select = find(form, (node) => node.type === 'select')
+  select.props.onChange({ target: { value: '1' } })
+  assert.equal(form.listeners.get('reset').length, 4)
+  const resetEvent = { defaultPrevented: false }
+  for (const reset of form.listeners.get('reset')) reset(resetEvent)
+  await Promise.resolve()
+  await nextTick()
+  assert.equal(inputs[0].props.checked, true)
+  assert.equal(inputs[1].props.checked, true)
+  assert.equal(inputs[2].props.checked, true)
+  assert.equal(select.props.value, '0')
+})
+
+test('overlay dismissal stack restores the parent as the top layer', () => {
+  const parent = {}
+  const child = {}
+  const removeParent = registerAvenOverlayLayer(parent)
+  assert.equal(isTopAvenOverlayLayer(parent), true)
+  const removeChild = registerAvenOverlayLayer(child)
+  assert.equal(isTopAvenOverlayLayer(parent), false)
+  assert.equal(isTopAvenOverlayLayer(child), true)
+  removeChild()
+  assert.equal(isTopAvenOverlayLayer(parent), true)
+  removeParent()
+  assert.equal(isTopAvenOverlayLayer(parent), false)
+})
+
+test('open popover document listeners and overlay stack registration clean up on unmount', () => {
+  const previousDocument = globalThis.document
+  const previousHTMLElement = globalThis.HTMLElement
+  const listeners = new Map()
+  globalThis.document = {
+    addEventListener(name, handler) {
+      const entries = listeners.get(name) ?? new Set()
+      entries.add(handler)
+      listeners.set(name, entries)
+    },
+    removeEventListener(name, handler) {
+      listeners.get(name)?.delete(handler)
+    },
+  }
+  globalThis.HTMLElement = class HTMLElement {}
+  const sentinel = {}
+  const unregisterSentinel = registerAvenOverlayLayer(sentinel)
+  const { renderer, root } = makeRenderer()
+  const app = renderer.createApp({
+    render: () =>
+      h(
+        AvenPopover,
+        { open: true },
+        {
+          trigger: ({ triggerAttrs, triggerRef }) =>
+            h('button', { ...triggerAttrs, ref: triggerRef }, 'Open'),
+          default: () => 'Content',
+        },
+      ),
+  })
+  app.mount(root)
+  assert.equal(isTopAvenOverlayLayer(sentinel), false)
+  assert.equal(listeners.get('pointerdown').size, 1)
+  assert.equal(listeners.get('keydown').size, 1)
+  app.unmount()
+  assert.equal(isTopAvenOverlayLayer(sentinel), true)
+  assert.equal(listeners.get('pointerdown').size, 0)
+  assert.equal(listeners.get('keydown').size, 0)
+  unregisterSentinel()
+  if (previousDocument === undefined) delete globalThis.document
+  else globalThis.document = previousDocument
+  if (previousHTMLElement === undefined) delete globalThis.HTMLElement
+  else globalThis.HTMLElement = previousHTMLElement
 })

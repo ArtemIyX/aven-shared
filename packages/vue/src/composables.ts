@@ -2,6 +2,21 @@ import { computed, getCurrentInstance, inject, ref, watch, type Ref } from 'vue'
 import { avenIdFactoryKey, useAvenConfig } from './provider.js'
 const appSequences = new WeakMap<object, number>()
 let detachedSequence = 0
+const overlayLayers: object[] = []
+/** Register an open overlay so only the topmost one handles Escape/outside events. */
+export function registerAvenOverlayLayer(layer: object): () => void {
+  overlayLayers.push(layer)
+  let active = true
+  return () => {
+    if (!active) return
+    active = false
+    const index = overlayLayers.lastIndexOf(layer)
+    if (index >= 0) overlayLayers.splice(index, 1)
+  }
+}
+export function isTopAvenOverlayLayer(layer: object): boolean {
+  return overlayLayers[overlayLayers.length - 1] === layer
+}
 /** Creates a per-instance id; an explicit consumer id always takes precedence. */
 export function useAvenId(explicit: string | undefined, part: string): string {
   if (explicit) return explicit

@@ -4,6 +4,8 @@ import type { AvenAppShellEvents, AvenAppShellProps, AvenAppShellSlots } from '.
 
 defineOptions({ inheritAttrs: false })
 const props = withDefaults(defineProps<AvenAppShellProps>(), {
+  sidebarCollapsed: undefined,
+  inspectorOpen: undefined,
   defaultSidebarCollapsed: false,
   defaultInspectorOpen: false,
   headerSticky: true,
@@ -57,6 +59,7 @@ defineExpose({ toggleSidebar, toggleInspector })
     :style="[attrs.style, props.ui?.root?.style]"
   >
     <header
+      v-bind="props.ui?.header?.attrs"
       :class="['shell-header', { 'is-sticky': props.headerSticky }, props.ui?.header?.class]"
       :style="props.ui?.header?.style"
     >
@@ -65,6 +68,7 @@ defineExpose({ toggleSidebar, toggleInspector })
       <slot name="inspector-toggle" :open="inspectorOpen" :toggle="toggleInspector" />
     </header>
     <aside
+      v-bind="props.ui?.sidebar?.attrs"
       v-if="$slots.sidebar && !sidebarCollapsed"
       :aria-label="props.sidebarLabel"
       :class="['shell-sidebar', props.ui?.sidebar?.class]"
@@ -72,10 +76,15 @@ defineExpose({ toggleSidebar, toggleInspector })
     >
       <slot name="sidebar" />
     </aside>
-    <main :class="['shell-main', props.ui?.main?.class]" :style="props.ui?.main?.style">
+    <main
+      v-bind="props.ui?.main?.attrs"
+      :class="['shell-main', props.ui?.main?.class]"
+      :style="props.ui?.main?.style"
+    >
       <slot />
     </main>
     <aside
+      v-bind="props.ui?.inspector?.attrs"
       v-if="$slots.inspector && inspectorOpen"
       :aria-label="props.inspectorLabel"
       :class="['shell-inspector', props.ui?.inspector?.class]"
@@ -84,6 +93,7 @@ defineExpose({ toggleSidebar, toggleInspector })
       <slot name="inspector" />
     </aside>
     <footer
+      v-bind="props.ui?.footer?.attrs"
       v-if="$slots.footer"
       :class="['shell-footer', props.ui?.footer?.class]"
       :style="props.ui?.footer?.style"
@@ -91,6 +101,7 @@ defineExpose({ toggleSidebar, toggleInspector })
       <slot name="footer" />
     </footer>
     <div
+      v-bind="props.ui?.statusbar?.attrs"
       v-if="$slots.statusbar"
       :class="['shell-statusbar', props.ui?.statusbar?.class]"
       :style="props.ui?.statusbar?.style"

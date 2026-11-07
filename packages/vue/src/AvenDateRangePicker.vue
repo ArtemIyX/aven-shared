@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, useAttrs, watch } from 'vue'
 import AvenCalendar from './AvenCalendar.vue'
 import { parseDateOnly, toDateOnly, type DateOnly } from './dateOnly.js'
-import { useAvenId } from './composables.js'
+import { isTopAvenOverlayLayer, registerAvenOverlayLayer, useAvenId } from './composables.js'
 import type {
   AvenDateRangePickerEvents,
   AvenDateRangePickerProps,
@@ -12,6 +12,7 @@ import type {
 defineOptions({ inheritAttrs: false })
 const props = withDefaults(defineProps<AvenDateRangePickerProps>(), {
   defaultValue: () => ({ start: null, end: null }),
+  open: undefined,
   locale: 'en',
   weekStartsOn: 0,
   months: 1,
@@ -24,6 +25,11 @@ const props = withDefaults(defineProps<AvenDateRangePickerProps>(), {
 const emit = defineEmits<AvenDateRangePickerEvents>(),
   slots = defineSlots<AvenDateRangePickerSlots>()
 const controlId = useAvenId(props.id, 'date-range')
+const attrs = useAttrs()
+const nativeAttrs = computed(() =>
+  Object.fromEntries(Object.entries(attrs).filter(([key]) => key !== 'class' && key !== 'style')),
+)
+const initialValue = { ...props.defaultValue }
 const local = ref<AvenDateRangeValue>({ ...props.defaultValue }),
   draftStart = ref(''),
   draftEnd = ref(''),
@@ -34,6 +40,8 @@ const local = ref<AvenDateRangeValue>({ ...props.defaultValue }),
   panel = ref<HTMLElement>(),
   choosingEnd = ref(false)
 const root = ref<HTMLElement>()
+const overlayLayer = {}
+let unregisterOverlay: (() => void) | undefined
 const value = computed(() => props.modelValue ?? local.value),
   open = computed(() => (props.open !== undefined ? props.open : openLocal.value)),
   today = computed(() => {
@@ -70,22 +78,22 @@ function setMonth(v: { year: number; month: number }) {
 }
 function valid(d: DateOnly | null) {
   return (
-    !props.disabled &&
-    !props.readonly &&
-    (!d ||
-      ((!props.min || d >= props.min) &&
-        (!props.max || d <= props.max) &&
-        !props.disabledDate?.(d)))
+    !d ||
+    (!!parseDateOnly(d) &&
+      (!props.min || d >= props.min) &&
+      (!props.max || d <= props.max) &&
+      !props.disabledDate?.(d))
   )
 }
 function update(next: AvenDateRangeValue, commit = false) {
   if (next.start && next.end && next.start > next.end) next = { start: next.end, end: next.start }
+  if (next.start === value.value.start && next.end === value.value.end) return
   local.value = next
   emit('update:modelValue', next)
   if (commit && next.start && next.end) emit('change', next)
 }
 function select(date: DateOnly) {
-  if (!valid(date)) return
+  if (props.disabled || props.readonly || !valid(date)) return
   if (!choosingEnd.value || !value.value.start) {
     choosingEnd.value = true
     update({ start: date, end: null })
@@ -97,6 +105,8 @@ function select(date: DateOnly) {
   setOpen(false)
 }
 function selectPreset(preset: NonNullable<AvenDateRangePickerProps['presets']>[number]) {
+  if (props.disabled || props.readonly || !valid(preset.value.start) || !valid(preset.value.end))
+    return
   update(preset.value, true)
   emit('presetSelect', { key: preset.key, value: preset.value })
   setOpen(false)
@@ -121,36 +131,70 @@ function blur(which: 'start' | 'end') {
     })
 }
 function reset(e: Event) {
-  if (e.defaultPrevented || props.modelValue !== undefined) return
-  local.value = { ...props.defaultValue }
-  draftStart.value = local.value.start ?? ''
-  draftEnd.value = local.value.end ?? ''
-  setOpen(false)
+  queueMicrotask(async () => {
+    if (e.defaultPrevented) return
+    local.value = { ...initialValue }
+    if (props.modelValue !== undefined) emit('update:modelValue', { ...initialValue })
+    await nextTick()
+    draftStart.value = value.value.start ?? ''
+    draftEnd.value = value.value.end ?? ''
+    if (props.modelValue !== undefined) {
+      if (startInput.value) startInput.value.value = draftStart.value
+      if (endInput.value) endInput.value.value = draftEnd.value
+    }
+    choosingEnd.value = false
+    setOpen(false)
+  })
 }
-function closeFromKeyboard() {
+function closeFromKeyboard(event: KeyboardEvent) {
+  if (event.key !== 'Escape' || !open.value || !isTopAvenOverlayLayer(overlayLayer)) return
+  event.preventDefault()
+  event.stopPropagation()
   setOpen(false)
   startInput.value?.focus()
 }
 function outside(event: PointerEvent) {
-  if (open.value && !root.value?.contains(event.target as Node)) setOpen(false)
+  if (
+    isTopAvenOverlayLayer(overlayLayer) &&
+    open.value &&
+    !root.value?.contains(event.target as Node)
+  )
+    setOpen(false)
+}
+function attachOverlay() {
+  if (typeof document === 'undefined' || unregisterOverlay) return
+  unregisterOverlay = registerAvenOverlayLayer(overlayLayer)
+  document.addEventListener('pointerdown', outside, true)
+}
+function detachOverlay() {
+  if (typeof document !== 'undefined') document.removeEventListener('pointerdown', outside, true)
+  unregisterOverlay?.()
+  unregisterOverlay = undefined
 }
 watch(open, (next) => {
-  if (next)
-    nextTick(() =>
-      panel.value?.querySelector<HTMLElement>('[role="gridcell"]:not(:disabled)')?.focus(),
+  if (next) {
+    attachOverlay()
+    nextTick(
+      () =>
+        open.value &&
+        panel.value?.querySelector<HTMLElement>('[role="gridcell"][tabindex="0"]')?.focus(),
     )
+  } else detachOverlay()
 })
 onMounted(() => {
   startInput.value?.form?.addEventListener('reset', reset)
-  if (typeof document !== 'undefined') document.addEventListener('pointerdown', outside)
-  if (open.value)
-    nextTick(() =>
-      panel.value?.querySelector<HTMLElement>('[role="gridcell"]:not(:disabled)')?.focus(),
+  if (open.value) {
+    attachOverlay()
+    nextTick(
+      () =>
+        open.value &&
+        panel.value?.querySelector<HTMLElement>('[role="gridcell"][tabindex="0"]')?.focus(),
     )
+  }
 })
 onBeforeUnmount(() => {
   startInput.value?.form?.removeEventListener('reset', reset)
-  if (typeof document !== 'undefined') document.removeEventListener('pointerdown', outside)
+  detachOverlay()
 })
 defineExpose({
   focus: () => startInput.value?.focus(),
@@ -161,10 +205,11 @@ defineExpose({
 <template>
   <div
     ref="root"
+    v-bind="ui?.root?.attrs"
     class="aven-date-range"
-    :class="[{ disabled, unstyled }, ui?.root?.class]"
-    :style="ui?.root?.style"
-    @keydown.esc.stop.prevent="closeFromKeyboard"
+    :class="[{ disabled, unstyled }, attrs.class, ui?.root?.class]"
+    :style="[attrs.style, ui?.root?.style]"
+    @keydown="closeFromKeyboard"
   >
     <span v-if="label" :id="`${controlId}-label`" class="label"
       >{{ label }}<span v-if="required" aria-hidden="true"> *</span></span
@@ -183,7 +228,7 @@ defineExpose({
       >
         <input
           ref="startInput"
-          v-bind="{ ...$attrs, ...ui?.input?.attrs }"
+          v-bind="{ ...nativeAttrs, ...ui?.input?.attrs }"
           :id="`${controlId}-start`"
           type="text"
           inputmode="numeric"
@@ -197,7 +242,11 @@ defineExpose({
           :aria-label="`${label ?? 'Date range'} start`"
           :aria-invalid="invalid || undefined"
           :aria-describedby="
-            [description ? `${controlId}-description` : null, error ? `${controlId}-error` : null]
+            [
+              nativeAttrs['aria-describedby'],
+              description ? `${controlId}-description` : null,
+              error ? `${controlId}-error` : null,
+            ]
               .filter(Boolean)
               .join(' ') || undefined
           "
@@ -207,6 +256,7 @@ defineExpose({
         ><input
           ref="endInput"
           v-bind="ui?.input?.attrs"
+          :form="typeof nativeAttrs.form === 'string' ? nativeAttrs.form : undefined"
           type="text"
           :id="`${controlId}-end`"
           inputmode="numeric"
@@ -220,7 +270,11 @@ defineExpose({
           :aria-label="`${label ?? 'Date range'} end`"
           :aria-invalid="invalid || undefined"
           :aria-describedby="
-            [description ? `${controlId}-description` : null, error ? `${controlId}-error` : null]
+            [
+              nativeAttrs['aria-describedby'],
+              description ? `${controlId}-description` : null,
+              error ? `${controlId}-error` : null,
+            ]
               .filter(Boolean)
               .join(' ') || undefined
           "
@@ -250,6 +304,7 @@ defineExpose({
     </slot>
     <p v-if="description" :id="`${controlId}-description`" class="help">{{ description }}</p>
     <p
+      v-bind="ui?.error?.attrs"
       v-if="error"
       :id="`${controlId}-error`"
       :class="['error', ui?.error?.class]"
@@ -262,16 +317,19 @@ defineExpose({
       v-if="name"
       type="hidden"
       :name="`${name}[start]`"
+      :form="typeof nativeAttrs.form === 'string' ? nativeAttrs.form : undefined"
       :value="value.start ?? ''"
       :disabled="disabled"
     /><input
       v-if="name"
       type="hidden"
       :name="`${name}[end]`"
+      :form="typeof nativeAttrs.form === 'string' ? nativeAttrs.form : undefined"
       :value="value.end ?? ''"
       :disabled="disabled"
     />
     <div
+      v-bind="ui?.popover?.attrs"
       v-if="open"
       ref="panel"
       :class="['range-popover', ui?.popover?.class]"

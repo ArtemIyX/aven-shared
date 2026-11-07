@@ -68,8 +68,14 @@ function loadMore() {
       ><p class="timeline-state" role="status">Loading activity…</p></slot
     >
     <template v-else-if="orderedItems.length">
-      <ol class="timeline-list" :class="props.ui?.list?.class" :style="props.ui?.list?.style">
+      <ol
+        v-bind="props.ui?.list?.attrs"
+        class="timeline-list"
+        :class="props.ui?.list?.class"
+        :style="props.ui?.list?.style"
+      >
         <li
+          v-bind="props.ui?.item?.attrs"
           v-for="(item, index) in orderedItems"
           :key="item.key"
           class="timeline-item"
@@ -78,6 +84,7 @@ function loadMore() {
         >
           <div class="timeline-rail" aria-hidden="true">
             <span
+              v-bind="props.ui?.indicator?.attrs"
               class="timeline-indicator"
               :class="[`is-${item.status ?? 'neutral'}`, props.ui?.indicator?.class]"
               :style="props.ui?.indicator?.style"
@@ -91,6 +98,7 @@ function loadMore() {
               <slot name="title" :item="item">{{ item.label }}</slot>
               <span v-if="item.status" class="timeline-status">{{ item.status }}</span>
               <time
+                v-bind="props.ui?.timestamp?.attrs"
                 class="timeline-time"
                 :class="props.ui?.timestamp?.class"
                 :style="props.ui?.timestamp?.style"

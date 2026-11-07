@@ -4,6 +4,7 @@ import { useAvenId, type AvenOpenReason } from './composables.js'
 import type { AvenDialogEvents, AvenDialogProps, AvenDialogSlots } from './types.js'
 defineOptions({ inheritAttrs: false })
 const props = withDefaults(defineProps<AvenDialogProps>(), {
+  open: undefined,
   size: 'md',
   closeOnEscape: true,
   closeOnOutside: true,
@@ -80,7 +81,7 @@ defineExpose({ close: () => propose(false, 'programmatic'), focus: () => dialog.
 <template>
   <dialog
     ref="dialog"
-    v-bind="attrs"
+    v-bind="{ ...attrs, ...ui?.root?.attrs }"
     :id="dialogId"
     :class="[
       'aven-dialog',
@@ -95,8 +96,13 @@ defineExpose({ close: () => propose(false, 'programmatic'), focus: () => dialog.
     @cancel="onCancel"
     @click="onClick"
   >
-    <div :class="['dialog-content', ui?.content?.class]" :style="ui?.content?.style">
+    <div
+      v-bind="ui?.content?.attrs"
+      :class="['dialog-content', ui?.content?.class]"
+      :style="ui?.content?.style"
+    >
       <header
+        v-bind="ui?.header?.attrs"
         v-if="
           title || description || $slots.header || $slots.title || $slots.description || showClose
         "
@@ -105,10 +111,16 @@ defineExpose({ close: () => propose(false, 'programmatic'), focus: () => dialog.
       >
         <div class="dialog-heading">
           <slot name="header" :close="() => propose(false, 'programmatic')"
-            ><h2 v-if="title || $slots.title" :id="titleId" :class="ui?.title?.class">
+            ><h2
+              v-bind="ui?.title?.attrs"
+              v-if="title || $slots.title"
+              :id="titleId"
+              :class="ui?.title?.class"
+            >
               <slot name="title">{{ title }}</slot>
             </h2>
             <p
+              v-bind="ui?.description?.attrs"
               v-if="description || $slots.description"
               :id="descriptionId"
               :class="['dialog-description', ui?.description?.class]"
@@ -118,6 +130,7 @@ defineExpose({ close: () => propose(false, 'programmatic'), focus: () => dialog.
           >
         </div>
         <button
+          v-bind="ui?.close?.attrs"
           v-if="showClose"
           type="button"
           :class="['dialog-close', ui?.close?.class]"
@@ -127,10 +140,15 @@ defineExpose({ close: () => propose(false, 'programmatic'), focus: () => dialog.
           <slot name="close-icon">×</slot>
         </button>
       </header>
-      <div :class="['dialog-body', ui?.body?.class]" :style="ui?.body?.style">
+      <div
+        v-bind="ui?.body?.attrs"
+        :class="['dialog-body', ui?.body?.class]"
+        :style="ui?.body?.style"
+      >
         <slot :close="() => propose(false, 'programmatic')" />
       </div>
       <footer
+        v-bind="ui?.footer?.attrs"
         v-if="$slots.footer || $slots.actions"
         :class="['dialog-footer', ui?.footer?.class]"
         :style="ui?.footer?.style"

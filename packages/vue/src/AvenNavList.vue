@@ -1,14 +1,7 @@
 <script setup lang="ts" generic="Key extends string | number">
 import { computed, shallowRef, watch } from 'vue'
-import type { AvenUi } from './types.js'
-export type AvenNavItemModel<K> = {
-  key: K
-  label: string
-  href?: string
-  children?: AvenNavItemModel<K>[]
-  disabled?: boolean
-  badge?: string | number
-}
+import AvenNavItem from './AvenNavItem.vue'
+import type { AvenNavItemModel, AvenUi } from './types.js'
 defineOptions({ name: 'AvenNavList' })
 const props = withDefaults(
   defineProps<{
@@ -49,9 +42,6 @@ function toggle(key: Key) {
   local.value = next
   emit('update:expandedKeys', next)
 }
-function navigate(item: AvenNavItemModel<Key>, e: MouseEvent) {
-  if (!item.disabled && item.href) emit('navigate', { key: item.key, item, originalEvent: e })
-}
 function isOpen(key: Key) {
   return expanded.value.some((k) => Object.is(k, key))
 }
@@ -63,76 +53,48 @@ function setExpanded(keys: Key[]) {
 <template>
   <nav
     :aria-label="label"
+    v-bind="ui?.root?.attrs"
     :class="['aven-nav-list', `density-${density}`, { 'is-unstyled': unstyled }, ui?.root?.class]"
     :style="ui?.root?.style"
   >
-    <ul :class="['nav-items', ui?.list?.class]" :style="ui?.list?.style">
-      <li
+    <ul v-bind="ui?.list?.attrs" :class="['nav-items', ui?.list?.class]" :style="ui?.list?.style">
+      <AvenNavItem
         v-for="item in items"
         :key="item.key"
-        :class="[
-          'nav-item',
-          { 'is-active': Object.is(activeKey, item.key), 'is-disabled': item.disabled },
-          ui?.item?.class,
-        ]"
-        :style="ui?.item?.style"
+        :item="item"
+        :active="Object.is(activeKey, item.key)"
+        :expanded="isOpen(item.key)"
+        :depth="depth"
+        :density="density"
+        :unstyled="unstyled"
+        :ui="{ root: ui?.item, link: ui?.link, disclosure: ui?.disclosure, badge: ui?.badge }"
+        class="nav-item"
+        @navigate="emit('navigate', $event)"
+        @update:expanded="toggle($event.key)"
       >
-        <div class="nav-row">
-          <a
-            v-if="item.href && !item.disabled"
-            :href="item.href"
-            :aria-current="Object.is(activeKey, item.key) ? 'page' : undefined"
-            :class="['nav-link', ui?.link?.class]"
-            :style="ui?.link?.style"
-            @click="navigate(item, $event)"
-            ><slot
-              name="item"
-              :item="item"
-              :key="item.key"
-              :active="Object.is(activeKey, item.key)"
-              :expanded="isOpen(item.key)"
-              :depth="depth"
-              >{{ item.label }}</slot
-            ><span v-if="item.badge !== undefined" :class="['nav-badge', ui?.badge?.class]">{{
-              item.badge
-            }}</span></a
-          ><span
-            v-else-if="!item.href"
-            :class="['nav-link', ui?.link?.class]"
-            :style="ui?.link?.style"
-            ><slot
-              name="item"
-              :item="item"
-              :key="item.key"
-              :active="Object.is(activeKey, item.key)"
-              :expanded="isOpen(item.key)"
-              :depth="depth"
-              >{{ item.label }}</slot
-            ></span
-          ><span v-else class="nav-disabled">{{ item.label }}</span
-          ><button
+        <template #default="scope"
+          ><slot name="item" v-bind="scope">{{ item.label }}</slot></template
+        >
+        <template #leading="scope"><slot name="item-leading" v-bind="scope" /></template>
+        <template #trailing="scope"><slot name="item-trailing" v-bind="scope" /></template>
+        <template #badge="scope"
+          ><slot name="badge" v-bind="scope">{{ item.badge }}</slot></template
+        >
+        <template #group-label="scope"><slot name="group-label" v-bind="scope" /></template>
+        <template #children="scope">
+          <AvenNavList
             v-if="item.children?.length"
-            type="button"
-            :class="['nav-disclosure', ui?.disclosure?.class]"
-            :aria-expanded="isOpen(item.key)"
-            :aria-label="`${isOpen(item.key) ? 'Collapse' : 'Expand'} ${item.label}`"
-            @click="toggle(item.key)"
-          >
-            {{ isOpen(item.key) ? '−' : '+' }}
-          </button>
-        </div>
-        <AvenNavList
-          v-if="item.children?.length && isOpen(item.key)"
-          :items="item.children"
-          :active-key="activeKey"
-          :expanded-keys="expanded"
-          :density="density"
-          :label="`${item.label} submenu`"
-          :depth="depth + 1"
-          @navigate="emit('navigate', $event)"
-          @update:expanded-keys="setExpanded"
-        />
-      </li>
+            :items="item.children"
+            :active-key="activeKey"
+            :expanded-keys="expanded"
+            :density="density"
+            :label="`${item.label} submenu`"
+            :depth="scope.depth"
+            @navigate="emit('navigate', $event)"
+            @update:expanded-keys="setExpanded"
+          />
+        </template>
+      </AvenNavItem>
     </ul>
   </nav>
 </template>

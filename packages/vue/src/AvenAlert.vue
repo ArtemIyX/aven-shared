@@ -31,19 +31,30 @@ defineSlots<AvenAlertSlots>()
     :role="live === 'assertive' ? 'alert' : live === 'polite' ? 'status' : undefined"
     :aria-live="live === 'off' ? undefined : live"
   >
-    <span v-if="$slots.icon" :class="ui?.icon?.class"><slot name="icon" /></span>
+    <span v-bind="ui?.icon?.attrs" v-if="$slots.icon" :class="ui?.icon?.class"
+      ><slot name="icon"
+    /></span>
     <div class="alert-body">
-      <strong v-if="title || $slots.title" :class="ui?.title?.class"
+      <strong v-bind="ui?.title?.attrs" v-if="title || $slots.title" :class="ui?.title?.class"
         ><slot name="title">{{ title }}</slot></strong
       >
-      <div v-if="description || $slots.default" :class="['alert-content', ui?.content?.class]">
+      <div
+        v-bind="ui?.content?.attrs"
+        v-if="description || $slots.default"
+        :class="['alert-content', ui?.content?.class]"
+      >
         <slot>{{ description }}</slot>
       </div>
-      <div v-if="$slots.actions" :class="['alert-actions', ui?.actions?.class]">
+      <div
+        v-bind="ui?.actions?.attrs"
+        v-if="$slots.actions"
+        :class="['alert-actions', ui?.actions?.class]"
+      >
         <slot name="actions" />
       </div>
     </div>
     <button
+      v-bind="ui?.close?.attrs"
       v-if="dismissible"
       type="button"
       :aria-label="dismissLabel"

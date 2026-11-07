@@ -78,7 +78,7 @@ defineExpose({ copy })
       :class="['code-content', ui?.code?.class]"
       :style="ui?.code?.style"
       v-bind="ui?.code?.attrs"
-    ><code><span v-for="(line, index) in lines" :key="index" class="code-line" :class="ui?.line?.class" :style="ui?.line?.style" v-bind="ui?.line?.attrs"><span v-if="showLineNumbers" class="line-number" :class="ui?.lineNumber?.class" :style="ui?.lineNumber?.style" aria-hidden="true">{{ index + 1 }}</span><slot v-if="slots.line" name="line" :line="line" :index="index">{{ line }}</slot><template v-else>{{ line }}</template>
+    ><code><span v-for="(line, index) in lines" :key="index" class="code-line" :class="ui?.line?.class" :style="ui?.line?.style" v-bind="ui?.line?.attrs"><span v-bind="ui?.lineNumber?.attrs" v-if="showLineNumbers" class="line-number" :class="ui?.lineNumber?.class" :style="ui?.lineNumber?.style" aria-hidden="true">{{ index + 1 }}</span><slot v-if="slots.line" name="line" :line="line" :index="index">{{ line }}</slot><template v-else>{{ line }}</template>
 </span></code></pre>
     <div
       v-if="copyStatus"

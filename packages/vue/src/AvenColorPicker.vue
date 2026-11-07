@@ -9,7 +9,7 @@ import {
   useAttrs,
   watch,
 } from 'vue'
-import { useAvenId } from './composables.js'
+import { isTopAvenOverlayLayer, registerAvenOverlayLayer, useAvenId } from './composables.js'
 import type {
   AvenColorPickerEvents,
   AvenColorPickerProps,
@@ -26,12 +26,13 @@ const props = withDefaults(defineProps<AvenColorPickerProps>(), {
   clearable: false,
   allowCustom: true,
   defaultOpen: false,
+  open: undefined,
   disabled: false,
   unstyled: false,
   label: 'Choose color',
 })
 const emit = defineEmits<AvenColorPickerEvents>()
-defineSlots<AvenColorPickerSlots>()
+const slots = defineSlots<AvenColorPickerSlots>()
 const attrs = useAttrs()
 const id = useAvenId(undefined, 'color-picker')
 const inputId = `${id}-input`
@@ -41,6 +42,7 @@ const root = ref<HTMLElement>()
 const trigger = ref<HTMLElement>()
 const textInput = ref<HTMLInputElement>()
 const localValue = shallowRef<string | null>(props.defaultValue)
+const initialValue = props.defaultValue
 const localOpen = ref(props.defaultOpen)
 const value = computed(() => (props.modelValue === undefined ? localValue.value : props.modelValue))
 const isOpen = computed(() => (props.open === undefined ? localOpen.value : props.open))
@@ -51,7 +53,10 @@ const nativeColor = computed(() => {
 })
 const popover = ref<HTMLElement>()
 const lastCommitted = ref<string | null>(value.value)
-const listId = `${id}-swatches`
+const lastRequested = ref<string | null | undefined>(undefined)
+const popoverId = `${id}-popover`
+const overlayLayer = {}
+let unregisterOverlay: (() => void) | undefined
 let documentRef: Document | undefined
 let invalidNotified = false
 watch(
@@ -60,7 +65,7 @@ watch(
     if (next !== undefined) {
       localValue.value = next
       draft.value = next ?? ''
-      lastCommitted.value = next
+      if (next !== lastRequested.value) lastCommitted.value = next
     }
   },
 )
@@ -68,8 +73,14 @@ watch(value, (next) => {
   if (documentRef?.activeElement !== textInput.value) draft.value = next ?? ''
 })
 watch(isOpen, async (next, previous) => {
-  if (!next || previous) return
+  if (!next) {
+    detachOverlay()
+    return
+  }
+  attachOverlay()
+  if (previous) return
   await nextTick()
+  if (!isOpen.value) return
   const target = popover.value?.querySelector<HTMLElement>('button, input')
   if (target) target.focus()
   else popover.value?.focus()
@@ -89,10 +100,11 @@ function normalize(input: string) {
 }
 function update(next: string | null) {
   if (props.modelValue === undefined) localValue.value = next
+  lastRequested.value = next
   emit('update:modelValue', next)
 }
 function setOpen(next: boolean) {
-  if (props.disabled || isOpen.value === next) return
+  if ((next && props.disabled) || isOpen.value === next) return
   if (props.open === undefined) localOpen.value = next
   emit('update:open', next)
 }
@@ -161,37 +173,53 @@ function triggerAttrs() {
     'aria-label': props.label,
     'aria-haspopup': 'dialog' as const,
     'aria-expanded': isOpen.value,
-    'aria-controls': listId,
+    'aria-controls': isOpen.value ? popoverId : undefined,
     disabled: props.disabled,
     onClick: () => setOpen(!isOpen.value),
   }
 }
 function onOutside(event: PointerEvent) {
-  if (!root.value?.contains(event.target as Node)) setOpen(false)
+  if (isTopAvenOverlayLayer(overlayLayer) && !root.value?.contains(event.target as Node))
+    setOpen(false)
 }
 function onSwatchKeydown(event: KeyboardEvent) {
-  if (event.key !== 'Escape') return
+  if (event.key !== 'Escape' || !isTopAvenOverlayLayer(overlayLayer)) return
   event.preventDefault()
+  event.stopPropagation()
   setOpen(false)
   trigger.value?.focus()
 }
 let form: HTMLFormElement | null = null
+function attachOverlay() {
+  if (!documentRef || unregisterOverlay) return
+  unregisterOverlay = registerAvenOverlayLayer(overlayLayer)
+  documentRef.addEventListener('pointerdown', onOutside, true)
+}
+function detachOverlay() {
+  documentRef?.removeEventListener('pointerdown', onOutside, true)
+  unregisterOverlay?.()
+  unregisterOverlay = undefined
+}
 function reset(event: Event) {
-  queueMicrotask(() => {
+  queueMicrotask(async () => {
     if (event.defaultPrevented) return
-    if (props.modelValue === undefined) localValue.value = props.defaultValue
-    const resetValue = props.modelValue ?? props.defaultValue ?? ''
+    if (props.modelValue === undefined) localValue.value = initialValue
+    else emit('update:modelValue', initialValue)
+    await nextTick()
+    const resetValue = value.value ?? ''
     draft.value = resetValue
+    if (textInput.value && props.modelValue !== undefined) textInput.value.value = resetValue
     lastCommitted.value = resetValue || null
+    lastRequested.value = undefined
     setOpen(false)
   })
 }
 onMounted(() => {
   documentRef = root.value?.ownerDocument
-  documentRef?.addEventListener('pointerdown', onOutside)
-  form = root.value?.closest('form') ?? null
+  form = textInput.value?.form ?? root.value?.closest('form') ?? null
   form?.addEventListener('reset', reset)
   if (isOpen.value) {
+    attachOverlay()
     void nextTick(() => {
       const target = popover.value?.querySelector<HTMLElement>('button, input')
       if (target) target.focus()
@@ -200,7 +228,7 @@ onMounted(() => {
   }
 })
 onBeforeUnmount(() => {
-  documentRef?.removeEventListener('pointerdown', onOutside)
+  detachOverlay()
   form?.removeEventListener('reset', reset)
 })
 defineExpose({
@@ -255,15 +283,21 @@ defineExpose({
       :class="props.ui?.input?.class"
       :style="props.ui?.input?.style"
       type="text"
+      :form="typeof attrs.form === 'string' ? attrs.form : undefined"
       :aria-describedby="
         [
-          props.description ? descriptionId : undefined,
-          props.error || props.invalid ? errorId : undefined,
+          attrs['aria-describedby'],
+          props.description || slots.description ? descriptionId : undefined,
+          props.error || props.invalid || slots.error ? errorId : undefined,
         ]
           .filter(Boolean)
           .join(' ') || undefined
       "
-      :aria-invalid="props.invalid || (draft && !normalize(draft)) ? 'true' : undefined"
+      :aria-invalid="
+        props.invalid || !!props.error || !!slots.error || (draft && !normalize(draft))
+          ? 'true'
+          : undefined
+      "
       :aria-required="props.required || undefined"
       :required="props.required"
       :disabled="props.disabled"
@@ -274,10 +308,15 @@ defineExpose({
       @blur="onTextCommit"
       @keydown.enter.prevent="onTextCommit"
     />
-    <p v-if="props.description" :id="descriptionId" class="field-description">
-      {{ props.description }}
+    <p v-if="props.description || $slots.description" :id="descriptionId" class="field-description">
+      <slot name="description">{{ props.description }}</slot>
     </p>
-    <p v-if="props.error || props.invalid" :id="errorId" class="field-error" role="alert">
+    <p
+      v-if="props.error || props.invalid || $slots.error"
+      :id="errorId"
+      class="field-error"
+      role="alert"
+    >
       <slot name="error">{{ props.error ?? 'Invalid color.' }}</slot>
     </p>
     <input
@@ -294,6 +333,7 @@ defineExpose({
       v-if="props.name"
       type="hidden"
       :name="props.name"
+      :form="typeof attrs.form === 'string' ? attrs.form : undefined"
       :value="value ?? ''"
       :disabled="props.disabled"
     />
@@ -310,6 +350,8 @@ defineExpose({
     <section
       v-if="isOpen"
       ref="popover"
+      :id="popoverId"
+      v-bind="props.ui?.popover?.attrs"
       class="color-popover"
       :class="props.ui?.popover?.class"
       :style="props.ui?.popover?.style"
@@ -320,7 +362,6 @@ defineExpose({
     >
       <div
         v-if="props.swatches.length"
-        :id="listId"
         class="swatch-grid"
         role="group"
         :aria-label="`${props.label} swatches`"

@@ -270,6 +270,7 @@ defineExpose({
             :unstyled="unstyled"
             :ui="{ item: ui?.item }"
             @select="selectSubmenu"
+            @submenu-change="emit('submenuChange', $event)"
           >
             <template #item="scope"
               ><slot name="item" v-bind="scope">{{ scope.item.label }}</slot></template

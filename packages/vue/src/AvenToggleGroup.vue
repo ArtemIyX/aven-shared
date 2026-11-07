@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="T extends string | number">
-import { computed, ref, useAttrs, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, useAttrs, watch } from 'vue'
 import type { AvenToggleGroupEvents, AvenToggleGroupProps, AvenToggleGroupSlots } from './types.js'
 
 defineOptions({ inheritAttrs: false })
@@ -16,9 +16,13 @@ const props = withDefaults(defineProps<AvenToggleGroupProps<T>>(), {
 const emit = defineEmits<AvenToggleGroupEvents<T>>()
 defineSlots<AvenToggleGroupSlots<T>>()
 const attrs = useAttrs()
+const initialValue = Array.isArray(props.defaultValue)
+  ? [...props.defaultValue]
+  : (props.defaultValue ?? null)
 const localValue = ref<T | T[] | null>(props.defaultValue ?? null)
 const activeValue = ref<T | null>(null)
 const buttons = ref<Array<HTMLButtonElement | undefined>>([])
+const root = ref<HTMLElement | null>(null)
 const rawValue = computed(() =>
   props.modelValue !== undefined ? props.modelValue : localValue.value,
 )
@@ -46,7 +50,8 @@ watch(
 )
 
 function isEnabled(value: T) {
-  return !props.disabled && !props.items.find((item) => Object.is(item.value, value))?.disabled
+  const item = props.items.find((entry) => Object.is(entry.value, value))
+  return !props.disabled && !!item && !item.disabled
 }
 
 function isSelected(value: T) {
@@ -93,8 +98,14 @@ function choose(item: (typeof props.items)[number]) {
 }
 
 function onKeydown(event: KeyboardEvent, index: number) {
-  const forward = props.orientation === 'horizontal' ? 'ArrowRight' : 'ArrowDown'
-  const backward = props.orientation === 'horizontal' ? 'ArrowLeft' : 'ArrowUp'
+  const directionElement = root.value?.closest('[dir]')
+  const rtl =
+    directionElement?.getAttribute('dir') === 'rtl' ||
+    (!directionElement && typeof document !== 'undefined' && document.dir === 'rtl')
+  const forward =
+    props.orientation === 'horizontal' ? (rtl ? 'ArrowLeft' : 'ArrowRight') : 'ArrowDown'
+  const backward =
+    props.orientation === 'horizontal' ? (rtl ? 'ArrowRight' : 'ArrowLeft') : 'ArrowUp'
   if (![forward, backward, 'Home', 'End'].includes(event.key)) return
   const enabledIndices = props.items
     .map((item, itemIndex) => (isEnabled(item.value) ? itemIndex : -1))
@@ -121,13 +132,30 @@ function onFocus(value: T) {
 function onBlur() {
   activeValue.value = null
 }
+let form: HTMLFormElement | null = null
+function reset(event: Event) {
+  queueMicrotask(() => {
+    if (event.defaultPrevented) return
+    const next = Array.isArray(initialValue) ? [...initialValue] : initialValue
+    localValue.value = next
+    if (props.modelValue !== undefined) emit('update:modelValue', next)
+  })
+}
+onMounted(() => {
+  form = root.value?.closest('form') ?? null
+  form?.addEventListener('reset', reset)
+})
+onBeforeUnmount(() => form?.removeEventListener('reset', reset))
 </script>
 
 <template>
   <div
+    ref="root"
     v-bind="{ ...attrs, ...ui?.root?.attrs }"
     role="toolbar"
-    :aria-label="label || undefined"
+    :aria-label="
+      label || (typeof attrs['aria-label'] === 'string' ? attrs['aria-label'] : undefined)
+    "
     :aria-orientation="orientation"
     :class="[
       'aven-toggle-group',
@@ -156,7 +184,12 @@ function onBlur() {
       @blur="onBlur"
       @keydown="onKeydown($event, index)"
     >
-      <span v-if="$slots.leading" :class="ui?.leading?.class">
+      <span
+        v-if="$slots.leading"
+        v-bind="ui?.leading?.attrs"
+        :class="ui?.leading?.class"
+        :style="ui?.leading?.style"
+      >
         <slot name="leading" :item="item" />
       </span>
       <slot
@@ -169,10 +202,21 @@ function onBlur() {
       >
         {{ item.label }}
       </slot>
-      <slot name="indicator" :item="item" :selected="isSelected(item.value)">
-        <span v-if="isSelected(item.value)" aria-hidden="true" class="toggle-indicator">✓</span>
-      </slot>
-      <span v-if="$slots.trailing" :class="ui?.trailing?.class">
+      <span
+        v-if="$slots.indicator || isSelected(item.value)"
+        v-bind="ui?.indicator?.attrs"
+        aria-hidden="true"
+        :class="['toggle-indicator', ui?.indicator?.class]"
+        :style="ui?.indicator?.style"
+      >
+        <slot name="indicator" :item="item" :selected="isSelected(item.value)">✓</slot>
+      </span>
+      <span
+        v-if="$slots.trailing"
+        v-bind="ui?.trailing?.attrs"
+        :class="ui?.trailing?.class"
+        :style="ui?.trailing?.style"
+      >
         <slot name="trailing" :item="item" />
       </span>
     </button>

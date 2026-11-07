@@ -10,7 +10,10 @@ import type {
 
 defineOptions({ inheritAttrs: false })
 const props = withDefaults(defineProps<AvenAlertDialogProps>(), {
+  open: undefined,
   defaultOpen: false,
+  modal: true,
+  restoreFocus: true,
   closeOnEscape: false,
   closeOnOutside: false,
   confirmLabel: 'Confirm',
@@ -27,6 +30,7 @@ const attrs = useAttrs()
 const dialog = ref<{ close: () => void; focus: () => void } | null>(null)
 const dialogProps = computed<AvenDialogProps>(() => ({
   open: props.open,
+  modal: props.modal,
   defaultOpen: props.defaultOpen,
   id: props.id,
   title: props.title,
@@ -79,6 +83,7 @@ defineExpose({
     <template #actions>
       <slot name="actions" :confirm="confirm" :cancel="cancel" :loading="loading">
         <button
+          v-bind="ui?.cancel?.attrs"
           type="button"
           :class="['alert-cancel', ui?.cancel?.class]"
           :style="ui?.cancel?.style"
@@ -88,6 +93,7 @@ defineExpose({
           {{ cancelLabel }}
         </button>
         <button
+          v-bind="ui?.confirm?.attrs"
           type="button"
           :class="['alert-confirm', ui?.confirm?.class]"
           :style="ui?.confirm?.style"

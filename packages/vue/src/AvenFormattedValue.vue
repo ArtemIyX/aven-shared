@@ -1,20 +1,13 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useAvenConfig } from './provider.js'
-import type { AvenUi } from './types.js'
-const props = withDefaults(
-  defineProps<{
-    value: number | string | Date
-    kind?: 'number' | 'currency' | 'percent' | 'date' | 'datetime' | 'relative' | 'duration'
-    locale?: string
-    currency?: string
-    unit?: string
-    digits?: number
-    unstyled?: boolean
-    ui?: AvenUi<'root'>
-  }>(),
-  { kind: 'number', digits: 2, unstyled: false },
-)
+import type { AvenFormattedValueProps, AvenFormattedValueSlots } from './types.js'
+const props = withDefaults(defineProps<AvenFormattedValueProps>(), {
+  kind: 'number',
+  digits: 2,
+  unstyled: false,
+})
+defineSlots<AvenFormattedValueSlots>()
 const config = useAvenConfig()
 const formatted = computed(() => {
   const locale = props.locale ?? config.locale
@@ -73,6 +66,7 @@ const formatted = computed(() => {
 </script>
 <template>
   <span
+    v-bind="ui?.root?.attrs"
     :class="['aven-formatted-value', { 'is-unstyled': unstyled }, ui?.root?.class]"
     :style="ui?.root?.style"
     ><slot>{{ formatted }}</slot></span

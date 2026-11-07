@@ -1,38 +1,48 @@
 <script setup lang="ts" generic="T extends string | number">
-import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch, useAttrs } from 'vue'
-import type { AvenOption, AvenUi } from './types.js'
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  shallowRef,
+  watch,
+  useAttrs,
+  useSlots,
+} from 'vue'
+import type {
+  AvenCheckboxGroupEvents,
+  AvenCheckboxGroupProps,
+  AvenCheckboxGroupSlots,
+  AvenOption,
+} from './types.js'
+import { useAvenId } from './composables.js'
 defineOptions({ inheritAttrs: false })
-const props = withDefaults(
-  defineProps<{
-    modelValue?: T[]
-    defaultValue?: T[]
-    items: AvenOption<T>[]
-    name?: string
-    label?: string
-    min?: number
-    max?: number
-    orientation?: 'vertical' | 'horizontal'
-    disabled?: boolean
-    invalid?: boolean
-    unstyled?: boolean
-    ui?: AvenUi<'root' | 'legend' | 'item' | 'control' | 'label'>
-  }>(),
-  {
-    defaultValue: () => [],
-    orientation: 'vertical',
-    disabled: false,
-    invalid: false,
-    unstyled: false,
-  },
-)
-const emit = defineEmits<{
-  'update:modelValue': [value: T[]]
-  change: [value: T[]]
-  limit: [payload: { kind: 'min' | 'max'; value: T }]
-}>()
+const props = withDefaults(defineProps<AvenCheckboxGroupProps<T>>(), {
+  defaultValue: () => [],
+  orientation: 'vertical',
+  disabled: false,
+  invalid: false,
+  unstyled: false,
+})
+const emit = defineEmits<AvenCheckboxGroupEvents<T>>()
+defineSlots<AvenCheckboxGroupSlots<T>>()
 const attrs = useAttrs(),
+  slots = useSlots(),
   local = shallowRef<T[]>([...props.defaultValue]),
-  group = ref<HTMLFieldSetElement>()
+  group = ref<HTMLFieldSetElement>(),
+  inputs = ref<Array<HTMLInputElement | undefined>>([])
+const initialValue = [...props.defaultValue]
+const baseId = useAvenId(typeof attrs.id === 'string' ? attrs.id : undefined, 'checkbox-group')
+const descriptionId = computed(() =>
+  props.description || slots.description ? `${baseId}-description` : undefined,
+)
+const errorId = computed(() => (props.error || slots.error ? `${baseId}-error` : undefined))
+const describedBy = computed(
+  () =>
+    [attrs['aria-describedby'], descriptionId.value, errorId.value].filter(Boolean).join(' ') ||
+    undefined,
+)
 const value = computed(() => (props.modelValue !== undefined ? props.modelValue : local.value))
 watch(
   () => props.modelValue,
@@ -40,15 +50,24 @@ watch(
     if (v !== undefined) local.value = [...v]
   },
 )
-function toggle(item: AvenOption<T>) {
-  if (props.disabled || item.disabled) return
+async function toggle(item: AvenOption<T>, event: Event) {
+  const input = event.target as HTMLInputElement
+  const restore = () => {
+    input.checked = value.value.some((v) => Object.is(v, item.value))
+  }
+  if (props.disabled || item.disabled) {
+    restore()
+    return
+  }
   const has = value.value.some((v) => Object.is(v, item.value))
   if (!has && props.max !== undefined && value.value.length >= props.max) {
     emit('limit', { kind: 'max', value: item.value })
+    restore()
     return
   }
   if (has && props.min !== undefined && value.value.length <= props.min) {
     emit('limit', { kind: 'min', value: item.value })
+    restore()
     return
   }
   const next = has
@@ -57,13 +76,27 @@ function toggle(item: AvenOption<T>) {
   local.value = next
   emit('update:modelValue', next)
   emit('change', next)
+  await nextTick()
+  if (props.modelValue !== undefined) restore()
 }
-function reset() {
-  if (props.modelValue === undefined) local.value = [...props.defaultValue]
+function reset(event: Event) {
+  queueMicrotask(async () => {
+    if (event.defaultPrevented) return
+    const next = [...initialValue]
+    local.value = next
+    if (props.modelValue !== undefined) emit('update:modelValue', next)
+    await nextTick()
+    if (props.modelValue !== undefined) {
+      props.items.forEach((item, index) => {
+        if (inputs.value[index])
+          inputs.value[index]!.checked = value.value.some((v) => Object.is(v, item.value))
+      })
+    }
+  })
 }
 let form: HTMLFormElement | null = null
 onMounted(() => {
-  form = group.value?.closest('form') ?? null
+  form = group.value?.form ?? group.value?.closest('form') ?? null
   form?.addEventListener('reset', reset)
 })
 onBeforeUnmount(() => form?.removeEventListener('reset', reset))
@@ -71,45 +104,89 @@ onBeforeUnmount(() => form?.removeEventListener('reset', reset))
 <template>
   <fieldset
     ref="group"
-    v-bind="attrs"
+    v-bind="{ ...attrs, ...ui?.root?.attrs }"
     :disabled="disabled"
-    :aria-invalid="invalid || undefined"
+    :aria-invalid="invalid || !!error || !!$slots.error || undefined"
+    :aria-describedby="describedBy"
     :class="[
       'aven-checkbox-group',
       `is-${orientation}`,
-      { 'is-invalid': invalid, 'is-unstyled': unstyled },
+      { 'is-invalid': invalid || !!error || !!$slots.error, 'is-unstyled': unstyled },
       attrs.class,
       ui?.root?.class,
     ]"
     :style="[attrs.style, ui?.root?.style]"
   >
-    <legend :class="['checkbox-legend', ui?.legend?.class]" :style="ui?.legend?.style">
+    <legend
+      v-bind="ui?.legend?.attrs"
+      :class="['checkbox-legend', ui?.legend?.class]"
+      :style="ui?.legend?.style"
+    >
       <slot name="label">{{ label }}</slot>
     </legend>
+    <div
+      v-if="description || $slots.description"
+      v-bind="ui?.description?.attrs"
+      :id="descriptionId"
+      :class="ui?.description?.class"
+      :style="ui?.description?.style"
+    >
+      <slot name="description">{{ description }}</slot>
+    </div>
     <label
-      v-for="item in items"
-      :key="String(item.value)"
+      v-for="(item, index) in items"
+      :key="`${typeof item.value}:${String(item.value)}`"
+      v-bind="ui?.item?.attrs"
       :class="['checkbox-item', { 'is-disabled': disabled || item.disabled }, ui?.item?.class]"
       :style="ui?.item?.style"
       ><input
+        :ref="
+          (element) => {
+            inputs[index] = element as HTMLInputElement | undefined
+          }
+        "
         v-bind="ui?.control?.attrs"
         type="checkbox"
+        :form="typeof attrs.form === 'string' ? attrs.form : undefined"
         :class="['checkbox-control', ui?.control?.class]"
         :style="ui?.control?.style"
         :checked="value.some((v) => Object.is(v, item.value))"
         :disabled="disabled || item.disabled"
-        @change="toggle(item)"
+        @change="toggle(item, $event)"
       /><span aria-hidden="true" class="checkbox-indicator">{{
         value.some((v) => Object.is(v, item.value)) ? '✓' : ''
       }}</span
-      ><span :class="ui?.label?.class"
-        >{{ item.label }}<small v-if="item.description">{{ item.description }}</small></span
+      ><span v-bind="ui?.label?.attrs" :class="ui?.label?.class" :style="ui?.label?.style"
+        ><slot
+          name="item"
+          :item="item"
+          :key="item.value"
+          :selected="value.some((v) => Object.is(v, item.value))"
+          :disabled="disabled || !!item.disabled"
+          >{{ item.label }}<small v-if="item.description">{{ item.description }}</small></slot
+        ></span
       ></label
-    ><input
-      v-for="item in items.filter((option) => value.some((v) => Object.is(v, option.value)))"
-      :key="`form-${String(item.value)}`"
+    >
+    <div
+      v-if="error || $slots.error"
+      v-bind="ui?.error?.attrs"
+      :id="errorId"
+      role="alert"
+      :class="ui?.error?.class"
+      :style="ui?.error?.style"
+    >
+      <slot name="error" :message="error">{{ error }}</slot>
+    </div>
+    <input
+      v-for="item in name
+        ? items.filter(
+            (option) => !option.disabled && value.some((v) => Object.is(v, option.value)),
+          )
+        : []"
+      :key="`form-${typeof item.value}:${String(item.value)}`"
       type="hidden"
       :name="name"
+      :form="typeof attrs.form === 'string' ? attrs.form : undefined"
       :value="item.value"
       :disabled="disabled"
     />

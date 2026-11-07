@@ -1,6 +1,7 @@
 <script setup lang="ts" generic="T extends string | number">
-import { computed, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, useAttrs, watch } from 'vue'
 import type { AvenOption, AvenSize, AvenUi } from './types.js'
+defineOptions({ inheritAttrs: false })
 const props = withDefaults(
   defineProps<{
     modelValue?: T | null
@@ -23,9 +24,17 @@ const props = withDefaults(
     unstyled: false,
   },
 )
-const emit = defineEmits<{ 'update:modelValue': [value: T]; change: [value: T] }>()
+const emit = defineEmits<{ 'update:modelValue': [value: T | null]; change: [value: T | null] }>()
+const attrs = useAttrs()
+const initialValue = props.defaultValue ?? null
 const local = ref<T | null>(props.defaultValue ?? null),
   selected = computed(() => (props.modelValue !== undefined ? props.modelValue : local.value)),
+  tabValue = computed(
+    () =>
+      props.items.find((item) => !item.disabled && Object.is(item.value, selected.value))?.value ??
+      props.items.find((item) => !item.disabled)?.value,
+  ),
+  root = ref<HTMLElement>(),
   buttons = ref<HTMLButtonElement[]>([])
 watch(
   () => props.modelValue,
@@ -33,25 +42,39 @@ watch(
     if (v !== undefined) local.value = v
   },
 )
-function choose(item: AvenOption<T>) {
+function choose(item: AvenOption<T>, toggle = false) {
   if (item.disabled) return
-  if (props.allowEmpty && Object.is(selected.value, item.value)) return
-  local.value = item.value
-  emit('update:modelValue', item.value)
-  emit('change', item.value)
+  const next = Object.is(selected.value, item.value)
+    ? toggle && props.allowEmpty
+      ? null
+      : selected.value
+    : item.value
+  if (Object.is(next, selected.value)) return
+  local.value = next
+  emit('update:modelValue', next)
+  emit('change', next)
 }
 function keydown(e: KeyboardEvent, index: number) {
-  const fwd = props.orientation === 'horizontal' ? 'ArrowRight' : 'ArrowDown',
-    back = props.orientation === 'horizontal' ? 'ArrowLeft' : 'ArrowUp'
-  let next = -1
+  const rtl =
+    root.value?.closest('[dir]')?.getAttribute('dir') === 'rtl' ||
+    (!root.value?.closest('[dir]') && typeof document !== 'undefined' && document.dir === 'rtl')
+  const fwd = props.orientation === 'horizontal' ? (rtl ? 'ArrowLeft' : 'ArrowRight') : 'ArrowDown',
+    back = props.orientation === 'horizontal' ? (rtl ? 'ArrowRight' : 'ArrowLeft') : 'ArrowUp'
+  let next: number
+  let step = 1
   if (e.key === fwd) next = index + 1
-  else if (e.key === back) next = index - 1
-  else if (e.key === 'Home') next = 0
-  else if (e.key === 'End') next = props.items.length - 1
-  if (next >= 0) {
+  else if (e.key === back) {
+    next = index - 1
+    step = -1
+  } else if (e.key === 'Home') next = 0
+  else if (e.key === 'End') {
+    next = props.items.length - 1
+    step = -1
+  } else return
+  if (props.items.length) {
     e.preventDefault()
     for (let n = 0; n < props.items.length; n++) {
-      const i = (next + n + props.items.length) % props.items.length
+      const i = (next + step * n + props.items.length * 2) % props.items.length
       if (!props.items[i]?.disabled) {
         buttons.value[i]?.focus()
         choose(props.items[i]!)
@@ -60,6 +83,20 @@ function keydown(e: KeyboardEvent, index: number) {
     }
   }
 }
+let form: HTMLFormElement | null = null
+function reset(event: Event) {
+  queueMicrotask(() => {
+    if (event.defaultPrevented) return
+    const next = initialValue
+    local.value = next
+    if (props.modelValue !== undefined) emit('update:modelValue', next)
+  })
+}
+onMounted(() => {
+  form = root.value?.closest('form') ?? null
+  form?.addEventListener('reset', reset)
+})
+onBeforeUnmount(() => form?.removeEventListener('reset', reset))
 function setButtonRef(index: number, element: unknown) {
   if (element && typeof element === 'object' && 'focus' in element)
     buttons.value[index] = element as HTMLButtonElement
@@ -67,6 +104,8 @@ function setButtonRef(index: number, element: unknown) {
 </script>
 <template>
   <div
+    ref="root"
+    v-bind="{ ...attrs, ...ui?.root?.attrs }"
     :role="'radiogroup'"
     :aria-orientation="orientation"
     :class="[
@@ -74,25 +113,31 @@ function setButtonRef(index: number, element: unknown) {
       `is-${orientation}`,
       `size-${size}`,
       { 'is-block': block, 'is-unstyled': unstyled },
+      attrs.class,
       ui?.root?.class,
     ]"
-    :style="ui?.root?.style"
+    :style="[attrs.style, ui?.root?.style]"
   >
     <button
       v-for="(item, index) in items"
       :key="String(item.value)"
       :ref="(element) => setButtonRef(index, element)"
+      v-bind="ui?.item?.attrs"
       type="button"
       role="radio"
       :aria-checked="Object.is(selected, item.value)"
-      :tabindex="Object.is(selected, item.value) || (selected === null && index === 0) ? 0 : -1"
+      :tabindex="Object.is(tabValue, item.value) && !item.disabled ? 0 : -1"
       :disabled="item.disabled"
       :class="['segment-item', { 'is-selected': Object.is(selected, item.value) }, ui?.item?.class]"
       :style="ui?.item?.style"
-      @click="choose(item)"
+      @click="choose(item, true)"
       @keydown="keydown($event, index)"
     >
-      <span v-if="$slots.leading" :class="ui?.leading?.class"
+      <span
+        v-if="$slots.leading"
+        v-bind="ui?.leading?.attrs"
+        :class="ui?.leading?.class"
+        :style="ui?.leading?.style"
         ><slot name="leading" :item="item" /></span
       ><slot
         name="item"
@@ -101,7 +146,11 @@ function setButtonRef(index: number, element: unknown) {
         :selected="Object.is(selected, item.value)"
         :disabled="!!item.disabled"
         >{{ item.label }}</slot
-      ><span v-if="$slots.trailing" :class="ui?.trailing?.class"
+      ><span
+        v-if="$slots.trailing"
+        v-bind="ui?.trailing?.attrs"
+        :class="ui?.trailing?.class"
+        :style="ui?.trailing?.style"
         ><slot name="trailing" :item="item"
       /></span></button
     ><input v-if="name && selected !== null" type="hidden" :name="name" :value="selected" />

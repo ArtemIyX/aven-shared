@@ -102,6 +102,7 @@ function resize(e: Event) {
 </script>
 <template>
   <nav
+    v-bind="ui?.root?.attrs"
     :aria-label="label"
     :aria-busy="loading || undefined"
     :class="[
@@ -114,9 +115,14 @@ function resize(e: Event) {
     <slot name="summary" :start="start" :end="end" :total="total"
       ><span class="pagination-summary">{{ start }}–{{ end }} of {{ total }}</span></slot
     >
-    <ol :class="['pagination-list', ui?.list?.class]" :style="ui?.list?.style">
+    <ol
+      v-bind="ui?.list?.attrs"
+      :class="['pagination-list', ui?.list?.class]"
+      :style="ui?.list?.style"
+    >
       <li>
         <button
+          v-bind="ui?.item?.attrs"
           type="button"
           :disabled="disabled || loading || current <= 1"
           :class="['page-control', ui?.item?.class]"
@@ -132,6 +138,7 @@ function resize(e: Event) {
         </li>
         <li v-else>
           <button
+            v-bind="ui?.item?.attrs"
             type="button"
             :disabled="disabled || loading"
             :aria-current="item === current ? 'page' : undefined"
@@ -151,6 +158,7 @@ function resize(e: Event) {
       >
       <li>
         <button
+          v-bind="ui?.item?.attrs"
           type="button"
           :disabled="disabled || loading || current >= pageCount"
           :class="['page-control', ui?.item?.class]"
@@ -161,7 +169,7 @@ function resize(e: Event) {
         </button>
       </li>
     </ol>
-    <label v-if="showSizeChanger" :class="['page-size', ui?.size?.class]"
+    <label v-bind="ui?.size?.attrs" v-if="showSizeChanger" :class="['page-size', ui?.size?.class]"
       >Rows per page<select :value="size" :disabled="disabled || loading" @change="resize">
         <option v-for="option in pageSizeOptions" :key="option" :value="option">
           {{ option }}

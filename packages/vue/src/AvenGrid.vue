@@ -1,17 +1,13 @@
 <script setup lang="ts">
 import { computed, type CSSProperties } from 'vue'
-import type { AvenUi } from './types.js'
-type ResponsiveColumns = { base?: number; sm?: number; md?: number; lg?: number }
-const props = withDefaults(
-  defineProps<{
-    as?: 'div' | 'section' | 'ul'
-    columns?: number | ResponsiveColumns
-    gap?: string | number
-    unstyled?: boolean
-    ui?: AvenUi<'root'>
-  }>(),
-  { as: 'div', columns: 1, gap: 'space-4', unstyled: false },
-)
+import type { AvenGridProps, AvenGridSlots } from './types.js'
+const props = withDefaults(defineProps<AvenGridProps>(), {
+  as: 'div',
+  columns: 1,
+  gap: 'space-4',
+  unstyled: false,
+})
+defineSlots<AvenGridSlots>()
 function gapValue(value: string | number): string {
   return typeof value === 'number'
     ? `${value}px`
@@ -34,6 +30,7 @@ const gridStyle = computed<CSSProperties>(() => {
 <template>
   <component
     :is="as"
+    v-bind="ui?.root?.attrs"
     :class="['aven-grid', { 'is-unstyled': unstyled }, ui?.root?.class]"
     :style="[gridStyle, ui?.root?.style]"
     ><slot

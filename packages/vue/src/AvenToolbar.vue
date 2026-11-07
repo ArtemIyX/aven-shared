@@ -102,6 +102,7 @@ onBeforeUnmount(() => {
     @keydown="onKeydown"
   >
     <div
+      v-bind="props.ui?.start?.attrs"
       v-if="$slots.start"
       :class="['toolbar-start', props.ui?.start?.class]"
       :style="props.ui?.start?.style"
@@ -109,6 +110,7 @@ onBeforeUnmount(() => {
       <slot name="start" />
     </div>
     <div
+      v-bind="props.ui?.center?.attrs"
       v-if="$slots.center"
       :class="['toolbar-center', props.ui?.center?.class]"
       :style="props.ui?.center?.style"
@@ -116,6 +118,7 @@ onBeforeUnmount(() => {
       <slot name="center" />
     </div>
     <div
+      v-bind="props.ui?.group?.attrs"
       v-for="group in props.groups"
       :key="group.key"
       :role="group.label ? 'group' : undefined"
@@ -127,6 +130,7 @@ onBeforeUnmount(() => {
     </div>
     <slot />
     <div
+      v-bind="props.ui?.end?.attrs"
       v-if="$slots.end"
       :class="['toolbar-end', props.ui?.end?.class]"
       :style="props.ui?.end?.style"
@@ -134,6 +138,7 @@ onBeforeUnmount(() => {
       <slot name="end" />
     </div>
     <div
+      v-bind="props.ui?.overflow?.attrs"
       v-if="$slots.overflow && props.overflowItems?.length"
       :class="['toolbar-overflow', props.ui?.overflow?.class]"
       :style="props.ui?.overflow?.style"

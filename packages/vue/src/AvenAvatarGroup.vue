@@ -1,4 +1,5 @@
 <script setup lang="ts" generic="Item">
+import { computed } from 'vue'
 import type { AvenAvatarGroupEvents, AvenAvatarGroupProps, AvenAvatarGroupSlots } from './types.js'
 const props = withDefaults(defineProps<AvenAvatarGroupProps<Item>>(), {
   overlap: 8,
@@ -7,8 +8,13 @@ const props = withDefaults(defineProps<AvenAvatarGroupProps<Item>>(), {
 })
 const emit = defineEmits<AvenAvatarGroupEvents<Item>>()
 defineSlots<AvenAvatarGroupSlots<Item>>()
-const visible = () => (props.max === undefined ? props.items : props.items.slice(0, props.max))
-const hidden = () => (props.max === undefined ? [] : props.items.slice(props.max))
+const limit = computed(() =>
+  props.max === undefined || !Number.isFinite(props.max)
+    ? props.items.length
+    : Math.max(0, Math.floor(props.max)),
+)
+const visible = () => props.items.slice(0, limit.value)
+const hidden = () => props.items.slice(limit.value)
 const itemKey = (item: Item, index: number) => {
   if (props.getKey) return props.getKey(item, index)
   if (item && typeof item === 'object') {
@@ -21,6 +27,7 @@ const itemKey = (item: Item, index: number) => {
 </script>
 <template>
   <div
+    v-bind="ui?.root?.attrs"
     role="group"
     :aria-label="label"
     :class="['aven-avatar-group', { 'is-unstyled': unstyled }, ui?.root?.class]"
@@ -29,6 +36,7 @@ const itemKey = (item: Item, index: number) => {
     <span
       v-for="(item, index) in visible()"
       :key="itemKey(item, index)"
+      v-bind="ui?.avatar?.attrs"
       :class="['avatar-item', ui?.avatar?.class]"
       :style="[
         {
@@ -40,6 +48,7 @@ const itemKey = (item: Item, index: number) => {
       ><slot name="avatar" :item="item" :index="index">{{ String(item) }}</slot></span
     ><button
       v-if="hidden().length && $slots.overflow"
+      v-bind="ui?.overflow?.attrs"
       type="button"
       :class="['avatar-overflow', ui?.overflow?.class]"
       :style="ui?.overflow?.style"
@@ -51,6 +60,7 @@ const itemKey = (item: Item, index: number) => {
       ></button
     ><span
       v-else-if="hidden().length"
+      v-bind="ui?.overflow?.attrs"
       :class="['avatar-overflow', ui?.overflow?.class]"
       :style="ui?.overflow?.style"
       :aria-label="`${hidden().length} more ${label.toLocaleLowerCase()}`"
