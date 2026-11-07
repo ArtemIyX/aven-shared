@@ -41,14 +41,17 @@ test('defaults to text and allows the semantic element to be overridden', async 
 })
 
 test('forwards native attributes, class, style, and custom slot markup', async () => {
-  const html = await renderAvenText({
-    id: 'greeting',
-    title: 'Greeting',
-    'aria-label': 'Greeting text',
-    'data-testid': 'greeting',
-    class: 'application-copy',
-    style: { color: 'red' },
-  }, ['Hello ', h('strong', 'Avery')])
+  const html = await renderAvenText(
+    {
+      id: 'greeting',
+      title: 'Greeting',
+      'aria-label': 'Greeting text',
+      'data-testid': 'greeting',
+      class: 'application-copy',
+      style: { color: 'red' },
+    },
+    ['Hello ', h('strong', 'Avery')],
+  )
 
   assert.ok(html.includes('id="greeting"'))
   assert.ok(html.includes('title="Greeting"'))
@@ -64,9 +67,15 @@ test('forwards event listeners to the rendered root element', () => {
     createElement: (type) => ({ type, props: {}, children: [] }),
     createText: (text) => ({ text }),
     createComment: (text) => ({ comment: text }),
-    setText: (node, text) => { node.text = text },
-    setElementText: (node, text) => { node.text = text },
-    patchProp: (node, key, _previous, next) => { node.props[key] = next },
+    setText: (node, text) => {
+      node.text = text
+    },
+    setElementText: (node, text) => {
+      node.text = text
+    },
+    patchProp: (node, key, _previous, next) => {
+      node.props[key] = next
+    },
     insert: (child, parent) => {
       child.parent = parent
       parent.children.push(child)
@@ -80,9 +89,11 @@ test('forwards event listeners to the rendered root element', () => {
   const onClick = () => {}
   const root = { type: 'root', children: [] }
 
-  renderer.createApp({
-    render: () => h(AvenText, { onClick }),
-  }).mount(root)
+  renderer
+    .createApp({
+      render: () => h(AvenText, { onClick }),
+    })
+    .mount(root)
 
   assert.equal(root.children[0].props.onClick, onClick)
 })
