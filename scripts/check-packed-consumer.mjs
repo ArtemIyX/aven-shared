@@ -31,6 +31,8 @@ try {
       assert(paths.includes('dist/AvenRangeSlider.js'))
       assert(paths.includes('dist/AvenCombobox.js'))
       assert(paths.includes('dist/AvenMultiSelect.js'))
+      assert(paths.includes('dist/AvenContextMenu.js'))
+      assert(paths.includes('dist/AvenMenubar.js'))
     }
   }
   await writeFile(
@@ -91,6 +93,10 @@ try {
     `import { h } from 'vue'\nimport { AvenCombobox, AvenMultiSelect, type AvenComboboxProps, type AvenMultiSelectProps } from '@wellsaik/aven-vue'\nconst singleOptions: AvenComboboxProps<'a'|'b'>['options'] = [{ value: 'a', label: 'A' }, { value: 'b', label: 'B' }]\nconst multiOptions: AvenMultiSelectProps<'x'|'y'>['options'] = [{ value: 'x', label: 'X' }, { value: 'y', label: 'Y' }]\nh(AvenCombobox, { options: singleOptions, modelValue: 'a' })\nh(AvenMultiSelect, { options: multiOptions, modelValue: ['x'] })\n`,
   )
   await writeFile(
+    path.join(directory, 'overlay-consumer.ts'),
+    `import { h } from 'vue'\nimport { AvenContextMenu, AvenMenubar, type AvenContextMenuProps, type AvenMenubarProps } from '@wellsaik/aven-vue'\nconst commands = [{ key: 'copy', label: 'Copy' }] as const\nconst context: AvenContextMenuProps<'copy'> = { items: [...commands], activation: 'both' }\nconst menubar: AvenMenubarProps<'file'|'edit'|'new'> = { items: [{ key: 'file', label: 'File', children: [{ key: 'new', label: 'New' }] }, { key: 'edit', label: 'Edit' }], label: 'Document menu' }\nh(AvenContextMenu, context)\nh(AvenMenubar, menubar)\n`,
+  )
+  await writeFile(
     path.join(directory, 'tsconfig.json'),
     JSON.stringify({
       compilerOptions: {
@@ -101,7 +107,7 @@ try {
         skipLibCheck: false,
         noEmit: true,
       },
-      include: ['main.ts', 'slider-consumer.ts', 'selection-consumer.ts'],
+      include: ['main.ts', 'slider-consumer.ts', 'selection-consumer.ts', 'overlay-consumer.ts'],
     }),
   )
   run(['exec', '--', 'tsc', '-p', 'tsconfig.json'], directory)
@@ -116,7 +122,7 @@ try {
         skipLibCheck: false,
         noEmit: true,
       },
-      include: ['main.ts', 'slider-consumer.ts', 'selection-consumer.ts'],
+      include: ['main.ts', 'slider-consumer.ts', 'selection-consumer.ts', 'overlay-consumer.ts'],
     }),
   )
   run(['exec', '--', 'tsc', '-p', 'tsconfig.json'], directory)

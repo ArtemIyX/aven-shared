@@ -68,6 +68,10 @@ export default defineConfig({
         AvenMultiSelect: fileURLToPath(
           new URL('./packages/vue/src/AvenMultiSelect.vue', import.meta.url),
         ),
+        AvenContextMenu: fileURLToPath(
+          new URL('./packages/vue/src/AvenContextMenu.vue', import.meta.url),
+        ),
+        AvenMenubar: fileURLToPath(new URL('./packages/vue/src/AvenMenubar.vue', import.meta.url)),
         AvenMenu: fileURLToPath(new URL('./packages/vue/src/AvenMenu.vue', import.meta.url)),
         AvenDropdownMenu: fileURLToPath(
           new URL('./packages/vue/src/AvenDropdownMenu.vue', import.meta.url),

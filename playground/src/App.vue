@@ -14,6 +14,8 @@ import {
   AvenRangeSlider,
   AvenCombobox,
   AvenMultiSelect,
+  AvenContextMenu,
+  AvenMenubar,
   AvenCollapsible,
   AvenContainer,
   AvenFormattedValue,
@@ -51,6 +53,7 @@ const selectedTeam = ref<string | null>('design')
 const selectedTopics = ref<string[]>(['vue'])
 const teamQuery = ref('')
 const remoteLoading = ref(false)
+const menuAction = ref('')
 const lastSplitAction = ref('')
 const buttonClicks = ref(0)
 const openSection = ref<string | null>('account')
@@ -85,6 +88,25 @@ const topicOptions = [
   { value: 'vue', label: 'Vue', keywords: ['framework', 'ui'], group: 'Frontend' },
   { value: 'typescript', label: 'TypeScript', description: 'Typed JavaScript', group: 'Frontend' },
   { value: 'accessibility', label: 'Accessibility', group: 'Quality' },
+]
+const menubarItems = [
+  {
+    key: 'file',
+    label: 'File',
+    children: [
+      { key: 'new', label: 'New document' },
+      { key: 'open', label: 'Open…' },
+    ],
+  },
+  {
+    key: 'edit',
+    label: 'Edit',
+    children: [
+      { key: 'undo', label: 'Undo' },
+      { key: 'redo', label: 'Redo' },
+    ],
+  },
+  { key: 'view', label: 'View', children: [{ key: 'zoom-in', label: 'Zoom in' }] },
 ]
 const buttonTones = [
   'neutral',
@@ -513,6 +535,28 @@ const buttonTones = [
         :error="remoteLoading ? '' : 'The remote source is unavailable.'"
         placeholder="Remote search"
       />
+    </section>
+    <section class="playground-card" aria-labelledby="menu-navigation-examples">
+      <AvenText id="menu-navigation-examples" type="header1"
+        >Context actions and menubar navigation</AvenText
+      >
+      <AvenContextMenu
+        :items="projectCommands"
+        label="Project actions"
+        @select="menuAction = $event.item.label"
+      >
+        <template #default
+          ><p>
+            Right-click or focus this project area and press Shift+F10 to open actions.
+          </p></template
+        >
+      </AvenContextMenu>
+      <AvenMenubar
+        :items="menubarItems"
+        label="Document menu"
+        @select="menuAction = $event.item.label"
+      />
+      <p aria-live="polite">Last menu action: {{ menuAction || 'none' }}</p>
     </section>
     <section class="playground-card" aria-labelledby="toggle-examples">
       <AvenText id="toggle-examples" type="header1">Toggle controls</AvenText>

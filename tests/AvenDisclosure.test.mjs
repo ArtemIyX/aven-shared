@@ -16,6 +16,8 @@ import {
   AvenRangeSlider,
   AvenCombobox,
   AvenMultiSelect,
+  AvenContextMenu,
+  AvenMenubar,
   AvenLink,
   AvenCollapsible,
   AvenFormattedValue,
@@ -1470,4 +1472,122 @@ test('split button keeps primary, menu, and controlled-open state independent', 
   assert.equal(menuDisabledButtons[1].props.disabled, true)
   dispatchHandler(menuDisabledButtons[0].props.onClick, { type: 'click' })
   assert.equal(menuPrimary.length, 1)
+})
+
+test('context menu opens from pointer and keyboard with a visible touch trigger', async () => {
+  const html = await render({
+    render: () =>
+      h(AvenContextMenu, {
+        label: 'Project actions',
+        items: [{ key: 'copy', label: 'Copy link' }],
+      }),
+  })
+  assert.match(html, /aria-haspopup="menu"/)
+  assert.match(html, /aria-label="More actions"/)
+  const mounted = makeRenderer()
+  const changes = []
+  const updates = []
+  const selections = []
+  mounted.renderer
+    .createApp({
+      render: () =>
+        h(AvenContextMenu, {
+          items: [{ key: 'copy', label: 'Copy link' }],
+          label: 'Project actions',
+          onOpenChange: (change) => changes.push(change),
+          onSelect: (selection) => selections.push(selection),
+          'onUpdate:open': (value) => updates.push(value),
+        }),
+    })
+    .mount(mounted.root)
+  const root = mounted.find(mounted.root, (node) => typeof node.props?.onContextmenu === 'function')
+  const prevented = { value: false }
+  root.props.onContextmenu({
+    clientX: 18,
+    clientY: 24,
+    preventDefault() {
+      prevented.value = true
+    },
+  })
+  await nextTick()
+  assert.equal(prevented.value, true)
+  assert.deepEqual(updates, [true])
+  assert.deepEqual(changes, [{ open: true, reason: 'contextmenu', point: { x: 18, y: 24 } }])
+  const touchButton = mounted.find(mounted.root, (node) => node.type === 'button')
+  assert.equal(touchButton.props['aria-label'], 'More actions')
+  touchButton.props.onClick({ currentTarget: null, preventDefault() {} })
+  assert.deepEqual(updates, [true])
+  const menuItem = mounted.find(
+    mounted.root,
+    (node) => node.type === 'button' && node.props?.role === 'menuitem',
+  )
+  dispatchHandler(menuItem.props.onClick, { type: 'click' })
+  await nextTick()
+  assert.equal(selections.length, 1)
+  assert.equal(selections[0].key, 'copy')
+  assert.deepEqual(updates, [true, false])
+  assert.deepEqual(
+    changes.map(({ reason }) => reason),
+    ['contextmenu', 'selection'],
+  )
+})
+
+test('menubar moves active items and opens/selects a submenu with one selection event', async () => {
+  const mounted = makeRenderer()
+  const activeRequests = []
+  const openRequests = []
+  const submenuChanges = []
+  const selections = []
+  mounted.renderer
+    .createApp({
+      render: () =>
+        h(AvenMenubar, {
+          label: 'Document menu',
+          items: [
+            { key: 'file', label: 'File', children: [{ key: 'new', label: 'New' }] },
+            { key: 'edit', label: 'Edit', children: [{ key: 'rename', label: 'Rename' }] },
+          ],
+          'onUpdate:activeKey': (key) => activeRequests.push(key),
+          'onUpdate:openKey': (key) => openRequests.push(key),
+          onSubmenuChange: (change) => submenuChanges.push(change),
+          onSelect: (payload) => selections.push(payload),
+        }),
+    })
+    .mount(mounted.root)
+  const menubar = mounted.find(mounted.root, (node) => node.props?.role === 'menubar')
+  assert.equal(menubar.props['aria-label'], 'Document menu')
+  const triggers = []
+  const visitTriggers = (node) => {
+    if (node.props?.role === 'menuitem' && node.type === 'button') triggers.push(node)
+    for (const child of node.children ?? []) visitTriggers(child)
+  }
+  visitTriggers(menubar)
+  dispatchHandler(triggers[0].props.onKeydown, {
+    key: 'ArrowRight',
+    preventDefault() {},
+  })
+  await nextTick()
+  assert.deepEqual(activeRequests, ['edit'])
+  dispatchHandler(triggers[0].props.onClick, { type: 'click' })
+  await nextTick()
+  assert.deepEqual(openRequests, ['file'])
+  dispatchHandler(triggers[1].props.onClick, { type: 'click' })
+  await nextTick()
+  assert.deepEqual(openRequests, ['file', 'edit'])
+  assert.deepEqual(submenuChanges, [
+    { key: 'file', open: true },
+    { key: 'file', open: false },
+    { key: 'edit', open: true },
+  ])
+  const submenu = mounted.find(mounted.root, (node) => node.props?.role === 'menu')
+  assert.ok(submenu)
+  const newItem = mounted.find(
+    submenu,
+    (node) => node.type === 'button' && node.props?.role === 'menuitem',
+  )
+  dispatchHandler(newItem.props.onClick, { type: 'click' })
+  await nextTick()
+  assert.equal(selections.length, 1)
+  assert.equal(selections[0].key, 'rename')
+  assert.deepEqual(openRequests, ['file', 'edit', null])
 })

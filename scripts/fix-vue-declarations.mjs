@@ -1,7 +1,8 @@
 import { readdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-const dist = path.resolve('dist')
+const dist = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../packages/vue/dist')
 const files = await readdir(dist)
 for (const file of files) {
   if (file.endsWith('.vue.d.ts')) {

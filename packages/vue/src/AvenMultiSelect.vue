@@ -28,7 +28,6 @@ defineSlots<AvenComboboxSlots<T>>()
   <AvenCombobox
     v-bind="{ ...props, ...$attrs }"
     multiple
-    v-slots="$slots"
     @update:model-value="emit('update:modelValue', $event as T[])"
     @change="emit('change', $event as T[])"
     @update:query="emit('update:query', $event)"
@@ -40,5 +39,20 @@ defineSlots<AvenComboboxSlots<T>>()
     @load-more="emit('loadMore', $event)"
     @focus="emit('focus', $event)"
     @blur="emit('blur', $event)"
-  />
+  >
+    <template #selected="scope"><slot name="selected" v-bind="scope" /></template>
+    <template #chip="scope"><slot name="chip" v-bind="scope" /></template>
+    <template #option="scope"><slot name="option" v-bind="scope" /></template>
+    <template #group="scope"><slot name="group" v-bind="scope" /></template>
+    <template #leading><slot name="leading" /></template>
+    <template #trailing><slot name="trailing" /></template>
+    <template #empty="scope"><slot name="empty" v-bind="scope" /></template>
+    <template #loading><slot name="loading" /></template>
+    <template #error="scope"><slot name="error" v-bind="scope" /></template>
+    <template #create="scope"><slot name="create" v-bind="scope" /></template>
+    <template #popup-header><slot name="popup-header" /></template>
+    <template #popup-footer><slot name="popup-footer" /></template>
+    <template #label><slot name="label" /></template>
+    <template #description><slot name="description" /></template>
+  </AvenCombobox>
 </template>

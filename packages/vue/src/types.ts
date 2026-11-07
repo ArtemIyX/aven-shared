@@ -196,6 +196,78 @@ export type AvenMultiSelectEvents<T extends string | number = string | number> =
   'update:modelValue': [value: T[]]
   change: [value: T[]]
 }
+export type AvenContextMenuProps<Key extends string | number = string | number> = {
+  items: AvenCommand<Key>[]
+  open?: boolean
+  defaultOpen?: boolean
+  disabled?: boolean
+  activation?: 'contextmenu' | 'both'
+  label?: string
+  triggerLabel?: string
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'trigger' | 'content' | 'item'>
+}
+export type AvenContextMenuEvents<Key extends string | number = string | number> = {
+  'update:open': [open: boolean]
+  openChange: [
+    change: {
+      open: boolean
+      reason:
+        'contextmenu' | 'keyboard' | 'trigger' | 'selection' | 'escape' | 'outside' | 'programmatic'
+      point?: { x: number; y: number }
+    },
+  ]
+  select: [payload: { key: Key; item: AvenCommand<Key>; originalEvent: Event }]
+}
+export type AvenContextMenuSlots<Key extends string | number = string | number> = {
+  default?: (scope: { openAt: (x: number, y: number) => void; open: boolean }) => unknown
+  trigger?: (scope: { triggerAttrs: Record<string, unknown>; open: boolean }) => unknown
+  item?: (scope: {
+    item: AvenCommand<Key>
+    key: Key
+    active: boolean
+    disabled: boolean
+  }) => unknown
+  header?: () => unknown
+  footer?: () => unknown
+}
+export type AvenMenubarProps<Key extends string | number = string | number> = {
+  items: AvenCommand<Key>[]
+  activeKey?: Key | null
+  defaultActiveKey?: Key | null
+  openKey?: Key | null
+  defaultOpenKey?: Key | null
+  loop?: boolean
+  label: string
+  density?: 'comfortable' | 'compact'
+  disabled?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'trigger' | 'submenu' | 'item'>
+}
+export type AvenMenubarEvents<Key extends string | number = string | number> = {
+  'update:activeKey': [key: Key | null]
+  'update:openKey': [key: Key | null]
+  select: [payload: { key: Key; item: AvenCommand<Key>; originalEvent: Event }]
+  submenuChange: [payload: { key: Key; open: boolean }]
+}
+export type AvenMenubarSlots<Key extends string | number = string | number> = {
+  trigger?: (scope: {
+    item: AvenCommand<Key>
+    open: boolean
+    active: boolean
+    triggerAttrs: Record<string, unknown>
+    triggerRef: (element: unknown) => void
+  }) => unknown
+  item?: (scope: {
+    item: AvenCommand<Key>
+    key: Key
+    active: boolean
+    disabled: boolean
+  }) => unknown
+  'submenu-trigger'?: (scope: { item: AvenCommand<Key>; open: boolean }) => unknown
+  header?: () => unknown
+  footer?: () => unknown
+}
 export type AvenCommand<Key extends string | number = string | number> = {
   key: Key
   label: string
