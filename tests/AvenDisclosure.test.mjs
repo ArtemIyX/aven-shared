@@ -25,7 +25,11 @@ import {
   AvenSheet,
   AvenAlert,
   AvenBanner,
+  AvenAvatar,
+  AvenAvatarGroup,
+  AvenChip,
   AvenLink,
+  AvenKbd,
   AvenCollapsible,
   AvenFormattedValue,
   AvenPanel,
@@ -40,6 +44,8 @@ import {
   AvenSplitButton,
   AvenStat,
   AvenStatusDot,
+  AvenSeparator,
+  AvenTag,
 } from '../packages/vue/dist/index.js'
 
 async function render(component) {
@@ -1814,4 +1820,156 @@ test('alerts opt into live announcement semantics and banners forward one dismis
   assert.equal(dismissals.length, 1)
   assert.equal(dismissals[0].originalEvent, originalEvent)
   assert.ok(mounted.find(mounted.root, (node) => node.type === 'section'))
+})
+
+test('chips, tags, avatars, keyboard hints, and separators preserve semantic contracts', async () => {
+  const html = await render({
+    render: () =>
+      h('div', [
+        h(
+          AvenChip,
+          { value: 'vue', interactive: true, selected: true, removable: true },
+          {
+            default: () => 'Vue',
+          },
+        ),
+        h(AvenTag, { 'data-tone': 'release' }, { default: () => 'Stable' }),
+        h(AvenAvatar, { name: 'Ava Chen' }),
+        h(AvenAvatar, { src: '/avatar.png', alt: '', name: 'Ava Chen' }),
+        h(AvenKbd, { keys: ['Control', 'K'], platform: 'windows' }),
+        h(AvenSeparator, { decorative: false, orientation: 'vertical' }, { label: () => 'or' }),
+      ]),
+  })
+  assert.match(html, /aria-pressed="true"/)
+  assert.match(html, /aria-label="Remove item"/)
+  assert.match(html, /data-tone="release"/)
+  assert.match(html, /Ava Chen/)
+  assert.match(html, /src="\/avatar\.png" alt(?:="")? loading=/)
+  assert.match(html, /<kbd[^>]*>.*Ctrl.*K/s)
+  assert.match(html, /role="separator" aria-orientation="vertical"/)
+  assert.match(html, />or</)
+
+  const mounted = makeRenderer()
+  const removed = []
+  mounted.renderer
+    .createApp({
+      render: () =>
+        h(
+          AvenChip,
+          {
+            value: 'vue',
+            interactive: true,
+            removable: true,
+            onClick: (event) => removed.push(['click', event]),
+            onRemove: (payload) => removed.push(['remove', payload]),
+          },
+          { default: () => 'Vue' },
+        ),
+    })
+    .mount(mounted.root)
+  const buttons = []
+  const visit = (node) => {
+    if (node.type === 'button') buttons.push(node)
+    for (const child of node.children ?? []) if (typeof child !== 'string') visit(child)
+  }
+  visit(mounted.root)
+  const clickEvent = { type: 'click' }
+  dispatchHandler(buttons[0].props.onClick, clickEvent)
+  const removeEvent = { type: 'click' }
+  dispatchHandler(buttons[1].props.onClick, removeEvent)
+  assert.equal(removed.length, 2)
+  assert.equal(removed[0][1], clickEvent)
+  assert.equal(removed[1][1].originalEvent, removeEvent)
+  assert.equal(removed[1][1].value, 'vue')
+
+  const disabledHtml = await render({
+    render: () => h(AvenChip, { interactive: true, removable: true, disabled: true }),
+  })
+  const disabledButtons = [...disabledHtml.matchAll(/<button\b[^>]*>/g)].map(([button]) => button)
+  assert.equal(disabledButtons.length, 2)
+  assert.ok(disabledButtons.every((button) => /\sdisabled(?:="")?(?:\s|>)/.test(button)))
+})
+
+test('avatar forwards native image events and switches to its fallback on failure', async () => {
+  const mounted = makeRenderer()
+  const loads = []
+  const errors = []
+  mounted.renderer
+    .createApp({
+      render: () =>
+        h(AvenAvatar, {
+          src: '/person.png',
+          name: 'Ava Chen',
+          onLoad: (event) => loads.push(event),
+          onError: (event) => errors.push(event),
+        }),
+    })
+    .mount(mounted.root)
+  const image = mounted.find(mounted.root, (node) => node.type === 'img')
+  const loadEvent = { type: 'load' }
+  const errorEvent = { type: 'error' }
+  dispatchHandler(image.props.onLoad, loadEvent)
+  dispatchHandler(image.props.onError, errorEvent)
+  await nextTick()
+  assert.deepEqual(loads, [loadEvent])
+  assert.deepEqual(errors, [errorEvent])
+  assert.equal(
+    mounted.find(mounted.root, (node) => node.type === 'img'),
+    undefined,
+  )
+  assert.equal(
+    mounted
+      .find(
+        mounted.root,
+        (node) => node.type === 'span' && node.children?.some((child) => child.text === 'AC'),
+      )
+      ?.children.some((child) => child.text === 'AC'),
+    true,
+  )
+})
+
+test('avatar groups preserve item generics and report overflow requests once', async () => {
+  const people = [
+    { id: 'ava', name: 'Ava' },
+    { id: 'sam', name: 'Sam' },
+  ]
+  const html = await render({
+    render: () =>
+      h(
+        AvenAvatarGroup,
+        { items: people, max: 1, label: 'Team', getKey: (item) => item.id },
+        {
+          avatar: ({ item }) => h('span', { 'data-person': item.id }, item.name),
+          overflow: ({ count }) => `+${count} people`,
+        },
+      ),
+  })
+  assert.match(html, /role="group" aria-label="Team"/)
+  assert.match(html, /data-person="ava"/)
+  assert.match(html, /aria-label="1 more team"/)
+  assert.match(html, /\+1 people/)
+
+  const mounted = makeRenderer()
+  const requests = []
+  mounted.renderer
+    .createApp({
+      render: () =>
+        h(
+          AvenAvatarGroup,
+          {
+            items: people,
+            max: 1,
+            label: 'Team',
+            onOverflowClick: (payload) => requests.push(payload),
+          },
+          { overflow: ({ count }) => `+${count}` },
+        ),
+    })
+    .mount(mounted.root)
+  const button = mounted.find(mounted.root, (node) => node.type === 'button')
+  const originalEvent = { type: 'click' }
+  dispatchHandler(button.props.onClick, originalEvent)
+  assert.equal(requests.length, 1)
+  assert.deepEqual(requests[0].hiddenItems, [people[1]])
+  assert.equal(requests[0].originalEvent, originalEvent)
 })

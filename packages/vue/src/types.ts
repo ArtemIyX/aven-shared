@@ -17,6 +17,88 @@ export type AvenOption<T, Extra extends object = object> = {
   group?: string | number
   keywords?: string[]
 } & Extra
+export type AvenChipProps<T extends string | number = string | number> = {
+  value?: T
+  selected?: boolean
+  removable?: boolean
+  disabled?: boolean
+  interactive?: boolean
+  removeLabel?: string
+  variant?: 'soft' | 'outline' | 'solid'
+  tone?: AvenTone
+  size?: AvenSize
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'content' | 'leading' | 'trailing' | 'remove'>
+}
+export type AvenChipEvents<T extends string | number = string | number> = {
+  click: [event: MouseEvent]
+  remove: [payload: { value?: T; originalEvent: MouseEvent }]
+}
+export type AvenChipSlots = {
+  default?: () => unknown
+  leading?: () => unknown
+  trailing?: () => unknown
+  'remove-icon'?: () => unknown
+}
+export type AvenTagProps = {
+  tone?: AvenTone
+  variant?: 'soft' | 'outline' | 'solid'
+  size?: AvenSize
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'leading' | 'trailing'>
+}
+export type AvenTagSlots = {
+  default?: () => unknown
+  leading?: () => unknown
+  trailing?: () => unknown
+}
+export type AvenAvatarProps = {
+  src?: string
+  alt?: string
+  name?: string
+  initials?: string
+  size?: AvenSize | 'xl'
+  shape?: 'circle' | 'rounded' | 'square'
+  loading?: 'lazy' | 'eager'
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'image' | 'fallback' | 'status'>
+}
+export type AvenAvatarEvents = { load: [event: Event]; error: [event: Event] }
+export type AvenAvatarSlots = {
+  fallback?: (scope: { name?: string; initials: string }) => unknown
+  status?: () => unknown
+}
+export type AvenAvatarGroupProps<T = unknown> = {
+  items: T[]
+  max?: number
+  overlap?: number
+  getKey?: (item: T, index: number) => string | number
+  unstyled?: boolean
+  label?: string
+  ui?: AvenUi<'root' | 'avatar' | 'overflow'>
+}
+export type AvenAvatarGroupEvents<T = unknown> = {
+  overflowClick: [payload: { hiddenItems: T[]; originalEvent: MouseEvent }]
+}
+export type AvenAvatarGroupSlots<T = unknown> = {
+  avatar?: (scope: { item: T; index: number }) => unknown
+  overflow?: (scope: { hiddenItems: T[]; count: number }) => unknown
+}
+export type AvenKbdProps = {
+  keys?: string[]
+  platform?: 'auto' | 'mac' | 'windows' | 'linux'
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'key'>
+}
+export type AvenKbdSlots = { default?: () => unknown }
+export type AvenSeparatorProps = {
+  orientation?: 'horizontal' | 'vertical'
+  decorative?: boolean
+  inset?: string
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'label'>
+}
+export type AvenSeparatorSlots = { default?: () => unknown; label?: () => unknown }
 export type AvenListboxProps<T extends string | number = string | number> = {
   modelValue?: T | T[] | null
   defaultValue?: T | T[] | null

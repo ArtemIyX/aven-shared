@@ -1,21 +1,14 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import type { AvenSize, AvenUi } from './types.js'
-const props = withDefaults(
-  defineProps<{
-    src?: string
-    alt?: string
-    name?: string
-    initials?: string
-    size?: AvenSize | 'xl'
-    shape?: 'circle' | 'rounded' | 'square'
-    loading?: 'lazy' | 'eager'
-    unstyled?: boolean
-    ui?: AvenUi<'root' | 'image' | 'fallback' | 'status'>
-  }>(),
-  { size: 'md', shape: 'circle', loading: 'lazy', unstyled: false },
-)
-const emit = defineEmits<{ load: [event: Event]; error: [event: Event] }>()
+import type { AvenAvatarEvents, AvenAvatarProps, AvenAvatarSlots } from './types.js'
+const props = withDefaults(defineProps<AvenAvatarProps>(), {
+  size: 'md',
+  shape: 'circle',
+  loading: 'lazy',
+  unstyled: false,
+})
+const emit = defineEmits<AvenAvatarEvents>()
+defineSlots<AvenAvatarSlots>()
 const failed = ref(false)
 watch(
   () => props.src,
@@ -39,6 +32,8 @@ function onError(e: Event) {
 </script>
 <template>
   <span
+    :role="src && !failed ? undefined : alt === '' ? undefined : 'img'"
+    :aria-label="src && !failed ? undefined : (alt ?? name ?? (initials || undefined))"
     :class="[
       'aven-avatar',
       `size-${size}`,

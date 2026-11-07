@@ -1,27 +1,30 @@
 <script setup lang="ts">
-import type { AvenSize, AvenTone, AvenUi } from './types.js'
-withDefaults(
-  defineProps<{
-    tone?: AvenTone
-    variant?: 'soft' | 'outline' | 'solid'
-    size?: AvenSize
-    unstyled?: boolean
-    ui?: AvenUi<'root' | 'leading' | 'trailing'>
-  }>(),
-  { tone: 'neutral', variant: 'soft', size: 'sm', unstyled: false },
-)
+import { toRefs, useAttrs } from 'vue'
+import type { AvenTagProps, AvenTagSlots } from './types.js'
+defineOptions({ inheritAttrs: false })
+const props = withDefaults(defineProps<AvenTagProps>(), {
+  tone: 'neutral',
+  variant: 'soft',
+  size: 'sm',
+  unstyled: false,
+})
+const { tone, variant, size, unstyled, ui } = toRefs(props)
+const attrs = useAttrs()
+defineSlots<AvenTagSlots>()
 </script>
 <template>
   <span
+    v-bind="{ ...attrs, ...ui?.root?.attrs }"
     :class="[
       'aven-tag',
       `tone-${tone}`,
       `size-${size}`,
       `is-${variant}`,
       { 'is-unstyled': unstyled },
+      attrs.class,
       ui?.root?.class,
     ]"
-    :style="ui?.root?.style"
+    :style="[attrs.style, ui?.root?.style]"
     ><span v-if="$slots.leading" :class="ui?.leading?.class"><slot name="leading" /></span
     ><slot /><span v-if="$slots.trailing" :class="ui?.trailing?.class"
       ><slot name="trailing" /></span

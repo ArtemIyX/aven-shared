@@ -6,9 +6,15 @@ import {
   AvenBadge,
   AvenButton,
   AvenButtonGroup,
+  AvenAvatar,
+  AvenAvatarGroup,
+  AvenChip,
   AvenIconButton,
   AvenIcon,
   AvenLink,
+  AvenKbd,
+  AvenSeparator,
+  AvenTag,
   AvenListbox,
   AvenSlider,
   AvenRangeSlider,
@@ -65,6 +71,13 @@ const paletteOpen = ref(false)
 const drawerOpen = ref(false)
 const sheetOpen = ref(false)
 const bannerVisible = ref(true)
+const chipRemovals = ref(0)
+const people = [
+  { id: 'ava', name: 'Ava Chen', initials: 'AC', tone: 'accent' },
+  { id: 'noah', name: 'Noah Reed', initials: 'NR', tone: 'success' },
+  { id: 'sam', name: 'Sam Taylor', initials: 'ST', tone: 'warning' },
+  { id: 'lee', name: 'Lee Morgan', initials: 'LM', tone: 'secondary' },
+]
 const lastSplitAction = ref('')
 const buttonClicks = ref(0)
 const openSection = ref<string | null>('account')
@@ -634,6 +647,31 @@ const buttonTones = [
         dismissible
         @dismiss="bannerVisible = false"
       />
+    </section>
+    <section class="playground-card" aria-labelledby="identity-examples">
+      <AvenText id="identity-examples" type="header1">Identity and keyboard hints</AvenText>
+      <div class="playground-row">
+        <AvenChip value="vue" interactive selected removable @remove="chipRemovals++">
+          Vue 3
+        </AvenChip>
+        <AvenChip tone="warning" variant="outline">Needs review</AvenChip>
+        <AvenTag tone="success"><template #leading>✓</template>Verified</AvenTag>
+        <AvenTag variant="solid" tone="accent">Design system</AvenTag>
+        <span>Keyboard shortcut <AvenKbd :keys="['Control', 'K']" platform="windows" /></span>
+      </div>
+      <AvenSeparator><template #label>Team members</template></AvenSeparator>
+      <AvenAvatarGroup
+        :items="people"
+        :max="3"
+        label="Project team"
+        :get-key="(person) => person.id"
+      >
+        <template #avatar="{ item }">
+          <AvenAvatar :name="item.name" :initials="item.initials" :aria-label="item.name" />
+        </template>
+        <template #overflow="{ count }">+{{ count }} more</template>
+      </AvenAvatarGroup>
+      <p>{{ chipRemovals }} removal request{{ chipRemovals === 1 ? '' : 's' }} made.</p>
     </section>
     <section class="playground-card" aria-labelledby="toggle-examples">
       <AvenText id="toggle-examples" type="header1">Toggle controls</AvenText>

@@ -1,38 +1,41 @@
-<script setup lang="ts">
-import type { AvenSize, AvenTone, AvenUi } from './types.js'
-withDefaults(
-  defineProps<{
-    value?: string | number
-    selected?: boolean
-    removable?: boolean
-    disabled?: boolean
-    interactive?: boolean
-    removeLabel?: string
-    variant?: 'soft' | 'outline' | 'solid'
-    tone?: AvenTone
-    size?: AvenSize
-    unstyled?: boolean
-    ui?: AvenUi<'root' | 'content' | 'leading' | 'trailing' | 'remove'>
-  }>(),
-  {
-    selected: false,
-    removable: false,
-    disabled: false,
-    interactive: false,
-    removeLabel: 'Remove',
-    variant: 'soft',
-    tone: 'neutral',
-    size: 'sm',
-    unstyled: false,
-  },
-)
-const emit = defineEmits<{
-  click: [event: MouseEvent]
-  remove: [payload: { value?: string | number; originalEvent: MouseEvent }]
-}>()
+<script setup lang="ts" generic="T extends string | number = string | number">
+import { toRefs, useAttrs } from 'vue'
+import type { AvenChipEvents, AvenChipProps, AvenChipSlots } from './types.js'
+defineOptions({ inheritAttrs: false })
+const props = withDefaults(defineProps<AvenChipProps<T>>(), {
+  selected: false,
+  removable: false,
+  disabled: false,
+  interactive: false,
+  removeLabel: 'Remove',
+  variant: 'soft',
+  tone: 'neutral',
+  size: 'sm',
+  unstyled: false,
+})
+const {
+  value,
+  selected,
+  removable,
+  disabled,
+  interactive,
+  removeLabel,
+  variant,
+  tone,
+  size,
+  unstyled,
+  ui,
+} = toRefs(props)
+const attrs = useAttrs()
+const emit = defineEmits<AvenChipEvents<T>>()
+defineSlots<AvenChipSlots>()
+function requestRemove(originalEvent: MouseEvent) {
+  emit('remove', { value: props.value, originalEvent })
+}
 </script>
 <template>
   <span
+    v-bind="{ ...attrs, ...ui?.root?.attrs }"
     :class="[
       'aven-chip',
       `tone-${tone}`,
@@ -44,9 +47,10 @@ const emit = defineEmits<{
         'is-interactive': interactive,
         'is-unstyled': unstyled,
       },
+      attrs.class,
       ui?.root?.class,
     ]"
-    :style="ui?.root?.style"
+    :style="[attrs.style, ui?.root?.style]"
     ><button
       v-if="interactive"
       type="button"
@@ -71,7 +75,7 @@ const emit = defineEmits<{
       :aria-label="`${removeLabel} ${$slots.default ? 'item' : ''}`.trim()"
       :class="['chip-remove', ui?.remove?.class]"
       :style="ui?.remove?.style"
-      @click="emit('remove', { value, originalEvent: $event })"
+      @click="requestRemove($event)"
     >
       <slot name="remove-icon">×</slot>
     </button></span

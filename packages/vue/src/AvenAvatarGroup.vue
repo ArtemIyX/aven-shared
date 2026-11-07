@@ -1,21 +1,23 @@
 <script setup lang="ts" generic="Item">
-import type { AvenUi } from './types.js'
-const props = withDefaults(
-  defineProps<{
-    items: Item[]
-    max?: number
-    overlap?: number
-    unstyled?: boolean
-    label?: string
-    ui?: AvenUi<'root' | 'avatar' | 'overflow'>
-  }>(),
-  { overlap: 8, unstyled: false, label: 'People' },
-)
-const emit = defineEmits<{
-  overflowClick: [payload: { hiddenItems: Item[]; originalEvent: MouseEvent }]
-}>()
+import type { AvenAvatarGroupEvents, AvenAvatarGroupProps, AvenAvatarGroupSlots } from './types.js'
+const props = withDefaults(defineProps<AvenAvatarGroupProps<Item>>(), {
+  overlap: 8,
+  unstyled: false,
+  label: 'People',
+})
+const emit = defineEmits<AvenAvatarGroupEvents<Item>>()
+defineSlots<AvenAvatarGroupSlots<Item>>()
 const visible = () => (props.max === undefined ? props.items : props.items.slice(0, props.max))
 const hidden = () => (props.max === undefined ? [] : props.items.slice(props.max))
+const itemKey = (item: Item, index: number) => {
+  if (props.getKey) return props.getKey(item, index)
+  if (item && typeof item === 'object') {
+    const record = item as Record<string, unknown>
+    const key = record.key ?? record.id ?? record.value
+    if (typeof key === 'string' || typeof key === 'number') return key
+  }
+  return index
+}
 </script>
 <template>
   <div
@@ -26,7 +28,7 @@ const hidden = () => (props.max === undefined ? [] : props.items.slice(props.max
   >
     <span
       v-for="(item, index) in visible()"
-      :key="index"
+      :key="itemKey(item, index)"
       :class="['avatar-item', ui?.avatar?.class]"
       :style="[
         {

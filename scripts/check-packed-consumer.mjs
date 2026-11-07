@@ -102,6 +102,10 @@ try {
     `import { h } from 'vue'\nimport { AvenAlert, AvenAlertDialog, AvenBanner, AvenCommandPalette, AvenContextMenu, AvenDrawer, AvenMenubar, AvenSheet, type AvenAlertEvents, type AvenAlertProps, type AvenAlertDialogProps, type AvenCommandPaletteEvents, type AvenCommandPaletteProps, type AvenContextMenuProps, type AvenDrawerProps, type AvenMenubarProps, type AvenSheetProps } from '@wellsaik/aven-vue'\nconst commands = [{ key: 'copy', label: 'Copy' }] as const\nconst context: AvenContextMenuProps<'copy'> = { items: [...commands], activation: 'both' }\nconst menubar: AvenMenubarProps<'file'|'edit'|'new'> = { items: [{ key: 'file', label: 'File', children: [{ key: 'new', label: 'New' }] }, { key: 'edit', label: 'Edit' }], label: 'Document menu' }\nconst confirmation: AvenAlertDialogProps = { title: 'Delete?', closeOnConfirm: true, loading: false }\nconst palette: AvenCommandPaletteProps = { items: [{ key: 'open', label: 'Open', group: 'File' }, { key: 'save', label: 'Save' }], activeKey: 'open' }\nconst selected: AvenCommandPaletteEvents<'open'|'save'>['select'][0] = { key: 'open', item: { key: 'open', label: 'Open' }, originalEvent: new Event('select') }\nconst drawer: AvenDrawerProps = { title: 'Inspector', modal: false, side: 'start', resizable: true, minSize: '14rem' }\nconst sheet: AvenSheetProps = { title: 'Details', side: 'bottom' }\nconst alert: AvenAlertProps = { tone: 'warning', live: 'off', dismissible: true }\nconst dismiss: AvenAlertEvents['dismiss'][0] = { originalEvent: new MouseEvent('click') }\nvoid selected\nvoid dismiss\nh(AvenAlert, alert)\nh(AvenBanner, alert)\nh(AvenContextMenu, context)\nh(AvenMenubar, menubar)\nh(AvenAlertDialog, confirmation)\nh(AvenCommandPalette, palette)\nh(AvenDrawer, drawer)\nh(AvenSheet, sheet)\n`,
   )
   await writeFile(
+    path.join(directory, 'primitive-consumer.ts'),
+    `import { h } from 'vue'\nimport { AvenAvatar, AvenAvatarGroup, AvenChip, AvenKbd, AvenSeparator, AvenTag, type AvenAvatarGroupProps, type AvenChipProps, type AvenTagProps } from '@wellsaik/aven-vue'\ntype Person = { id: string; name: string }\nconst group: AvenAvatarGroupProps<Person> = { items: [{ id: 'ava', name: 'Ava' }], getKey: person => person.id, max: 2 }\nconst chip: AvenChipProps<'vue'|'ts'> = { value: 'vue', interactive: true, removable: true }\nconst tag: AvenTagProps = { tone: 'success', variant: 'outline' }\nh(AvenAvatarGroup<Person>, group)\nh(AvenAvatar, { name: 'Ava Chen', alt: '' })\nh(AvenChip, chip)\nh(AvenTag, tag)\nh(AvenKbd, { keys: ['Control', 'K'] })\nh(AvenSeparator, { decorative: false })\n`,
+  )
+  await writeFile(
     path.join(directory, 'tsconfig.json'),
     JSON.stringify({
       compilerOptions: {
@@ -112,7 +116,13 @@ try {
         skipLibCheck: false,
         noEmit: true,
       },
-      include: ['main.ts', 'slider-consumer.ts', 'selection-consumer.ts', 'overlay-consumer.ts'],
+      include: [
+        'main.ts',
+        'slider-consumer.ts',
+        'selection-consumer.ts',
+        'overlay-consumer.ts',
+        'primitive-consumer.ts',
+      ],
     }),
   )
   run(['exec', '--', 'tsc', '-p', 'tsconfig.json'], directory)
@@ -127,7 +137,13 @@ try {
         skipLibCheck: false,
         noEmit: true,
       },
-      include: ['main.ts', 'slider-consumer.ts', 'selection-consumer.ts', 'overlay-consumer.ts'],
+      include: [
+        'main.ts',
+        'slider-consumer.ts',
+        'selection-consumer.ts',
+        'overlay-consumer.ts',
+        'primitive-consumer.ts',
+      ],
     }),
   )
   run(['exec', '--', 'tsc', '-p', 'tsconfig.json'], directory)

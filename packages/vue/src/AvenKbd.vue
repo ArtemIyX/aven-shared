@@ -1,15 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import type { AvenUi } from './types.js'
-const props = withDefaults(
-  defineProps<{
-    keys?: string[]
-    platform?: 'auto' | 'mac' | 'windows' | 'linux'
-    unstyled?: boolean
-    ui?: AvenUi<'root' | 'key'>
-  }>(),
-  { platform: 'auto', unstyled: false },
-)
+import { computed, toRefs, useAttrs } from 'vue'
+import type { AvenKbdProps, AvenKbdSlots } from './types.js'
+defineOptions({ inheritAttrs: false })
+const props = withDefaults(defineProps<AvenKbdProps>(), { platform: 'auto', unstyled: false })
+const { keys, unstyled, ui } = toRefs(props)
+defineSlots<AvenKbdSlots>()
+const attrs = useAttrs()
 const mapped = computed(() => {
   const mac =
     props.platform === 'mac' ||
@@ -51,7 +47,10 @@ const mapped = computed(() => {
 })
 </script>
 <template>
-  <kbd :class="['aven-kbd', { 'is-unstyled': unstyled }, ui?.root?.class]" :style="ui?.root?.style"
+  <kbd
+    v-bind="{ ...attrs, ...ui?.root?.attrs }"
+    :class="['aven-kbd', { 'is-unstyled': unstyled }, attrs.class, ui?.root?.class]"
+    :style="[attrs.style, ui?.root?.style]"
     ><template v-for="(key, index) in mapped" :key="index"
       ><span v-if="index" aria-hidden="true" class="key-separator">+</span
       ><kbd :class="['keycap', ui?.key?.class]" :style="ui?.key?.style">{{ key }}</kbd></template
