@@ -398,6 +398,28 @@ export type AvenListSlots<T, Key extends string | number = string | number> = {
   empty?: () => unknown
   error?: () => unknown
 }
+export type AvenVirtualListProps<T, Key extends string | number = string | number> = {
+  items: T[]
+  itemKey: (item: T, index: number) => Key
+  estimateSize?: number
+  overscan?: number
+  orientation?: 'vertical' | 'horizontal'
+  dir?: 'ltr' | 'rtl'
+  label?: string
+  loading?: boolean
+  unstyled?: boolean
+  ui?: AvenUi<'root' | 'list' | 'item'>
+}
+export type AvenVirtualListEvents<T, Key extends string | number = string | number> = {
+  rangeChange: [range: { start: number; end: number }]
+  endReached: [payload: { lastKey: Key | undefined }]
+  scroll: [event: Event]
+}
+export type AvenVirtualListSlots<T, Key extends string | number = string | number> = {
+  item?: (scope: { item: T; key: Key; index: number }) => unknown
+  loading?: () => unknown
+  empty?: () => unknown
+}
 export type AvenListboxProps<T extends string | number = string | number> = {
   modelValue?: T | T[] | null
   defaultValue?: T | T[] | null

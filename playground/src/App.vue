@@ -9,6 +9,7 @@ import {
   AvenSplitPane,
   AvenList,
   AvenListItem,
+  AvenVirtualList,
   AvenBadge,
   AvenButton,
   AvenButtonGroup,
@@ -110,6 +111,12 @@ const teamMembers = [
   { id: 'mika', label: 'Mika Ortiz', role: 'Engineering', disabled: false },
   { id: 'noah', label: 'Noah Patel', role: 'Research', disabled: true },
 ]
+const virtualItems = Array.from({ length: 250 }, (_, index) => ({
+  id: `task-${index + 1}`,
+  label: `Task ${index + 1}`,
+  detail: `Virtual row ${index + 1} retains its measured height.`,
+}))
+const virtualRange = ref('Scroll to inspect rendered ranges.')
 const stepperItems = [
   { key: 'profile', label: 'Profile', description: 'Contact details', status: 'complete' as const },
   { key: 'preferences', label: 'Preferences', description: 'Choose updates' },
@@ -940,6 +947,31 @@ const buttonTones = [
           <template #trailing><span>Metadata</span></template>
         </AvenListItem>
       </ul>
+    </section>
+    <section class="playground-card" aria-labelledby="virtual-list-examples">
+      <AvenText id="virtual-list-examples" type="header1">Measured virtual list</AvenText>
+      <AvenVirtualList
+        :items="virtualItems"
+        :item-key="(item) => item.id"
+        :estimate-size="48"
+        :overscan="4"
+        label="Project tasks"
+        style="block-size: 16rem; border: 1px solid var(--aven-color-border-subtle)"
+        @range-change="({ start, end }) => (virtualRange = `Showing ${start + 1}–${end + 1}`)"
+      >
+        <template #item="{ item, index }">
+          <div
+            style="
+              padding: 0.75rem 1rem;
+              border-block-end: 1px solid var(--aven-color-border-subtle);
+            "
+          >
+            <strong>{{ index + 1 }}. {{ item.label }}</strong>
+            <p>{{ item.detail }}</p>
+          </div>
+        </template>
+      </AvenVirtualList>
+      <p aria-live="polite">{{ virtualRange }}</p>
     </section>
     <section class="playground-card" aria-labelledby="toggle-examples">
       <AvenText id="toggle-examples" type="header1">Toggle controls</AvenText>

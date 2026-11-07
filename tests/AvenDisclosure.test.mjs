@@ -37,6 +37,7 @@ import {
   AvenSplitPane,
   AvenList,
   AvenListItem,
+  AvenVirtualList,
   AvenAvatar,
   AvenAvatarGroup,
   AvenChip,
@@ -2571,4 +2572,60 @@ test('list keeps list semantics, selectable rows emit once, and end notification
   region.props.onScroll({ currentTarget: region })
   assert.deepEqual(endEvents, [{ lastKey: 'mika' }, { lastKey: 'mika' }])
   assert.equal(scrollEvents.length, 4)
+})
+
+test('virtual list exposes semantic windows, inclusive visible ranges, and one end event per arrival', async () => {
+  const items = Array.from({ length: 20 }, (_, index) => ({
+    id: `row-${index}`,
+    label: `Row ${index}`,
+  }))
+  const html = await render({
+    render: () =>
+      h(AvenVirtualList, {
+        items,
+        itemKey: (item) => item.id,
+        estimateSize: 40,
+        overscan: 1,
+        label: 'Virtual rows',
+      }),
+  })
+  assert.match(html, /role="region" aria-label="Virtual rows"/)
+  assert.match(html, /role="list"/)
+  assert.match(html, /aria-posinset="1" aria-setsize="20" role="listitem"/)
+
+  const mounted = makeRenderer()
+  const ranges = []
+  const ends = []
+  const scrolls = []
+  mounted.renderer
+    .createApp({
+      render: () =>
+        h(
+          AvenVirtualList,
+          {
+            items,
+            itemKey: (item) => item.id,
+            estimateSize: 40,
+            overscan: 1,
+            onRangeChange: (value) => ranges.push(value),
+            onEndReached: (value) => ends.push(value),
+            onScroll: (event) => scrolls.push(event),
+          },
+          { item: ({ item }) => item.label },
+        ),
+    })
+    .mount(mounted.root)
+  const viewport = mounted.root.children[0]
+  Object.assign(viewport, { scrollTop: 240, clientHeight: 80, scrollHeight: 800 })
+  viewport.props.onScroll({ currentTarget: viewport })
+  assert.deepEqual(ranges.at(-1), { start: 6, end: 7 })
+  viewport.scrollTop = 720
+  viewport.props.onScroll({ currentTarget: viewport })
+  viewport.props.onScroll({ currentTarget: viewport })
+  viewport.scrollTop = 200
+  viewport.props.onScroll({ currentTarget: viewport })
+  viewport.scrollTop = 720
+  viewport.props.onScroll({ currentTarget: viewport })
+  assert.deepEqual(ends, [{ lastKey: 'row-19' }, { lastKey: 'row-19' }])
+  assert.equal(scrolls.length, 5)
 })

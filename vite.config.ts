@@ -73,6 +73,9 @@ export default defineConfig({
         AvenListItem: fileURLToPath(
           new URL('./packages/vue/src/AvenListItem.vue', import.meta.url),
         ),
+        AvenVirtualList: fileURLToPath(
+          new URL('./packages/vue/src/AvenVirtualList.vue', import.meta.url),
+        ),
         AvenCard: fileURLToPath(new URL('./packages/vue/src/AvenCard.vue', import.meta.url)),
         AvenPropertyRow: fileURLToPath(
           new URL('./packages/vue/src/AvenPropertyRow.vue', import.meta.url),
