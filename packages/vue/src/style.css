@@ -6,32 +6,27 @@
   font-weight: var(--aven-text-font-weight, 400);
   line-height: var(--aven-text-line-height, var(--aven-line-height-normal));
 }
-
 :where(.aven-text--title) {
   --aven-text-font-size: var(--aven-font-size-3xl);
   --aven-text-font-weight: 650;
   --aven-text-line-height: var(--aven-line-height-tight);
   letter-spacing: -0.025em;
 }
-
 :where(.aven-text--header1) {
   --aven-text-font-size: var(--aven-font-size-2xl);
   --aven-text-font-weight: 650;
   --aven-text-line-height: var(--aven-line-height-tight);
 }
-
 :where(.aven-text--header2) {
   --aven-text-font-size: var(--aven-font-size-xl);
   --aven-text-font-weight: 600;
   --aven-text-line-height: var(--aven-line-height-tight);
 }
-
 :where(.aven-text--header3) {
   --aven-text-font-size: var(--aven-font-size-lg);
   --aven-text-font-weight: 600;
   --aven-text-line-height: var(--aven-line-height-tight);
 }
-
 :where(.aven-text--quote) {
   --aven-text-color: var(--aven-color-text-muted);
   --aven-text-font-family: var(--aven-font-family-serif);
@@ -40,8 +35,51 @@
   border-inline-start: 0.2rem solid var(--aven-color-border);
   padding-inline-start: var(--aven-space-4);
 }
-
 :where(.aven-text--caption) {
   --aven-text-color: var(--aven-color-text-muted);
   --aven-text-font-size: var(--aven-font-size-sm);
+}
+:where(.aven-text--start) {
+  text-align: start;
+}
+:where(.aven-text--center) {
+  text-align: center;
+}
+:where(.aven-text--end) {
+  text-align: end;
+}
+:where(.aven-text--neutral) {
+  color: var(--aven-color-neutral-text);
+}
+:where(.aven-text--accent) {
+  color: var(--aven-color-accent-text);
+}
+:where(.aven-text--secondary) {
+  color: var(--aven-color-secondary-text);
+}
+:where(.aven-text--info) {
+  color: var(--aven-color-info-text);
+}
+:where(.aven-text--success) {
+  color: var(--aven-color-success-text);
+}
+:where(.aven-text--warning) {
+  color: var(--aven-color-warning-text);
+}
+:where(.aven-text--danger) {
+  color: var(--aven-color-danger-text);
+}
+:where(.aven-text--critical) {
+  color: var(--aven-color-critical-text);
+}
+:where(.aven-text--truncate) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+:where(.aven-text--clamp) {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--aven-text-line-clamp);
+  overflow: hidden;
 }

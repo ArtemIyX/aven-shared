@@ -30,7 +30,15 @@
       "types": "./dist/AvenText.d.ts",
       "import": "./dist/AvenText.js"
     },
-    "./style.css": "./src/style.css"
+    "./charts": {
+      "types": "./dist/charts.d.ts",
+      "import": "./dist/charts.js"
+    },
+    "./rich-text": {
+      "types": "./dist/rich-text.d.ts",
+      "import": "./dist/rich-text.js"
+    },
+    "./style.css": "./dist/aven-vue.css"
   },
   "dependencies": {
     "@wellsaik/aven-shared": "^0.2.0"
@@ -39,6 +47,6 @@
     "vue": "^3.3.0"
   },
   "scripts": {
-    "build": "vite build --config ../../vite.config.ts && vue-tsc -p tsconfig.build.json --emitDeclarationOnly"
+    "build": "vite build --config ../../vite.config.ts && vue-tsc -p tsconfig.build.json --emitDeclarationOnly && node ../../scripts/fix-vue-declarations.mjs"
   }
 }

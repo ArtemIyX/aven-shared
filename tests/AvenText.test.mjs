@@ -41,14 +41,17 @@ test('defaults to text and allows the semantic element to be overridden', async 
 })
 
 test('forwards native attributes, class, style, and custom slot markup', async () => {
-  const html = await renderAvenText({
-    id: 'greeting',
-    title: 'Greeting',
-    'aria-label': 'Greeting text',
-    'data-testid': 'greeting',
-    class: 'application-copy',
-    style: { color: 'red' },
-  }, ['Hello ', h('strong', 'Avery')])
+  const html = await renderAvenText(
+    {
+      id: 'greeting',
+      title: 'Greeting',
+      'aria-label': 'Greeting text',
+      'data-testid': 'greeting',
+      class: 'application-copy',
+      style: { color: 'red' },
+    },
+    ['Hello ', h('strong', 'Avery')],
+  )
 
   assert.ok(html.includes('id="greeting"'))
   assert.ok(html.includes('title="Greeting"'))
@@ -59,14 +62,46 @@ test('forwards native attributes, class, style, and custom slot markup', async (
   assert.ok(html.includes('Hello <strong>Avery</strong>'))
 })
 
+test('applies alignment, tone, clamping and unstyled behavior without changing semantics', async () => {
+  const styled = await renderAvenText({
+    type: 'header2',
+    align: 'end',
+    tone: 'warning',
+    lineClamp: 2,
+  })
+  assert.match(styled, /^<h2/)
+  assert.match(styled, /aven-text--end/)
+  assert.match(styled, /aven-text--warning/)
+  assert.match(styled, /aven-text--clamp/)
+  assert.match(styled, /--aven-text-line-clamp:\s*2/)
+  const unstyled = await renderAvenText({ type: 'header2', unstyled: true, truncate: true })
+  assert.match(unstyled, /^<h2/)
+  assert.doesNotMatch(unstyled, /aven-text--header2/)
+  assert.match(unstyled, /aven-text--truncate/)
+})
+
+test('clamped text keeps its complete accessible text content', async () => {
+  const content = 'This sentence remains available to assistive technology after visual clamping.'
+  const html = await renderAvenText({ lineClamp: 1, 'aria-label': 'Complete description' }, content)
+  assert.match(html, /aria-label="Complete description"/)
+  assert.match(html, /aven-text--clamp/)
+  assert.ok(html.includes(content))
+})
+
 test('forwards event listeners to the rendered root element', () => {
   const renderer = createRenderer({
     createElement: (type) => ({ type, props: {}, children: [] }),
     createText: (text) => ({ text }),
     createComment: (text) => ({ comment: text }),
-    setText: (node, text) => { node.text = text },
-    setElementText: (node, text) => { node.text = text },
-    patchProp: (node, key, _previous, next) => { node.props[key] = next },
+    setText: (node, text) => {
+      node.text = text
+    },
+    setElementText: (node, text) => {
+      node.text = text
+    },
+    patchProp: (node, key, _previous, next) => {
+      node.props[key] = next
+    },
     insert: (child, parent) => {
       child.parent = parent
       parent.children.push(child)
@@ -80,9 +115,11 @@ test('forwards event listeners to the rendered root element', () => {
   const onClick = () => {}
   const root = { type: 'root', children: [] }
 
-  renderer.createApp({
-    render: () => h(AvenText, { onClick }),
-  }).mount(root)
+  renderer
+    .createApp({
+      render: () => h(AvenText, { onClick }),
+    })
+    .mount(root)
 
   assert.equal(root.children[0].props.onClick, onClick)
 })

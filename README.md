@@ -28,10 +28,21 @@ import '@wellsaik/aven-vue/style.css'
 @import '@wellsaik/aven-shared/colors.css';
 @import '@wellsaik/aven-shared/base.css';
 @import '@wellsaik/aven-vue/style.css';
-.value { color: var(--aven-color-finance-gain-text); }
-.action { color: var(--aven-color-accent-on-solid); background: var(--aven-color-accent-solid); }
-.panel { color: var(--aven-color-text-primary); background: var(--aven-color-surface-base); }
-.banner { background-color: var(--aven-gradient-surface-workspace-fallback); background-image: var(--aven-gradient-surface-workspace-image); }
+.value {
+  color: var(--aven-color-finance-gain-text);
+}
+.action {
+  color: var(--aven-color-accent-on-solid);
+  background: var(--aven-color-accent-solid);
+}
+.panel {
+  color: var(--aven-color-text-primary);
+  background: var(--aven-color-surface-base);
+}
+.banner {
+  background-color: var(--aven-gradient-surface-workspace-fallback);
+  background-image: var(--aven-gradient-surface-workspace-image);
+}
 ```
 
 The document root defaults to light. Dark mode uses neutral charcoal and gray surfaces while retaining semantic accent and financial colors. Set `data-aven-theme="light"`, `"dark"`, or `"system"` on the root or a subtree; system follows the OS preference. An ordinary descendant or invalid theme value inherits its parent. Set `data-aven-contrast="more"` for the provided enhanced mappings, and `data-aven-output="print"` for a white canvas and dark text. Enhanced contrast is inherited; a nested theme boundary reapplies the enhanced mapping for that theme. In a solid selected row, use `--aven-color-selection-text` with `--aven-color-selection-fill` and preserve financial meaning with a sign or label. Print uses monochrome stops and chart marks; add patterns or line styles to distinguish categories. Forced colors takes precedence over print. These mappings are not a substitute for testing each component. Gradient images are disabled in enhanced contrast, forced colors and print; use their solid fallback.
@@ -54,7 +65,6 @@ Scale stops are ordered colors, not thresholds. Missing values need a separate t
 
 The manifest at `packages/shared/src/tokens/colors.json` is the implementation source. Run `npm run colors:generate` after editing it and `npm run colors:check` to check generated files. See the [palette reference](docs/color-palette.md) and [theme reference](docs/component-theme-reference.md) for values and restrictions.
 
-
 ## AvenText
 
 ```vue
@@ -68,13 +78,12 @@ import { AvenText } from '@wellsaik/aven-vue'
   <AvenText type="header2" as="h3">A section title</AvenText>
 
   <AvenText>
-    Hello <strong>{{ userName }}</strong>.
+    Hello <strong>{{ userName }}</strong
+    >.
     <a href="/profile">Open your profile</a>
   </AvenText>
 
-  <AvenText type="quote">
-    A quotation with <em>custom emphasis</em>.
-  </AvenText>
+  <AvenText type="quote"> A quotation with <em>custom emphasis</em>. </AvenText>
 </template>
 ```
 
@@ -91,7 +100,7 @@ All public tokens and component classes begin with `aven`. The default tokens co
 ```css
 :root {
   --aven-color-accent: #385d83;
-  --aven-font-family-sans: "Aptos", sans-serif;
+  --aven-font-family-sans: 'Aptos', sans-serif;
 }
 
 .account-area {
