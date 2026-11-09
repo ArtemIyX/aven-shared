@@ -371,15 +371,15 @@ defineExpose({ focus: focusRoot })
   max-block-size: min(24rem, 70vh);
   overflow: auto;
   padding: var(--aven-space-1);
-  border: 1px solid var(--aven-color-border-interactive);
+  border: 0.0625rem solid var(--aven-color-border-interactive);
   border-radius: var(--aven-radius-md);
   background: var(--aven-color-surface-base);
   color: var(--aven-color-text-primary);
   outline: none;
 }
 .aven-listbox:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 .listbox-option {
   display: flex;
@@ -392,8 +392,8 @@ defineExpose({ focus: focusRoot })
   cursor: pointer;
 }
 .listbox-option.is-active {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: -2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: -0.125rem;
 }
 .listbox-option.is-selected {
   background: var(--aven-color-surface-selected);
@@ -414,10 +414,10 @@ defineExpose({ focus: focusRoot })
 }
 @media (forced-colors: active) {
   .listbox-option.is-active {
-    outline: 2px solid Highlight;
+    outline: 0.125rem solid Highlight;
   }
   .listbox-option.is-selected {
-    border: 1px solid SelectedItem;
+    border: 0.0625rem solid SelectedItem;
   }
 }
 </style>

@@ -205,13 +205,13 @@ onBeforeUnmount(() => {
   min-block-size: 2.75rem;
   min-inline-size: 0;
   padding-inline: var(--aven-space-3);
-  border: 1px solid var(--aven-search-border, var(--aven-color-border-subtle));
+  border: 0.0625rem solid var(--aven-search-border, var(--aven-color-border-subtle));
   border-radius: var(--aven-radius-md);
   background: var(--aven-search-bg, var(--aven-color-surface-card));
 }
 .search-control:focus-within {
-  outline: 2px solid var(--aven-search-focus, var(--aven-color-focus-ring));
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-search-focus, var(--aven-color-focus-ring));
+  outline-offset: 0.125rem;
 }
 .search-input {
   flex: 1;
@@ -230,7 +230,7 @@ onBeforeUnmount(() => {
 .search-apply-filters {
   min-block-size: 2.75rem;
   padding-inline: var(--aven-space-3);
-  border: 1px solid var(--aven-search-action-border, var(--aven-color-border-subtle));
+  border: 0.0625rem solid var(--aven-search-action-border, var(--aven-color-border-subtle));
   border-radius: var(--aven-radius-sm);
   background: var(--aven-search-action-bg, var(--aven-color-surface-subtle));
   color: inherit;
@@ -241,8 +241,8 @@ onBeforeUnmount(() => {
   justify-self: start;
 }
 .search-apply-filters:focus-visible {
-  outline: 2px solid var(--aven-search-focus, var(--aven-color-focus-ring));
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-search-focus, var(--aven-color-focus-ring));
+  outline-offset: 0.125rem;
 }
 .search-status {
   color: var(--aven-search-status-fg, var(--aven-color-text-secondary));
