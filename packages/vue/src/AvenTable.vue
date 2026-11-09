@@ -105,17 +105,17 @@ onBeforeUnmount(() => resizeObserver?.disconnect())
 }
 .scroll-shadow-start {
   inset-inline-start: 0;
-  box-shadow: inset 5px 0 7px -6px var(--aven-color-shadow-ambient);
+  box-shadow: inset 0.3125rem 0 0.4375rem -0.375rem var(--aven-color-shadow-ambient);
 }
 .scroll-shadow-end {
   inset-inline-end: 0;
-  box-shadow: inset -5px 0 7px -6px var(--aven-color-shadow-ambient);
+  box-shadow: inset -0.3125rem 0 0.4375rem -0.375rem var(--aven-color-shadow-ambient);
 }
 :dir(rtl) .scroll-shadow-start {
-  box-shadow: inset -5px 0 7px -6px var(--aven-color-shadow-ambient);
+  box-shadow: inset -0.3125rem 0 0.4375rem -0.375rem var(--aven-color-shadow-ambient);
 }
 :dir(rtl) .scroll-shadow-end {
-  box-shadow: inset 5px 0 7px -6px var(--aven-color-shadow-ambient);
+  box-shadow: inset 0.3125rem 0 0.4375rem -0.375rem var(--aven-color-shadow-ambient);
 }
 .is-unstyled .scroll-shadow {
   display: none;
@@ -136,7 +136,7 @@ onBeforeUnmount(() => resizeObserver?.disconnect())
 .aven-table th,
 .aven-table td {
   padding: var(--aven-table-padding);
-  border-block-end: 1px solid var(--aven-color-separator-row);
+  border-block-end: 0.0625rem solid var(--aven-color-separator-row);
   text-align: start;
   vertical-align: middle;
 }
@@ -149,7 +149,7 @@ onBeforeUnmount(() => resizeObserver?.disconnect())
 }
 .is-bordered th,
 .is-bordered td {
-  border-inline-end: 1px solid var(--aven-color-separator-column);
+  border-inline-end: 0.0625rem solid var(--aven-color-separator-column);
 }
 .has-sticky-header thead th {
   position: sticky;
@@ -175,7 +175,7 @@ onBeforeUnmount(() => resizeObserver?.disconnect())
     border-color: CanvasText;
   }
   .is-striped tbody tr:nth-child(even) {
-    outline: 1px solid CanvasText;
+    outline: 0.0625rem solid CanvasText;
   }
 }
 @media print {
