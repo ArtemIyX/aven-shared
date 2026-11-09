@@ -94,13 +94,13 @@ const forwardedAttrs = computed(() => {
   --badge-default-bg: var(--tone-subtle);
   --badge-default-fg: var(--tone-text);
   --badge-default-border: transparent;
-  --badge-default-radius: 999px;
+  --badge-default-radius: 999rem;
   --badge-default-dot-size: 0.5em;
   display: inline-flex;
   align-items: center;
   gap: var(--aven-badge-gap, 0.3em);
   max-inline-size: 100%;
-  border: 1px solid var(--aven-badge-border, var(--badge-default-border));
+  border: 0.0625rem solid var(--aven-badge-border, var(--badge-default-border));
   border-radius: var(--aven-badge-radius, var(--badge-default-radius));
   padding: var(--aven-badge-padding, 0.125rem 0.5rem);
   color: var(--aven-badge-fg, var(--badge-default-fg));
@@ -198,10 +198,10 @@ const forwardedAttrs = computed(() => {
 }
 .sr-only {
   position: absolute;
-  inline-size: 1px;
-  block-size: 1px;
+  inline-size: 0.0625rem;
+  block-size: 0.0625rem;
   padding: 0;
-  margin: -1px;
+  margin: -0.0625rem;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;

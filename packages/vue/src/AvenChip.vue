@@ -114,8 +114,8 @@ function requestRemove(originalEvent: MouseEvent) {
   align-items: center;
   gap: var(--aven-chip-gap, 0.15rem);
   max-inline-size: 100%;
-  border: 1px solid var(--aven-chip-border, var(--chip-default-border));
-  border-radius: var(--aven-chip-radius, 999px);
+  border: 0.0625rem solid var(--aven-chip-border, var(--chip-default-border));
+  border-radius: var(--aven-chip-radius, 999rem);
   color: var(--aven-chip-fg, var(--chip-default-fg));
   background: var(--aven-chip-bg, var(--chip-default-bg));
   font-size: var(--aven-font-size-sm);
@@ -179,7 +179,7 @@ function requestRemove(originalEvent: MouseEvent) {
   --tone-on: var(--aven-color-critical-on-solid);
 }
 .is-selected {
-  box-shadow: inset 0 0 0 2px var(--tone-border);
+  box-shadow: inset 0 0 0 0.125rem var(--tone-border);
 }
 .is-outline {
   --chip-default-bg: transparent;
@@ -213,8 +213,8 @@ function requestRemove(originalEvent: MouseEvent) {
 }
 .chip-main:focus-visible,
 .chip-remove:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: -2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: -0.125rem;
 }
 .chip-remove {
   display: inline-grid;
@@ -223,7 +223,7 @@ function requestRemove(originalEvent: MouseEvent) {
   min-inline-size: var(--aven-chip-remove-hit-size, 1.75rem);
   padding: 0 0.25rem;
   border: 0;
-  border-inline-start: 1px solid color-mix(in srgb, var(--tone-border), transparent 55%);
+  border-inline-start: 0.0625rem solid color-mix(in srgb, var(--tone-border), transparent 55%);
   background: transparent;
   color: inherit;
   font: inherit;
