@@ -208,7 +208,7 @@ defineExpose({ apply, reset, focus })
 .filter-reset {
   min-block-size: 2.75rem;
   padding-inline: var(--aven-space-3);
-  border: 1px solid var(--aven-color-border-subtle);
+  border: 0.0625rem solid var(--aven-color-border-subtle);
   border-radius: var(--aven-radius-sm);
   background: var(--aven-color-surface-card);
   color: inherit;
@@ -216,8 +216,8 @@ defineExpose({ apply, reset, focus })
 }
 .filter-apply:focus-visible,
 .filter-reset:focus-visible {
-  outline: 2px solid var(--aven-filter-builder-focus, var(--aven-color-focus-ring));
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-filter-builder-focus, var(--aven-color-focus-ring));
+  outline-offset: 0.125rem;
 }
 .filter-apply:disabled,
 .filter-reset:disabled {

@@ -406,8 +406,8 @@ export default defineComponent({
   gap: var(--aven-space-2);
   min-inline-size: 0;
   padding: var(--aven-space-3);
-  border: 1px solid var(--aven-filter-builder-border, var(--aven-color-border-subtle));
-  border-inline-start-width: 3px;
+  border: 0.0625rem solid var(--aven-filter-builder-border, var(--aven-color-border-subtle));
+  border-inline-start-width: 0.1875rem;
   border-radius: var(--aven-radius-sm);
   background: var(--aven-filter-builder-bg, var(--aven-color-surface-subtle));
 }
@@ -442,7 +442,7 @@ export default defineComponent({
   min-block-size: 2.75rem;
   max-inline-size: 100%;
   padding-inline: var(--aven-space-2);
-  border: 1px solid var(--aven-filter-builder-border, var(--aven-color-border-subtle));
+  border: 0.0625rem solid var(--aven-filter-builder-border, var(--aven-color-border-subtle));
   border-radius: var(--aven-radius-sm);
   background: var(--aven-color-surface-card);
   color: var(--aven-color-text-primary);
@@ -473,10 +473,10 @@ export default defineComponent({
 }
 .visually-hidden {
   position: absolute;
-  inline-size: 1px;
-  block-size: 1px;
+  inline-size: 0.0625rem;
+  block-size: 0.0625rem;
   padding: 0;
-  margin: -1px;
+  margin: -0.0625rem;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
@@ -485,8 +485,8 @@ export default defineComponent({
 .filter-group-editor:focus-within select:focus-visible,
 .filter-group-editor:focus-within button:focus-visible,
 .condition-row input:focus-visible {
-  outline: 2px solid var(--aven-filter-builder-focus, var(--aven-color-focus-ring));
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-filter-builder-focus, var(--aven-color-focus-ring));
+  outline-offset: 0.125rem;
 }
 .is-unstyled {
   padding: 0;

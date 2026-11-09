@@ -271,7 +271,7 @@ function clear() {
   min-block-size: 2.75rem;
   max-inline-size: 100%;
   padding-inline: var(--aven-space-2);
-  border: 1px solid var(--aven-filter-editor-border, var(--aven-color-border-subtle));
+  border: 0.0625rem solid var(--aven-filter-editor-border, var(--aven-color-border-subtle));
   border-radius: var(--aven-filter-editor-radius, var(--aven-radius-sm));
   background: var(--aven-filter-editor-bg, var(--aven-color-surface-card));
   color: var(--aven-filter-editor-fg, var(--aven-color-text-primary));
@@ -282,10 +282,10 @@ function clear() {
 }
 .visually-hidden {
   position: absolute;
-  inline-size: 1px;
-  block-size: 1px;
+  inline-size: 0.0625rem;
+  block-size: 0.0625rem;
   padding: 0;
-  margin: -1px;
+  margin: -0.0625rem;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
@@ -306,8 +306,8 @@ function clear() {
   cursor: pointer;
 }
 .filter-clear:focus-visible {
-  outline: 2px solid var(--aven-filter-focus, var(--aven-color-focus-ring));
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-filter-focus, var(--aven-color-focus-ring));
+  outline-offset: 0.125rem;
 }
 .is-unstyled .filter-clear {
   appearance: none;

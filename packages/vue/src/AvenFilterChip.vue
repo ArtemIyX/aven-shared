@@ -51,8 +51,8 @@ function remove(originalEvent: MouseEvent) {
   max-inline-size: 100%;
   min-block-size: 2rem;
   padding-inline-start: var(--aven-space-2);
-  border: 1px solid var(--aven-filter-chip-border, var(--aven-color-border-subtle));
-  border-radius: var(--aven-filter-chip-radius, 999px);
+  border: 0.0625rem solid var(--aven-filter-chip-border, var(--aven-color-border-subtle));
+  border-radius: var(--aven-filter-chip-radius, 999rem);
   background: var(--aven-filter-chip-bg, var(--aven-color-surface-subtle));
   color: var(--aven-filter-chip-fg, var(--aven-color-text-primary));
 }
@@ -74,8 +74,8 @@ function remove(originalEvent: MouseEvent) {
   cursor: pointer;
 }
 .filter-remove:focus-visible {
-  outline: 2px solid var(--aven-filter-focus, var(--aven-color-focus-ring));
-  outline-offset: -2px;
+  outline: 0.125rem solid var(--aven-filter-focus, var(--aven-color-focus-ring));
+  outline-offset: -0.125rem;
 }
 .filter-remove:disabled {
   color: var(--aven-color-text-disabled);
