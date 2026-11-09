@@ -50,20 +50,20 @@ defineSlots<AvenSeparatorSlots>()
 }
 .is-horizontal {
   inline-size: 100%;
-  min-block-size: 1px;
+  min-block-size: 0.0625rem;
 }
 .is-horizontal::before,
 .is-horizontal::after {
-  block-size: 1px;
+  block-size: 0.0625rem;
 }
 .is-vertical {
   align-self: stretch;
   flex-direction: column;
-  min-inline-size: 1px;
+  min-inline-size: 0.0625rem;
 }
 .is-vertical::before,
 .is-vertical::after {
-  inline-size: 1px;
+  inline-size: 0.0625rem;
 }
 .is-unstyled::before,
 .is-unstyled::after {
