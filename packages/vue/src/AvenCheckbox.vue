@@ -168,8 +168,8 @@ defineExpose({ focus: () => el.value?.focus() })
 }
 .checkbox-native {
   position: absolute;
-  inline-size: 1px;
-  block-size: 1px;
+  inline-size: 0.0625rem;
+  block-size: 0.0625rem;
   opacity: 0;
 }
 .checkbox-indicator {
@@ -178,7 +178,7 @@ defineExpose({ focus: () => el.value?.focus() })
   flex: none;
   inline-size: 1.125rem;
   block-size: 1.125rem;
-  border: 1px solid var(--aven-color-border-interactive);
+  border: 0.0625rem solid var(--aven-color-border-interactive);
   border-radius: 0.25rem;
   background: var(--aven-color-surface-base);
   color: var(--aven-color-accent-on-solid);
@@ -190,8 +190,8 @@ defineExpose({ focus: () => el.value?.focus() })
   border-color: var(--aven-color-accent-border);
 }
 .checkbox-native:focus-visible + .checkbox-indicator {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 .checkbox-label small {
   display: block;

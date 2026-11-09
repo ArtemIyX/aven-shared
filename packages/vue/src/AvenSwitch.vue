@@ -162,8 +162,8 @@ onBeforeUnmount(() => form?.removeEventListener('reset', reset))
 }
 .switch-native {
   position: absolute;
-  inline-size: 1px;
-  block-size: 1px;
+  inline-size: 0.0625rem;
+  block-size: 0.0625rem;
   opacity: 0;
 }
 .switch-track {
@@ -173,7 +173,7 @@ onBeforeUnmount(() => form?.removeEventListener('reset', reset))
   block-size: 1.375rem;
   flex: none;
   padding: 0.125rem;
-  border-radius: 999px;
+  border-radius: 999rem;
   background: var(--aven-color-neutral-solid);
   transition: background 0.15s ease;
 }
@@ -182,7 +182,7 @@ onBeforeUnmount(() => form?.removeEventListener('reset', reset))
   block-size: 1.125rem;
   border-radius: 50%;
   background: var(--aven-color-surface-base);
-  box-shadow: 0 1px 2px var(--aven-color-shadow-contact);
+  box-shadow: 0 0.0625rem 0.125rem var(--aven-color-shadow-contact);
   transition: transform 0.15s ease;
 }
 .is-checked .switch-track {
@@ -195,8 +195,8 @@ onBeforeUnmount(() => form?.removeEventListener('reset', reset))
   transform: translateX(-1.125rem);
 }
 .switch-native:focus-visible + .switch-track {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 .is-disabled {
   color: var(--aven-color-text-disabled);
@@ -208,7 +208,7 @@ onBeforeUnmount(() => form?.removeEventListener('reset', reset))
 }
 .is-unstyled .switch-track {
   background: transparent;
-  border: 1px solid currentColor;
+  border: 0.0625rem solid currentColor;
 }
 .is-unstyled .switch-thumb {
   background: currentColor;
