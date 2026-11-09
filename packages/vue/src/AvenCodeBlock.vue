@@ -96,7 +96,7 @@ defineExpose({ copy })
   min-inline-size: 0;
   margin: 0;
   overflow: hidden;
-  border: 1px solid var(--aven-color-border-subtle);
+  border: 0.0625rem solid var(--aven-color-border-subtle);
   border-radius: var(--aven-radius-md);
   background: var(--aven-code-bg, var(--aven-color-surface-subtle));
   color: var(--aven-code-fg, var(--aven-color-text-primary));
@@ -113,7 +113,7 @@ defineExpose({ copy })
   justify-content: space-between;
   flex-wrap: wrap;
   padding: var(--aven-space-2) var(--aven-space-3);
-  border-block-end: 1px solid var(--aven-color-border-subtle);
+  border-block-end: 0.0625rem solid var(--aven-color-border-subtle);
 }
 .code-language {
   color: var(--aven-color-text-secondary);
@@ -149,7 +149,7 @@ defineExpose({ copy })
 .code-copy {
   min-block-size: 2.75rem;
   padding-inline: var(--aven-space-3);
-  border: 1px solid var(--aven-color-border-subtle);
+  border: 0.0625rem solid var(--aven-color-border-subtle);
   border-radius: var(--aven-radius-sm);
   background: var(--aven-color-surface-card);
   color: var(--aven-color-text-primary);
@@ -157,8 +157,8 @@ defineExpose({ copy })
   cursor: pointer;
 }
 .code-copy:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 .code-status {
   padding: var(--aven-space-2) var(--aven-space-3);
