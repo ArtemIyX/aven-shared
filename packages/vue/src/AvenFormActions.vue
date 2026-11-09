@@ -62,7 +62,7 @@ defineSlots<AvenFormActionsSlots>()
   inset-block-end: 0;
   z-index: 2;
   padding: var(--aven-space-3);
-  border-block-start: 1px solid var(--aven-color-border-subtle);
+  border-block-start: 0.0625rem solid var(--aven-color-border-subtle);
   background: var(--aven-color-surface-base);
 }
 .is-unstyled {
