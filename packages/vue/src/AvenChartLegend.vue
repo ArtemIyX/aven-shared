@@ -141,8 +141,8 @@ function seriesStyle(item: AvenChartLegendItem<Key>) {
   cursor: pointer;
 }
 .legend-action:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 .legend-marker {
   flex: none;
@@ -169,7 +169,7 @@ function seriesStyle(item: AvenChartLegendItem<Key>) {
 }
 .is-hidden .legend-marker {
   background: transparent;
-  outline: 1px solid currentColor;
+  outline: 0.0625rem solid currentColor;
 }
 .legend-value {
   color: var(--aven-color-text-primary);
@@ -179,11 +179,11 @@ function seriesStyle(item: AvenChartLegendItem<Key>) {
   padding: 0;
 }
 .is-unstyled .legend-marker {
-  outline: 1px solid currentColor;
+  outline: 0.0625rem solid currentColor;
 }
 @media (forced-colors: active) {
   .legend-marker {
-    border: 1px solid CanvasText;
+    border: 0.0625rem solid CanvasText;
     background: CanvasText;
   }
   .is-hidden .legend-marker {

@@ -103,7 +103,7 @@ function retry(originalEvent: MouseEvent) {
   min-inline-size: 0;
   aspect-ratio: var(--aven-chart-frame-ratio, auto);
   overflow: auto;
-  border: 1px solid
+  border: 0.0625rem solid
     var(--aven-chart-frame-border, var(--aven-color-chart-frame, var(--aven-color-border-subtle)));
   border-radius: var(--aven-chart-frame-radius, var(--aven-radius-md));
   background: var(
@@ -132,15 +132,15 @@ function retry(originalEvent: MouseEvent) {
   min-block-size: 2.75rem;
   justify-self: center;
   padding-inline: var(--aven-space-3);
-  border: 1px solid var(--aven-color-chart-frame, var(--aven-color-border-default));
+  border: 0.0625rem solid var(--aven-color-chart-frame, var(--aven-color-border-default));
   border-radius: var(--aven-radius-sm);
   background: var(--aven-color-surface-card);
   color: var(--aven-color-text-primary);
   font: inherit;
 }
 .chart-state button:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 .chart-legend,
 .chart-accessible-table {

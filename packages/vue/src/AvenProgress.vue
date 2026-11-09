@@ -72,7 +72,7 @@ const text = computed(() =>
   overflow: hidden;
   flex: 1;
   block-size: 0.5rem;
-  border-radius: 999px;
+  border-radius: 999rem;
   background: var(--aven-color-surface-recessed);
 }
 .progress-fill {
@@ -93,7 +93,7 @@ const text = computed(() =>
 .is-unstyled .progress-track {
   border-radius: 0;
   background: transparent;
-  border: 1px solid currentColor;
+  border: 0.0625rem solid currentColor;
 }
 .is-unstyled .progress-fill {
   background: currentColor;
