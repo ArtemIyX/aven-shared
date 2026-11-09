@@ -1806,7 +1806,7 @@ function closeWorkspaceTab({ key }: { key: string }) {
         notify-end
         style="
           max-block-size: 9rem;
-          border: 1px solid var(--aven-color-border-subtle);
+          border: 0.0625rem solid var(--aven-color-border-subtle);
           border-radius: var(--aven-radius-md);
         "
         @scroll="scrollPosition = 'Release notes are scrollable.'"
@@ -1826,7 +1826,7 @@ function closeWorkspaceTab({ key }: { key: string }) {
         label="Project workspace preview"
         style="
           block-size: 24rem;
-          border: 1px solid var(--aven-color-border-subtle);
+          border: 0.0625rem solid var(--aven-color-border-subtle);
           border-radius: var(--aven-radius-lg);
         "
         @update:sidebar-collapsed="
@@ -1891,7 +1891,7 @@ function closeWorkspaceTab({ key }: { key: string }) {
         label="Editor and preview"
         :min-sizes="[20, 20]"
         :max-sizes="[80, 80]"
-        style="block-size: 13rem; border: 1px solid var(--aven-color-border-subtle)"
+        style="block-size: 13rem; border: 0.0625rem solid var(--aven-color-border-subtle)"
         @resize-end="({ sizes }) => (splitSizes = sizes)"
       >
         <template #pane="{ index, sizes }">
@@ -1906,7 +1906,7 @@ function closeWorkspaceTab({ key }: { key: string }) {
         :default-value="[50, 50]"
         orientation="vertical"
         label="Vertical workspace preview"
-        style="block-size: 12rem; border: 1px solid var(--aven-color-border-subtle)"
+        style="block-size: 12rem; border: 0.0625rem solid var(--aven-color-border-subtle)"
       >
         <template #pane="{ index }">
           <div style="padding: 1rem">Vertical section {{ index + 1 }}</div>
@@ -1924,7 +1924,7 @@ function closeWorkspaceTab({ key }: { key: string }) {
         selectable
         divided
         label="Project team"
-        style="max-block-size: 14rem; border: 1px solid var(--aven-color-border-subtle)"
+        style="max-block-size: 14rem; border: 0.0625rem solid var(--aven-color-border-subtle)"
       >
         <template #leading="{ item }">{{ item.label.slice(0, 1) }}</template>
         <template #item="{ item, selected }">
@@ -1950,14 +1950,14 @@ function closeWorkspaceTab({ key }: { key: string }) {
         :estimate-size="48"
         :overscan="4"
         label="Project tasks"
-        style="block-size: 16rem; border: 1px solid var(--aven-color-border-subtle)"
+        style="block-size: 16rem; border: 0.0625rem solid var(--aven-color-border-subtle)"
         @range-change="({ start, end }) => (virtualRange = `Showing ${start + 1}–${end + 1}`)"
       >
         <template #item="{ item, index }">
           <div
             style="
               padding: 0.75rem 1rem;
-              border-block-end: 1px solid var(--aven-color-border-subtle);
+              border-block-end: 0.0625rem solid var(--aven-color-border-subtle);
             "
           >
             <strong>{{ index + 1 }}. {{ item.label }}</strong>

@@ -22,7 +22,7 @@ body {
   display: grid;
   gap: var(--aven-space-3);
   padding: var(--aven-space-4);
-  border: 1px solid var(--aven-color-border);
+  border: 0.0625rem solid var(--aven-color-border);
   border-radius: var(--aven-radius-lg);
   background: var(--aven-color-surface);
 }
@@ -41,7 +41,7 @@ body {
   min-block-size: 2.25rem;
   align-items: center;
   padding-inline: var(--aven-space-3);
-  border: 1px solid var(--aven-color-border);
+  border: 0.0625rem solid var(--aven-color-border);
   border-radius: var(--aven-radius-md);
   color: var(--aven-color-link-default);
   background: var(--aven-color-surface-raised);
@@ -53,13 +53,13 @@ body {
 }
 
 .playground-index a:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 
 .playground-card {
   padding: var(--aven-space-6);
-  border: 1px solid var(--aven-color-border);
+  border: 0.0625rem solid var(--aven-color-border);
   border-radius: var(--aven-radius-lg);
   background: var(--aven-color-surface);
 }
@@ -133,23 +133,23 @@ body {
   padding: 1rem;
   color: var(--aven-color-text-primary);
   background: var(--aven-color-surface-base);
-  border: 1px solid var(--aven-color-border-strong);
+  border: 0.0625rem solid var(--aven-color-border-strong);
 }
 .gallery-panel label {
   display: block;
   margin-block: 0.7rem;
 }
 .gallery-panel input[aria-invalid='true'] {
-  border: 2px solid var(--aven-color-danger-border);
+  border: 0.125rem solid var(--aven-color-danger-border);
 }
 .gallery-panel :focus-visible {
-  outline: 3px solid var(--aven-color-focus-ring);
-  outline-offset: 3px;
+  outline: 0.1875rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.1875rem;
 }
 .gallery-button {
   color: var(--aven-color-button-primary-on-solid);
   background: var(--aven-color-button-primary-solid);
-  border: 1px solid var(--aven-color-button-primary-solid);
+  border: 0.0625rem solid var(--aven-color-button-primary-solid);
   padding: 0.5rem;
 }
 .badge {
@@ -186,7 +186,7 @@ body {
 }
 .heat span {
   padding: 0.5rem;
-  border: 1px solid var(--aven-color-border-strong);
+  border: 0.0625rem solid var(--aven-color-border-strong);
 }
 .heat span:first-child {
   background: var(--aven-scale-diverging-return-01);
@@ -213,7 +213,7 @@ body {
 .fallback {
   display: block;
   height: 2.5rem;
-  border: 1px solid var(--aven-color-border-strong);
+  border: 0.0625rem solid var(--aven-color-border-strong);
 }
 .swatch-grid code,
 .swatch-grid small {
@@ -266,8 +266,8 @@ body {
   border-color: var(--aven-color-border-strong);
 }
 .gallery-panel :focus-visible {
-  outline-offset: 3px;
-  box-shadow: 0 0 0 3px var(--aven-color-focus-separator);
+  outline-offset: 0.1875rem;
+  box-shadow: 0 0 0 0.1875rem var(--aven-color-focus-separator);
 }
 .danger-badge {
   color: var(--aven-color-warning-text);
@@ -280,13 +280,13 @@ body {
   padding: 0.5rem;
 }
 .range-cell {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: -2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: -0.125rem;
   background: var(--aven-color-surface-selected);
 }
 .gallery-panel .selected:focus-visible {
-  outline: 3px solid var(--aven-color-selection-text);
-  outline-offset: -3px;
+  outline: 0.1875rem solid var(--aven-color-selection-text);
+  outline-offset: -0.1875rem;
 }
 .gradient-filters {
   margin-block: 1rem;
@@ -299,11 +299,11 @@ body {
   display: block;
   inline-size: 1.25rem;
   block-size: 1.25rem;
-  border: 2px solid var(--aven-color-accent-solid);
+  border: 0.125rem solid var(--aven-color-accent-solid);
   border-radius: 50%;
   background: var(--aven-color-surface-base);
 }
 .example-slider-thumb.is-active {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }

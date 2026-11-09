@@ -367,7 +367,7 @@ test('icon supports decorative and labeled graphics without injecting SVG string
   })
   assert.match(decorative, /aria-hidden="true"/)
   assert.match(named, /role="img" aria-label="Warning"/)
-  assert.match(named, /--aven-icon-size:\s*24px/)
+  assert.match(named, /--aven-icon-size:\s*1\.5rem/)
   assert.match(named, /class="[^"]*custom-icon/)
   assert.match(named, /<svg[^>]*viewBox="0 0 24 24"/)
 })
@@ -407,7 +407,7 @@ test('layout primitives expose semantic tags, responsive props, and root UI hook
               root: {
                 attrs: { 'data-layout': 'stack' },
                 class: 'stack-hook',
-                style: { outline: '1px solid currentColor' },
+                style: { outline: '0.0625rem solid currentColor' },
               },
             },
           },
@@ -441,13 +441,13 @@ test('layout primitives expose semantic tags, responsive props, and root UI hook
   })
   assert.match(html, /<section[^>]*data-layout="stack"/)
   assert.match(html, /class="aven-stack stack-hook"/)
-  assert.match(html, /outline:1px solid currentColor/)
+  assert.match(html, /outline:0\.0625rem solid currentColor/)
   assert.match(html, /data-layout="inline"/)
   assert.match(html, /flex-wrap:nowrap/)
   assert.match(html, /data-layout="grid"/)
   assert.match(html, /--aven-grid-columns-sm:2/)
   assert.match(html, /<main[^>]*data-layout="container"/)
-  assert.match(html, /padding-inline:20px/)
+  assert.match(html, /padding-inline:1\.25rem/)
 })
 
 test('badge preserves capped visible count and announces the full count and label', async () => {
@@ -2297,7 +2297,7 @@ test('context menu measures its surface and keeps it inside collision padding', 
     const surface = mounted.find(mounted.root, (node) =>
       node.props?.class?.includes?.('context-content'),
     )
-    assert.deepEqual(surface.props.style, { left: '88px', top: '108px' })
+    assert.deepEqual(surface.props.style, { left: '5.5rem', top: '6.75rem' })
     app.unmount()
   } finally {
     globalThis.window = originalWindow
@@ -2669,7 +2669,7 @@ test('drawer and sheet expose native dialog semantics, logical placement, and bo
     })
     .mount(mounted.root)
   drawerRef.value.resize(900)
-  assert.deepEqual(sizes, ['600px'])
+  assert.deepEqual(sizes, ['37.5rem'])
 })
 
 test('alerts opt into live announcement semantics and banners forward one dismiss request', async () => {
@@ -3699,7 +3699,7 @@ test('data table resizes columns by pointer and keyboard and reorders them on dr
       mounted.root,
       (node) => node.type === 'th' && node.props?.draggable === true,
     )
-    assert.equal(nameHeader.props.style.width, '180px')
+    assert.equal(nameHeader.props.style.width, '11.25rem')
     for (const up of windowListeners.get('pointerup') ?? []) up({ pointerId: 9 })
     assert.deepEqual(resizeRequests, [{ key: 'name', width: 180 }])
     assert.equal(windowListeners.get('pointermove').size, 0)
@@ -3771,7 +3771,7 @@ test('data table pins start and end columns with cumulative logical offsets', as
               selection: {
                 attrs: { 'data-selection-ui': 'true' },
                 class: 'selection-hook',
-                style: { outline: '1px solid currentColor' },
+                style: { outline: '0.0625rem solid currentColor' },
               },
               expansion: { attrs: { 'data-expansion-ui': 'true' }, class: 'expansion-hook' },
               row: { attrs: { 'data-row-ui': 'true' }, class: 'row-hook' },
@@ -3813,8 +3813,8 @@ test('data table pins start and end columns with cumulative logical offsets', as
     pinnedHeaders.map((style) => [style.insetInlineStart, style.insetInlineEnd]),
     [
       ['calc(3rem + 3rem + 3rem)', undefined],
-      ['calc(3rem + 3rem + 3rem + 120px)', undefined],
-      [undefined, 'calc(3rem + 100px)'],
+      ['calc(3rem + 3rem + 3rem + 7.5rem)', undefined],
+      [undefined, 'calc(3rem + 6.25rem)'],
       [undefined, 'calc(3rem)'],
     ],
   )
@@ -3825,10 +3825,10 @@ test('data table pins start and end columns with cumulative logical offsets', as
   assert.deepEqual(
     utilityHeaders.map(({ style }) => [style.insetInlineStart, style.insetInlineEnd]),
     [
-      ['0px', undefined],
+      ['0', undefined],
       ['calc(3rem)', undefined],
       ['calc(3rem + 3rem)', undefined],
-      [undefined, '0px'],
+      [undefined, '0'],
     ],
   )
   const selectionHeader = mounted.find(
@@ -3836,7 +3836,7 @@ test('data table pins start and end columns with cumulative logical offsets', as
     (node) => node.type === 'th' && node.props['data-selection-ui'] === 'true',
   )
   assert.equal(selectionHeader.props.class.includes('selection-hook'), true)
-  assert.equal(selectionHeader.props.style.outline, '1px solid currentColor')
+  assert.equal(selectionHeader.props.style.outline, '0.0625rem solid currentColor')
   assert.ok(mounted.find(mounted.root, (node) => node.props?.['data-expansion-ui'] === 'true'))
   assert.ok(mounted.find(mounted.root, (node) => node.props?.['data-row-ui'] === 'true'))
   const cell = mounted.find(
@@ -4677,12 +4677,12 @@ test('teleported dropdown measures, flips, and shifts inside the viewport', asyn
     )
     assert.deepEqual(content.props.style, {
       position: 'fixed',
-      insetBlockStart: '76px',
+      insetBlockStart: '4.75rem',
       insetBlockEnd: 'auto',
-      insetInlineStart: '92px',
+      insetInlineStart: '5.75rem',
       insetInlineEnd: 'auto',
       minInlineSize: '12rem',
-      maxBlockSize: '204px',
+      maxBlockSize: '12.75rem',
       overflowY: 'auto',
     })
     app.unmount()
