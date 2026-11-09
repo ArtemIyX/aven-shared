@@ -161,11 +161,11 @@ function setTrigger(index: number, el: HTMLElement | null) {
 .aven-accordion {
   display: flex;
   flex-direction: column;
-  border-block-start: 1px solid var(--aven-color-border-subtle);
+  border-block-start: 0.0625rem solid var(--aven-color-border-subtle);
   color: var(--aven-color-text-primary);
 }
 .accordion-item {
-  border-block-end: 1px solid var(--aven-color-border-subtle);
+  border-block-end: 0.0625rem solid var(--aven-color-border-subtle);
 }
 .accordion-heading {
   margin: 0;
@@ -190,8 +190,8 @@ function setTrigger(index: number, el: HTMLElement | null) {
   background: var(--aven-color-surface-hover);
 }
 .accordion-trigger:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: -2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: -0.125rem;
 }
 .accordion-trigger:disabled {
   color: var(--aven-color-text-disabled);

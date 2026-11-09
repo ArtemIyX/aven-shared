@@ -114,7 +114,7 @@ defineExpose({
 .alert-confirm {
   min-block-size: 2.5rem;
   padding-inline: var(--aven-space-4);
-  border: 1px solid var(--aven-color-border-interactive);
+  border: 0.0625rem solid var(--aven-color-border-interactive);
   border-radius: var(--aven-radius-md);
   background: var(--aven-color-surface-base);
   color: var(--aven-color-text-primary);
@@ -128,8 +128,8 @@ defineExpose({
 }
 .alert-cancel:focus-visible,
 .alert-confirm:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 .alert-cancel:disabled,
 .alert-confirm:disabled {

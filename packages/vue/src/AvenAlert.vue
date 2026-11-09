@@ -71,7 +71,7 @@ defineSlots<AvenAlertSlots>()
   align-items: flex-start;
   gap: var(--aven-space-3);
   padding: var(--aven-space-4);
-  border: 1px solid;
+  border: 0.0625rem solid;
   border-radius: var(--aven-radius-md);
   min-inline-size: 0;
 }
@@ -141,8 +141,8 @@ defineSlots<AvenAlertSlots>()
   cursor: pointer;
 }
 .alert-close:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 .is-unstyled {
   border: 0;

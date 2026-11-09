@@ -169,7 +169,7 @@ defineExpose({ dismiss: () => requestDismiss('programmatic') })
   inline-size: min(26rem, calc(100vw - 2rem));
   max-inline-size: 100%;
   padding: var(--aven-space-4);
-  border: 1px solid var(--toast-border, var(--aven-color-border-default));
+  border: 0.0625rem solid var(--toast-border, var(--aven-color-border-default));
   border-radius: var(--aven-radius-lg);
   background: var(--toast-bg, var(--aven-color-surface-raised));
   color: var(--toast-fg, var(--aven-color-text-primary));
@@ -220,7 +220,7 @@ defineExpose({ dismiss: () => requestDismiss('programmatic') })
   min-inline-size: 2.5rem;
   min-block-size: 2.5rem;
   padding-inline: var(--aven-space-2);
-  border: 1px solid var(--aven-color-border-default);
+  border: 0.0625rem solid var(--aven-color-border-default);
   border-radius: var(--aven-radius-md);
   background: var(--aven-color-surface-base);
   color: inherit;
@@ -228,8 +228,8 @@ defineExpose({ dismiss: () => requestDismiss('programmatic') })
   cursor: pointer;
 }
 .toast-actions button:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 .is-unstyled {
   border: 0;

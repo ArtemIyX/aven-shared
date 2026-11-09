@@ -78,7 +78,7 @@ const attrs = useAttrs()
 .aven-action-bar button {
   min-block-size: 2.5rem;
   padding-inline: var(--aven-space-3);
-  border: 1px solid var(--aven-color-border-default);
+  border: 0.0625rem solid var(--aven-color-border-default);
   border-radius: var(--aven-radius-md);
   background: var(--aven-color-surface-base);
   color: var(--aven-color-text-primary);
@@ -86,8 +86,8 @@ const attrs = useAttrs()
   cursor: pointer;
 }
 .aven-action-bar button:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 @media (max-width: 36rem) {
   .aven-action-bar {
