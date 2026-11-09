@@ -1,5 +1,6 @@
 <script setup lang="ts" generic="Key extends string | number = string">
 import { computed, useAttrs } from 'vue'
+import { cssPixelsToRem } from './cssLength.js'
 import type { AvenChartTooltipItem, AvenChartTooltipProps, AvenChartTooltipSlots } from './types.js'
 
 const props = withDefaults(defineProps<AvenChartTooltipProps<Key>>(), {
@@ -14,8 +15,8 @@ const rootAttrs = computed(() => {
   return { ...rest, ...props.ui?.root?.attrs }
 })
 const coordinates = computed(() => ({
-  '--aven-chart-tooltip-x': `${Math.max(0, props.x)}px`,
-  '--aven-chart-tooltip-y': `${Math.max(0, props.y)}px`,
+  '--aven-chart-tooltip-x': cssPixelsToRem(Math.max(0, props.x)),
+  '--aven-chart-tooltip-y': cssPixelsToRem(Math.max(0, props.y)),
 }))
 </script>
 <template>
@@ -70,11 +71,11 @@ const coordinates = computed(() => ({
   inline-size: max-content;
   max-inline-size: min(20rem, calc(100% - 1rem));
   padding: var(--aven-chart-tooltip-padding, var(--aven-space-3));
-  border: 1px solid var(--aven-color-chart-tooltip-border, var(--aven-color-border-strong));
+  border: 0.0625rem solid var(--aven-color-chart-tooltip-border, var(--aven-color-border-strong));
   border-radius: var(--aven-radius-sm);
   background: var(--aven-color-chart-tooltip-fill, var(--aven-color-surface-floating));
   color: var(--aven-color-chart-tooltip-text, var(--aven-color-text-primary));
-  box-shadow: 0 3px 12px var(--aven-color-shadow-ambient);
+  box-shadow: 0 0.1875rem 0.75rem var(--aven-color-shadow-ambient);
   overflow-wrap: anywhere;
   pointer-events: none;
   transform: translate(-50%, -100%);
@@ -128,7 +129,7 @@ const coordinates = computed(() => ({
     box-shadow: none;
   }
   .tooltip-marker {
-    outline: 1px solid CanvasText;
+    outline: 0.0625rem solid CanvasText;
   }
 }
 @media print {

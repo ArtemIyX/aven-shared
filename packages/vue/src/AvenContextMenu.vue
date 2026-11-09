@@ -1,5 +1,6 @@
 <script setup lang="ts" generic="Key extends string | number">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, useAttrs, watch } from 'vue'
+import { cssPixelsToRem } from './cssLength.js'
 import AvenMenu from './AvenMenu.vue'
 import { isTopAvenOverlayLayer, registerAvenOverlayLayer } from './composables.js'
 import type { AvenContextMenuEvents, AvenContextMenuProps, AvenContextMenuSlots } from './types.js'
@@ -208,7 +209,10 @@ defineExpose({
       v-if="isOpen"
       ref="content"
       :class="['context-content', ui?.content?.class]"
-      :style="[{ left: `${position.x}px`, top: `${position.y}px` }, ui?.content?.style]"
+      :style="[
+        { left: cssPixelsToRem(position.x), top: cssPixelsToRem(position.y) },
+        ui?.content?.style,
+      ]"
       v-bind="ui?.content?.attrs"
     >
       <AvenMenu
@@ -236,13 +240,13 @@ defineExpose({
   outline: none;
 }
 .aven-context-menu:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 .context-trigger {
   min-block-size: 2.25rem;
   padding-inline: var(--aven-space-3);
-  border: 1px solid var(--aven-color-border-interactive);
+  border: 0.0625rem solid var(--aven-color-border-interactive);
   border-radius: var(--aven-radius-md);
   background: var(--aven-color-surface-base);
   color: var(--aven-color-text-primary);
@@ -250,8 +254,8 @@ defineExpose({
   cursor: pointer;
 }
 .context-trigger:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 .context-content {
   position: fixed;

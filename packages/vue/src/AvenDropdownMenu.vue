@@ -8,6 +8,7 @@ import type {
   AvenDropdownMenuProps,
   AvenDropdownMenuSlots,
 } from './types.js'
+import { cssPixelsToRem } from './cssLength.js'
 const props = withDefaults(defineProps<AvenDropdownMenuProps<Key>>(), {
   open: undefined,
   placement: 'bottom-start',
@@ -67,12 +68,12 @@ function positionContent() {
   const scrollY = props.strategy === 'absolute' ? window.scrollY : 0
   floatingStyle.value = {
     position: props.strategy,
-    insetBlockStart: `${top + scrollY}px`,
+    insetBlockStart: cssPixelsToRem(top + scrollY),
     insetBlockEnd: 'auto',
-    insetInlineStart: `${left + scrollX}px`,
+    insetInlineStart: cssPixelsToRem(left + scrollX),
     insetInlineEnd: 'auto',
-    minInlineSize: props.matchTriggerWidth ? `${anchorRect.width}px` : '12rem',
-    maxBlockSize: `${Math.max(0, window.innerHeight - padding * 2)}px`,
+    minInlineSize: props.matchTriggerWidth ? cssPixelsToRem(anchorRect.width) : '12rem',
+    maxBlockSize: cssPixelsToRem(Math.max(0, window.innerHeight - padding * 2)),
     overflowY: 'auto',
   }
 }
@@ -253,7 +254,7 @@ function setTrigger(el: unknown) {
     ]"
     :style="[
       {
-        '--aven-menu-offset': `${offset}px`,
+        '--aven-menu-offset': cssPixelsToRem(offset),
         ...(matchTriggerWidth ? { '--aven-menu-width': '100%' } : {}),
       },
       ui?.root?.style,
@@ -316,7 +317,7 @@ function setTrigger(el: unknown) {
 .dropdown-trigger {
   min-block-size: 2.25rem;
   padding-inline: var(--aven-space-3);
-  border: 1px solid var(--aven-color-border-interactive);
+  border: 0.0625rem solid var(--aven-color-border-interactive);
   border-radius: var(--aven-radius-md);
   background: var(--aven-color-surface-base);
   color: var(--aven-color-text-primary);
@@ -324,8 +325,8 @@ function setTrigger(el: unknown) {
   cursor: pointer;
 }
 .dropdown-trigger:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 .dropdown-content {
   position: absolute;
