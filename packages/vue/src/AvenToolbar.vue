@@ -157,7 +157,7 @@ onBeforeUnmount(() => {
   gap: var(--aven-toolbar-gap);
   min-inline-size: 0;
   padding: var(--aven-space-2);
-  border: 1px solid var(--aven-color-border-subtle);
+  border: 0.0625rem solid var(--aven-color-border-subtle);
   border-radius: var(--aven-radius-lg);
   background: var(--aven-color-surface-raised);
   color: var(--aven-color-text-primary);
@@ -198,8 +198,8 @@ onBeforeUnmount(() => {
   padding: var(--aven-space-1);
 }
 .aven-toolbar :deep(:focus-visible) {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 .is-unstyled {
   padding: 0;

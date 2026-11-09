@@ -361,13 +361,13 @@ defineExpose({
   align-items: center;
   gap: var(--aven-space-1);
   min-block-size: 2.5rem;
-  border: 1px solid var(--aven-color-border-interactive);
+  border: 0.0625rem solid var(--aven-color-border-interactive);
   border-radius: var(--aven-radius-md);
   background: var(--aven-color-surface-base);
 }
 .date-control:focus-within {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 1px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.0625rem;
 }
 .date-control input {
   flex: 1;
@@ -391,8 +391,8 @@ defineExpose({
 }
 .date-control button:focus-visible,
 .presets button:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 1px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.0625rem;
 }
 .help,
 .error {
@@ -414,7 +414,7 @@ defineExpose({
   gap: var(--aven-space-2);
   max-inline-size: calc(100vw - 1rem);
   padding: var(--aven-space-2);
-  border: 1px solid var(--aven-color-border-subtle);
+  border: 0.0625rem solid var(--aven-color-border-subtle);
   border-radius: var(--aven-radius-md);
   background: var(--aven-color-surface-raised);
   box-shadow: var(--aven-shadow-lg);
@@ -432,7 +432,7 @@ defineExpose({
 .presets button {
   min-block-size: 2.5rem;
   padding-inline: var(--aven-space-2);
-  border: 1px solid var(--aven-color-border-subtle);
+  border: 0.0625rem solid var(--aven-color-border-subtle);
   border-radius: var(--aven-radius-sm);
   background: transparent;
   color: inherit;
@@ -462,7 +462,7 @@ defineExpose({
 @media (forced-colors: active) {
   .calendar-popover,
   .date-control {
-    border: 1px solid CanvasText;
+    border: 0.0625rem solid CanvasText;
   }
 }
 @media print {

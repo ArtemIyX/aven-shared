@@ -176,14 +176,14 @@ defineExpose({ focus: () => control.value?.focus(), blur: () => control.value?.b
   gap: var(--aven-space-2);
   min-block-size: 2.25rem;
   padding-inline: var(--aven-space-3);
-  border: 1px solid var(--aven-color-border-interactive);
+  border: 0.0625rem solid var(--aven-color-border-interactive);
   border-radius: var(--aven-radius-md);
   background: var(--aven-color-surface-base);
   color: var(--aven-color-text-primary);
 }
 .aven-select:focus-within {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 1px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.0625rem;
 }
 .select-control {
   flex: 1;

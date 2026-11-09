@@ -136,8 +136,8 @@ function expand(event: MouseEvent) {
 }
 .breadcrumb-expand:focus-visible,
 .breadcrumb-item a:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 .breadcrumb-separator {
   color: var(--aven-color-text-tertiary);

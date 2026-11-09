@@ -93,7 +93,7 @@ function toggleCollapsed() {
   block-size: 100%;
   max-block-size: 100dvh;
   overflow: hidden;
-  border-inline-end: 1px solid var(--aven-color-border-subtle);
+  border-inline-end: 0.0625rem solid var(--aven-color-border-subtle);
   background: var(--aven-color-surface-sidebar);
   color: var(--aven-color-text-primary);
   transition: inline-size 0.18s ease;
@@ -105,10 +105,10 @@ function toggleCollapsed() {
   justify-content: space-between;
   gap: var(--aven-space-3);
   padding: var(--aven-space-3);
-  border-block-end: 1px solid var(--aven-color-border-subtle);
+  border-block-end: 0.0625rem solid var(--aven-color-border-subtle);
 }
 .sidebar-footer {
-  border-block-start: 1px solid var(--aven-color-border-subtle);
+  border-block-start: 0.0625rem solid var(--aven-color-border-subtle);
   border-block-end: 0;
   margin-block-start: auto;
 }
@@ -122,7 +122,7 @@ function toggleCollapsed() {
   flex: none;
   min-inline-size: 2.25rem;
   min-block-size: 2.25rem;
-  border: 1px solid var(--aven-color-border-default);
+  border: 0.0625rem solid var(--aven-color-border-default);
   border-radius: var(--aven-radius-sm);
   background: var(--aven-color-surface-base);
   color: inherit;
@@ -130,7 +130,7 @@ function toggleCollapsed() {
   cursor: pointer;
 }
 .sidebar-toggle:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
+  outline: 0.125rem solid var(--aven-color-focus-ring);
 }
 .is-collapsed .sidebar-header {
   flex-direction: column;

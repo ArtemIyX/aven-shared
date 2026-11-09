@@ -216,11 +216,11 @@ onBeforeUnmount(() => {
   min-inline-size: 12rem;
   max-inline-size: min(24rem, calc(100vw - 1rem));
   padding: var(--aven-space-1);
-  border: 1px solid var(--aven-color-border-subtle);
+  border: 0.0625rem solid var(--aven-color-border-subtle);
   border-radius: var(--aven-radius-md);
   background: var(--aven-color-surface-dropdown);
   color: var(--aven-color-text-primary);
-  box-shadow: 0 8px 20px var(--aven-color-shadow-ambient);
+  box-shadow: 0 0.5rem 1.25rem var(--aven-color-shadow-ambient);
 }
 .menu-item {
   border-radius: var(--aven-radius-sm);

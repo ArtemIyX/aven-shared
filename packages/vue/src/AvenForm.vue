@@ -98,7 +98,7 @@ const errorTitleId = useAvenId(undefined, 'form-errors-title')
 }
 .form-errors {
   padding: var(--aven-space-3);
-  border: 1px solid var(--aven-color-danger-border);
+  border: 0.0625rem solid var(--aven-color-danger-border);
   border-radius: var(--aven-radius-md);
   background: var(--aven-color-danger-subtle);
   color: var(--aven-color-danger-text);

@@ -204,7 +204,7 @@ function resize(e: Event) {
   min-inline-size: 2.25rem;
   min-block-size: 2.25rem;
   padding-inline: var(--aven-space-2);
-  border: 1px solid transparent;
+  border: 0.0625rem solid transparent;
   border-radius: var(--aven-radius-md);
   background: transparent;
   color: inherit;
@@ -223,8 +223,8 @@ function resize(e: Event) {
 .page-number:focus-visible,
 .page-control:focus-visible,
 .page-size select:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 1px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.0625rem;
 }
 .page-number:disabled,
 .page-control:disabled {
@@ -243,7 +243,7 @@ function resize(e: Event) {
 }
 .page-size select {
   min-block-size: 2rem;
-  border: 1px solid var(--aven-color-border-default);
+  border: 0.0625rem solid var(--aven-color-border-default);
   border-radius: var(--aven-radius-sm);
   background: var(--aven-color-surface-base);
   color: var(--aven-color-text-primary);

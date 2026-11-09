@@ -166,13 +166,13 @@ defineExpose({ close: () => propose(false, 'programmatic'), focus: () => dialog.
   inset: 0;
   margin: auto;
   padding: 0;
-  border: 1px solid var(--aven-color-border-subtle);
+  border: 0.0625rem solid var(--aven-color-border-subtle);
   border-radius: var(--aven-radius-lg);
   max-inline-size: calc(100vw - 2rem);
   max-block-size: calc(100dvh - 2rem);
   background: var(--aven-color-surface-dialog);
   color: var(--aven-color-text-primary);
-  box-shadow: 0 16px 40px var(--aven-color-shadow-contact);
+  box-shadow: 0 1rem 2.5rem var(--aven-color-shadow-contact);
 }
 .aven-dialog::backdrop {
   background: var(--aven-color-scrim);
@@ -204,10 +204,10 @@ defineExpose({ close: () => propose(false, 'programmatic'), focus: () => dialog.
   justify-content: space-between;
   gap: var(--aven-space-4);
   padding: var(--aven-space-4);
-  border-block-end: 1px solid var(--aven-color-border-subtle);
+  border-block-end: 0.0625rem solid var(--aven-color-border-subtle);
 }
 .dialog-footer {
-  border-block-start: 1px solid var(--aven-color-border-subtle);
+  border-block-start: 0.0625rem solid var(--aven-color-border-subtle);
   border-block-end: 0;
   justify-content: flex-end;
 }
@@ -236,8 +236,8 @@ defineExpose({ close: () => propose(false, 'programmatic'), focus: () => dialog.
   cursor: pointer;
 }
 .dialog-close:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 .is-unstyled {
   border: 0;

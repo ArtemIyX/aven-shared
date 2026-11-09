@@ -357,7 +357,7 @@ defineExpose({ focus })
   inline-size: 100%;
   min-block-size: var(--aven-rich-text-min-height, 10rem);
   padding: var(--aven-space-3);
-  border: 1px solid var(--aven-rich-text-border, var(--aven-color-border-default));
+  border: 0.0625rem solid var(--aven-rich-text-border, var(--aven-color-border-default));
   border-radius: var(--aven-rich-text-radius, var(--aven-radius-md));
   background: var(--aven-rich-text-bg, var(--aven-color-surface-card));
   color: inherit;
@@ -369,8 +369,8 @@ defineExpose({ focus })
   color: var(--aven-color-text-tertiary);
 }
 .rich-editor:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 .is-invalid .rich-editor {
   border-color: var(--aven-color-danger-border);

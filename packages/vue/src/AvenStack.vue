@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { cssPixelsToRem } from './cssLength.js'
 import type { AvenStackProps, AvenStackSlots } from './types.js'
 withDefaults(defineProps<AvenStackProps>(), {
   as: 'div',
@@ -10,7 +11,7 @@ withDefaults(defineProps<AvenStackProps>(), {
 defineSlots<AvenStackSlots>()
 function gapValue(value: string | number): string {
   return typeof value === 'number'
-    ? `${value}px`
+    ? cssPixelsToRem(value)
     : value.startsWith('space-')
       ? `var(--aven-${value})`
       : value

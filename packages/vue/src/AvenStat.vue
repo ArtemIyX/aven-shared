@@ -58,7 +58,7 @@ defineSlots<AvenStatSlots>()
   gap: var(--aven-space-2);
   min-inline-size: 0;
   padding: var(--aven-space-4);
-  border: 1px solid var(--aven-color-border-subtle);
+  border: 0.0625rem solid var(--aven-color-border-subtle);
   border-radius: var(--aven-radius-lg);
   background: var(--aven-color-surface-card);
   color: var(--aven-color-text-primary);

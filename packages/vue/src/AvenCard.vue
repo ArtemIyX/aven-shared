@@ -82,10 +82,10 @@ defineSlots<AvenCardSlots>()
   color: var(--aven-color-text-primary);
 }
 .is-elevated {
-  box-shadow: 0 1px 3px var(--aven-color-shadow-ambient);
+  box-shadow: 0 0.0625rem 0.1875rem var(--aven-color-shadow-ambient);
 }
 .is-outlined {
-  border: 1px solid var(--aven-color-border-subtle);
+  border: 0.0625rem solid var(--aven-color-border-subtle);
 }
 .is-flat {
   background: transparent;
@@ -109,11 +109,11 @@ defineSlots<AvenCardSlots>()
   justify-content: space-between;
   gap: var(--aven-space-4);
   padding: var(--aven-space-4);
-  border-block-end: 1px solid var(--aven-color-border-subtle);
+  border-block-end: 0.0625rem solid var(--aven-color-border-subtle);
 }
 .card-footer {
   border-block-end: 0;
-  border-block-start: 1px solid var(--aven-color-border-subtle);
+  border-block-start: 0.0625rem solid var(--aven-color-border-subtle);
 }
 .card-heading {
   min-inline-size: 0;

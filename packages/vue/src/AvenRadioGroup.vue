@@ -229,8 +229,8 @@ onBeforeUnmount(() => {
 }
 .radio-control {
   position: absolute;
-  inline-size: 1px;
-  block-size: 1px;
+  inline-size: 0.0625rem;
+  block-size: 0.0625rem;
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
@@ -242,7 +242,7 @@ onBeforeUnmount(() => {
   inline-size: 1.125rem;
   block-size: 1.125rem;
   margin-block-start: 0.125rem;
-  border: 1px solid var(--aven-color-border-interactive);
+  border: 0.0625rem solid var(--aven-color-border-interactive);
   border-radius: 50%;
   background: var(--aven-color-surface-base);
 }
@@ -254,8 +254,8 @@ onBeforeUnmount(() => {
   background: var(--aven-color-accent-solid);
 }
 .radio-control:focus-visible + .radio-indicator {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 .radio-item > span:last-child {
   min-inline-size: 0;

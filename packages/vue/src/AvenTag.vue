@@ -49,8 +49,8 @@ defineSlots<AvenTagSlots>()
   gap: var(--aven-tag-gap, 0.35rem);
   max-inline-size: 100%;
   padding: 0.2rem 0.55rem;
-  border: 1px solid var(--aven-tag-border, var(--tag-default-border));
-  border-radius: var(--aven-tag-radius, 999px);
+  border: 0.0625rem solid var(--aven-tag-border, var(--tag-default-border));
+  border-radius: var(--aven-tag-radius, 999rem);
   font-size: var(--aven-font-size-sm);
   line-height: 1.4;
   overflow-wrap: anywhere;

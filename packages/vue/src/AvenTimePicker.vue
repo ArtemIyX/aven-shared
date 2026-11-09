@@ -190,15 +190,15 @@ defineExpose({ focus: () => inputEl.value?.focus(), blur: () => inputEl.value?.b
   min-block-size: 2.5rem;
   max-inline-size: 100%;
   padding-inline: var(--aven-space-3);
-  border: 1px solid var(--aven-color-border-interactive);
+  border: 0.0625rem solid var(--aven-color-border-interactive);
   border-radius: var(--aven-radius-md);
   background: var(--aven-color-surface-base);
   color: inherit;
   font: inherit;
 }
 .aven-time-picker input:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 1px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.0625rem;
 }
 .aven-time-picker button {
   min-inline-size: 2.5rem;
@@ -228,7 +228,7 @@ defineExpose({ focus: () => inputEl.value?.focus(), blur: () => inputEl.value?.b
 }
 @media (forced-colors: active) {
   .aven-time-picker input {
-    border: 1px solid CanvasText;
+    border: 0.0625rem solid CanvasText;
   }
 }
 @media print {

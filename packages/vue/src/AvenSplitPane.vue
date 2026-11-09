@@ -244,15 +244,15 @@ onBeforeUnmount(() => {
 }
 .is-horizontal .split-pane-handle::before {
   inset-block: 0;
-  inset-inline: calc(50% - 1px);
+  inset-inline: calc(50% - 0.0625rem);
 }
 .is-vertical .split-pane-handle::before {
   inset-inline: 0;
-  inset-block: calc(50% - 1px);
+  inset-block: calc(50% - 0.0625rem);
 }
 .split-pane-handle:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: -2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: -0.125rem;
 }
 .split-pane-grip {
   position: relative;

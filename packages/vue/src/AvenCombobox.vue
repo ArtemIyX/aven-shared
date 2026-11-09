@@ -641,13 +641,13 @@ defineExpose({ focus, blur, select: () => input.value?.select(), clear })
   gap: var(--aven-space-2);
   min-block-size: 2.75rem;
   padding: var(--aven-space-1) var(--aven-space-3);
-  border: 1px solid var(--aven-color-border-interactive);
+  border: 0.0625rem solid var(--aven-color-border-interactive);
   border-radius: var(--aven-radius-md);
   background: var(--aven-color-surface-base);
 }
 .combobox-control:focus-within {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 1px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.0625rem;
 }
 .combobox-input {
   flex: 1;
@@ -674,7 +674,7 @@ defineExpose({ focus, blur, select: () => input.value?.select(), clear })
   gap: var(--aven-space-1);
   max-inline-size: 100%;
   padding: 0.125rem var(--aven-space-2);
-  border-radius: 999px;
+  border-radius: 999rem;
   background: var(--aven-color-surface-selected);
   color: var(--aven-color-text-primary);
   overflow-wrap: anywhere;
@@ -684,7 +684,7 @@ defineExpose({ focus, blur, select: () => input.value?.select(), clear })
   min-inline-size: 1.75rem;
   min-block-size: 1.75rem;
   border: 0;
-  border-radius: 999px;
+  border-radius: 999rem;
   background: transparent;
   color: inherit;
   font: inherit;
@@ -698,11 +698,11 @@ defineExpose({ focus, blur, select: () => input.value?.select(), clear })
   inline-size: var(--aven-combobox-popup-width, 100%);
   max-block-size: min(20rem, 70vh);
   overflow: auto;
-  border: 1px solid var(--aven-color-border-subtle);
+  border: 0.0625rem solid var(--aven-color-border-subtle);
   border-radius: var(--aven-radius-md);
   background: var(--aven-color-surface-popover);
   color: var(--aven-color-text-primary);
-  box-shadow: 0 8px 24px var(--aven-color-shadow-ambient);
+  box-shadow: 0 0.5rem 1.5rem var(--aven-color-shadow-ambient);
 }
 .place-bottom {
   inset-block-start: calc(100% + var(--aven-space-1));
@@ -725,8 +725,8 @@ defineExpose({ focus, blur, select: () => input.value?.select(), clear })
   cursor: pointer;
 }
 .combobox-option.is-active {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: -2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: -0.125rem;
 }
 .combobox-option.is-selected {
   background: var(--aven-color-surface-selected);
@@ -749,10 +749,10 @@ defineExpose({ focus, blur, select: () => input.value?.select(), clear })
 .popup-header,
 .popup-footer {
   padding: var(--aven-space-2) var(--aven-space-3);
-  border-block-end: 1px solid var(--aven-color-border-subtle);
+  border-block-end: 0.0625rem solid var(--aven-color-border-subtle);
 }
 .popup-footer {
-  border-block-start: 1px solid var(--aven-color-border-subtle);
+  border-block-start: 0.0625rem solid var(--aven-color-border-subtle);
   border-block-end: 0;
 }
 .combobox-empty {
@@ -773,10 +773,10 @@ defineExpose({ focus, blur, select: () => input.value?.select(), clear })
 }
 @media (forced-colors: active) {
   .combobox-option.is-active {
-    outline: 2px solid Highlight;
+    outline: 0.125rem solid Highlight;
   }
   .combobox-option.is-selected {
-    border: 1px solid SelectedItem;
+    border: 0.0625rem solid SelectedItem;
   }
 }
 </style>

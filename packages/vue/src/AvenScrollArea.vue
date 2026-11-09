@@ -119,8 +119,8 @@ function onScroll(event: Event) {
   block-size: var(--aven-scrollbar-size);
 }
 .aven-scroll-area::-webkit-scrollbar-thumb {
-  border: 2px solid transparent;
-  border-radius: 999px;
+  border: 0.125rem solid transparent;
+  border-radius: 999rem;
   background: var(--aven-scrollbar-thumb);
   background-clip: padding-box;
 }
@@ -147,8 +147,8 @@ function onScroll(event: Event) {
   float: inline-end;
 }
 .aven-scroll-area:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: -2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: -0.125rem;
 }
 .is-unstyled {
   scrollbar-width: auto;

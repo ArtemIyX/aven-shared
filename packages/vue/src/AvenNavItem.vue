@@ -141,8 +141,8 @@ function toggle(event: MouseEvent) {
 }
 .nav-link:focus-visible,
 .nav-disclosure:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 .nav-disclosure {
   min-inline-size: 2.75rem;
@@ -167,7 +167,7 @@ function toggle(event: MouseEvent) {
 }
 @media (forced-colors: active) {
   .is-active > .nav-row > .nav-link {
-    outline: 1px solid Highlight;
+    outline: 0.0625rem solid Highlight;
   }
 }
 </style>

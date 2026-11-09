@@ -85,7 +85,7 @@ defineExpose({
   block-size: 100%;
 }
 .aven-icon-button:focus-visible {
-  outline-offset: 2px;
+  outline-offset: 0.125rem;
 }
 .aven-icon-button.is-unstyled {
   inline-size: max-content;
@@ -93,7 +93,7 @@ defineExpose({
 }
 @media (forced-colors: active) {
   .aven-icon-button {
-    border: 1px solid ButtonText;
+    border: 0.0625rem solid ButtonText;
   }
 }
 </style>

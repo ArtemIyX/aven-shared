@@ -239,8 +239,8 @@ defineExpose({ scrollToKey, focus })
   color: var(--aven-color-text-primary);
 }
 .aven-list:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 .list-content {
   margin: 0;
@@ -253,7 +253,7 @@ defineExpose({ scrollToKey, focus })
   min-inline-size: max-content;
 }
 .is-horizontal :deep(.aven-list-item) {
-  border-inline-end: 1px solid var(--aven-color-separator-column);
+  border-inline-end: 0.0625rem solid var(--aven-color-separator-column);
   border-block-end: 0;
 }
 .list-action {
@@ -274,8 +274,8 @@ defineExpose({ scrollToKey, focus })
   background: var(--aven-list-hover);
 }
 .list-action:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: -2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: -0.125rem;
 }
 .list-action:disabled {
   cursor: not-allowed;

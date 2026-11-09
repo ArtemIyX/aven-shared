@@ -71,7 +71,7 @@ const forwardedAttrs = computed(() => {
   min-inline-size: 0;
   margin: 0;
   padding: var(--aven-space-4);
-  border: 1px solid var(--aven-color-border-subtle);
+  border: 0.0625rem solid var(--aven-color-border-subtle);
   border-radius: var(--aven-radius-md);
   color: var(--aven-color-text-primary);
 }

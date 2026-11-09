@@ -8,6 +8,7 @@ import type {
   AvenDrawerProps,
   AvenDrawerSlots,
 } from './types.js'
+import { cssPixelsToRem } from './cssLength.js'
 
 defineOptions({ inheritAttrs: false })
 const props = withDefaults(defineProps<AvenDrawerProps>(), {
@@ -71,8 +72,9 @@ function limits() {
 }
 function requestSize(next: number) {
   const [min, max] = limits()
-  const value = `${Math.round(Math.max(min, Math.min(max, next)))}px`
-  if (value === `${Math.round(currentPixels())}px`) return
+  const nextSize = Math.round(Math.max(min, Math.min(max, next)))
+  if (nextSize === Math.round(currentPixels())) return
+  const value = cssPixelsToRem(nextSize)
   if (props.size === undefined) localSize.value = value
   emit('update:size', value)
 }
@@ -266,16 +268,16 @@ defineExpose({
   min-block-size: 0;
 }
 .aven-drawer-host :deep(.side-start) {
-  border-inline-end: 1px solid var(--aven-color-border-subtle);
+  border-inline-end: 0.0625rem solid var(--aven-color-border-subtle);
 }
 .aven-drawer-host :deep(.side-end) {
-  border-inline-start: 1px solid var(--aven-color-border-subtle);
+  border-inline-start: 0.0625rem solid var(--aven-color-border-subtle);
 }
 .aven-drawer-host :deep(.side-top) {
-  border-block-end: 1px solid var(--aven-color-border-subtle);
+  border-block-end: 0.0625rem solid var(--aven-color-border-subtle);
 }
 .aven-drawer-host :deep(.side-bottom) {
-  border-block-start: 1px solid var(--aven-color-border-subtle);
+  border-block-start: 0.0625rem solid var(--aven-color-border-subtle);
 }
 .drawer-body {
   min-inline-size: 0;
@@ -311,8 +313,8 @@ defineExpose({
   cursor: ns-resize;
 }
 .drawer-resize-handle:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: -2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: -0.125rem;
 }
 .is-unstyled :deep(.aven-drawer) {
   border: 0;

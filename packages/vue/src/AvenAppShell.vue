@@ -153,7 +153,7 @@ defineExpose({ toggleSidebar, toggleInspector })
   gap: var(--aven-space-3);
   min-inline-size: 0;
   padding: var(--aven-space-3) var(--aven-space-4);
-  border-block-end: 1px solid var(--aven-shell-divider);
+  border-block-end: 0.0625rem solid var(--aven-shell-divider);
   background: var(--aven-color-surface-raised);
 }
 .shell-header.is-sticky {
@@ -170,11 +170,11 @@ defineExpose({ toggleSidebar, toggleInspector })
 }
 .shell-sidebar {
   grid-area: sidebar;
-  border-inline-end: 1px solid var(--aven-shell-divider);
+  border-inline-end: 0.0625rem solid var(--aven-shell-divider);
 }
 .shell-inspector {
   grid-area: inspector;
-  border-inline-start: 1px solid var(--aven-shell-divider);
+  border-inline-start: 0.0625rem solid var(--aven-shell-divider);
 }
 .shell-main {
   grid-area: main;
@@ -187,7 +187,7 @@ defineExpose({ toggleSidebar, toggleInspector })
   grid-area: footer;
   min-inline-size: 0;
   padding: var(--aven-space-3) var(--aven-space-4);
-  border-block-start: 1px solid var(--aven-shell-divider);
+  border-block-start: 0.0625rem solid var(--aven-shell-divider);
   background: var(--aven-color-surface-raised);
 }
 .shell-statusbar {
@@ -197,7 +197,7 @@ defineExpose({ toggleSidebar, toggleInspector })
   gap: var(--aven-space-3);
   min-inline-size: 0;
   padding: var(--aven-space-2) var(--aven-space-4);
-  border-block-start: 1px solid var(--aven-shell-divider);
+  border-block-start: 0.0625rem solid var(--aven-shell-divider);
   background: var(--aven-color-surface-recessed);
   color: var(--aven-color-text-secondary);
   font-size: var(--aven-font-size-sm);
@@ -232,7 +232,7 @@ defineExpose({ toggleSidebar, toggleInspector })
   .shell-inspector {
     max-block-size: min(30vh, 16rem);
     border-inline: 0;
-    border-block-end: 1px solid var(--aven-shell-divider);
+    border-block-end: 0.0625rem solid var(--aven-shell-divider);
   }
   .shell-main {
     padding: var(--aven-space-3);

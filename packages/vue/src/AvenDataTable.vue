@@ -18,6 +18,7 @@ import {
   useSlots,
 } from 'vue'
 import type { CSSProperties } from 'vue'
+import { cssPixelsToRem } from './cssLength.js'
 import AvenTable from './AvenTable.vue'
 import type {
   AvenDataTableEvents,
@@ -216,10 +217,10 @@ function pinOffset(column: AvenTableColumn<T, ColumnKey>, side: 'start' | 'end')
     ...utilityWidths,
     ...pinned.map((entry) => {
       const width = widthFor(entry) ?? entry.minWidth ?? 0
-      return typeof width === 'number' ? `${width}px` : width
+      return typeof width === 'number' ? cssPixelsToRem(width) : width
     }),
   ]
-  return widths.length ? `calc(${widths.join(' + ')})` : '0px'
+  return widths.length ? `calc(${widths.join(' + ')})` : '0'
 }
 function hasPinnedSide(side: 'start' | 'end') {
   return orderedColumns.value.some((column) => column.pinned === side)
@@ -235,10 +236,10 @@ function utilityPinStyle(
       ? {
           insetInlineStart:
             precedingStartColumns === 0
-              ? '0px'
+              ? '0'
               : `calc(${Array(precedingStartColumns).fill('3rem').join(' + ')})`,
         }
-      : { insetInlineEnd: '0px' }),
+      : { insetInlineEnd: '0' }),
   }
 }
 function columnPinClass(column: AvenTableColumn<T, ColumnKey>) {
@@ -253,9 +254,9 @@ function columnPinClass(column: AvenTableColumn<T, ColumnKey>) {
 function styleForColumn(column: AvenTableColumn<T, ColumnKey>): CSSProperties {
   const width = widthFor(column)
   return {
-    width: typeof width === 'number' ? `${width}px` : width,
-    minWidth: column.minWidth ? `${column.minWidth}px` : undefined,
-    maxWidth: column.maxWidth ? `${column.maxWidth}px` : undefined,
+    width: typeof width === 'number' ? cssPixelsToRem(width) : width,
+    minWidth: column.minWidth ? cssPixelsToRem(column.minWidth) : undefined,
+    maxWidth: column.maxWidth ? cssPixelsToRem(column.maxWidth) : undefined,
     textAlign: column.align === 'center' ? 'center' : column.align === 'end' ? 'end' : 'start',
     ...(column.pinned
       ? {
@@ -695,8 +696,8 @@ onBeforeUnmount(() => {
 .sort-button:focus-visible,
 .expand-button:focus-visible,
 .column-resize-handle:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 1px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.0625rem;
 }
 .sort-indicator {
   color: var(--aven-color-icon-secondary);
@@ -731,16 +732,16 @@ thead .is-pinned-end {
   background: var(--aven-color-surface-raised);
 }
 .is-pinned-start-edge {
-  box-shadow: 5px 0 8px -7px var(--aven-color-shadow-ambient);
+  box-shadow: 0.3125rem 0 0.5rem -0.4375rem var(--aven-color-shadow-ambient);
 }
 .is-pinned-end-edge {
-  box-shadow: -5px 0 8px -7px var(--aven-color-shadow-ambient);
+  box-shadow: -0.3125rem 0 0.5rem -0.4375rem var(--aven-color-shadow-ambient);
 }
 :dir(rtl) .is-pinned-start-edge {
-  box-shadow: -5px 0 8px -7px var(--aven-color-shadow-ambient);
+  box-shadow: -0.3125rem 0 0.5rem -0.4375rem var(--aven-color-shadow-ambient);
 }
 :dir(rtl) .is-pinned-end-edge {
-  box-shadow: 5px 0 8px -7px var(--aven-color-shadow-ambient);
+  box-shadow: 0.3125rem 0 0.5rem -0.4375rem var(--aven-color-shadow-ambient);
 }
 .utility-pinned {
   z-index: 2;
@@ -807,7 +808,7 @@ tbody tr.is-clickable:hover {
   position: absolute;
   inset-block: 25%;
   inset-inline-start: 50%;
-  inline-size: 1px;
+  inline-size: 0.0625rem;
   content: '';
   background: var(--aven-color-divider-resize);
 }
@@ -816,10 +817,10 @@ tbody tr.is-clickable:hover {
 }
 .visually-hidden {
   position: absolute;
-  inline-size: 1px;
-  block-size: 1px;
+  inline-size: 0.0625rem;
+  block-size: 0.0625rem;
   padding: 0;
-  margin: -1px;
+  margin: -0.0625rem;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;

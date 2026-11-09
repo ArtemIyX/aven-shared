@@ -326,7 +326,7 @@ onBeforeUnmount(() => {
   min-inline-size: 10rem;
   max-inline-size: 100%;
   padding: var(--aven-space-2) var(--aven-space-3);
-  border: 1px solid var(--aven-color-border-interactive);
+  border: 0.0625rem solid var(--aven-color-border-interactive);
   border-radius: var(--aven-radius-md);
   background: var(--aven-color-surface-base);
   color: inherit;
@@ -337,8 +337,8 @@ onBeforeUnmount(() => {
 .switcher-trigger:focus-visible,
 .switcher-search:focus-visible,
 .switcher-options:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 .switcher-value {
   min-inline-size: 0;
@@ -354,10 +354,10 @@ onBeforeUnmount(() => {
   max-block-size: min(24rem, 70vh);
   overflow: auto;
   padding: var(--aven-space-2);
-  border: 1px solid var(--aven-color-border-muted);
+  border: 0.0625rem solid var(--aven-color-border-muted);
   border-radius: var(--aven-radius-md);
   background: var(--aven-color-surface-raised);
-  box-shadow: 0 8px 28px var(--aven-color-shadow-ambient);
+  box-shadow: 0 0.5rem 1.75rem var(--aven-color-shadow-ambient);
 }
 .switcher-search {
   box-sizing: border-box;
@@ -365,7 +365,7 @@ onBeforeUnmount(() => {
   min-block-size: 2.75rem;
   margin-block-end: var(--aven-space-2);
   padding: var(--aven-space-2);
-  border: 1px solid var(--aven-color-border-interactive);
+  border: 0.0625rem solid var(--aven-color-border-interactive);
   border-radius: var(--aven-radius-sm);
   background: var(--aven-color-surface-base);
   color: inherit;
@@ -427,7 +427,7 @@ onBeforeUnmount(() => {
   .switcher-trigger,
   .switcher-popup,
   .switcher-option.is-active {
-    border: 1px solid CanvasText;
+    border: 0.0625rem solid CanvasText;
   }
 }
 @media print {

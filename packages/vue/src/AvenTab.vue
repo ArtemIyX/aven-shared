@@ -67,7 +67,7 @@ defineExpose({ focus, blur })
   max-inline-size: 100%;
   padding: var(--aven-space-2) var(--aven-space-4);
   border: 0;
-  border-block-end: 2px solid transparent;
+  border-block-end: 0.125rem solid transparent;
   background: transparent;
   color: var(--aven-color-text-secondary);
   font: inherit;
@@ -82,8 +82,8 @@ defineExpose({ focus, blur })
 }
 .aven-tab:focus-visible {
   z-index: 1;
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: -2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: -0.125rem;
 }
 .is-unstyled {
   border: 0;

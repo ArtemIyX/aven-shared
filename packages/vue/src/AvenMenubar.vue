@@ -297,7 +297,7 @@ defineExpose({
   gap: var(--aven-space-1);
   min-block-size: 2.75rem;
   padding: var(--aven-space-1);
-  border-block-end: 1px solid var(--aven-color-border-subtle);
+  border-block-end: 0.0625rem solid var(--aven-color-border-subtle);
   background: var(--aven-color-surface-base);
 }
 .menubar-item-wrap {
@@ -326,8 +326,8 @@ defineExpose({
   background: var(--aven-color-surface-hover);
 }
 .menubar-trigger:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: -2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: -0.125rem;
 }
 .menubar-trigger:disabled {
   color: var(--aven-color-text-disabled);
@@ -353,7 +353,7 @@ defineExpose({
 }
 @media (forced-colors: active) {
   .menubar-trigger.is-open {
-    outline: 1px solid Highlight;
+    outline: 0.0625rem solid Highlight;
   }
 }
 </style>

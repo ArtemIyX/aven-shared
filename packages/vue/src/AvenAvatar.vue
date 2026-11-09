@@ -78,7 +78,7 @@ function onError(e: Event) {
   block-size: 2.5rem;
   flex: none;
   overflow: hidden;
-  border: 1px solid var(--aven-color-border-subtle);
+  border: 0.0625rem solid var(--aven-color-border-subtle);
   background: var(--aven-color-surface-recessed);
   color: var(--aven-color-text-secondary);
   font-weight: 600;
@@ -134,7 +134,7 @@ function onError(e: Event) {
   place-items: center;
   min-inline-size: 0.6rem;
   min-block-size: 0.6rem;
-  border: 2px solid var(--aven-color-surface-base);
+  border: 0.125rem solid var(--aven-color-surface-base);
   border-radius: 50%;
   background: var(--aven-color-success-solid);
 }

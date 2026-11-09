@@ -90,7 +90,7 @@ const attrs = useAttrs()
   color: var(--aven-color-text-disabled);
 }
 .has-divider {
-  border-block-end: 1px solid var(--aven-color-separator-row);
+  border-block-end: 0.0625rem solid var(--aven-color-separator-row);
 }
 .list-item-leading,
 .list-item-trailing {
@@ -113,7 +113,7 @@ const attrs = useAttrs()
 }
 @media (forced-colors: active) {
   .is-selected {
-    outline: 1px solid Highlight;
+    outline: 0.0625rem solid Highlight;
   }
   .has-divider {
     border-color: CanvasText;

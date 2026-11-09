@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, useAttrs, type Component } from 'vue'
+import { cssPixelsToRem } from './cssLength.js'
 import { useAvenConfig } from './provider.js'
 import type { AvenIconRuntimeProps, AvenIconSlots } from './types.js'
 defineOptions({ inheritAttrs: false })
@@ -17,7 +18,7 @@ const resolved = computed(() =>
   props.name ? (config.resolveIcon?.(props.name) as Component | undefined) : undefined,
 )
 const style = computed(() => [
-  typeof props.size === 'number' ? { '--aven-icon-size': `${props.size}px` } : undefined,
+  typeof props.size === 'number' ? { '--aven-icon-size': cssPixelsToRem(props.size) } : undefined,
   { '--aven-icon-stroke-width': props.strokeWidth },
   attrs.style,
   props.ui?.root?.style,

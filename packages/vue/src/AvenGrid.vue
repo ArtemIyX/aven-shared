@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, type CSSProperties } from 'vue'
+import { cssPixelsToRem } from './cssLength.js'
 import type { AvenGridProps, AvenGridSlots } from './types.js'
 const props = withDefaults(defineProps<AvenGridProps>(), {
   as: 'div',
@@ -10,7 +11,7 @@ const props = withDefaults(defineProps<AvenGridProps>(), {
 defineSlots<AvenGridSlots>()
 function gapValue(value: string | number): string {
   return typeof value === 'number'
-    ? `${value}px`
+    ? cssPixelsToRem(value)
     : value.startsWith('space-')
       ? `var(--aven-${value})`
       : value

@@ -238,7 +238,7 @@ onBeforeUnmount(() => form?.removeEventListener('reset', reset))
   gap: var(--aven-space-1);
   max-inline-size: 100%;
   padding: var(--aven-space-1);
-  border: 1px solid var(--aven-color-border-subtle);
+  border: 0.0625rem solid var(--aven-color-border-subtle);
   border-radius: var(--aven-radius-lg);
   background: var(--aven-color-surface-recessed);
 }
@@ -253,7 +253,7 @@ onBeforeUnmount(() => form?.removeEventListener('reset', reset))
   min-inline-size: 2.75rem;
   min-block-size: 2.75rem;
   padding: var(--aven-space-2) var(--aven-space-3);
-  border: 1px solid transparent;
+  border: 0.0625rem solid transparent;
   border-radius: var(--aven-radius-md);
   background: transparent;
   color: var(--aven-color-text-secondary);
@@ -302,8 +302,8 @@ onBeforeUnmount(() => form?.removeEventListener('reset', reset))
   color: var(--aven-color-critical-text);
 }
 .toggle-group-item:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 .toggle-group-item:disabled {
   color: var(--aven-color-text-disabled);

@@ -302,7 +302,7 @@ defineExpose({
   position: absolute;
   inset-inline: 0.5rem;
   block-size: 0.35rem;
-  border-radius: 999px;
+  border-radius: 999rem;
   background: var(--aven-color-border-subtle);
   pointer-events: none;
 }
@@ -364,25 +364,25 @@ defineExpose({
   block-size: 1.125rem;
   margin-block-start: -0.4rem;
   appearance: none;
-  border: 2px solid var(--aven-color-accent-solid);
+  border: 0.125rem solid var(--aven-color-accent-solid);
   border-radius: 50%;
   background: var(--aven-color-surface-base);
-  box-shadow: 0 1px 3px var(--aven-color-shadow-ambient);
+  box-shadow: 0 0.0625rem 0.1875rem var(--aven-color-shadow-ambient);
   pointer-events: auto;
 }
 .slider-input::-moz-range-thumb {
   inline-size: 0.9rem;
   block-size: 0.9rem;
-  border: 2px solid var(--aven-color-accent-solid);
+  border: 0.125rem solid var(--aven-color-accent-solid);
   border-radius: 50%;
   background: var(--aven-color-surface-base);
-  box-shadow: 0 1px 3px var(--aven-color-shadow-ambient);
+  box-shadow: 0 0.0625rem 0.1875rem var(--aven-color-shadow-ambient);
   pointer-events: auto;
 }
 .slider-input:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 3px;
-  border-radius: 999px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.1875rem;
+  border-radius: 999rem;
 }
 .slider-input:disabled {
   cursor: not-allowed;
@@ -463,7 +463,7 @@ defineExpose({
 }
 @media (forced-colors: active) {
   .slider-track {
-    border: 1px solid CanvasText;
+    border: 0.0625rem solid CanvasText;
   }
   .slider-fill {
     background: Highlight;

@@ -101,14 +101,14 @@ const attrs = useAttrs()
 .state-actions button {
   font: inherit;
   padding: var(--aven-space-2) var(--aven-space-4);
-  border: 1px solid var(--aven-color-border-default);
+  border: 0.0625rem solid var(--aven-color-border-default);
   border-radius: var(--aven-radius-md);
   background: var(--aven-color-surface-base);
   color: var(--aven-color-text-primary);
   cursor: pointer;
 }
 .state-actions button:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
+  outline: 0.125rem solid var(--aven-color-focus-ring);
 }
 .state-footer {
   font-size: var(--aven-font-size-sm);

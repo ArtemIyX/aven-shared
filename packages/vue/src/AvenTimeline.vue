@@ -176,7 +176,7 @@ function loadMore() {
   content: '';
   position: absolute;
   inset-block: 1.5rem 0;
-  inline-size: 1px;
+  inline-size: 0.0625rem;
   background: var(--aven-timeline-line);
 }
 .timeline-indicator {
@@ -185,7 +185,7 @@ function loadMore() {
   place-items: center;
   inline-size: var(--aven-timeline-indicator-size, 1.25rem);
   block-size: var(--aven-timeline-indicator-size, 1.25rem);
-  border: 2px solid var(--aven-timeline-dot);
+  border: 0.125rem solid var(--aven-timeline-dot);
   border-radius: 50%;
   background: var(--aven-color-surface-base);
   color: var(--aven-color-accent-on-solid);
@@ -238,8 +238,8 @@ function loadMore() {
 }
 .details-toggle:focus-visible,
 .load-more:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 .timeline-details,
 .timeline-actions {

@@ -413,7 +413,7 @@ defineExpose({
   gap: var(--aven-space-2);
   min-block-size: 2.75rem;
   padding: var(--aven-space-2) var(--aven-space-3);
-  border: 1px solid var(--aven-color-border-interactive);
+  border: 0.0625rem solid var(--aven-color-border-interactive);
   border-radius: var(--aven-radius-md);
   background: var(--aven-color-surface-base);
   color: inherit;
@@ -425,7 +425,7 @@ defineExpose({
   inline-size: 1.25rem;
   block-size: 1.25rem;
   flex: 0 0 auto;
-  border: 1px solid var(--aven-color-border-muted);
+  border: 0.0625rem solid var(--aven-color-border-muted);
   border-radius: var(--aven-color-swatch-radius, var(--aven-radius-sm));
   background-color: var(--aven-color-surface-base);
   background-image:
@@ -455,7 +455,7 @@ defineExpose({
   min-inline-size: 5rem;
   min-block-size: 2.75rem;
   padding-inline: var(--aven-space-2);
-  border: 1px solid var(--aven-color-border-interactive);
+  border: 0.0625rem solid var(--aven-color-border-interactive);
   border-radius: var(--aven-radius-sm);
   background: var(--aven-color-surface-base);
   color: inherit;
@@ -466,7 +466,7 @@ defineExpose({
   inline-size: 2.75rem;
   block-size: 2.75rem;
   padding: 0.25rem;
-  border: 1px solid var(--aven-color-border-interactive);
+  border: 0.0625rem solid var(--aven-color-border-interactive);
   border-radius: var(--aven-radius-sm);
   background: var(--aven-color-surface-base);
 }
@@ -479,10 +479,10 @@ defineExpose({
   max-block-size: min(24rem, 70vh);
   overflow: auto;
   padding: var(--aven-space-3);
-  border: 1px solid var(--aven-color-border-muted);
+  border: 0.0625rem solid var(--aven-color-border-muted);
   border-radius: var(--aven-radius-md);
   background: var(--aven-color-surface-raised);
-  box-shadow: 0 8px 28px var(--aven-color-shadow-ambient);
+  box-shadow: 0 0.5rem 1.75rem var(--aven-color-shadow-ambient);
 }
 .swatch-grid {
   display: grid;
@@ -496,7 +496,7 @@ defineExpose({
   min-block-size: 2.75rem;
   min-inline-size: 0;
   padding: var(--aven-space-1);
-  border: 1px solid transparent;
+  border: 0.0625rem solid transparent;
   border-radius: var(--aven-radius-sm);
   background: transparent;
   color: inherit;
@@ -506,7 +506,7 @@ defineExpose({
 }
 .swatch.is-selected {
   border-color: var(--aven-color-border-selected);
-  outline: 1px solid var(--aven-color-focus-ring);
+  outline: 0.0625rem solid var(--aven-color-focus-ring);
 }
 .swatch-label {
   min-inline-size: 0;
@@ -534,8 +534,8 @@ defineExpose({
 .color-text:focus-visible,
 .native-color:focus-visible,
 .swatch:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 .is-disabled {
   color: var(--aven-color-text-disabled);
@@ -550,10 +550,10 @@ defineExpose({
 }
 .sr-only {
   position: absolute;
-  inline-size: 1px;
-  block-size: 1px;
+  inline-size: 0.0625rem;
+  block-size: 0.0625rem;
   padding: 0;
-  margin: -1px;
+  margin: -0.0625rem;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;

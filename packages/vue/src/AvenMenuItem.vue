@@ -205,8 +205,8 @@ defineExpose({
   background: var(--aven-color-surface-hover);
 }
 .menu-item:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: -2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: -0.125rem;
 }
 .menu-item:disabled {
   color: var(--aven-color-text-disabled);
@@ -249,7 +249,7 @@ defineExpose({
 }
 @media (forced-colors: active) {
   .menu-item.is-checked {
-    outline: 1px solid Highlight;
+    outline: 0.0625rem solid Highlight;
   }
 }
 @media print {

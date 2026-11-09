@@ -8,7 +8,7 @@ const chrome = process.env.AVEN_BROWSER || 'C:/Program Files/Google/Chrome/Appli
 const dir = await mkdtemp(path.join(tmpdir(), 'aven-color-browser-'))
 const styles = path.resolve(process.env.AVEN_CSS_DIR || 'packages/shared/src/styles')
 const html = `<!doctype html><link rel="stylesheet" href="${pathToFileURL(path.join(styles, 'colors.css'))}"><link rel="stylesheet" href="${pathToFileURL(path.resolve(process.env.AVEN_VUE_CSS || 'packages/vue/src/style.css'))}">
-<style>:root {--aven-color-accent: #123456} #legacy {--aven-color-text: #123456;--aven-color-text-muted:#345678} #hook {--aven-text-color: #654321} .loss {color:var(--aven-color-finance-loss-text)} .focus:focus {outline:3px solid var(--aven-color-focus-ring)}</style>
+<style>:root {--aven-color-accent: #123456} #legacy {--aven-color-text: #123456;--aven-color-text-muted:#345678} #hook {--aven-text-color: #654321} .loss {color:var(--aven-color-finance-loss-text)} .focus:focus {outline:0.1875rem solid var(--aven-color-focus-ring)}</style>
 <div id="gradient" style="background-color:var(--aven-gradient-accent-solid-fallback);background-image:var(--aven-gradient-accent-solid-image)"></div><div id="default"><span class="aven-text" id="text">text</span><div id="legacy"><span class="aven-text" id="legacy-text">legacy</span><span class="aven-text aven-text--caption" id="caption">caption</span><blockquote class="aven-text aven-text--quote" id="quote">quote</blockquote><span class="aven-text aven-text--caption" id="caption-hook" style="--aven-text-color:#654321">caption hook</span></div><span class="aven-text" id="hook">hook</span></div>
 <section data-aven-theme="dark" id="dark"><div data-aven-theme="light" id="light-island"><div data-aven-theme="system" id="system-in-light"></div></div></section>
 <section data-aven-theme="dark" id="local-custom" style="--aven-color-gain-text:#123456"><span id="custom-alias"></span></section>
@@ -118,7 +118,7 @@ try {
     ['gradients', '--aven-gradient-accent-solid-fallback', '#1D4ED8'],
     ['colors', '--aven-color-finance-gain-text', '#115E59'],
     ['base', 'min-height', '100vh'],
-    ['style', 'margin-block-start', '0px'],
+    ['style', 'margin-block-start', '0'],
   ]) {
     const href = pathToFileURL(
       entry === 'style'

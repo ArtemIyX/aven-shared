@@ -147,7 +147,7 @@ function setExpanded(keys: Key[]) {
 }
 .nav-link:focus-visible,
 .nav-disclosure:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
+  outline: 0.125rem solid var(--aven-color-focus-ring);
 }
 .nav-disclosure {
   min-inline-size: 2.25rem;

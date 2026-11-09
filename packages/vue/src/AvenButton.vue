@@ -117,7 +117,7 @@ defineExpose({
   min-inline-size: 2.75rem;
   min-block-size: var(--aven-button-min-block-size, var(--button-default-min-block-size));
   padding-inline: var(--aven-button-padding-inline, var(--button-default-padding-inline));
-  border: 1px solid var(--aven-button-border, var(--button-default-border));
+  border: 0.0625rem solid var(--aven-button-border, var(--button-default-border));
   border-radius: var(--aven-button-radius, var(--button-default-radius));
   font: inherit;
   font-weight: 600;
@@ -242,7 +242,7 @@ defineExpose({
   --button-default-padding-inline: var(--aven-space-6);
 }
 .shape-pill {
-  --button-default-radius: 999px;
+  --button-default-radius: 999rem;
 }
 .shape-square {
   --button-default-radius: 0;
@@ -258,8 +258,8 @@ defineExpose({
   background: var(--aven-button-pressed-bg, var(--button-default-pressed-bg));
 }
 .aven-button:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 .aven-button:disabled {
   border-color: var(--aven-color-border-subtle);
@@ -295,7 +295,7 @@ defineExpose({
 .spinner {
   inline-size: 1em;
   block-size: 1em;
-  border: 2px solid currentColor;
+  border: 0.125rem solid currentColor;
   border-inline-end-color: transparent;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
@@ -314,7 +314,7 @@ defineExpose({
 }
 @media (forced-colors: active) {
   .aven-button {
-    border: 1px solid ButtonText;
+    border: 0.0625rem solid ButtonText;
   }
 }
 </style>

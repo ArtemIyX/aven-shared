@@ -227,7 +227,7 @@ defineExpose({ focus })
   gap: var(--aven-space-2);
   min-inline-size: 0;
   padding: var(--aven-space-2);
-  border: 1px solid var(--aven-sort-border, var(--aven-color-border-subtle));
+  border: 0.0625rem solid var(--aven-sort-border, var(--aven-color-border-subtle));
   border-radius: var(--aven-sort-radius, var(--aven-radius-sm));
   background: var(--aven-sort-bg, var(--aven-color-surface-card));
 }
@@ -237,7 +237,7 @@ defineExpose({ focus })
   min-block-size: 2.75rem;
   max-inline-size: 100%;
   padding-inline: var(--aven-space-2);
-  border: 1px solid var(--aven-sort-border, var(--aven-color-border-subtle));
+  border: 0.0625rem solid var(--aven-sort-border, var(--aven-color-border-subtle));
   border-radius: var(--aven-radius-sm);
   background: var(--aven-sort-bg, var(--aven-color-surface-card));
   color: inherit;
@@ -251,8 +251,8 @@ defineExpose({ focus })
 }
 .sort-item :focus-visible,
 .sort-add:focus-visible {
-  outline: 2px solid var(--aven-sort-focus, var(--aven-color-focus-ring));
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-sort-focus, var(--aven-color-focus-ring));
+  outline-offset: 0.125rem;
 }
 .sort-item button:disabled,
 .sort-add:disabled {
@@ -263,10 +263,10 @@ defineExpose({ focus })
 }
 .visually-hidden {
   position: absolute;
-  inline-size: 1px;
-  block-size: 1px;
+  inline-size: 0.0625rem;
+  block-size: 0.0625rem;
   padding: 0;
-  margin: -1px;
+  margin: -0.0625rem;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;

@@ -1,5 +1,6 @@
 <script setup lang="ts" generic="Item">
 import { computed } from 'vue'
+import { cssPixelsToRem } from './cssLength.js'
 import type { AvenAvatarGroupEvents, AvenAvatarGroupProps, AvenAvatarGroupSlots } from './types.js'
 const props = withDefaults(defineProps<AvenAvatarGroupProps<Item>>(), {
   overlap: 8,
@@ -31,7 +32,7 @@ const itemKey = (item: Item, index: number) => {
     role="group"
     :aria-label="label"
     :class="['aven-avatar-group', { 'is-unstyled': unstyled }, ui?.root?.class]"
-    :style="[{ '--aven-avatar-overlap': `${overlap}px` }, ui?.root?.style]"
+    :style="[{ '--aven-avatar-overlap': cssPixelsToRem(overlap) }, ui?.root?.style]"
   >
     <span
       v-for="(item, index) in visible()"
@@ -41,7 +42,7 @@ const itemKey = (item: Item, index: number) => {
       :style="[
         {
           zIndex: visible().length - index,
-          marginInlineStart: index ? `-${overlap}px` : undefined,
+          marginInlineStart: index ? cssPixelsToRem(-overlap) : undefined,
         },
         ui?.avatar?.style,
       ]"
@@ -78,7 +79,7 @@ const itemKey = (item: Item, index: number) => {
 .avatar-item {
   display: inline-flex;
   flex: none;
-  border: 2px solid var(--aven-color-surface-base);
+  border: 0.125rem solid var(--aven-color-surface-base);
   border-radius: 50%;
 }
 .avatar-overflow {
@@ -88,7 +89,7 @@ const itemKey = (item: Item, index: number) => {
   min-inline-size: 2.5rem;
   block-size: 2.5rem;
   margin-inline-start: calc(var(--aven-avatar-overlap) * -1);
-  border: 2px solid var(--aven-color-surface-base);
+  border: 0.125rem solid var(--aven-color-surface-base);
   border-radius: 50%;
   background: var(--aven-color-surface-selected);
   color: var(--aven-color-text-primary);
@@ -96,8 +97,8 @@ const itemKey = (item: Item, index: number) => {
   font-weight: 600;
 }
 .avatar-overflow:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 1px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.0625rem;
 }
 .is-unstyled .avatar-item,
 .is-unstyled .avatar-overflow {

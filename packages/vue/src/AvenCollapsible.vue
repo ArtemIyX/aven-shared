@@ -135,7 +135,7 @@ function triggerAttrs() {
   inline-size: 100%;
   min-block-size: 2.75rem;
   padding: var(--aven-space-3) var(--aven-space-4);
-  border: 1px solid var(--aven-color-border-subtle);
+  border: 0.0625rem solid var(--aven-color-border-subtle);
   border-radius: var(--aven-radius-md);
   background: var(--aven-color-surface-card);
   color: inherit;
@@ -144,8 +144,8 @@ function triggerAttrs() {
   cursor: pointer;
 }
 .collapsible-trigger:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 .collapsible-trigger:disabled {
   color: var(--aven-color-text-disabled);
@@ -182,7 +182,7 @@ function triggerAttrs() {
 }
 @media (forced-colors: active) {
   .collapsible-trigger {
-    border: 1px solid ButtonText;
+    border: 0.0625rem solid ButtonText;
   }
 }
 </style>

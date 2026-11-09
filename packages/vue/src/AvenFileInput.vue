@@ -357,10 +357,10 @@ defineExpose({ open })
 }
 .file-control {
   position: absolute;
-  inline-size: 1px;
-  block-size: 1px;
+  inline-size: 0.0625rem;
+  block-size: 0.0625rem;
   padding: 0;
-  margin: -1px;
+  margin: -0.0625rem;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
@@ -380,7 +380,7 @@ defineExpose({ open })
   gap: var(--aven-space-2);
   min-block-size: 8rem;
   padding: var(--aven-space-5);
-  border: 2px dashed var(--aven-color-border-muted);
+  border: 0.125rem dashed var(--aven-color-border-muted);
   border-radius: var(--aven-radius-md);
   background: var(--aven-color-surface-base);
   text-align: center;
@@ -393,7 +393,7 @@ defineExpose({ open })
 .file-remove {
   min-block-size: 2.75rem;
   padding-inline: var(--aven-space-3);
-  border: 1px solid var(--aven-color-border-interactive);
+  border: 0.0625rem solid var(--aven-color-border-interactive);
   border-radius: var(--aven-radius-sm);
   background: var(--aven-color-surface-base);
   color: inherit;
@@ -402,8 +402,8 @@ defineExpose({ open })
 }
 .browse-button:focus-visible,
 .file-remove:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 .browse-button:disabled,
 .file-remove:disabled {
@@ -425,7 +425,7 @@ defineExpose({ open })
   gap: var(--aven-space-3);
   min-inline-size: 0;
   padding: var(--aven-space-3);
-  border-block-end: 1px solid var(--aven-color-border-subtle);
+  border-block-end: 0.0625rem solid var(--aven-color-border-subtle);
 }
 .file-name {
   min-inline-size: 0;

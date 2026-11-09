@@ -95,7 +95,7 @@ function cancel() {
   grid-template-columns: minmax(0, var(--aven-property-label-width, 8rem)) minmax(0, 2fr);
   gap: var(--aven-space-4);
   padding-block: var(--aven-space-3);
-  border-block-end: 1px solid var(--aven-color-border-subtle);
+  border-block-end: 0.0625rem solid var(--aven-color-border-subtle);
   color: var(--aven-color-text-primary);
 }
 .is-vertical {
@@ -141,8 +141,8 @@ function cancel() {
   cursor: pointer;
 }
 .property-edit:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 .is-unstyled {
   border: 0;

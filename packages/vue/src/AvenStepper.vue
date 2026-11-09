@@ -222,8 +222,8 @@ function requestStep(index: number, originalEvent: MouseEvent) {
   cursor: default;
 }
 .stepper-step-button:not(:disabled):focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
   border-radius: var(--aven-radius-sm);
 }
 .stepper-indicator {
@@ -232,7 +232,7 @@ function requestStep(index: number, originalEvent: MouseEvent) {
   place-items: center;
   inline-size: 2rem;
   block-size: 2rem;
-  border: 1px solid var(--aven-stepper-line);
+  border: 0.0625rem solid var(--aven-stepper-line);
   border-radius: 50%;
   background: var(--aven-color-surface-base);
   color: var(--aven-stepper-color);
@@ -278,7 +278,7 @@ function requestStep(index: number, originalEvent: MouseEvent) {
   inset-inline-start: calc(var(--aven-space-2) + 2rem);
   inset-inline-end: 0;
   inset-block-start: 1rem;
-  border-block-start: 1px solid var(--aven-stepper-line);
+  border-block-start: 0.0625rem solid var(--aven-stepper-line);
 }
 .is-vertical .stepper-step {
   min-block-size: 3.5rem;
@@ -289,7 +289,7 @@ function requestStep(index: number, originalEvent: MouseEvent) {
   inset-block-start: 3rem;
   inset-block-end: 0;
   border-block-start: 0;
-  border-inline-start: 1px solid var(--aven-stepper-line);
+  border-inline-start: 0.0625rem solid var(--aven-stepper-line);
 }
 .is-unstyled .stepper-indicator {
   border-color: currentColor;
@@ -314,7 +314,7 @@ function requestStep(index: number, originalEvent: MouseEvent) {
     inset-block-start: 3rem;
     inset-block-end: 0;
     border-block-start: 0;
-    border-inline-start: 1px solid var(--aven-stepper-line);
+    border-inline-start: 0.0625rem solid var(--aven-stepper-line);
   }
 }
 @media (forced-colors: active) {

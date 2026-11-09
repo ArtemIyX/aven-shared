@@ -246,7 +246,7 @@ function close(item: (typeof props.items)[number], event: MouseEvent) {
   min-block-size: 2.5rem;
   padding: var(--aven-space-2) var(--aven-space-4);
   border: 0;
-  border-block-end: 2px solid transparent;
+  border-block-end: 0.125rem solid transparent;
   background: transparent;
   color: var(--aven-color-text-secondary);
   font: inherit;
@@ -258,18 +258,18 @@ function close(item: (typeof props.items)[number], event: MouseEvent) {
   color: var(--aven-color-text-primary);
 }
 .tabs-tab:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: -2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: -0.125rem;
 }
 .variant-pill .tabs-tab {
-  border-radius: 999px;
+  border-radius: 999rem;
   border: 0;
 }
 .variant-pill .tabs-tab.is-selected {
   background: var(--aven-color-surface-selected);
 }
 .variant-boxed .tabs-tab {
-  border: 1px solid var(--aven-color-border-subtle);
+  border: 0.0625rem solid var(--aven-color-border-subtle);
   border-radius: var(--aven-radius-md);
 }
 .variant-boxed .tabs-tab.is-selected {
@@ -287,7 +287,7 @@ function close(item: (typeof props.items)[number], event: MouseEvent) {
   padding-block: var(--aven-space-4);
 }
 .tabs-panel:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
+  outline: 0.125rem solid var(--aven-color-focus-ring);
 }
 .is-unstyled .tabs-tab {
   border: 0;
