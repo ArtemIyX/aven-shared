@@ -136,10 +136,10 @@ function segmentValue(next: T) {
 }
 .sr-only {
   position: absolute;
-  inline-size: 1px;
-  block-size: 1px;
+  inline-size: 0.0625rem;
+  block-size: 0.0625rem;
   padding: 0;
-  margin: -1px;
+  margin: -0.0625rem;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
@@ -152,7 +152,7 @@ function segmentValue(next: T) {
 }
 @media (forced-colors: active) {
   .aven-view-switcher :deep(button:focus-visible) {
-    outline: 2px solid Highlight;
+    outline: 0.125rem solid Highlight;
   }
 }
 </style>

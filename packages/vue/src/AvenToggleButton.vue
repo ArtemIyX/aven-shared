@@ -105,7 +105,7 @@ function toggle() {
   min-inline-size: 2.75rem;
   min-block-size: 2.75rem;
   padding: var(--aven-space-2) var(--aven-space-3);
-  border: 1px solid var(--aven-color-border-interactive);
+  border: 0.0625rem solid var(--aven-color-border-interactive);
   border-radius: var(--aven-radius-md);
   background: var(--aven-color-surface-base);
   color: var(--aven-color-text-primary);
@@ -129,8 +129,8 @@ function toggle() {
   color: var(--toggle-tone-text);
 }
 .aven-toggle-button:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 .aven-toggle-button:disabled {
   background: var(--aven-color-surface-disabled);

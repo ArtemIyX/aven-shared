@@ -162,8 +162,8 @@ function setButtonRef(index: number, element: unknown) {
   align-items: stretch;
   gap: 0.2rem;
   padding: 0.2rem;
-  border: 1px solid var(--aven-color-border-subtle);
-  border-radius: 999px;
+  border: 0.0625rem solid var(--aven-color-border-subtle);
+  border-radius: 999rem;
   background: var(--aven-color-surface-recessed);
   max-inline-size: 100%;
 }
@@ -182,7 +182,7 @@ function setButtonRef(index: number, element: unknown) {
   min-block-size: 2rem;
   padding: var(--aven-space-2) var(--aven-space-3);
   border: 0;
-  border-radius: 999px;
+  border-radius: 999rem;
   background: transparent;
   color: var(--aven-color-text-secondary);
   font: inherit;
@@ -195,11 +195,11 @@ function setButtonRef(index: number, element: unknown) {
 .segment-item.is-selected {
   background: var(--aven-color-surface-base);
   color: var(--aven-color-text-primary);
-  box-shadow: 0 1px 3px var(--aven-color-shadow-ambient);
+  box-shadow: 0 0.0625rem 0.1875rem var(--aven-color-shadow-ambient);
 }
 .segment-item:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: -2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: -0.125rem;
 }
 .segment-item:disabled {
   color: var(--aven-color-text-disabled);
