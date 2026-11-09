@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { cssPixelsToRem } from './cssLength.js'
 import type { AvenOpenReason } from './composables.js'
 import { useAvenId } from './composables.js'
 import { isTopAvenOverlayLayer, registerAvenOverlayLayer } from './composables.js'
@@ -110,7 +111,7 @@ function setTrigger(el: unknown) {
     ]"
     :style="[
       {
-        '--aven-popover-offset': `${offset}px`,
+        '--aven-popover-offset': cssPixelsToRem(offset),
         ...(matchTriggerWidth ? { '--aven-popover-width': '100%' } : {}),
       },
       ui?.root?.style,
@@ -162,11 +163,11 @@ function setTrigger(el: unknown) {
   inline-size: var(--aven-popover-width, min(22rem, calc(100vw - 1rem)));
   max-block-size: min(32rem, calc(100vh - 2rem));
   overflow: auto;
-  border: 1px solid var(--aven-color-border-subtle);
+  border: 0.0625rem solid var(--aven-color-border-subtle);
   border-radius: var(--aven-radius-lg);
   background: var(--aven-color-surface-popover);
   color: var(--aven-color-text-primary);
-  box-shadow: 0 8px 24px var(--aven-color-shadow-ambient);
+  box-shadow: 0 0.5rem 1.5rem var(--aven-color-shadow-ambient);
   overscroll-behavior: contain;
 }
 .place-bottom .popover-content {
@@ -188,10 +189,10 @@ function setTrigger(el: unknown) {
 .popover-header,
 .popover-footer {
   padding: var(--aven-space-3) var(--aven-space-4);
-  border-block-end: 1px solid var(--aven-color-border-subtle);
+  border-block-end: 0.0625rem solid var(--aven-color-border-subtle);
 }
 .popover-footer {
-  border-block-start: 1px solid var(--aven-color-border-subtle);
+  border-block-start: 0.0625rem solid var(--aven-color-border-subtle);
   border-block-end: 0;
 }
 .popover-body {

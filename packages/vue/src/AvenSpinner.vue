@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { cssPixelsToRem } from './cssLength.js'
 import type { AvenUi } from './types.js'
 withDefaults(
   defineProps<{
@@ -21,7 +22,9 @@ withDefaults(
       ui?.root?.class,
     ]"
     :style="[
-      typeof size === 'number' ? { inlineSize: `${size}px`, blockSize: `${size}px` } : undefined,
+      typeof size === 'number'
+        ? { inlineSize: cssPixelsToRem(size), blockSize: cssPixelsToRem(size) }
+        : undefined,
       ui?.root?.style,
     ]"
     role="status"
@@ -46,7 +49,7 @@ withDefaults(
 .spinner-indicator {
   inline-size: 1.25rem;
   block-size: 1.25rem;
-  border: 2px solid currentColor;
+  border: 0.125rem solid currentColor;
   border-inline-end-color: transparent;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;

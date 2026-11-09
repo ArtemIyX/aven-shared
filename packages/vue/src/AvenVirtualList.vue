@@ -10,6 +10,7 @@ import {
   useAttrs,
 } from 'vue'
 import type { AvenVirtualListEvents, AvenVirtualListProps, AvenVirtualListSlots } from './types.js'
+import { cssPixelsToRem } from './cssLength.js'
 
 defineOptions({ inheritAttrs: false })
 const props = withDefaults(defineProps<AvenVirtualListProps<T, Key>>(), {
@@ -266,8 +267,8 @@ onBeforeUnmount(() => {
       :style="[
         props.ui?.list?.style,
         props.orientation === 'vertical'
-          ? { blockSize: `${totalExtent}px` }
-          : { inlineSize: `${totalExtent}px` },
+          ? { blockSize: cssPixelsToRem(totalExtent) }
+          : { inlineSize: cssPixelsToRem(totalExtent) },
       ]"
       role="list"
     >
@@ -284,10 +285,10 @@ onBeforeUnmount(() => {
         :class="['virtual-list-item', props.ui?.item?.class]"
         :style="[
           props.ui?.item?.style,
-          { [axisStart]: `${starts[entry.index] ?? 0}px` },
+          { [axisStart]: cssPixelsToRem(starts[entry.index] ?? 0) },
           props.orientation === 'vertical'
-            ? { minBlockSize: `${estimate}px` }
-            : { minInlineSize: `${estimate}px` },
+            ? { minBlockSize: cssPixelsToRem(estimate) }
+            : { minInlineSize: cssPixelsToRem(estimate) },
         ]"
       >
         <slot name="item" :item="entry.item" :key="entry.key" :index="entry.index" />
@@ -306,8 +307,8 @@ onBeforeUnmount(() => {
   color: var(--aven-color-text-primary);
 }
 .aven-virtual-list:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 .virtual-list-track {
   position: relative;

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { cssPixelsToRem } from './cssLength.js'
 import type { AvenUi } from './types.js'
 withDefaults(
   defineProps<{
@@ -13,7 +14,7 @@ withDefaults(
   { lines: 1, shape: 'rectangle', animated: true, unstyled: false },
 )
 function dim(value?: string | number) {
-  return typeof value === 'number' ? `${value}px` : value
+  return typeof value === 'number' ? cssPixelsToRem(value) : value
 }
 </script>
 <template>
@@ -60,7 +61,7 @@ function dim(value?: string | number) {
   background: var(--aven-color-surface-recessed);
 }
 .shape-rounded .skeleton-line {
-  border-radius: 999px;
+  border-radius: 999rem;
 }
 .is-animated .skeleton-line,
 .shape-circle.is-animated {

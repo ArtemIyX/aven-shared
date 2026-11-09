@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch, useAttrs } from 'vue'
+import { cssPixelsToRem } from './cssLength.js'
 import type { AvenTextareaEvents, AvenTextareaProps, AvenTextareaSlots } from './types.js'
 defineOptions({ inheritAttrs: false })
 const props = withDefaults(defineProps<AvenTextareaProps>(), {
@@ -46,7 +47,7 @@ async function size() {
   if (props.minRows) h = Math.max(h, props.minRows * line)
   if (props.maxRows) h = Math.min(h, props.maxRows * line)
   const old = el.value.offsetHeight
-  el.value.style.height = `${h}px`
+  el.value.style.height = cssPixelsToRem(h)
   if (old !== h) emit('resize', { height: h })
 }
 function input(e: Event) {
@@ -174,14 +175,14 @@ defineExpose({
 .aven-textarea {
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--aven-color-border-interactive);
+  border: 0.0625rem solid var(--aven-color-border-interactive);
   border-radius: var(--aven-radius-md);
   background: var(--aven-color-surface-base);
   color: var(--aven-color-text-primary);
 }
 .aven-textarea:focus-within {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 1px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.0625rem;
 }
 .is-invalid {
   border-color: var(--aven-color-border-invalid);
