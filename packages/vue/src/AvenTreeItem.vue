@@ -83,7 +83,7 @@ function relayFocus(index: number) {
       },
       ui?.item?.class,
     ]"
-    :style="[{ '--aven-tree-indent': `${Math.max(level - 1, 0) * 16}px` }, ui?.item?.style]"
+    :style="[{ '--aven-tree-indent': `${Math.max(level - 1, 0)}rem` }, ui?.item?.style]"
     v-bind="ui?.item?.attrs"
     @click="select($event)"
     @focus="emit('focusIndex', index)"
@@ -193,7 +193,7 @@ function relayFocus(index: number) {
   align-items: center;
   gap: var(--aven-space-2);
   min-block-size: 2.75rem;
-  padding-inline-start: calc(var(--aven-space-2) + var(--aven-tree-indent, 0px));
+  padding-inline-start: calc(var(--aven-space-2) + var(--aven-tree-indent, 0));
   border-radius: var(--aven-radius-sm);
   cursor: default;
 }
@@ -208,8 +208,8 @@ function relayFocus(index: number) {
   background: var(--aven-color-surface-hover);
 }
 .aven-tree-item:focus-visible > .tree-row {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: -2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: -0.125rem;
 }
 .aven-tree-item.is-disabled {
   color: var(--aven-color-text-disabled);
@@ -250,7 +250,7 @@ function relayFocus(index: number) {
 }
 @media (forced-colors: active) {
   .aven-tree-item.is-selected > .tree-row {
-    outline: 1px solid Highlight;
+    outline: 0.0625rem solid Highlight;
   }
 }
 </style>

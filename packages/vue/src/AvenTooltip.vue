@@ -136,7 +136,7 @@ const triggerAttrs = computed(() => ({
   border-radius: var(--aven-radius-sm);
   background: var(--aven-color-surface-context-menu);
   color: var(--aven-color-text-primary);
-  box-shadow: 0 3px 12px var(--aven-color-shadow-ambient);
+  box-shadow: 0 0.1875rem 0.75rem var(--aven-color-shadow-ambient);
   font-size: var(--aven-font-size-sm);
   line-height: var(--aven-line-height-normal);
   overflow-wrap: anywhere;
@@ -185,7 +185,7 @@ const triggerAttrs = computed(() => ({
   inset-block-start: calc(50% - 0.25rem);
 }
 .is-unstyled .tooltip-content {
-  border: 1px solid currentColor;
+  border: 0.0625rem solid currentColor;
   box-shadow: none;
 }
 @media (prefers-reduced-motion: reduce) {
