@@ -304,14 +304,14 @@ defineExpose({
   gap: var(--aven-space-2);
   min-block-size: 2.25rem;
   padding-inline: var(--aven-space-3);
-  border: 1px solid var(--aven-color-border-interactive);
+  border: 0.0625rem solid var(--aven-color-border-interactive);
   border-radius: var(--aven-radius-md);
   background: var(--aven-color-surface-base);
   color: var(--aven-color-text-primary);
 }
 .aven-number-input:focus-within {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 1px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.0625rem;
 }
 .number-control {
   flex: 1;
@@ -335,7 +335,7 @@ defineExpose({
 .number-steppers {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 0.0625rem;
 }
 .number-steppers button {
   min-inline-size: 1.5rem;
@@ -349,7 +349,7 @@ defineExpose({
   cursor: pointer;
 }
 .number-steppers button:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
+  outline: 0.125rem solid var(--aven-color-focus-ring);
 }
 .number-steppers button:disabled {
   color: var(--aven-color-text-disabled);

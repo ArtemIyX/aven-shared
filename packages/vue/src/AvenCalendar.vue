@@ -230,7 +230,7 @@ function onKey(event: KeyboardEvent, date: DateOnly) {
 .aven-calendar {
   inline-size: min(20rem, calc(100vw - 2rem));
   padding: var(--aven-space-3);
-  border: 1px solid var(--aven-color-border-subtle);
+  border: 0.0625rem solid var(--aven-color-border-subtle);
   border-radius: var(--aven-radius-md);
   background: var(--aven-color-surface-raised);
   color: var(--aven-color-text-primary);
@@ -259,12 +259,12 @@ function onKey(event: KeyboardEvent, date: DateOnly) {
 }
 [role='grid'] {
   display: grid;
-  gap: 2px;
+  gap: 0.125rem;
 }
 .calendar-row {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 2px;
+  gap: 0.125rem;
 }
 .weekday {
   text-align: center;
@@ -295,8 +295,8 @@ function onKey(event: KeyboardEvent, date: DateOnly) {
 }
 .calendar-day:focus-visible,
 .calendar-header button:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 1px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.0625rem;
 }
 .is-unstyled {
   border: 0;
@@ -304,10 +304,10 @@ function onKey(event: KeyboardEvent, date: DateOnly) {
 }
 @media (forced-colors: active) {
   .calendar-day.selected {
-    outline: 2px solid Highlight;
+    outline: 0.125rem solid Highlight;
   }
   .calendar-day.inRange {
-    border-block: 1px solid CanvasText;
+    border-block: 0.0625rem solid CanvasText;
   }
 }
 @media print {

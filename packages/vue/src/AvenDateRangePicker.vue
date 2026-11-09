@@ -400,13 +400,13 @@ defineExpose({
   gap: var(--aven-space-2);
   min-block-size: 2.5rem;
   padding-inline: var(--aven-space-2);
-  border: 1px solid var(--aven-color-border-interactive);
+  border: 0.0625rem solid var(--aven-color-border-interactive);
   border-radius: var(--aven-radius-md);
   background: var(--aven-color-surface-base);
 }
 .range-fields:focus-within {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 1px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.0625rem;
 }
 .range-fields input {
   inline-size: min(11rem, 40%);
@@ -428,7 +428,7 @@ defineExpose({
   cursor: pointer;
 }
 .range-fields button:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
+  outline: 0.125rem solid var(--aven-color-focus-ring);
 }
 .help,
 .error {
@@ -450,7 +450,7 @@ defineExpose({
   gap: var(--aven-space-2);
   max-inline-size: calc(100vw - 1rem);
   padding: var(--aven-space-2);
-  border: 1px solid var(--aven-color-border-subtle);
+  border: 0.0625rem solid var(--aven-color-border-subtle);
   border-radius: var(--aven-radius-md);
   background: var(--aven-color-surface-raised);
   box-shadow: var(--aven-shadow-lg);
@@ -468,7 +468,7 @@ defineExpose({
 .presets button {
   min-block-size: 2.5rem;
   padding-inline: var(--aven-space-2);
-  border: 1px solid var(--aven-color-border-subtle);
+  border: 0.0625rem solid var(--aven-color-border-subtle);
   border-radius: var(--aven-radius-sm);
   background: transparent;
   color: inherit;
@@ -486,7 +486,7 @@ defineExpose({
 @media (forced-colors: active) {
   .range-fields,
   .range-popover {
-    border: 1px solid CanvasText;
+    border: 0.0625rem solid CanvasText;
   }
 }
 @media print {
