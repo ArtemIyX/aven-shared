@@ -141,7 +141,7 @@ function add() {
   min-inline-size: var(--aven-board-column-min-width, min(16rem, 78vw));
   max-block-size: min(80vh, 52rem);
   padding: var(--aven-space-3);
-  border: 1px solid var(--aven-board-column-border, var(--aven-color-border-subtle));
+  border: 0.0625rem solid var(--aven-board-column-border, var(--aven-color-border-subtle));
   border-radius: var(--aven-radius-md);
   background: var(--aven-board-column-bg, var(--aven-color-surface-subtle));
 }
@@ -178,7 +178,7 @@ function add() {
 .column-empty {
   min-inline-size: 0;
   padding: var(--aven-space-3);
-  border: 1px solid var(--aven-board-card-border, var(--aven-color-border-subtle));
+  border: 0.0625rem solid var(--aven-board-card-border, var(--aven-color-border-subtle));
   border-radius: var(--aven-radius-sm);
   background: var(--aven-board-card-bg, var(--aven-color-surface-card));
   overflow-wrap: anywhere;
@@ -197,7 +197,7 @@ function add() {
 .column-footer button {
   min-block-size: 2.75rem;
   padding-inline: var(--aven-space-3);
-  border: 1px solid var(--aven-color-border-subtle);
+  border: 0.0625rem solid var(--aven-color-border-subtle);
   border-radius: var(--aven-radius-sm);
   background: var(--aven-color-surface-card);
   color: inherit;
@@ -205,8 +205,8 @@ function add() {
 }
 .column-footer button:focus-visible,
 .column-footer button:enabled:hover {
-  outline: 2px solid var(--aven-board-focus, var(--aven-color-focus-ring));
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-board-focus, var(--aven-color-focus-ring));
+  outline-offset: 0.125rem;
 }
 .column-footer button:disabled {
   color: var(--aven-color-text-disabled);

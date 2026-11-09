@@ -100,10 +100,10 @@ defineSlots<AvenPanelSlots>()
   color: var(--aven-color-text-primary);
 }
 .is-outline {
-  border: 1px solid var(--aven-color-border-subtle);
+  border: 0.0625rem solid var(--aven-color-border-subtle);
 }
 .is-raised {
-  box-shadow: 0 2px 8px var(--aven-color-shadow-ambient);
+  box-shadow: 0 0.125rem 0.5rem var(--aven-color-shadow-ambient);
 }
 .panel-header,
 .panel-footer {
@@ -113,10 +113,10 @@ defineSlots<AvenPanelSlots>()
   padding: var(--aven-space-4);
 }
 .panel-header.has-divider {
-  border-block-end: 1px solid var(--aven-color-border-subtle);
+  border-block-end: 0.0625rem solid var(--aven-color-border-subtle);
 }
 .panel-footer {
-  border-block-start: 1px solid var(--aven-color-border-subtle);
+  border-block-start: 0.0625rem solid var(--aven-color-border-subtle);
 }
 .panel-heading {
   display: grid;
