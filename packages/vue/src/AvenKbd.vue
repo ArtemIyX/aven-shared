@@ -72,11 +72,11 @@ const mapped = computed(() => {
   display: inline-block;
   min-inline-size: 1.25em;
   padding: 0.12em 0.35em;
-  border: 1px solid var(--aven-color-border-default);
+  border: 0.0625rem solid var(--aven-color-border-default);
   border-radius: var(--aven-radius-sm);
   background: var(--aven-color-surface-recessed);
   text-align: center;
-  box-shadow: 0 1px 0 var(--aven-color-border-subtle);
+  box-shadow: 0 0.0625rem 0 var(--aven-color-border-subtle);
 }
 .key-separator {
   color: var(--aven-color-text-tertiary);

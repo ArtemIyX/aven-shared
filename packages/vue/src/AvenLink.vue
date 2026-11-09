@@ -132,8 +132,8 @@ function onClick(event: MouseEvent) {
   color: var(--aven-link-visited-color, var(--aven-link-color, var(--link-default-color)));
 }
 .aven-link:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
   border-radius: var(--aven-radius-sm);
 }
 .is-unstyled {
