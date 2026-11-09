@@ -32,8 +32,8 @@ const rootAttrs = computed(() => {
   overflow-wrap: anywhere;
 }
 .aven-tab-panel:focus-visible {
-  outline: 2px solid var(--aven-color-focus-ring);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--aven-color-focus-ring);
+  outline-offset: 0.125rem;
 }
 .is-unstyled {
   padding: 0;
